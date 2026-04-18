@@ -1,0 +1,24 @@
+{
+  "name": "lupnumber-short",
+  "version": "1.0.0",
+  "description": "15-20s vertical short for lupnumber.com built with Remotion",
+  "private": true,
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render LupnumberShort out/lupnumber-short.mp4",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.200",
+    "@remotion/cli": "4.0.200",
+    "@remotion/renderer": "4.0.200",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.200"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.4.5"
+  }
+}
