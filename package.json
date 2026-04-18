@@ -6,6 +6,7 @@
   "scripts": {
     "start": "remotion studio",
     "build": "remotion render LupnumberShort out/lupnumber-short.mp4",
+    "build:explainer": "remotion render LupnumberExplainer out/lupnumber-explainer.mp4",
     "upgrade": "remotion upgrade"
   },
   "dependencies": {
