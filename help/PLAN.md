@@ -225,7 +225,7 @@ bråkdelar av en krona.
 ## 8. Plan för fas 2 (bygget)
 
 1. Lägg upp Next.js-projektet i `help/`, datamodell, seed från `guides.sv.json` och skärmbilder (WebP).
-2. Generera alternativa frågor (5–10 per guide, flera språk) och relaterade guider med AI. Granskas av dig i admin.
+2. Generera alternativa frågor (5–10 per guide, svenska plus produktens engelska termer) och relaterade guider med AI. Granskas av dig i admin.
 3. Fråga och svar-flöde + guidevy (mobil först).
 4. Feedback → ny fråga → supportärende.
 5. Admin: lista, redigera, ladda upp bild, publicera.
