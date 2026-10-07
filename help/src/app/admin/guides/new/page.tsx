@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { GuideEditor } from "@/components/admin/GuideEditor";
+import { draftEnabled } from "@/lib/ai-draft";
 import { getAdmin } from "@/lib/auth";
 import { CATEGORIES } from "@/lib/categories";
 import { listGuides, nextGuideNumber, slugify } from "@/lib/guides";
@@ -40,7 +41,7 @@ export default async function NewGuide({ searchParams }: { searchParams: SearchP
   };
   return (
     <AdminShell admin={admin} active="guides">
-      <GuideEditor initial={blank} isNew categories={CATEGORIES} allGuides={all.map((g) => ({ id: g.id, title: g.title }))} />
+      <GuideEditor aiEnabled={draftEnabled()} initial={blank} isNew categories={CATEGORIES} allGuides={all.map((g) => ({ id: g.id, title: g.title }))} />
     </AdminShell>
   );
 }

@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import type { GuideDraft } from "@/lib/ai-draft";
 import type { Category } from "@/lib/categories";
+import { AiDraftPanel } from "./AiDraftPanel";
 import type { Guide, Hotspot, Note, Step } from "@/lib/types";
 
 /**
@@ -15,9 +17,11 @@ export function GuideEditor({
   isNew,
   categories,
   allGuides,
+  aiEnabled = false,
 }: {
   initial: Guide;
   isNew: boolean;
+  aiEnabled?: boolean;
   categories: Category[];
   allGuides: { id: string; title: string }[];
 }) {
@@ -33,6 +37,25 @@ export function GuideEditor({
     setG((prev) => ({ ...prev, [key]: value }));
     setDirty(true);
   };
+  /** Fyller formuläret med AI:ns förslag. Befintliga markeringars positioner behålls. */
+  function applyDraft(d: GuideDraft) {
+    const c = categories.find((x) => x.id === d.category);
+    setG((prev) => ({
+      ...prev,
+      title: d.title,
+      id: isNew ? slugify(d.title) : prev.id,
+      category: c?.id ?? prev.category,
+      app: c?.app ?? prev.app,
+      breadcrumb: d.breadcrumb,
+      summary: d.summary,
+      steps: d.steps.map((text, i) => ({ n: i + 1, text })),
+      notes: d.notes,
+      hotspots: d.hotspots.map((h, i) => ({ ...prev.hotspots[i], n: i + 1, label: h.label, text: h.text })),
+      alternativeQueries: [...new Set([...prev.alternativeQueries, ...d.alternativeQueries])],
+    }));
+    setDirty(true);
+    setMessage({ ok: true, text: "AI-förslaget är ifyllt. Läs igenom, rita markeringarna och spara." });
+  }
   const renumber = <T extends { n: number }>(list: T[]) => list.map((x, i) => ({ ...x, n: i + 1 }));
 
   async function save(status?: Guide["status"]) {
@@ -108,6 +131,12 @@ export function GuideEditor({
         </span>
       </div>
 
+      {aiEnabled && (isNew || g.status === "draft") && (
+        <div className="mb-6">
+          <AiDraftPanel screenshot={g.screenshot} onDraft={applyDraft} />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <div className="min-w-0 space-y-6">
           {/* Grunduppgifter */}
@@ -123,16 +152,7 @@ export function GuideEditor({
                 onChange={(e) => {
                   set("title", e.target.value);
                   if (isNew)
-                    set(
-                      "id",
-                      e.target.value
-                        .toLowerCase()
-                        .replace(/[åä]/g, "a")
-                        .replace(/ö/g, "o")
-                        .replace(/[^a-z0-9]+/g, "-")
-                        .replace(/^-|-$/g, "")
-                        .slice(0, 60),
-                    );
+                    set("id", slugify(e.target.value));
                 }}
                 placeholder="T.ex. Lägga upp en bild"
               />
@@ -525,6 +545,16 @@ export function GuideEditor({
       </div>
     </div>
   );
+}
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/[åä]/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60);
 }
 
 function move<T>(list: T[], from: number, to: number): T[] {

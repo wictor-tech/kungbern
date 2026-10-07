@@ -90,22 +90,49 @@ Sidnycklarna står på varje guide (`pageKey`) och kan ändras i admin.
 | `POST` | `/api/feedback` | 👍/👎 med kommentar. Vid 👎 kommer ett nytt försök tillbaka |
 | `POST` | `/api/tickets` | Supportärende med fråga, guide, sida och visade steg |
 | `POST` | `/api/events` | Visning av guide och vilka steg användaren bockat av |
+| `GET` | `/api/suggest?q=…` | Förslag medan användaren skriver |
 
 Supportärenden skapas i **Zendesk** när `ZENDESK_SUBDOMAIN`, `ZENDESK_EMAIL` och `ZENDESK_API_TOKEN` är satta
 (taggen `lup_hjalp`, all kontext i ärendet). De sparas alltid också i hjälpens databas och syns under Insikter.
 En kopia kan dessutom skickas till `SUPPORT_WEBHOOK_URL` (t.ex. Slack).
 
+**"Visa mig i appen" (interaktiv genomgång).** När hjälpen är öppen i widgeten visar guiden knappen
+"👆 Visa mig i appen". Widgeten letar då upp knapparna i produkten utifrån deras synliga text (de
+**fetstilta** namnen i stegen), markerar en i taget med en pratbubbla och går vidare när användaren klickar.
+Hittas inte en knapp visas steget som text med "Hoppa över". `LupHelp.tour("guide-id")` startar en genomgång
+direkt. Vill man vara helt säker kan ett steg få `target` (CSS-selektor eller `data-help-id`).
+
+**Förslag medan man skriver.** Sökrutan visar matchande guider redan medan användaren skriver
+(`GET /api/suggest?q=…`), så de flesta hittar rätt utan att trycka Sök.
+
+## Skärmbilder och knappnamn från den riktiga appen
+
+`scripts/capture/` loggar in i app.lupnumber.com med ett demokonto (`LUP_DEMO_USER`/`LUP_DEMO_PASSWORD`,
+läggs aldrig i koden), tar svenska skärmbilder av varje vy och läser ut var knapparna sitter. Samma vy hämtas
+även på engelska så att manualens engelska knappnamn kan översättas till appens svenska
+(`content/ui-terms.json`). Resultatet hamnar i `content/app-capture.sv.json` och `content/localized.sv.json`
+och läggs på guiderna när databasen fylls. De engelska namnen blir dolda sökord. Se `scripts/capture/README.md`.
+
 ## Inzoomade steg
 
-Varje steg som nämner en knapp ("Tryck **Save capacity**") visar ett inzoomat utsnitt av skärmbilden med knappen
-markerad. Positionerna räknades fram automatiskt ur de orangea markeringarna (`scripts/hotspots/`) och kan
-justeras i admin med "Rita". Vilket steg som hör till vilken markering väljs per steg i admin.
+Varje steg som nämner en knapp ("Tryck **Spara kapacitet**") visar ett inzoomat utsnitt av skärmbilden med knappen
+markerad. Positionerna kommer från appens egna element (se ovan) och kan justeras i admin med "Rita".
+Vilket steg som hör till vilken markering väljs per steg i admin.
+
+## AI hjälper till att skriva guider
+
+I admin finns **"✨ Föreslå med AI"** på nya guider och utkast (kräver `ANTHROPIC_API_KEY`). Redaktören beskriver
+guiden och laddar gärna upp en skärmbild först. Claude föreslår då titel, kategori, menysökväg, steg med
+knappnamnen från bilden, markeringar, tips/varningar och vanliga frågeformuleringar, och listar det den inte
+kunde se. Inget sparas förrän redaktören trycker Spara. Modell: `claude-sonnet-5-5` (ändras med
+`HELP_AI_DRAFT_MODEL`). Server-side fallback är påslaget, så om en förfrågan avvisas försöker API:t automatiskt
+med en reservmodell.
 
 ## Guider som saknades i manualen
 
-`content/drafts.sv.json`: *Skapa en bokning* (publicerad, bygger helt på manualens avsnitt 34), samt
-*Byta port för en förare* och *Lägga till en användare* som **utkast** med öppna frågor `[Fyll i: …]`.
-Utkasten syns bara i admin.
+`content/drafts.sv.json`: *Skapa en bokning* (bygger på manualens avsnitt 34), *Byta port för en förare*
+(från appens dialog **Ändra lastbrygga** i Site) och *Lägga till en användare* (görs av LUP Support).
+Alla tre är publicerade. Nya utkast i filen syns bara i admin tills de publiceras.
 
 ## Säkerhet
 
@@ -116,11 +143,9 @@ Utkasten syns bara i admin.
 ## Förberett för senare
 
 - **Video:** varje guide kan ha en kort video med starttid (laddas upp i admin).
-- **Interaktiv walkthrough:** varje steg har fältet `target` (CSS-selektor eller `data-help-id` i produkten), så att
-  en produkt-tour kan markera rätt knapp direkt i gränssnittet.
 - **Klickbara markeringar:** rita en ruta på skärmbilden i admin så blir markeringen klickbar för användaren.
 - **Fler språk:** datamodellen har språkfält. Guiderna kan översättas med AI utan separata kopior.
-- **AI som skapar guider från skärmbilder:** admin-API:t och datamodellen tar emot förslag i samma format.
+- **Fler skärmbilder automatiskt:** kör `scripts/capture/` igen när appen ändras – knappnamn och bilder uppdateras.
 
 ## Produktion
 

@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { GuideEditor } from "@/components/admin/GuideEditor";
+import { draftEnabled } from "@/lib/ai-draft";
 import { getAdmin } from "@/lib/auth";
 import { CATEGORIES } from "@/lib/categories";
 import { getGuide, listGuides } from "@/lib/guides";
@@ -15,7 +16,7 @@ export default async function EditGuide({ params }: { params: Promise<{ id: stri
   const all = await listGuides({ includeDrafts: true });
   return (
     <AdminShell admin={admin} active="guides">
-      <GuideEditor initial={guide} isNew={false} categories={CATEGORIES} allGuides={all.map((g) => ({ id: g.id, title: g.title }))} />
+      <GuideEditor aiEnabled={draftEnabled()} initial={guide} isNew={false} categories={CATEGORIES} allGuides={all.map((g) => ({ id: g.id, title: g.title }))} />
     </AdminShell>
   );
 }
