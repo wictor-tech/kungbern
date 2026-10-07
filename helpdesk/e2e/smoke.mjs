@@ -41,12 +41,15 @@ await host.setViewportSize({ width: 1100, height: 800 });
 await host.goto(BASE + "/demo-host.html");
 await host.click(".lh-btn");
 const fr = host.frameLocator("iframe.lh-panel");
-await host.click("#loc"); await host.click("[data-help=menu-capacity]");
 await fr.locator(".askbox input").waitFor();
-await fr.locator(".askbox input").fill("Hur ändrar jag detta?"); await fr.locator(".askbox input").press("Enter");
+await fr.locator(".askbox input").fill("Hur ändrar jag kapaciteten?"); await fr.locator(".askbox input").press("Enter");
 await fr.locator("text=Visa mig i programmet").click();
 await host.waitForSelector(".lh-spot");
+await host.waitForTimeout(600); await host.click("#loc");
+await host.waitForTimeout(800); await host.click("[data-help=menu-capacity]");
+await host.waitForTimeout(1000); // walkthrough hinner flytta markeringen
 await host.fill("[data-help=cap-input]", "6");
+await host.waitForTimeout(1200);
 await host.click("[data-help=cap-save]");
 await host.waitForSelector("text=Klart!"); ok("walkthrough i programmet");
 
@@ -58,9 +61,23 @@ await a.click("text=+ Ny guide");
 await a.fill("input[placeholder^='Lägg till en bild']", "Byta lösenord");
 await a.fill("input[placeholder^='Dra in']", "Ändra lösenord under Min profil.");
 await a.fill("input[placeholder='Klicka på **Lägg till bild**']", "Klicka **Min profil**");
+// hotspot: ladda upp en riktig PNG, rita en ruta
+const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+await a.setInputFiles(".step-edit input[type=file]", { name: "s.png", mimeType: "image/png", buffer: png });
+await a.waitForSelector(".hs-edit");
+await a.locator(".hs-edit").scrollIntoViewIfNeeded();
+const box = await a.locator(".hs-edit").boundingBox();
+await a.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+await a.mouse.down(); await a.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.5, { steps: 5 }); await a.mouse.up();
+await a.waitForSelector(".hs-rect"); ok("admin: hotspot ritad");
 await a.click("text=Publicera"); await a.waitForSelector("text=Sparad och publicerad");
 await p.goto(BASE + "/ask?q=" + encodeURIComponent("Byta lösenord")); await p.waitForSelector(".guide h1");
 ok("admin: skapa + publicera → hittas direkt");
+await p.click("text=Nästa").catch(() => {});
+const gj = await (await fetch(BASE + "/api/guides/byta-losenord?lang=sv")).json();
+const hs = gj.guide.steps.find((x) => x.hotspot)?.hotspot;
+assert.ok(hs && hs.w > 0.3 && hs.h > 0.2, "hotspot sparad");
+await p.waitForSelector(".hotspot"); ok("användarvy visar hotspot-ruta");
 await a.goto(BASE + "/admin/analytics"); await a.waitForSelector(".tiles"); ok("analytics renderas");
 
 assert.deepEqual(errs, []);
