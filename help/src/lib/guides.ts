@@ -1,10 +1,7 @@
 import { getDb } from "./db";
-import type { Guide, GuideSummary } from "./types";
+import type { Guide } from "./types";
 
-export function toSummary(g: Guide): GuideSummary {
-  const { id, number, title, category, app, summary, screenshot, status, updatedAt } = g;
-  return { id, number, title, category, app, summary, screenshot, status, updatedAt };
-}
+export { toSummary } from "./guides-summary";
 
 export async function listGuides(opts: { includeDrafts?: boolean } = {}): Promise<Guide[]> {
   const db = await getDb();
