@@ -103,7 +103,7 @@ Huvudidén är **en fråga in, en visuell guide ut**. Inga mellansidor.
 | 5 | Admin skapar/redigerar guider | ✅ Enkel admin: lista, redigera text/steg/alternativa frågor, ladda upp bild, publicera |
 | 6 | "Hjälpte det?" | ✅ 👍/👎 + "Vad saknades?" |
 | 7 | Analytics loggar frågor | ✅ Loggning + enkel dashboard: vanligaste frågor, obesvarade frågor, guider med flest 👎 |
-| – | Flerspråk | ✅ Frågor på valfritt språk. Guiden översätts av AI och cachas (sv är källa) |
+| – | Språk | Endast svenska i MVP. Sökningen förstår ändå produktens engelska termer (Loading bay, Slideshow …) |
 | – | Sidkontext | ✅ Via URL-parametrar (grund för "?"-knappen i produkten) |
 
 **Inte i MVP, men förberett i datamodell och API**
@@ -147,7 +147,7 @@ guide
   relatedGuideIds[]
   videoUrl?, videoStartSec?, videoEndSec?   -- framtid
 
-guide_content            -- en rad per språk; 'sv' är källa, övriga är AI-översättningar
+guide_content            -- en rad per språk; bara 'sv' i MVP (fältet finns så att fler språk kan läggas till senare)
   guideId, lang, sourceVersion, isMachineTranslated
   title, summary, breadcrumb[], alternativeQueries[]
   steps[]   { n, text, mediaId?, hotspot?{x,y,w,h}, target? }   -- target = framtida walkthrough
@@ -173,9 +173,8 @@ support_ticket
   id, sessionId, originalQuery, guideId?, pageContext, stepsViewed[], comment, contact, status, createdAt
 ```
 
-Separationen mellan `guide` (struktur, ett exemplar) och `guide_content` (text per språk) uppfyller kravet på
-att inte ha "separata tekniska versioner av samma guide". Översättningar invalideras automatiskt när
-`version` på källan ändras.
+MVP:n är bara på svenska. Uppdelningen mellan `guide` (struktur) och `guide_content` (text per språk) behålls
+ändå, så att AI-översättning kan läggas till senare utan att datamodellen behöver göras om.
 
 ## 6. UI-principer
 
@@ -211,9 +210,9 @@ att inte ha "separata tekniska versioner av samma guide". Översättningar inval
 | Frontend + API | **Next.js (App Router) + TypeScript + Tailwind** | En kodbas, enkel drift, bra på mobil. API:t kan användas direkt av produkten. |
 | Databas | **Postgres + pgvector**, via Drizzle ORM | Guider, analytics och vektorer i samma databas. Billigt (Neon/Supabase). I lokal utveckling och tester körs **PGlite** (Postgres i processen), utan Docker. |
 | Sökning | Hybrid: vektorsökning + Postgres fulltext (trigram), slås ihop med RRF | Klarar både "slideshow" och "byta bild på skärmen" |
-| Embeddings | Flerspråkig embeddingmodell (t.ex. Voyage `voyage-multilingual`) | Frågor på 9 språk mot svenska guider |
+| Embeddings | Embeddingmodell som klarar svenska och engelska (t.ex. Voyage) | Svenska frågor mot guider där knapparna heter något på engelska |
 | AI-svar | **Claude Haiku 5.5** väljer bland topp 5 och skriver en mening, med strukturerad JSON-utdata | Snabbt, billigt, bra på flerspråk |
-| Översättning, admin-AI | **Claude Sonnet 5.5** (bildförståelse) | Kvalitet där det behövs, körs sällan |
+| Admin-AI (senare) | **Claude Sonnet 5.5** (bildförståelse) | Kvalitet där det behövs, körs sällan |
 | Media | S3-kompatibelt (Cloudflare R2), lokalt i `public/` under utveckling | Billig lagring, CDN |
 | Auth | Admin bakom inloggning (enkel lösenords-/magic link i MVP), användarsidan öppen eller med token från produkten | Enkelt nu, SSO senare |
 
@@ -221,7 +220,7 @@ att inte ha "separata tekniska versioner av samma guide". Översättningar inval
 visar guiden utan AI-mening. Det gör också demo och tester gratis.
 
 **Kostnad (uppskattning):** varje fråga kostar ungefär en embedding plus ett Haiku-anrop med cirka 2 000 tokens in, alltså
-bråkdelar av en krona. Översättningar cachas, så de betalas en gång per guide och språk.
+bråkdelar av en krona.
 
 ## 8. Plan för fas 2 (bygget)
 
@@ -231,7 +230,7 @@ bråkdelar av en krona. Översättningar cachas, så de betalas en gång per gui
 4. Feedback → ny fråga → supportärende.
 5. Admin: lista, redigera, ladda upp bild, publicera.
 6. Analytics-dashboard.
-7. Testa flödet med en testsvit på cirka 40 riktiga frågor (bl.a. dina exempel, på flera språk) och mät träffsäkerheten.
+7. Testa flödet med en testsvit på cirka 40 riktiga frågor (bl.a. dina exempel) och mät träffsäkerheten.
    Rätta synonymer och alt-frågor tills träffsäkerheten är hög.
 8. End-to-end-test i webbläsare på mobil och desktop, sedan förenkla det som känns krångligt.
 
