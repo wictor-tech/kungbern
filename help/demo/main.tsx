@@ -21,7 +21,7 @@ function parse(href: string) {
 function DemoBanner() {
   return (
     <div className="border-b border-amber-200 bg-warn px-4 py-2 text-center text-sm text-warn-ink">
-      <strong>Demo.</strong> Sökningen körs i webbläsaren utan AI-lagret, och feedback och supportärenden skickas inte. Bilderna kommer från PDF-manualen.
+      <strong>Demo.</strong> Sökningen körs i webbläsaren utan AI-lagret, och feedback och supportärenden skickas inte. Bilderna är tagna i app.lupnumber.com (demoplatsen).
     </div>
   );
 }

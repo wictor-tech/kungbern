@@ -13,11 +13,14 @@ export function Screenshot({
   alt,
   hotspots,
   active,
+  annotated = false,
 }: {
   src: string;
   alt: string;
   hotspots: Hotspot[];
   active?: number | null;
+  /** Siffrorna finns redan i bilden – rita bara den aktiva markeringen. */
+  annotated?: boolean;
 }) {
   const [zoom, setZoom] = useState(false);
 
@@ -46,17 +49,31 @@ export function Screenshot({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt={alt} className="block h-auto w-full" />
         </button>
-        {/* Markeringarna finns redan i bilden; här lyser bara den som hör till steget användaren pekar på. */}
         {positioned
-          .filter((h) => h.n === active)
-          .map((h) => (
-            <span
-              key={h.n}
-              aria-hidden
-              className="pointer-events-none absolute rounded-md bg-lup/10 ring-4 ring-lup/70 ring-offset-2"
-              style={{ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w ?? 6}%`, height: `${h.h ?? 6}%` }}
-            />
-          ))}
+          .filter((h) => !annotated || h.n === active)
+          .map((h) => {
+            const on = h.n === active;
+            return (
+              <span
+                key={h.n}
+                aria-hidden
+                className={`pointer-events-none absolute rounded-md transition ${
+                  on ? "bg-lup/10 ring-4 ring-lup/70 ring-offset-2" : "ring-2 ring-marker/80"
+                }`}
+                style={{ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w ?? 6}%`, height: `${h.h ?? 6}%` }}
+              >
+                {!annotated && (
+                  <span
+                    className={`absolute -top-3 -left-3 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white shadow ${
+                      on ? "bg-lup" : "bg-marker"
+                    }`}
+                  >
+                    {h.n}
+                  </span>
+                )}
+              </span>
+            );
+          })}
         <span className="pointer-events-none absolute right-2 bottom-2 rounded-md bg-navy/80 px-2 py-1 text-xs font-medium text-white">
           Klicka för att förstora
         </span>

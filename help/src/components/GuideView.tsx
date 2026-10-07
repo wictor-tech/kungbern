@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Guide, GuideSummary } from "@/lib/types";
 import { logViewApi } from "./client";
 import { Feedback } from "./Feedback";
+import { RichText } from "./RichText";
 import { Screenshot } from "./Screenshot";
 import { StepZoom } from "./StepZoom";
 import { AppBadge, Breadcrumb, GuideCard } from "./ui";
@@ -87,6 +88,7 @@ export function GuideView({
               alt={`Skärmbild: ${guide.title}`}
               hotspots={guide.hotspots}
               active={activeHotspot}
+              annotated={guide.screenshotAnnotated}
             />
           )}
           {guide.hotspots.length > 0 && (
@@ -119,7 +121,12 @@ export function GuideView({
                       </span>
                       <span>
                         <strong className="text-ink">{h.label}</strong>
-                        {h.text && <span className="text-muted"> — {h.text}</span>}
+                        {h.text && (
+                          <span className="text-muted">
+                            {" "}
+                            — <RichText text={h.text} />
+                          </span>
+                        )}
                       </span>
                     </li>
                   ))}
@@ -133,7 +140,7 @@ export function GuideView({
         <div className="space-y-4">
           {warnings.map((n, i) => (
             <p key={i} role="note" className="rounded-xl border border-amber-200 bg-warn px-4 py-3 text-sm text-warn-ink">
-              <strong>Var försiktig.</strong> {n.text}
+              <strong>Var försiktig.</strong> <RichText text={n.text} />
             </p>
           ))}
 
@@ -165,7 +172,7 @@ export function GuideView({
                       </span>
                       <span className="min-w-0 flex-1 pt-1">
                         <span className={`block text-base leading-snug ${checked ? "text-muted line-through" : "text-ink"}`}>
-                          {s.text}
+                          <RichText text={s.text} />
                         </span>
                         {spot && guide.screenshot && guide.screenshotSize && !checked && (
                           <StepZoom src={guide.screenshot} size={guide.screenshotSize} spot={spot} label={spot.label} />
@@ -181,7 +188,7 @@ export function GuideView({
 
           {tips.map((n, i) => (
             <p key={i} role="note" className="rounded-xl border border-emerald-200 bg-tip px-4 py-3 text-sm text-tip-ink">
-              <strong>Tips.</strong> {n.text}
+              <strong>Tips.</strong> <RichText text={n.text} />
             </p>
           ))}
 

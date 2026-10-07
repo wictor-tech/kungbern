@@ -19,7 +19,8 @@ describe("textbehandling", () => {
   });
   it("förstår frasverb även med frågeordföljd", () => {
     expect(terms("checkar jag ut")).toEqual(["checkout"]);
-    expect(terms("hur loggar jag ut")).toEqual(terms("inloggning"));
+    expect(terms("hur loggar jag ut")).toEqual(["utloggning"]);
+    expect(terms("hur loggar jag in")).toEqual(terms("inloggning"));
     expect(terms("kan inte boka")).toEqual(["bokningsproblem"]);
   });
   it("blandar inte ihop användare och används", () => {
@@ -34,6 +35,13 @@ describe("sökning", () => {
     expect(top("Ny bild på skärmen").id).toBe("lagga-upp-en-bild");
     expect(top("Hur skapar jag en bokning?").id).toBe("skapa-en-bokning");
   });
+  it("hittar både svenska och engelska knappnamn", () => {
+    expect(top("spara kapacitet").id).toBe("andra-kapacitet-per-timme");
+    expect(top("save capacity").id).toBe("andra-kapacitet-per-timme");
+    expect(top("bildhantering").id).toBe("lagga-upp-en-bild");
+    expect(top("image management").id).toBe("lagga-upp-en-bild");
+    expect(top("ej tilldelad").id).toBe("byta-lastbrygga");
+  });
   it("tål stavfel", () => {
     expect(top("bildpsel").id).toBe("andra-bildspelet");
     expect(top("kappacitet").id).toBe("andra-kapacitet-per-timme");
@@ -45,6 +53,7 @@ describe("sökning", () => {
   });
   it("använder sidkontext för 'detta' men låter tydliga frågor vinna", () => {
     expect(top("Hur ändrar jag detta?", "capacity-timeslots")).toMatchObject({ id: "andra-kapacitet-per-timme", verdict: "answered" });
+    expect(top("vad gör den här sidan", "site-board").id).toBe("kalla-in-en-forare");
     expect(top("ingen kan boka", "site-board")).toMatchObject({ id: "andra-kapacitet-per-timme", verdict: "answered" });
   });
   it("ger aldrig ett säkert svar med fel guide i testsviten", () => {

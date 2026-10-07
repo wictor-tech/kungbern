@@ -11,6 +11,7 @@ export const GuideInput = z.object({
   breadcrumb: z.array(z.string().max(80)).max(8),
   summary: z.string().max(600),
   screenshot: z.string().max(300).nullable(),
+  screenshotAnnotated: z.boolean().optional(),
   screenshotSize: z.tuple([z.number().int().positive(), z.number().int().positive()]).nullable().optional(),
   hotspots: z
     .array(
@@ -38,6 +39,7 @@ export const GuideInput = z.object({
     .max(30),
   notes: z.array(z.object({ type: z.enum(["tip", "warning"]), text: z.string().trim().min(1).max(600) })).max(10),
   alternativeQueries: z.array(z.string().trim().min(1).max(200)).max(50),
+  keywords: z.array(z.string().max(120)).max(60).optional(),
   relatedGuides: z.array(z.string().max(60)).max(10),
   roles: z.array(z.string().max(40)).max(10).default([]),
   status: z.enum(["draft", "published"]),

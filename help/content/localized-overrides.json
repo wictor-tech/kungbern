@@ -1,0 +1,44 @@
+{
+ "_comment": "Handskrivna rättelser av enskilda steg efter den automatiska översättningen (scripts/capture/localize.py).",
+ "tillatna-fordon-i-site": {
+  "steps": {
+   "1": "Tryck **Tillåtna fordon** uppe i **Anläggning**."
+  }
+ },
+ "lasa-statistiken": {
+  "steps": {
+   "2": "Välj datumintervall och tryck **Tillämpa**, eller använd **Dag**, **Vecka** och **Månad**.",
+   "4": "Tryck **Exportera Excel** eller **Skriv ut / PDF** för att ta ut siffrorna."
+  }
+ },
+ "lagga-till-sprak": {
+  "steps": {
+   "4": "Använd **Redigera** på en rad för att ändra texterna för ett språk."
+  }
+ },
+ "lagga-till-en-grind": {
+  "steps": {
+   "2": "Skriv ett namn och välj **In** eller **Out**."
+  }
+ },
+ "andra-texten-i-ett-sms": {
+  "steps": {
+   "4": "Låt **Aktiv** stå på **Ja** och tryck **Lägg till överskrivning**."
+  }
+ },
+ "soka-och-filtrera-fordon": {
+  "steps": {
+   "2": "Välj status högst upp: **Bokningar**, **Kö**, **Inkalla**, **Inne** eller **Utcheckade**."
+  }
+ },
+ "hantera-avvikelserapporter": {
+  "steps": {
+   "2": "Välj **Status** och **Kategori**, eller låt dem stå på Alla."
+  }
+ },
+ "se-signaturer": {
+  "steps": {
+   "4": "Bläddra mellan sidorna med pilarna under listan."
+  }
+ }
+}

@@ -1,0 +1,538 @@
+[
+ {
+  "id": "hitta-ratt-installning",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   }
+  ]
+ },
+ {
+  "id": "andra-platsinformation",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Edit location information"
+   },
+   {
+    "text": "Address & contact"
+   }
+  ]
+ },
+ {
+  "id": "andra-oppettider",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Edit location information"
+   },
+   {
+    "text": "Weekly opening hours"
+   }
+  ]
+ },
+ {
+  "id": "stanga-en-dag-eller-period",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Edit location information"
+   },
+   {
+    "text": "Closed dates & public holidays"
+   }
+  ]
+ },
+ {
+  "id": "lagga-till-sprak",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Language management"
+   }
+  ]
+ },
+ {
+  "id": "lagga-upp-en-bild",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Image management"
+   }
+  ]
+ },
+ {
+  "id": "andra-bildspelet",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Slideshow settings"
+   }
+  ]
+ },
+ {
+  "id": "lagga-till-en-video",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Slideshow settings"
+   },
+   {
+    "text": "Configure video"
+   }
+  ]
+ },
+ {
+  "id": "lagga-till-ett-dokument",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Slideshow settings"
+   },
+   {
+    "text": "Configure documents"
+   }
+  ]
+ },
+ {
+  "id": "valja-vad-foraren-fyller-i",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Slideshow settings"
+   },
+   {
+    "text": "Configure form fields"
+   }
+  ]
+ },
+ {
+  "id": "lagga-in-kontrollfragor",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Slideshow settings"
+   },
+   {
+    "text": "Configure checklists"
+   }
+  ]
+ },
+ {
+  "id": "skriva-ut-qr-koder",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Slideshow settings"
+   },
+   {
+    "text": "QR codes"
+   }
+  ]
+ },
+ {
+  "id": "lagga-till-en-lastbrygga",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Loading bay guidance"
+   }
+  ]
+ },
+ {
+  "id": "forhandsgodkanna-ett-fordon",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Allowed check-in"
+   }
+  ]
+ },
+ {
+  "id": "andra-bokningsinstallningar",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Booking settings"
+   }
+  ]
+ },
+ {
+  "id": "andra-kapacitet-per-timme",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Capacity & timeslots"
+   }
+  ]
+ },
+ {
+  "id": "skapa-aterkommande-bokningar",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Recurring routes"
+   }
+  ]
+ },
+ {
+  "id": "stalla-in-unik-identifiering",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Unique identification settings"
+   }
+  ]
+ },
+ {
+  "id": "lagga-till-en-kontaktperson",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Manage contacts"
+   }
+  ]
+ },
+ {
+  "id": "stalla-in-aviseringar-till-personal",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Notification settings"
+   }
+  ]
+ },
+ {
+  "id": "andra-texten-i-ett-sms",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "SMS template overrides"
+   }
+  ]
+ },
+ {
+  "id": "skapa-en-fardvag",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Gate access paths"
+   }
+  ]
+ },
+ {
+  "id": "lagga-till-en-grind",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Manage gates"
+   }
+  ]
+ },
+ {
+  "id": "andra-platsstrukturen",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "Edit structure"
+   }
+  ]
+ },
+ {
+  "id": "hitta-rapporterna",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "View reports"
+   }
+  ]
+ },
+ {
+  "id": "skicka-sms-till-alla-pa-omradet",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "SMS Alarm"
+   }
+  ]
+ },
+ {
+  "id": "stalla-in-ko-och-lastbryggor",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Settings"
+   }
+  ]
+ },
+ {
+  "id": "tillatna-fordon-i-site",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Allowed vehicles"
+   }
+  ]
+ },
+ {
+  "id": "lasa-statistiken",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "View reports"
+   },
+   {
+    "text": "View statistics",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "id": "se-signaturer",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "View reports"
+   },
+   {
+    "text": "View signatures",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "id": "hantera-avvikelserapporter",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "View reports"
+   },
+   {
+    "text": "Deviation reports",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "id": "simulera-tidsluckor",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "DEMO LUP"
+   },
+   {
+    "text": "View reports"
+   },
+   {
+    "text": "Slot duration simulator",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "id": "kalla-in-en-forare",
+  "start": "https://app.lupnumber.com/site",
+  "steps": []
+ },
+ {
+  "id": "soka-och-filtrera-fordon",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "List"
+   }
+  ]
+ },
+ {
+  "id": "se-lastbryggorna-over-tid",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Matrix",
+    "wait": 4000
+   }
+  ]
+ },
+ {
+  "id": "se-veckan",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Week",
+    "wait": 3000
+   }
+  ]
+ },
+ {
+  "id": "byta-lastbrygga",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Gate 1"
+   }
+  ]
+ },
+ {
+  "id": "lagga-in-ett-fordon-manuellt",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Add +"
+   },
+   {
+    "select": [
+     0,
+     "Queue",
+     "Kö"
+    ]
+   },
+   {
+    "select": [
+     2,
+     "Lossing",
+     "Lossing"
+    ],
+    "wait": 1500
+   },
+   {
+    "fill": [
+     "input[name=\"label_name\"]",
+     "Anna Andersson"
+    ]
+   },
+   {
+    "fill": [
+     "input[name=\"reg_number\"]",
+     "ABC123"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "skapa-en-bokning",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Add +"
+   },
+   {
+    "select": [
+     0,
+     "Booking",
+     "Bokning"
+    ]
+   },
+   {
+    "select": [
+     2,
+     "Lossing",
+     "Lossing"
+    ],
+    "wait": 1500
+   },
+   {
+    "fill": [
+     "input[name=\"label_name\"]",
+     "Anna Andersson"
+    ]
+   },
+   {
+    "fill": [
+     "input[name=\"reg_number\"]",
+     "ABC123"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "valja-vilka-larm-du-far",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "text": "Alert settings"
+   }
+  ]
+ }
+]

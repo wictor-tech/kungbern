@@ -1,0 +1,377 @@
+{
+ "_comment": "Vilka element i appen (engelsk text) en markering pekar på, när markeringens namn inte står ordagrant i appen. Används av scripts/capture/transform.py. \"rectN\": [x, y, bredd, höjd] i pixlar (1440×900) när ingen text går att peka på.",
+ "hitta-ratt-installning": {
+  "rect1": [
+   0,
+   153,
+   347,
+   36
+  ]
+ },
+ "andra-platsinformation": {
+  "2": [
+   "Also show location name in slideshow"
+  ],
+  "5": [
+   "Latitude",
+   "Longitude"
+  ]
+ },
+ "andra-oppettider": {
+  "1": [
+   "Opening time (hh:mm)",
+   "Closing time (hh:mm)"
+  ],
+  "2": [
+   "Fill all opening hours",
+   "Fill all closing hours"
+  ],
+  "3": [
+   "Monday",
+   "Friday"
+  ],
+  "4": [
+   "Saturday",
+   "Sunday"
+  ],
+  "5": [
+   "Save location"
+  ]
+ },
+ "stanga-en-dag-eller-period": {
+  "1": [
+   "Use public holiday calendar"
+  ],
+  "2": [
+   "Save calendar and holiday hours"
+  ],
+  "3": [
+   "From",
+   "Until"
+  ],
+  "4": [
+   "Schedule"
+  ],
+  "5": [
+   "Add"
+  ],
+  "6": [
+   "Save location"
+  ]
+ },
+ "lagga-till-sprak": {
+  "1": [
+   "Language",
+   "Spanish"
+  ],
+  "2": [
+   "Name"
+  ]
+ },
+ "andra-bildspelet": {
+  "1": [
+   "Configure slideshow",
+   "QR codes"
+  ],
+  "4": [
+   "#1",
+   "#4"
+  ],
+  "5": [
+   "Print text"
+  ]
+ },
+ "lagga-till-en-video": {
+  "1": [
+   "Configure video"
+  ],
+  "3": [
+   "ID",
+   "No rows"
+  ]
+ },
+ "lagga-till-ett-dokument": {
+  "1": [
+   "Configure documents"
+  ],
+  "3": [
+   "ID",
+   "No rows"
+  ]
+ },
+ "lagga-in-kontrollfragor": {
+  "2": [
+   "Reusable requirements for bookings and"
+  ],
+  "3": [
+   "No checklists configured."
+  ]
+ },
+ "lagga-till-en-lastbrygga": {
+  "2": [
+   "Gate 1",
+   "Gate 3"
+  ],
+  "3": [
+   "Internal bay name"
+  ],
+  "4": [
+   "Driver-facing bay names"
+  ],
+  "5": [
+   "Save bay"
+  ],
+  "rect5": [
+   751,
+   210,
+   89,
+   39
+  ]
+ },
+ "forhandsgodkanna-ett-fordon": {
+  "3": [
+   "ASD123",
+   "Valid until 2027-03-25"
+  ]
+ },
+ "andra-bokningsinstallningar": {
+  "3": [
+   "Driver booking number"
+  ],
+  "4": [
+   "Save booking settings"
+  ],
+  "5": [
+   "Add restriction"
+  ],
+  "6": [
+   "Name",
+   "No restrictions configured at this scope"
+  ],
+  "rect3": [
+   451,
+   223,
+   889,
+   37
+  ],
+  "rect4": [
+   451,
+   320,
+   198,
+   39
+  ]
+ },
+ "andra-kapacitet-per-timme": {
+  "2": [
+   "06:00",
+   "18:00"
+  ]
+ },
+ "lagga-till-en-kontaktperson": {
+  "5": [
+   "Name…",
+   "Lang…"
+  ]
+ },
+ "skapa-en-fardvag": {
+  "1": [
+   "Gate access profiles"
+  ],
+  "2": [
+   "Configured paths"
+  ],
+  "3": [
+   "Name"
+  ],
+  "4": [
+   "Allowed path"
+  ],
+  "5": [
+   "Destinations using this path"
+  ],
+  "6": [
+   "Save path"
+  ]
+ },
+ "lagga-till-en-grind": {
+  "1": [
+   "Name each gate the desk can open"
+  ],
+  "3": [
+   "checkin"
+  ],
+  "5": [
+   "Button on desk",
+   "Open on call-in"
+  ],
+  "6": [
+   "Add gate",
+   "Save gates"
+  ]
+ },
+ "andra-platsstrukturen": {
+  "1": [
+   "You are editing the direct children of"
+  ],
+  "3": [
+   "company"
+  ]
+ },
+ "lasa-statistiken": {
+  "1": [
+   "Apply"
+  ],
+  "4": [
+   "Bookings",
+   "Removals"
+  ]
+ },
+ "se-signaturer": {
+  "1": [
+   "Free text search for signatures"
+  ],
+  "2": [
+   "Start date",
+   "End date"
+  ],
+  "5": [
+   "Date",
+   "License plate number"
+  ]
+ },
+ "hantera-avvikelserapporter": {
+  "4": [
+   "Open and In review are unhandled"
+  ]
+ },
+ "simulera-tidsluckor": {
+  "1": [
+   "Slot duration simulator"
+  ],
+  "2": [
+   "No synchronized visit history"
+  ],
+  "3": [
+   "Found 0 usable visits"
+  ]
+ },
+ "kalla-in-en-forare": {
+  "1": [
+   "Board",
+   "Week"
+  ],
+  "2": [
+   "Bookings",
+   "Checked-out"
+  ],
+  "3": [
+   "Testförare (hjälpdemo)",
+   "Call in"
+  ],
+  "4": [
+   "Call in"
+  ],
+  "6": [
+   "Change bay"
+  ]
+ },
+ "soka-och-filtrera-fordon": {
+  "1": [
+   "Bookings",
+   "Checked-out"
+  ],
+  "3": [
+   "Time",
+   "Location"
+  ],
+  "4": [
+   "FILTER..."
+  ]
+ },
+ "se-lastbryggorna-over-tid": {
+  "6": [
+   "Gate 1",
+   "Gate 3"
+  ]
+ },
+ "se-veckan": {
+  "1": [
+   "Week 41"
+  ],
+  "2": [
+   "Mon 5/10",
+   "Sun 11/10"
+  ],
+  "3": [
+   "23:51 · Testförare (hjälpdemo)"
+  ],
+  "4": [
+   "Closed"
+  ]
+ },
+ "skicka-sms-till-alla-pa-omradet": {
+  "1": [
+   "Send an SMS to all drivers who are cur"
+  ],
+  "2": [
+   "0 driver(s) will receive this message"
+  ]
+ },
+ "stalla-in-ko-och-lastbryggor": {
+  "1": [
+   "Show allowed vehicles",
+   "Allow on-site vehicles for today"
+  ],
+  "2": [
+   "Queue Management",
+   "Loading bay management"
+  ]
+ },
+ "tillatna-fordon-i-site": {
+  "rect1": [
+   225,
+   159,
+   305,
+   66
+  ],
+  "rect2": [
+   225,
+   228,
+   305,
+   130
+  ],
+  "rect3": [
+   225,
+   358,
+   305,
+   66
+  ],
+  "rect4": [
+   225,
+   427,
+   305,
+   90
+  ],
+  "rect5": [
+   248,
+   534,
+   200,
+   58
+  ],
+  "rect6": [
+   555,
+   125,
+   720,
+   190
+  ]
+ },
+ "valja-vilka-larm-du-far": {
+  "1": [
+   "Alert settings"
+  ],
+  "2": [
+   "ID scan",
+   "Sound"
+  ]
+ }
+}

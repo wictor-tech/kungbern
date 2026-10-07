@@ -40,10 +40,14 @@ export interface Guide {
   screenshot: string | null;
   /** Skärmbildens storlek i pixlar [bredd, höjd] – behövs för att zooma in på en markering. */
   screenshotSize?: [number, number] | null;
+  /** true = siffrorna är inbrända i bilden (gamla PDF-bilder). false/saknas = appen ritar markeringarna. */
+  screenshotAnnotated?: boolean;
   hotspots: Hotspot[];
   steps: Step[];
   notes: Note[];
   alternativeQueries: string[];
+  /** Dolda sökord, t.ex. knapparnas engelska namn för användare med engelsk app. */
+  keywords?: string[];
   relatedGuides: string[];
   roles: string[];
   language: "sv";

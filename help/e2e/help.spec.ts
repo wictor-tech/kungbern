@@ -7,11 +7,11 @@ test("fråga → visuell guide → Nej → supportärende", async ({ page }) => 
   await page.getByRole("button", { name: "Visa hur" }).click();
 
   await expect(page.getByRole("heading", { name: "Lägga upp en bild" })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Var du hittar det" })).toContainText("Image management");
+  await expect(page.getByRole("navigation", { name: "Var du hittar det" })).toContainText("Bildhantering");
   await expect(page.getByAltText("Skärmbild: Lägga upp en bild")).toBeVisible();
 
   // Bocka av ett steg
-  const step1 = page.getByRole("button", { name: /Öppna Image management/ });
+  const step1 = page.getByRole("button", { name: /Öppna Bildhantering/ });
   await step1.click();
   await expect(step1).toHaveAttribute("aria-pressed", "true");
 
@@ -79,5 +79,5 @@ test("?-widgeten öppnar hjälpen för sidan användaren står på", async ({ pa
 
 test("varje steg som pekar på en knapp visar en inzoomad bild", async ({ page }) => {
   await page.goto("/g/andra-kapacitet-per-timme");
-  await expect(page.getByRole("img", { name: "Inzoomat: Save capacity" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Inzoomat: Spara kapacitet" })).toBeVisible();
 });

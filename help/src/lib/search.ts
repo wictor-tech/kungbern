@@ -13,6 +13,7 @@ const FIELD_WEIGHTS = {
   summary: 1.2,
   hotspots: 0.6,
   steps: 0.8,
+  keywords: 1,
 } as const;
 type Field = keyof typeof FIELD_WEIGHTS;
 
@@ -45,6 +46,7 @@ export function buildIndex(guides: Guide[]): SearchIndex {
       summary: tf(terms(g.summary)),
       hotspots: tf(g.hotspots.flatMap((h) => terms(`${h.label} ${h.text}`))),
       steps: tf(g.steps.flatMap((s) => terms(s.text))),
+      keywords: tf((g.keywords ?? []).flatMap(terms)),
     };
     const all = new Set<string>();
     for (const f of Object.values(fields)) for (const t of f.keys()) all.add(t);
@@ -61,10 +63,14 @@ function idf(index: SearchIndex, t: string) {
   return Math.log(1 + (n - d + 0.5) / (d + 0.5));
 }
 
+const knownWords = new Set(synonymEntries().flatMap(([k, v]) => [k, v]));
+
 /** Rättar stavfel och ofullständiga ord mot ordförrådet ("bildpsel" → "bildspel", "kapac" → "kapacitet"). */
 function correct(index: SearchIndex, t: string): string | null {
   if (index.df.has(t)) return t;
   if (t.length < 5) return null;
+  // Ett ord vi känner igen (t.ex. "utloggning") ska inte "rättas" till ett annat ("inloggning").
+  if (knownWords.has(t)) return null;
   let best: string | null = null;
   let bestD = 99;
   const max = t.length >= 8 ? 2 : 1;

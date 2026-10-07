@@ -3,193 +3,658 @@
   "guides": {
     "hitta-ratt-installning": {
       "pageKey": "location-menu",
-      "alternativeQueries": ["var hittar jag inställningarna", "hur kommer jag till location admin", "var ställer jag in platsen", "hittar inte funktionen", "vilken meny", "öppna platsens meny", "konfigurera plats", "ta bort plats", "radera plats", "delete location"],
-      "relatedGuides": ["andra-platsinformation", "andra-oppettider"]
+      "alternativeQueries": [
+        "var hittar jag inställningarna",
+        "hur kommer jag till location admin",
+        "var ställer jag in platsen",
+        "hittar inte funktionen",
+        "vilken meny",
+        "öppna platsens meny",
+        "konfigurera plats",
+        "ta bort plats",
+        "radera plats",
+        "delete location"
+      ],
+      "relatedGuides": [
+        "andra-platsinformation",
+        "andra-oppettider"
+      ]
     },
     "andra-platsinformation": {
       "pageKey": "edit-location-information",
-      "alternativeQueries": ["ändra namn på platsen", "byta adress", "ändra logga", "ladda upp logotyp", "flytta kartnålen", "ändra koordinater", "platsens adress", "kontaktinfo för platsen", "byta platsnamn", "visa platsnamn i bildspelet"],
-      "relatedGuides": ["andra-oppettider", "stanga-en-dag-eller-period"]
+      "alternativeQueries": [
+        "ändra namn på platsen",
+        "byta adress",
+        "ändra logga",
+        "ladda upp logotyp",
+        "flytta kartnålen",
+        "ändra koordinater",
+        "platsens adress",
+        "kontaktinfo för platsen",
+        "byta platsnamn",
+        "visa platsnamn i bildspelet"
+      ],
+      "relatedGuides": [
+        "andra-oppettider",
+        "stanga-en-dag-eller-period"
+      ]
     },
     "andra-oppettider": {
       "pageKey": "edit-location-information",
-      "alternativeQueries": ["ändra öppettider", "när är vi öppna", "öppna tidigare", "stänga senare", "öppettider helg", "ändra tider lördag söndag", "opening hours", "när kan förare checka in", "ändra stängningstid"],
-      "relatedGuides": ["stanga-en-dag-eller-period", "andra-kapacitet-per-timme"]
+      "alternativeQueries": [
+        "ändra öppettider",
+        "när är vi öppna",
+        "öppna tidigare",
+        "stänga senare",
+        "öppettider helg",
+        "ändra tider lördag söndag",
+        "opening hours",
+        "när kan förare checka in",
+        "ändra stängningstid"
+      ],
+      "relatedGuides": [
+        "stanga-en-dag-eller-period",
+        "andra-kapacitet-per-timme"
+      ]
     },
     "stanga-en-dag-eller-period": {
       "pageKey": "edit-location-information",
-      "alternativeQueries": ["stänga en dag", "stängt i jul", "semesterstängt", "röda dagar", "helgdagar", "stängt för inventering", "stänga under en period", "closed dates", "public holidays", "midsommar stängt", "avvikande öppettider en dag"],
-      "relatedGuides": ["andra-oppettider", "se-veckan"]
+      "alternativeQueries": [
+        "stänga en dag",
+        "stängt i jul",
+        "semesterstängt",
+        "röda dagar",
+        "helgdagar",
+        "stängt för inventering",
+        "stänga under en period",
+        "closed dates",
+        "public holidays",
+        "midsommar stängt",
+        "avvikande öppettider en dag"
+      ],
+      "relatedGuides": [
+        "andra-oppettider",
+        "se-veckan"
+      ]
     },
     "lagga-till-sprak": {
       "pageKey": "language-management",
-      "alternativeQueries": ["lägga till språk", "byta språk för förarna", "engelska för förare", "förare förstår inte svenska", "översätta texter", "ta bort ett språk", "språk i bildspelet", "polska", "language management", "ändra språk"],
-      "relatedGuides": ["andra-texten-i-ett-sms", "andra-bildspelet"]
+      "alternativeQueries": [
+        "lägga till språk",
+        "byta språk för förarna",
+        "engelska för förare",
+        "förare förstår inte svenska",
+        "översätta texter",
+        "ta bort ett språk",
+        "språk i bildspelet",
+        "polska",
+        "language management",
+        "ändra språk"
+      ],
+      "relatedGuides": [
+        "andra-texten-i-ett-sms",
+        "andra-bildspelet"
+      ]
     },
     "lagga-upp-en-bild": {
       "pageKey": "image-management",
-      "alternativeQueries": ["lägga upp en bild", "ladda upp bild", "ladda upp foto", "ny bild", "byta bild", "ny bild på skärmen", "lägga till bild i bildspelet", "skapa skylt", "bild med piktogram", "ta bort bild", "image management", "lägga upp karta"],
-      "relatedGuides": ["andra-bildspelet", "lagga-till-en-video"]
+      "alternativeQueries": [
+        "lägga upp en bild",
+        "ladda upp bild",
+        "ladda upp foto",
+        "ny bild",
+        "byta bild",
+        "ny bild på skärmen",
+        "lägga till bild i bildspelet",
+        "skapa skylt",
+        "bild med piktogram",
+        "ta bort bild",
+        "image management",
+        "lägga upp karta"
+      ],
+      "relatedGuides": [
+        "andra-bildspelet",
+        "lagga-till-en-video"
+      ]
     },
     "andra-bildspelet": {
       "pageKey": "slideshow-settings",
-      "alternativeQueries": ["ändra bildspelet", "ändra slideshow", "vilka bilder visas för föraren", "visa bild i bildspelet", "dölja en bild", "byta ordning på bilder", "bildspel lösenord", "skriva ut bilder", "print text", "slideshow settings", "förarna ser fel bild"],
-      "relatedGuides": ["lagga-upp-en-bild", "lagga-till-en-video", "skriva-ut-qr-koder"]
+      "alternativeQueries": [
+        "ändra bildspelet",
+        "ändra slideshow",
+        "vilka bilder visas för föraren",
+        "visa bild i bildspelet",
+        "dölja en bild",
+        "byta ordning på bilder",
+        "bildspel lösenord",
+        "skriva ut bilder",
+        "print text",
+        "slideshow settings",
+        "förarna ser fel bild"
+      ],
+      "relatedGuides": [
+        "lagga-upp-en-bild",
+        "lagga-till-en-video",
+        "skriva-ut-qr-koder"
+      ]
     },
     "lagga-till-en-video": {
       "pageKey": "slideshow-settings",
-      "alternativeQueries": ["lägga upp video", "ladda upp film", "säkerhetsfilm", "video för förare", "visa film vid incheckning", "configure video"],
-      "relatedGuides": ["andra-bildspelet", "lagga-till-ett-dokument"]
+      "alternativeQueries": [
+        "lägga upp video",
+        "ladda upp film",
+        "säkerhetsfilm",
+        "video för förare",
+        "visa film vid incheckning",
+        "configure video"
+      ],
+      "relatedGuides": [
+        "andra-bildspelet",
+        "lagga-till-ett-dokument"
+      ]
     },
     "lagga-till-ett-dokument": {
       "pageKey": "slideshow-settings",
-      "alternativeQueries": ["ladda upp pdf", "lägga upp dokument", "ordningsregler för förare", "säkerhetsregler pdf", "configure documents"],
-      "relatedGuides": ["andra-bildspelet", "lagga-in-kontrollfragor"]
+      "alternativeQueries": [
+        "ladda upp pdf",
+        "lägga upp dokument",
+        "ordningsregler för förare",
+        "säkerhetsregler pdf",
+        "configure documents"
+      ],
+      "relatedGuides": [
+        "andra-bildspelet",
+        "lagga-in-kontrollfragor"
+      ]
     },
     "valja-vad-foraren-fyller-i": {
       "pageKey": "slideshow-settings",
-      "alternativeQueries": ["vilka fält ska föraren fylla i", "obligatoriskt fält", "lägga till fält", "fråga om registreringsnummer", "fråga om släp", "dölja fält", "formulär vid incheckning", "form fields", "göra fält obligatoriskt", "föraren måste fylla i"],
-      "relatedGuides": ["stalla-in-unik-identifiering", "lagga-in-kontrollfragor"]
+      "alternativeQueries": [
+        "vilka fält ska föraren fylla i",
+        "obligatoriskt fält",
+        "lägga till fält",
+        "fråga om registreringsnummer",
+        "fråga om släp",
+        "dölja fält",
+        "formulär vid incheckning",
+        "form fields",
+        "göra fält obligatoriskt",
+        "föraren måste fylla i"
+      ],
+      "relatedGuides": [
+        "stalla-in-unik-identifiering",
+        "lagga-in-kontrollfragor"
+      ]
     },
     "lagga-in-kontrollfragor": {
       "pageKey": "slideshow-settings",
-      "alternativeQueries": ["checklista", "kontrollfrågor", "säkerhetsfrågor till föraren", "föraren ska bekräfta", "frågor vid bokning", "checklists"],
-      "relatedGuides": ["valja-vad-foraren-fyller-i", "andra-bildspelet"]
+      "alternativeQueries": [
+        "checklista",
+        "kontrollfrågor",
+        "säkerhetsfrågor till föraren",
+        "föraren ska bekräfta",
+        "frågor vid bokning",
+        "checklists"
+      ],
+      "relatedGuides": [
+        "valja-vad-foraren-fyller-i",
+        "andra-bildspelet"
+      ]
     },
     "skriva-ut-qr-koder": {
       "pageKey": "slideshow-settings",
-      "alternativeQueries": ["skriva ut qr kod", "qr-kod till grinden", "affisch", "a1 pdf", "skylt med qr", "hur checkar föraren in", "qr code", "länk till bokning"],
-      "relatedGuides": ["andra-bildspelet", "andra-bokningsinstallningar"]
+      "alternativeQueries": [
+        "skriva ut qr kod",
+        "qr-kod till grinden",
+        "affisch",
+        "a1 pdf",
+        "skylt med qr",
+        "hur checkar föraren in",
+        "qr code",
+        "länk till bokning"
+      ],
+      "relatedGuides": [
+        "andra-bildspelet",
+        "andra-bokningsinstallningar"
+      ]
     },
     "lagga-till-en-lastbrygga": {
       "pageKey": "loading-bay-guidance",
-      "alternativeQueries": ["lägga till lastbrygga", "ny port", "lägga till port", "ny lastkaj", "lägga till dock", "add bay", "körbeskrivning till porten", "namn på bryggan", "loading bay"],
-      "relatedGuides": ["se-lastbryggorna-over-tid", "kalla-in-en-forare", "lagga-till-en-grind"]
+      "alternativeQueries": [
+        "lägga till lastbrygga",
+        "ny port",
+        "lägga till port",
+        "ny lastkaj",
+        "lägga till dock",
+        "add bay",
+        "körbeskrivning till porten",
+        "namn på bryggan",
+        "loading bay"
+      ],
+      "relatedGuides": [
+        "se-lastbryggorna-over-tid",
+        "kalla-in-en-forare",
+        "lagga-till-en-grind"
+      ]
     },
     "forhandsgodkanna-ett-fordon": {
       "pageKey": "allowed-check-in",
-      "alternativeQueries": ["släppa in fordon utan bokning", "förhandsgodkänna fordon", "fast leverantör", "entreprenör", "egna bilar", "vitlista", "allowed check-in", "godkänd bil", "lägga till tillåtet fordon"],
-      "relatedGuides": ["tillatna-fordon-i-site", "lagga-in-ett-fordon-manuellt"]
+      "alternativeQueries": [
+        "släppa in fordon utan bokning",
+        "förhandsgodkänna fordon",
+        "fast leverantör",
+        "entreprenör",
+        "egna bilar",
+        "vitlista",
+        "allowed check-in",
+        "godkänd bil",
+        "lägga till tillåtet fordon"
+      ],
+      "relatedGuides": [
+        "tillatna-fordon-i-site",
+        "lagga-in-ett-fordon-manuellt"
+      ]
     },
     "andra-bokningsinstallningar": {
       "pageKey": "booking-settings",
-      "alternativeQueries": ["hur lång är en bokning", "ändra bokningslängd", "tidssteg", "var 30:e minut", "bokningsnummer", "sexsiffrigt nummer", "hur långt fram kan man boka", "ledtid", "stopptid för bokning", "booking settings", "begränsa bokningar"],
-      "relatedGuides": ["andra-kapacitet-per-timme", "skapa-aterkommande-bokningar"]
+      "alternativeQueries": [
+        "hur lång är en bokning",
+        "ändra bokningslängd",
+        "tidssteg",
+        "var 30:e minut",
+        "bokningsnummer",
+        "sexsiffrigt nummer",
+        "hur långt fram kan man boka",
+        "ledtid",
+        "stopptid för bokning",
+        "booking settings",
+        "begränsa bokningar"
+      ],
+      "relatedGuides": [
+        "andra-kapacitet-per-timme",
+        "skapa-aterkommande-bokningar"
+      ]
     },
     "andra-kapacitet-per-timme": {
       "pageKey": "capacity-timeslots",
-      "alternativeQueries": ["ingen kan boka", "det går inte att boka", "bokningen fungerar inte", "ändra kapacitet", "hur många bokningar per timme", "fullbokat", "tidsluckor", "lägga till tidslucka", "timeslots", "capacity", "inga lediga tider"],
-      "relatedGuides": ["andra-bokningsinstallningar", "andra-oppettider", "simulera-tidsluckor"]
+      "alternativeQueries": [
+        "ingen kan boka",
+        "det går inte att boka",
+        "bokningen fungerar inte",
+        "ändra kapacitet",
+        "hur många bokningar per timme",
+        "fullbokat",
+        "tidsluckor",
+        "lägga till tidslucka",
+        "timeslots",
+        "capacity",
+        "inga lediga tider"
+      ],
+      "relatedGuides": [
+        "andra-bokningsinstallningar",
+        "andra-oppettider",
+        "simulera-tidsluckor"
+      ]
     },
     "skapa-aterkommande-bokningar": {
       "pageKey": "recurring-routes",
-      "alternativeQueries": ["återkommande bokning", "fast leverans varje vecka", "boka varje tisdag", "rutt", "automatisk bokning", "recurring routes", "stående bokning"],
-      "relatedGuides": ["andra-bokningsinstallningar", "lagga-in-ett-fordon-manuellt"]
+      "alternativeQueries": [
+        "återkommande bokning",
+        "fast leverans varje vecka",
+        "boka varje tisdag",
+        "rutt",
+        "automatisk bokning",
+        "recurring routes",
+        "stående bokning"
+      ],
+      "relatedGuides": [
+        "andra-bokningsinstallningar",
+        "lagga-in-ett-fordon-manuellt"
+      ]
     },
     "stalla-in-unik-identifiering": {
       "pageKey": "unique-identification",
-      "alternativeQueries": ["identifiera förare", "lastnummer", "unik identifiering", "söka på lastnummer", "identifier field", "välja spår före bokning"],
-      "relatedGuides": ["valja-vad-foraren-fyller-i"]
+      "alternativeQueries": [
+        "identifiera förare",
+        "lastnummer",
+        "unik identifiering",
+        "söka på lastnummer",
+        "identifier field",
+        "välja spår före bokning"
+      ],
+      "relatedGuides": [
+        "valja-vad-foraren-fyller-i"
+      ]
     },
     "lagga-till-en-kontaktperson": {
       "pageKey": "manage-contacts",
-      "alternativeQueries": ["lägga till kontaktperson", "lägga till mottagare", "vem kan föraren kontakta", "lägga till person", "manage contacts", "ansvarig person", "telefonnummer till mottagare"],
-      "relatedGuides": ["stalla-in-aviseringar-till-personal", "andra-texten-i-ett-sms"]
+      "alternativeQueries": [
+        "lägga till kontaktperson",
+        "lägga till mottagare",
+        "vem kan föraren kontakta",
+        "lägga till person",
+        "manage contacts",
+        "ansvarig person",
+        "telefonnummer till mottagare"
+      ],
+      "relatedGuides": [
+        "stalla-in-aviseringar-till-personal",
+        "andra-texten-i-ett-sms"
+      ]
     },
     "stalla-in-aviseringar-till-personal": {
       "pageKey": "notification-settings",
-      "alternativeQueries": ["få avisering när förare checkar in", "notis vid incheckning", "mejl när någon kommer", "sms till personal", "avisering", "notifiering", "få meddelande när lastbil anländer", "notification settings"],
-      "relatedGuides": ["valja-vilka-larm-du-far", "lagga-till-en-kontaktperson"]
+      "alternativeQueries": [
+        "få avisering när förare checkar in",
+        "notis vid incheckning",
+        "mejl när någon kommer",
+        "sms till personal",
+        "avisering",
+        "notifiering",
+        "få meddelande när lastbil anländer",
+        "notification settings"
+      ],
+      "relatedGuides": [
+        "valja-vilka-larm-du-far",
+        "lagga-till-en-kontaktperson"
+      ]
     },
     "andra-texten-i-ett-sms": {
       "pageKey": "sms-template-overrides",
-      "alternativeQueries": ["ändra sms text", "ändra texten i sms", "eget sms", "stänga av sms", "sms mall", "inkallnings sms", "sms på annat språk", "sms template", "skriva om meddelandet till föraren"],
-      "relatedGuides": ["skicka-sms-till-alla-pa-omradet", "lagga-till-sprak", "kalla-in-en-forare"]
+      "alternativeQueries": [
+        "ändra sms text",
+        "ändra texten i sms",
+        "eget sms",
+        "stänga av sms",
+        "sms mall",
+        "inkallnings sms",
+        "sms på annat språk",
+        "sms template",
+        "skriva om meddelandet till föraren"
+      ],
+      "relatedGuides": [
+        "skicka-sms-till-alla-pa-omradet",
+        "lagga-till-sprak",
+        "kalla-in-en-forare"
+      ]
     },
     "skapa-en-fardvag": {
       "pageKey": "gate-access-paths",
-      "alternativeQueries": ["färdväg", "vilka grindar får lastbilen använda", "väg till destination", "behörighet grindar", "gate access paths", "rutt genom området"],
-      "relatedGuides": ["lagga-till-en-grind", "andra-platsstrukturen"]
+      "alternativeQueries": [
+        "färdväg",
+        "vilka grindar får lastbilen använda",
+        "väg till destination",
+        "behörighet grindar",
+        "gate access paths",
+        "rutt genom området"
+      ],
+      "relatedGuides": [
+        "lagga-till-en-grind",
+        "andra-platsstrukturen"
+      ]
     },
     "lagga-till-en-grind": {
       "pageKey": "manage-gates",
-      "alternativeQueries": ["lägga till grind", "öppna grind", "bom", "grind öppnas automatiskt", "öppna-knapp", "manage gates", "styrenhet", "infart utfart"],
-      "relatedGuides": ["skapa-en-fardvag", "kalla-in-en-forare"]
+      "alternativeQueries": [
+        "lägga till grind",
+        "öppna grind",
+        "bom",
+        "grind öppnas automatiskt",
+        "öppna-knapp",
+        "manage gates",
+        "styrenhet",
+        "infart utfart"
+      ],
+      "relatedGuides": [
+        "skapa-en-fardvag",
+        "kalla-in-en-forare"
+      ]
     },
     "andra-platsstrukturen": {
       "pageKey": "edit-structure",
-      "alternativeQueries": ["underplats", "lägga till område", "lägga till spår", "dela upp platsen", "platsstruktur", "edit structure", "lossning och lastning"],
-      "relatedGuides": ["skapa-en-fardvag", "lagga-till-en-grind"]
+      "alternativeQueries": [
+        "underplats",
+        "lägga till område",
+        "lägga till spår",
+        "dela upp platsen",
+        "platsstruktur",
+        "edit structure",
+        "lossning och lastning"
+      ],
+      "relatedGuides": [
+        "skapa-en-fardvag",
+        "lagga-till-en-grind"
+      ]
     },
     "hitta-rapporterna": {
       "pageKey": "view-reports",
-      "alternativeQueries": ["var finns rapporterna", "rapporter", "reports", "statistik", "view reports"],
-      "relatedGuides": ["lasa-statistiken", "se-signaturer", "hantera-avvikelserapporter"]
+      "alternativeQueries": [
+        "var finns rapporterna",
+        "rapporter",
+        "reports",
+        "statistik",
+        "view reports"
+      ],
+      "relatedGuides": [
+        "lasa-statistiken",
+        "se-signaturer",
+        "hantera-avvikelserapporter"
+      ]
     },
     "lasa-statistiken": {
       "pageKey": "view-statistics",
-      "alternativeQueries": ["exportera statistik", "statistik till excel", "punktlighet", "hur många besök", "datakvalitet", "låg data quality", "nyckeltal", "rapport per månad", "skriva ut statistik"],
-      "relatedGuides": ["hitta-rapporterna", "simulera-tidsluckor"]
+      "alternativeQueries": [
+        "exportera statistik",
+        "statistik till excel",
+        "punktlighet",
+        "hur många besök",
+        "datakvalitet",
+        "låg data quality",
+        "nyckeltal",
+        "rapport per månad",
+        "skriva ut statistik"
+      ],
+      "relatedGuides": [
+        "hitta-rapporterna",
+        "simulera-tidsluckor"
+      ]
     },
     "se-signaturer": {
       "pageKey": "view-signatures",
-      "alternativeQueries": ["vem har varit på området", "se vem som varit här", "signaturer", "historik incheckningar", "vem var här igår", "vilka lastbilar kom förra veckan", "söka på registreringsnummer i efterhand", "ladda ner besökslista", "besökslogg"],
-      "relatedGuides": ["hitta-rapporterna", "lasa-statistiken"]
+      "alternativeQueries": [
+        "vem har varit på området",
+        "se vem som varit här",
+        "signaturer",
+        "historik incheckningar",
+        "vem var här igår",
+        "vilka lastbilar kom förra veckan",
+        "söka på registreringsnummer i efterhand",
+        "ladda ner besökslista",
+        "besökslogg"
+      ],
+      "relatedGuides": [
+        "hitta-rapporterna",
+        "lasa-statistiken"
+      ]
     },
     "hantera-avvikelserapporter": {
       "pageKey": "deviation-reports",
-      "alternativeQueries": ["avvikelser", "avvikelserapport", "exportera avvikelser", "skadad utrustning", "rapporterade fel", "stänga avvikelse", "deviation"],
-      "relatedGuides": ["hitta-rapporterna", "valja-vilka-larm-du-far"]
+      "alternativeQueries": [
+        "avvikelser",
+        "avvikelserapport",
+        "exportera avvikelser",
+        "skadad utrustning",
+        "rapporterade fel",
+        "stänga avvikelse",
+        "deviation"
+      ],
+      "relatedGuides": [
+        "hitta-rapporterna",
+        "valja-vilka-larm-du-far"
+      ]
     },
     "simulera-tidsluckor": {
       "pageKey": "slot-duration-simulator",
-      "alternativeQueries": ["hur långa ska tidsluckorna vara", "simulator", "hur lång tid tar lossning", "slot duration", "för få besök simulator"],
-      "relatedGuides": ["andra-kapacitet-per-timme", "lasa-statistiken"]
+      "alternativeQueries": [
+        "hur långa ska tidsluckorna vara",
+        "simulator",
+        "hur lång tid tar lossning",
+        "slot duration",
+        "för få besök simulator"
+      ],
+      "relatedGuides": [
+        "andra-kapacitet-per-timme",
+        "lasa-statistiken"
+      ]
     },
     "kalla-in-en-forare": {
       "pageKey": "site-board",
-      "alternativeQueries": ["kalla in förare", "kalla in chaufför", "släppa in lastbil", "checka ut", "checka ut fordon", "fordonet har åkt", "tilldela lastbrygga", "ändra vilken port chauffören ska till", "byta port", "byta brygga", "unassigned", "tavlan", "board", "flytta fordon i kön", "call in"],
-      "relatedGuides": ["soka-och-filtrera-fordon", "se-lastbryggorna-over-tid", "andra-texten-i-ett-sms"]
+      "alternativeQueries": [
+        "kalla in förare",
+        "kalla in chaufför",
+        "släppa in lastbil",
+        "checka ut",
+        "checka ut fordon",
+        "fordonet har åkt",
+        "tavlan",
+        "board",
+        "flytta fordon i kön",
+        "call in"
+      ],
+      "relatedGuides": [
+        "soka-och-filtrera-fordon",
+        "se-lastbryggorna-over-tid",
+        "andra-texten-i-ett-sms"
+      ]
     },
     "soka-och-filtrera-fordon": {
       "pageKey": "site-list",
-      "alternativeQueries": ["söka fordon", "hitta lastbil", "söka registreringsnummer", "filtrera", "lista fordon", "visa fler kolumner", "list view", "sortera fordon"],
-      "relatedGuides": ["kalla-in-en-forare", "se-veckan"]
+      "alternativeQueries": [
+        "söka fordon",
+        "hitta lastbil",
+        "söka registreringsnummer",
+        "filtrera",
+        "lista fordon",
+        "visa fler kolumner",
+        "list view",
+        "sortera fordon"
+      ],
+      "relatedGuides": [
+        "kalla-in-en-forare",
+        "se-veckan"
+      ]
     },
     "se-lastbryggorna-over-tid": {
       "pageKey": "site-matrix",
-      "alternativeQueries": ["vem står vid vilken port", "översikt lastbryggor", "matris", "matrix", "portar över tid", "vilken brygga är ledig", "fordon utan brygga"],
-      "relatedGuides": ["kalla-in-en-forare", "lagga-till-en-lastbrygga"]
+      "alternativeQueries": [
+        "vem står vid vilken port",
+        "översikt lastbryggor",
+        "matris",
+        "matrix",
+        "portar över tid",
+        "vilken brygga är ledig",
+        "fordon utan brygga"
+      ],
+      "relatedGuides": [
+        "kalla-in-en-forare",
+        "lagga-till-en-lastbrygga"
+      ]
     },
     "se-veckan": {
       "pageKey": "site-week",
-      "alternativeQueries": ["veckovy", "se bokningar för veckan", "kommande bokningar", "belastning per dag", "week view", "nästa vecka"],
-      "relatedGuides": ["soka-och-filtrera-fordon", "stanga-en-dag-eller-period"]
+      "alternativeQueries": [
+        "veckovy",
+        "se bokningar för veckan",
+        "kommande bokningar",
+        "belastning per dag",
+        "week view",
+        "nästa vecka"
+      ],
+      "relatedGuides": [
+        "soka-och-filtrera-fordon",
+        "stanga-en-dag-eller-period"
+      ]
     },
     "lagga-in-ett-fordon-manuellt": {
       "pageKey": "site-add",
-      "alternativeQueries": ["skapa en bokning", "boka en tid åt förare", "ny bokning", "lägga in fordon manuellt", "lägga till lastbil", "föraren kan inte checka in själv", "registrera fordon", "lägga in i kön", "add +"],
-      "relatedGuides": ["kalla-in-en-forare", "forhandsgodkanna-ett-fordon", "skapa-aterkommande-bokningar"]
+      "alternativeQueries": [
+        "skapa en bokning",
+        "boka en tid åt förare",
+        "ny bokning",
+        "lägga in fordon manuellt",
+        "lägga till lastbil",
+        "föraren kan inte checka in själv",
+        "registrera fordon",
+        "lägga in i kön",
+        "add +"
+      ],
+      "relatedGuides": [
+        "kalla-in-en-forare",
+        "forhandsgodkanna-ett-fordon",
+        "skapa-aterkommande-bokningar"
+      ]
     },
     "skicka-sms-till-alla-pa-omradet": {
       "pageKey": "site-sms-alarm",
-      "alternativeQueries": ["skicka sms", "skicka sms till alla", "sms till förarna", "nödmeddelande", "massutskick", "larma alla på området", "sms alarm", "meddela alla chaufförer"],
-      "relatedGuides": ["andra-texten-i-ett-sms", "kalla-in-en-forare"]
+      "alternativeQueries": [
+        "skicka sms",
+        "skicka sms till alla",
+        "sms till förarna",
+        "nödmeddelande",
+        "massutskick",
+        "larma alla på området",
+        "sms alarm",
+        "meddela alla chaufförer"
+      ],
+      "relatedGuides": [
+        "andra-texten-i-ett-sms",
+        "kalla-in-en-forare"
+      ]
     },
     "stalla-in-ko-och-lastbryggor": {
       "pageKey": "site-settings",
-      "alternativeQueries": ["köhantering", "automatisk incheckning", "hur många i kö", "stänga incheckningen", "queue management", "inkallning manuell", "kö inställningar"],
-      "relatedGuides": ["kalla-in-en-forare", "lagga-till-en-lastbrygga"]
+      "alternativeQueries": [
+        "köhantering",
+        "automatisk incheckning",
+        "hur många i kö",
+        "stänga incheckningen",
+        "queue management",
+        "inkallning manuell",
+        "kö inställningar"
+      ],
+      "relatedGuides": [
+        "kalla-in-en-forare",
+        "lagga-till-en-lastbrygga"
+      ]
     },
     "valja-vilka-larm-du-far": {
       "pageKey": "site-alert-settings",
-      "alternativeQueries": ["larm", "ljud när någon kommer", "stänga av ljud", "notiser i site", "alert settings", "pling", "signal ny i kö"],
-      "relatedGuides": ["stalla-in-aviseringar-till-personal"]
+      "alternativeQueries": [
+        "larm",
+        "ljud när någon kommer",
+        "stänga av ljud",
+        "notiser i site",
+        "alert settings",
+        "pling",
+        "signal ny i kö"
+      ],
+      "relatedGuides": [
+        "stalla-in-aviseringar-till-personal"
+      ]
     },
     "tillatna-fordon-i-site": {
       "pageKey": "site-allowed-vehicles",
-      "alternativeQueries": ["tillåtna fordon", "allowed vehicles", "lägga till godkänd bil i site", "giltighetsdatum fordon", "förare ser fordonet i appen"],
-      "relatedGuides": ["forhandsgodkanna-ett-fordon", "lagga-in-ett-fordon-manuellt"]
+      "alternativeQueries": [
+        "tillåtna fordon",
+        "allowed vehicles",
+        "lägga till godkänd bil i site",
+        "giltighetsdatum fordon",
+        "förare ser fordonet i appen"
+      ],
+      "relatedGuides": [
+        "forhandsgodkanna-ett-fordon",
+        "lagga-in-ett-fordon-manuellt"
+      ]
     }
   }
 }

@@ -14,12 +14,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.resolve(process.argv[2] ?? path.join(root, ".data/demo/index.html"));
 const r = (p) => path.join(root, p);
 
-const screens = Object.fromEntries(
-  fs
-    .readdirSync(r("public/screens"))
-    .filter((f) => f.endsWith(".webp"))
-    .map((f) => [`/screens/${f}`, `data:image/webp;base64,${fs.readFileSync(r(`public/screens/${f}`)).toString("base64")}`]),
-);
+// Skärmbilderna från appen som data-URI:er (alla publicerade guider använder dem).
+const screens = {};
+for (const dir of ["screens/app"]) {
+  for (const f of fs.readdirSync(r(`public/${dir}`)).filter((f) => f.endsWith(".webp"))) {
+    screens[`/${dir}/${f}`] = `data:image/webp;base64,${fs.readFileSync(r(`public/${dir}/${f}`)).toString("base64")}`;
+  }
+}
 
 const shimPlugin = {
   name: "demo-shims",

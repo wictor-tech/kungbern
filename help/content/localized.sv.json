@@ -1,0 +1,2520 @@
+{
+ "_comment": "Genererat av scripts/capture/localize.py: guidetexter med appens svenska knappnamn (**fetstil**).",
+ "guides": {
+  "hitta-ratt-installning": {
+   "summary": "All konfiguration av en plats finns i en enda meny, uppdelad i fem grupper. Du väljer utifrån vad du vill göra, inte utifrån vad funktionen heter.",
+   "breadcrumb": [
+    "Location Admin",
+    "klicka på platsen"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Location Admin**, länken finns uppe i **Anläggning**-vyn."
+    },
+    {
+     "n": 2,
+     "text": "Klicka på platsens namn i listan till vänster."
+    },
+    {
+     "n": 3,
+     "text": "Välj den grupp som passar din uppgift och klicka på rutan."
+    },
+    {
+     "n": 4,
+     "text": "Stäng med **Stäng** eller krysset när du är klar."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Hittar du inte funktionen? Skriv vad du vill göra i sökrutan i stället för att leta i menyn."
+    },
+    {
+     "type": "warning",
+     "text": "**Ta bort plats** kan inte ångras."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Välj plats",
+     "text": "Platserna listas till vänster. Underplatser (**Lossing** och **Lastning**) ligger indragna. Klicka på namnet för att öppna menyn."
+    },
+    {
+     "n": 2,
+     "label": "Platsdetaljer",
+     "text": "Namn, adress, öppettider, språk och bilder."
+    },
+    {
+     "n": 3,
+     "label": "Operationer",
+     "text": "Lastbryggor, bildspel till förarna och fordon som alltid får checka in."
+    },
+    {
+     "n": 4,
+     "label": "Bokning",
+     "text": "Bokningsregler, kapacitet per timme, tidsluckor och återkommande bokningar."
+    },
+    {
+     "n": 5,
+     "label": "Personer & kommunikation",
+     "text": "Kontaktpersoner, aviseringar till personal och SMS-texter."
+    },
+    {
+     "n": 6,
+     "label": "Åtkomst & rapportering",
+     "text": "Grindar, färdvägar, platsstruktur och rapporter."
+    },
+    {
+     "n": 7,
+     "label": "Ta bort plats",
+     "text": "Raderar hela platsen. Använd aldrig för att städa."
+    }
+   ],
+   "englishTerms": []
+  },
+  "andra-platsinformation": {
+   "summary": "Platsens namn, logotyp, adress och koordinater. Det här är uppgifterna förarna och rapporterna visar.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Platsdetaljer",
+    "Redigera platsinformation"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Redigera platsinformation**."
+    },
+    {
+     "n": 2,
+     "text": "Ändra namnet, välj en logotyp eller fäll ut **Adress & kontakt**."
+    },
+    {
+     "n": 3,
+     "text": "Scrolla längst ned och tryck **Spara plats**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Ändringarna gäller först när du tryckt **Spara plats** längst ned på sidan."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Platsnamn",
+     "text": "Platsens namn. Obligatoriskt. Namnet syns för förarna."
+    },
+    {
+     "n": 2,
+     "label": "Visa namn i bildspelet",
+     "text": "Kryssa i om platsnamnet ska synas i förarens bildspel."
+    },
+    {
+     "n": 3,
+     "label": "Platsbild",
+     "text": "Logotypen. Välj fil så laddas den upp direkt, **ingen spara-knapp behövs** för själva bilden."
+    },
+    {
+     "n": 4,
+     "label": "Adress & kontakt",
+     "text": "Adress, ort, postnummer, land, koordinater och kontaktinfo. Adressen kan sökas fram."
+    },
+    {
+     "n": 5,
+     "label": "Koordinater",
+     "text": "**Breddgrad** och longitude styr var kartnålen hamnar."
+    },
+    {
+     "n": 6,
+     "label": "Inchecknings tillgänglighet",
+     "text": "Styr om incheckning är öppen just nu. Se avsnittet Stäng en dag eller period."
+    }
+   ],
+   "englishTerms": [
+    "Address & contact"
+   ]
+  },
+  "andra-oppettider": {
+   "summary": "Öppettiderna avgör när förare kan checka in och vilka timmar som går att boka.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Redigera platsinformation",
+    "Veckans öppettider"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Redigera platsinformation** och fäll ut **Veckans öppettider**."
+    },
+    {
+     "n": 2,
+     "text": "Skriv öppnings- och stängningstid högst upp."
+    },
+    {
+     "n": 3,
+     "text": "Tryck **Fyll i alla öppettider** och **Fyll i alla stängningstider** så kopieras tiden till alla dagar."
+    },
+    {
+     "n": 4,
+     "text": "Justera enskilda dagar i rutorna **Måndag** till **Söndag**."
+    },
+    {
+     "n": 5,
+     "text": "Tryck **Spara plats**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Tiderna styr även vilka timmar som går att boka. Kontrollera **Kapacitet och tidsluckor** efteråt."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Allmän tid",
+     "text": "Skriv tiden i formatet tt:mm. Den används av knapparna nedanför."
+    },
+    {
+     "n": 2,
+     "label": "Fyll i alla öppettider / stängningstider",
+     "text": "Kopierar tiden ovanför till alla sju dagarna på en gång."
+    },
+    {
+     "n": 3,
+     "label": "Måndag till fredag",
+     "text": "**Öppnar** och **Stänger** per dag. Ändra bara de dagar som avviker."
+    },
+    {
+     "n": 4,
+     "label": "Lördag och söndag",
+     "text": "Helgen har egna tider. Vill du vara stängd, se Stäng en dag eller period."
+    },
+    {
+     "n": 5,
+     "label": "Spara plats",
+     "text": "Sparar hela formuläret, inklusive tiderna. **Avbryt** ångrar."
+    }
+   ],
+   "englishTerms": []
+  },
+  "stanga-en-dag-eller-period": {
+   "summary": "Stäng för semester, inventering eller driftstopp. Du kan stänga helt eller lägga in andra tider. Röda dagar kan hämtas automatiskt per land.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Redigera platsinformation",
+    "Stängda datum & allmänna helgdagar"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Redigera platsinformation** och fäll ut **Stängda datum & allmänna helgdagar**."
+    },
+    {
+     "n": 2,
+     "text": "Välj **Från** och **Till**. Samma datum i båda för en enstaka dag."
+    },
+    {
+     "n": 3,
+     "text": "Välj **Schema**, till exempel **Helt stängt**, och tryck **Lägg till**."
+    },
+    {
+     "n": 4,
+     "text": "För röda dagar: kryssa **Använd kalender för allmänna helgdagar**, välj land och tryck **Spara kalender och helgtimmar**."
+    },
+    {
+     "n": 5,
+     "text": "Tryck **Spara plats**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Redan bokade tider under en stängd period försvinner inte automatiskt. Gå igenom dem separat."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Röda dagar",
+     "text": "Kryssa i och välj land så hämtas landets helgdagar automatiskt."
+    },
+    {
+     "n": 2,
+     "label": "Spara kalender och helgtimmar",
+     "text": "Sparar helgdagskalendern. Egen knapp, skild från **Spara plats**."
+    },
+    {
+     "n": 3,
+     "label": "Från och Till",
+     "text": "Första och sista datum för undantaget."
+    },
+    {
+     "n": 4,
+     "label": "Schema",
+     "text": "**Helt stängt** stänger hela perioden. Andra val ger avvikande öppettider."
+    },
+    {
+     "n": 5,
+     "label": "Lägg till",
+     "text": "Lägger till undantaget i listan nedanför."
+    },
+    {
+     "n": 6,
+     "label": "Spara plats",
+     "text": "Spara även här så att allt gäller."
+    }
+   ],
+   "englishTerms": [
+    "Add",
+    "Save calendar and holiday hours",
+    "Use public holiday calendar"
+   ]
+  },
+  "lagga-till-sprak": {
+   "summary": "Förare möter bildspel, frågor och SMS på sitt eget språk. Här styr du vilka språk platsen har.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Platsdetaljer",
+    "Språkhantering"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Språkhantering**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **+ Lägg till språk** längst ned."
+    },
+    {
+     "n": 3,
+     "text": "Välj språket och ange platsens namn på det språket."
+    },
+    {
+     "n": 4,
+     "text": "Använd **Redigera** på en rad för att ändra texterna för ett språk."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Lägg bara till **de** språk ni faktiskt har förare på. Varje språk är **en** text till att hålla uppdaterad."
+    },
+    {
+     "type": "warning",
+     "text": "Tar du bort ett språk slutar texterna för det språket visas."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Språklistan",
+     "text": "Varje rad är ett språk platsen stöder. Koden efter namnet är språkkoden, till exempel **sv** och **en**."
+    },
+    {
+     "n": 2,
+     "label": "Namn per språk",
+     "text": "Platsens namn så som det visas för förare på det språket."
+    },
+    {
+     "n": 3,
+     "label": "Redigera",
+     "text": "Ändrar namn och texter för det språket."
+    },
+    {
+     "n": 4,
+     "label": "Ta bort",
+     "text": "Tar bort språket från platsen."
+    },
+    {
+     "n": 5,
+     "label": "+ Lägg till språk",
+     "text": "Lägger till ett nytt språk."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-upp-en-bild": {
+   "summary": "Biblioteket med bilder som förarna ser: säkerhetsregler, skyltar och kartor. Bilderna väljs sedan in i bildspelet.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Platsdetaljer",
+    "Bildhantering"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Bildhantering**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck Välj fil under **Ladda upp bild**. Bilden laddas upp så fort du valt den."
+    },
+    {
+     "n": 3,
+     "text": "Eller tryck **Skapa bild** för att bygga en skylt av piktogram."
+    },
+    {
+     "n": 4,
+     "text": "Gå till **Inställningar för bildspel** och kryssa i bilden för att visa den för förarna."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Använd liggande bilder med stor text. Förarna tittar på mobil eller på en skärm en bit bort."
+    },
+    {
+     "type": "warning",
+     "text": "**Ta bort** tar bort bilden både ur biblioteket och ur bildspelet."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Ladda upp bild",
+     "text": "Välj en bildfil från datorn. Den laddas upp direkt, ingen spara-knapp."
+    },
+    {
+     "n": 2,
+     "label": "Skapa bild",
+     "text": "Bygg en egen skylt av piktogram i stället för att ladda upp en färdig bild."
+    },
+    {
+     "n": 3,
+     "label": "Bildlistan",
+     "text": "Uppladdade bilder med miniatyr, **ID** och filnamn."
+    },
+    {
+     "n": 4,
+     "label": "Redigera och Ta bort",
+     "text": "**Redigera** byter namn och text. **Ta bort** tar bort bilden ur biblioteket och bildspelet."
+    },
+    {
+     "n": 5,
+     "label": "Reference number guides",
+     "text": "Exempelbilder som visar var leverantörens referensnummer sitter."
+    },
+    {
+     "n": 6,
+     "label": "Rutt images",
+     "text": "Visar vägen från grind till lastbrygga efter incheckning."
+    }
+   ],
+   "englishTerms": []
+  },
+  "andra-bildspelet": {
+   "summary": "Bildspelet är det förarna ser vid incheckning. Här väljer du vilka bilder som ingår och hur de används på utskrifter.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Inställningar för bildspel",
+    "Konfigurera bildspel"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Ladda först upp bilderna under **Bildhantering**."
+    },
+    {
+     "n": 2,
+     "text": "Öppna **Inställningar för bildspel** och stanna på fliken **Konfigurera bildspel**."
+    },
+    {
+     "n": 3,
+     "text": "Kryssa i **Visa i bildspel** för de bilder som ska visas."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Klar**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Börja med säkerhet, fortsätt med vägen, avsluta med vad som händer sedan. Fem till sju bilder räcker."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Flikarna",
+     "text": "Sex flikar: bildspel, video, dokument, formulärfält, checklistor och QR-koder."
+    },
+    {
+     "n": 2,
+     "label": "Visa i bildspel",
+     "text": "Kryssa i bilderna som ska visas för föraren."
+    },
+    {
+     "n": 3,
+     "label": "Offentlig",
+     "text": "Visar bilden även på den publika sidan."
+    },
+    {
+     "n": 4,
+     "label": "#1 till #4",
+     "text": "Styr var bilden hamnar på utskrifter."
+    },
+    {
+     "n": 5,
+     "label": "Skriv ut text",
+     "text": "Text som skrivs ut tillsammans med bilden."
+    },
+    {
+     "n": 6,
+     "label": "Configure password",
+     "text": "Skydda bildspelet med lösenord."
+    },
+    {
+     "n": 7,
+     "label": "Avbryt och Klar",
+     "text": "**Klar** sparar valen. **Avbryt** ångrar."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-till-en-video": {
+   "summary": "En film föraren kan titta på, till exempel en säkerhetsgenomgång.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Inställningar för bildspel",
+    "Konfigurera video"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för bildspel** och välj fliken **Konfigurera video**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck Välj fil under **Ladda upp video**."
+    },
+    {
+     "n": 3,
+     "text": "Filmen visas i listan med **ID** och filnamn."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Håll filmen kort. Förare som står vid grinden väntar inte på en lång film."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Fliken Konfigurera video",
+     "text": "Andra fliken i **Inställningar för bildspel**."
+    },
+    {
+     "n": 2,
+     "label": "Ladda upp video",
+     "text": "Välj filmfilen från datorn."
+    },
+    {
+     "n": 3,
+     "label": "Videolistan",
+     "text": "**ID** och filnamn för uppladdade filmer."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-till-ett-dokument": {
+   "summary": "Dokument föraren ska kunna läsa, till exempel ordnings- eller säkerhetsregler.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Inställningar för bildspel",
+    "Konfigurera dokument"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för bildspel** och välj fliken **Konfigurera dokument**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck Välj fil under **Ladda upp dokument**."
+    },
+    {
+     "n": 3,
+     "text": "Dokumentet visas i listan."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Fliken Konfigurera dokument",
+     "text": "Tredje fliken i **Inställningar för bildspel**."
+    },
+    {
+     "n": 2,
+     "label": "Ladda upp dokument",
+     "text": "Välj dokumentet, till exempel en PDF."
+    },
+    {
+     "n": 3,
+     "label": "Dokumentlistan",
+     "text": "**ID** och filnamn för uppladdade dokument."
+    }
+   ],
+   "englishTerms": []
+  },
+  "valja-vad-foraren-fyller-i": {
+   "summary": "Vilka uppgifter som efterfrågas vid incheckning och bokning, och vilka som är obligatoriska.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Inställningar för bildspel",
+    "Konfigurera formulärfält"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för bildspel** och fliken **Konfigurera formulärfält**."
+    },
+    {
+     "n": 2,
+     "text": "Kryssa i **Aktiv** för de fält som ska användas."
+    },
+    {
+     "n": 3,
+     "text": "Kryssa **Krävs av förare** eller **Krävs för bokning** för att göra fältet obligatoriskt."
+    },
+    {
+     "n": 4,
+     "text": "Använd **Dölj från förare** eller **Dölj från bokare** för att dölja fältet för en av grupperna."
+    },
+    {
+     "n": 5,
+     "text": "Tryck **Lägg till platsfält** om du behöver ett eget fält."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Varje obligatoriskt fält är ett steg till för föraren vid grinden. Håll antalet lågt."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Fråga vad du kör",
+     "text": "Frågar föraren om fordonstyp: lastbil, lastbil med släp eller EU-släp."
+    },
+    {
+     "n": 2,
+     "label": "Lägg till platsfält",
+     "text": "Skapar ett eget fält för just den här platsen."
+    },
+    {
+     "n": 3,
+     "label": "Aktiv",
+     "text": "Bocka i för att börja använda fältet."
+    },
+    {
+     "n": 4,
+     "label": "Krävs av förare",
+     "text": "Föraren måste fylla i fältet vid incheckning."
+    },
+    {
+     "n": 5,
+     "label": "Krävs för bokning",
+     "text": "Den som bokar måste fylla i fältet."
+    },
+    {
+     "n": 6,
+     "label": "Dölj från förare / booker",
+     "text": "Döljer fältet för en av grupperna."
+    },
+    {
+     "n": 7,
+     "label": "Regex",
+     "text": "Regel för hur värdet får se ut. Lämna None om du är osäker."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-in-kontrollfragor": {
+   "summary": "Återanvändbara krav som föraren eller bokaren måste bekräfta, till exempel säkerhetsfrågor.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Inställningar för bildspel",
+    "Konfigurera checklistor"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för bildspel** och fliken **Konfigurera checklistor**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **Ny checklista**."
+    },
+    {
+     "n": 3,
+     "text": "Skriv frågorna och spara."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Ny checklista",
+     "text": "Skapar en ny checklista."
+    },
+    {
+     "n": 2,
+     "label": "Förklaring",
+     "text": "Checklistor kan återanvändas både för bokningar och incheckningar."
+    },
+    {
+     "n": 3,
+     "label": "Ingen checklista än",
+     "text": "Meddelandet står kvar tills du skapat den första."
+    }
+   ],
+   "englishTerms": []
+  },
+  "skriva-ut-qr-koder": {
+   "summary": "Tre koder att sätta upp vid grind och kontor: publik sida, bildspel och bokning.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Inställningar för bildspel",
+    "QR-koder"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för bildspel** och fliken **QR-koder**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **Ladda ner A1 PDF** för bildspelskoden, eller skriv ut sidan."
+    },
+    {
+     "n": 3,
+     "text": "Sätt upp koden där föraren kommer in."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Offentlig sida QR-kod",
+     "text": "Leder till platsens publika sida."
+    },
+    {
+     "n": 2,
+     "label": "Bildspel QR-kod",
+     "text": "Leder till bildspelet. Den här skannar föraren vid incheckning."
+    },
+    {
+     "n": 3,
+     "label": "Ladda ner A1 PDF",
+     "text": "Laddar ned en färdig affisch i A1-format."
+    },
+    {
+     "n": 4,
+     "label": "Boknings QR-kod",
+     "text": "Leder till bokningen. Passar vid infarten eller i ett mejl."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-till-en-lastbrygga": {
+   "summary": "Lastbryggor (bays) som föraren kan bli tilldelad, med namn och körbeskrivning per språk.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Vägledning för lastytor"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Vägledning för lastytor**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **Lägg till bay**."
+    },
+    {
+     "n": 3,
+     "text": "Skriv ett internt namn, till exempel Gate 4, och tryck **Spara bay**."
+    },
+    {
+     "n": 4,
+     "text": "Skriv bryggans namn och körbeskrivning per språk under **Språkhantering**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "**0 språk · 0 bilder** på en rad betyder att föraren ännu inte får någon text eller bild för bryggan."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Lägg till bay",
+     "text": "Startar en ny lastbrygga."
+    },
+    {
+     "n": 2,
+     "label": "Befintliga bryggor",
+     "text": "Varje rad visar hur många språk och bilder bryggan har."
+    },
+    {
+     "n": 3,
+     "label": "Intern bay-namn",
+     "text": "Internt namn. Används som reserv, i personalvyer och för att matcha bokningar."
+    },
+    {
+     "n": 4,
+     "label": "Text till föraren",
+     "text": "Förarnas namn på bryggan och körbeskrivningen redigeras per språk under **Språkhantering**."
+    },
+    {
+     "n": 5,
+     "label": "Spara bay",
+     "text": "Sparar lastbryggan."
+    }
+   ],
+   "englishTerms": []
+  },
+  "forhandsgodkanna-ett-fordon": {
+   "summary": "Fordon som får checka in utan bokning, till exempel egna bilar, entreprenörer och fasta leverantörer.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Operationer",
+    "Tillåten incheckning"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Tillåten incheckning**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **Lägg till fordon**."
+    },
+    {
+     "n": 3,
+     "text": "Fyll i registreringsnummer, namn, telefon och giltighet."
+    },
+    {
+     "n": 4,
+     "text": "Filtrera i tabellen genom att skriva i rutorna under rubrikerna."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Samma lista nås även från **Anläggning**, under **Tillåtna fordon**."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Lägg till fordon",
+     "text": "Lägger till ett fordon."
+    },
+    {
+     "n": 2,
+     "label": "Kolumner och filter",
+     "text": "**Registreringsskylt**, **Namn**, **Telefon**, **Giltighet** och **Användare**. Skriv i rutan under rubriken för att filtrera."
+    },
+    {
+     "n": 3,
+     "label": "En rad",
+     "text": "Fordon med giltighetsdatum. Efter det datumet släpps det inte in automatiskt."
+    },
+    {
+     "n": 4,
+     "label": "Redigera och Ta bort",
+     "text": "**Redigera** ändrar uppgifterna. **Ta bort** tar bort fordonet ur listan."
+    }
+   ],
+   "englishTerms": []
+  },
+  "andra-bokningsinstallningar": {
+   "summary": "Hur tätt tiderna går att boka, hur lång en bokning är, och om föraren får ett eget bokningsnummer.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Bokning",
+    "Bokningsinställningar"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Bokningsinställningar**."
+    },
+    {
+     "n": 2,
+     "text": "Välj **Tidssteg** och **Standard bokningslängd**."
+    },
+    {
+     "n": 3,
+     "text": "Kryssa vid behov i **Generera ett unikt 6-siffrigt meddelandenummer**."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Spara bokningsinställningar**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Kapacitet per timme sätts i **Kapacitet och tidsluckor**. Stängda dagar i platsinformationen."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Tidssteg",
+     "text": "Hur ofta en bokning kan börja inom en timme, till exempel var 30:e minut."
+    },
+    {
+     "n": 2,
+     "label": "Standard bokningslängd",
+     "text": "Standardlängd i minuter. Måste vara en multipel av tidssteget. En längre bokning upptar alla luckor den spänner över."
+    },
+    {
+     "n": 3,
+     "label": "Driver booking number",
+     "text": "Ger varje bokning ett unikt sexsiffrigt nummer, även när kunden har en egen referens."
+    },
+    {
+     "n": 4,
+     "label": "Spara bokningsinställningar",
+     "text": "Sparar de tre inställningarna ovanför."
+    },
+    {
+     "n": 5,
+     "label": "Lägg till restriction",
+     "text": "Regler för ledtid, hur långt fram man får boka och dagliga stopptider."
+    },
+    {
+     "n": 6,
+     "label": "Restriktionslistan",
+     "text": "Globala regler och regler från platser ovanför gäller också, utöver dessa."
+    }
+   ],
+   "englishTerms": []
+  },
+  "andra-kapacitet-per-timme": {
+   "summary": "Hur många bokningar som får finnas per timme. Utan kapacitet går det inte att boka. En ny plats har 0 överallt.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Bokning",
+    "Kapacitet och tidsluckor"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Kapacitet och tidsluckor**."
+    },
+    {
+     "n": 2,
+     "text": "Välj **Timkapacitet** under **Kapacitetsmodell**."
+    },
+    {
+     "n": 3,
+     "text": "Skriv antal i varje timmes ruta, eller fyll alla med **Ställ in varje timme till** och **Tillämpa**."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Spara kapacitet**."
+    },
+    {
+     "n": 5,
+     "text": "Behöver du exakta tider i stället? Lägg till dem under **Fasta tidsluckor**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Står det 0 i alla rutor kan ingen boka. Det är den vanligaste orsaken till att bokning inte fungerar på en ny plats."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Kapacitetsmodell",
+     "text": "**Timkapacitet**: bokningar startar enligt tidssteget under öppettiderna, begränsat av timmens kapacitet."
+    },
+    {
+     "n": 2,
+     "label": "Timrutor",
+     "text": "En ruta per öppen timme. 0 betyder att ingen kan boka den timmen."
+    },
+    {
+     "n": 3,
+     "label": "Ställ in varje timme till",
+     "text": "Skriv ett tal och tryck **Tillämpa** för att fylla alla timmar på en gång."
+    },
+    {
+     "n": 4,
+     "label": "Spara kapacitet",
+     "text": "Sparar timrutorna."
+    },
+    {
+     "n": 5,
+     "label": "Fasta tidsluckor",
+     "text": "Exakta tider med egen kapacitet och egna veckodagar. Lämna kapaciteten tom för att använda timvärdet."
+    },
+    {
+     "n": 6,
+     "label": "Lägg till tidslucka",
+     "text": "Lägger till tidsluckan."
+    }
+   ],
+   "englishTerms": []
+  },
+  "skapa-aterkommande-bokningar": {
+   "summary": "Rutter som automatiskt lägger en bokning på valda veckodagar, till exempel en fast leverans varje tisdag.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Bokning",
+    "Återkommande rutter"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Återkommande rutter**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **Skapa**."
+    },
+    {
+     "n": 3,
+     "text": "Fyll i förare, åkeri, spår, tid och veckodagar."
+    },
+    {
+     "n": 4,
+     "text": "Ange hur många dagar i förväg bokningarna ska skapas."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Skapa",
+     "text": "Skapar en ny rutt."
+    },
+    {
+     "n": 2,
+     "label": "Rutt och Driver",
+     "text": "Namn på rutten och vem som kör."
+    },
+    {
+     "n": 3,
+     "label": "Spår och Tid",
+     "text": "Vilket spår och vilken tid bokningen hamnar på."
+    },
+    {
+     "n": 4,
+     "label": "Veckodagar",
+     "text": "Vilka veckodagar rutten gäller."
+    },
+    {
+     "n": 5,
+     "label": "Skapa dagar i förväg",
+     "text": "Hur många dagar i förväg bokningarna skapas automatiskt."
+    },
+    {
+     "n": 6,
+     "label": "Bokningsstatus",
+     "text": "Vilken status de skapade bokningarna får."
+    }
+   ],
+   "englishTerms": []
+  },
+  "stalla-in-unik-identifiering": {
+   "summary": "Vilket fält som identifierar en förare, till exempel lastnummer, och hur bildspelet beter sig runt det.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Bokning",
+    "Inställningar för unik identifiering"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för unik identifiering**."
+    },
+    {
+     "n": 2,
+     "text": "Tryck **Skapa**."
+    },
+    {
+     "n": 3,
+     "text": "Välj **Identifieringsfält** och de alternativ som ska gälla."
+    },
+    {
+     "n": 4,
+     "text": "Spara."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Behövs bara om ni verkligen identifierar förare på ett särskilt fält. Annars kan den lämnas tom."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Skapa",
+     "text": "Skapar inställningen. Det finns en per plats."
+    },
+    {
+     "n": 2,
+     "label": "Identifieringsfält",
+     "text": "Vilket formulärfält som identifierar besökaren."
+    },
+    {
+     "n": 3,
+     "label": "Manuell tillägg tillåten",
+     "text": "Om personalen får lägga till besökare manuellt."
+    },
+    {
+     "n": 4,
+     "label": "Sök endast efter identifierare",
+     "text": "Begränsar sökningen till identifieringsfältet."
+    },
+    {
+     "n": 5,
+     "label": "Visa bokningar / timestamp",
+     "text": "Vad föraren får se när hen identifierat sig."
+    },
+    {
+     "n": 6,
+     "label": "Välj spår före bokning",
+     "text": "Om spåret ska väljas innan bokningen görs."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-till-en-kontaktperson": {
+   "summary": "Personer en förare kan välja att kontakta vid incheckning, till exempel mottagare eller ansvarig.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Personer & kommunikation",
+    "Hantera kontakter"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Hantera kontakter**."
+    },
+    {
+     "n": 2,
+     "text": "Fyll i namn, telefon, e-post och språk."
+    },
+    {
+     "n": 3,
+     "text": "Tryck **Lägg till kontakt**."
+    },
+    {
+     "n": 4,
+     "text": "Kryssa i **Kontaktval krävs** om föraren måste välja en kontakt."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Kontaktval krävs",
+     "text": "Tvingar föraren att välja en kontakt vid incheckning."
+    },
+    {
+     "n": 2,
+     "label": "Namn och Telefon",
+     "text": "Kontaktens namn och mobilnummer."
+    },
+    {
+     "n": 3,
+     "label": "E-post och Språk",
+     "text": "Språket styr vilket språk meddelanden skickas på."
+    },
+    {
+     "n": 4,
+     "label": "Lägg till kontakt",
+     "text": "Lägger till personen i listan nedanför."
+    },
+    {
+     "n": 5,
+     "label": "Kontaktlistan",
+     "text": "Befintliga kontakter med namn, telefon, e-post och språk."
+    }
+   ],
+   "englishTerms": []
+  },
+  "stalla-in-aviseringar-till-personal": {
+   "summary": "Vem som får ett meddelande när något händer, och på vilket sätt.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Personer & kommunikation",
+    "Inställningar för meddelanden"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Inställningar för meddelanden**."
+    },
+    {
+     "n": 2,
+     "text": "Välj händelse under **Händelsetyp**, till exempel **Incheckning**."
+    },
+    {
+     "n": 3,
+     "text": "Välj mottagare, kanal och språk."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Lägg till meddelandeinställning**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "**SMS** går till riktiga telefoner och kostar pengar. Testa med ditt eget nummer först."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Händelsetyp",
+     "text": "Vilken händelse som utlöser aviseringen."
+    },
+    {
+     "n": 2,
+     "label": "Mottagare och Användare",
+     "text": "En särskild användare eller en grupp."
+    },
+    {
+     "n": 3,
+     "label": "Primär kanal",
+     "text": "Första sättet att nå mottagaren, till exempel **I appen**."
+    },
+    {
+     "n": 4,
+     "label": "Fallback-kanaler",
+     "text": "Används om första kanalen inte når fram. **E-post** och **SMS**."
+    },
+    {
+     "n": 5,
+     "label": "Språk",
+     "text": "Språket på meddelandet."
+    },
+    {
+     "n": 6,
+     "label": "Lägg till meddelandeinställning",
+     "text": "Sparar regeln i listan nedanför."
+    }
+   ],
+   "englishTerms": []
+  },
+  "andra-texten-i-ett-sms": {
+   "summary": "Byt ut standardtexten i ett SMS för just den här platsen, per språk. Du kan också stänga av ett SMS helt.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Personer & kommunikation",
+    "SMS-mallöverskrivningar"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **SMS-mallöverskrivningar**."
+    },
+    {
+     "n": 2,
+     "text": "Välj SMS-mall och språk."
+    },
+    {
+     "n": 3,
+     "text": "Skriv din egen text. Lämna rutan tom för att stänga av SMS:et."
+    },
+    {
+     "n": 4,
+     "text": "Låt **Aktiv** stå på **Ja** och tryck **Lägg till överskrivning**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Håll texten under 160 tecken. Längre meddelanden skickas som flera SMS."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "SMS-mall",
+     "text": "Vilket SMS du vill ändra, till exempel inkallningsmeddelandet."
+    },
+    {
+     "n": 2,
+     "label": "Språk",
+     "text": "Texten gäller bara det här språket. Gör en per språk."
+    },
+    {
+     "n": 3,
+     "label": "Meddelande",
+     "text": "Din text. Lämnar du den tom skickas inget SMS alls."
+    },
+    {
+     "n": 4,
+     "label": "Aktiv",
+     "text": "Yes aktiverar din text. No återgår till standardtexten."
+    },
+    {
+     "n": 5,
+     "label": "Lägg till överskrivning",
+     "text": "Sparar ändringen."
+    }
+   ],
+   "englishTerms": []
+  },
+  "skapa-en-fardvag": {
+   "summary": "Vilka grindar och områden en lastbil får använda på väg till en viss destination.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Åtkomst & rapportering",
+    "Åtkomstvägar till grindar"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Åtkomstvägar till grindar**."
+    },
+    {
+     "n": 2,
+     "text": "Skriv ett namn under **Ny väg**."
+    },
+    {
+     "n": 3,
+     "text": "Lägg till grindar eller områden i ordning med **Lägg till**."
+    },
+    {
+     "n": 4,
+     "text": "Välj vilka destinationer som använder vägen."
+    },
+    {
+     "n": 5,
+     "text": "Tryck **Spara väg**."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Förklaring",
+     "text": "Pilarna visar den fysiska vägen. Behörigheten räknar platserna som en tillåten mängd."
+    },
+    {
+     "n": 2,
+     "label": "Configured paths",
+     "text": "Sparade vägar listas här."
+    },
+    {
+     "n": 3,
+     "label": "Namn",
+     "text": "Namnet på vägen, till exempel Inbound route."
+    },
+    {
+     "n": 4,
+     "label": "Allowed path",
+     "text": "Lägg till grindar, bommar och områden i den ordning lastbilen kör."
+    },
+    {
+     "n": 5,
+     "label": "Destinations",
+     "text": "Vilka destinationer som ska använda vägen."
+    },
+    {
+     "n": 6,
+     "label": "Spara väg",
+     "text": "Sparar vägen."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-till-en-grind": {
+   "summary": "Namnge de grindar kontoret kan öppna. En grind är ett relä på en styrenhet.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Åtkomst & rapportering",
+    "Hantera grindar"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Hantera grindar**."
+    },
+    {
+     "n": 2,
+     "text": "Skriv ett namn och välj **In** eller **Out**."
+    },
+    {
+     "n": 3,
+     "text": "Välj styrenhet, eller låt **Vilken kontrollenhet som helst** stå kvar."
+    },
+    {
+     "n": 4,
+     "text": "Välj om grinden ska öppnas när ett fordon kallas in."
+    },
+    {
+     "n": 5,
+     "text": "Tryck **Spara portar**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "**Öppna vid samtal** öppnar en fysisk grind. Testa när ingen trafik berörs."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Förklaring",
+     "text": "In skickar signal till PIN_GATE_IN och Out till PIN_GATE_OUT."
+    },
+    {
+     "n": 2,
+     "label": "Portnamn",
+     "text": "Grindens namn. Det här ser personalen."
+    },
+    {
+     "n": 3,
+     "label": "In eller Out",
+     "text": "In för infart, Out för utfart."
+    },
+    {
+     "n": 4,
+     "label": "Control unit",
+     "text": "Tom lista så länge ingen styrenhet registrerats på platsen."
+    },
+    {
+     "n": 5,
+     "label": "Knapp på skrivbordet / Öppna vid samtal",
+     "text": "Visar en öppna-knapp på kontoret, respektive öppnar automatiskt vid inkallning."
+    },
+    {
+     "n": 6,
+     "label": "Lägg till port och Spara portar",
+     "text": "**Lägg till port** lägger till en rad. **Spara portar** sparar alla grindar."
+    }
+   ],
+   "englishTerms": []
+  },
+  "andra-platsstrukturen": {
+   "summary": "Dela upp platsen i nivåer, till exempel spår, grindar och områden. Varje underplats har en typ.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Åtkomst & rapportering",
+    "Redigera struktur"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Redigera struktur**."
+    },
+    {
+     "n": 2,
+     "text": "Fyll i **Namn** och typ på en ny rad, eller bocka i befintliga platser i listan."
+    },
+    {
+     "n": 3,
+     "text": "Läs raden **Förhandsvisning** för att se vad som ändras."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Spara direkta barn**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Strukturen påverkar både bokning och rapporter. Läs alltid **Förhandsvisning** innan du sparar."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Förklaring",
+     "text": "Du redigerar de direkta barnen till den valda platsen. Varje nivå kan innehålla fler nivåer."
+    },
+    {
+     "n": 2,
+     "label": "Nya underplatser",
+     "text": "En rad per ny underplats. Tomma namn hoppas över."
+    },
+    {
+     "n": 3,
+     "label": "Typ",
+     "text": "**Företag**, **Adress**, Purpose of visit, Gate, Barrier, Area, **Anläggning**, Place eller **Plats**."
+    },
+    {
+     "n": 4,
+     "label": "Hitta tillgängliga platser",
+     "text": "Sök efter befintliga platser att lägga under den här."
+    },
+    {
+     "n": 5,
+     "label": "Inkluderad och Typ",
+     "text": "Bocka i de platser som ska ligga här och välj typ för varje."
+    },
+    {
+     "n": 6,
+     "label": "Förhandsvisning",
+     "text": "Visar hur många kopplingar som läggs till, ändras eller tas bort innan du sparar."
+    },
+    {
+     "n": 7,
+     "label": "Spara direkta barn",
+     "text": "Sparar strukturen."
+    }
+   ],
+   "englishTerms": []
+  },
+  "hitta-rapporterna": {
+   "summary": "Fyra rapporter: avvikelser, signaturer, statistik och en simulator för hur lång tid en lossning tar.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Åtkomst & rapportering",
+    "Visa rapporter"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Visa rapporter**."
+    },
+    {
+     "n": 2,
+     "text": "Klicka på den rapport du vill se. Den öppnas som en egen flik."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Avvikelserapporter",
+     "text": "Avvikelser som rapporterats på platsen."
+    },
+    {
+     "n": 2,
+     "label": "Visa signaturer",
+     "text": "Förarnas signaturer vid incheckning."
+    },
+    {
+     "n": 3,
+     "label": "Visa statistik",
+     "text": "Nyckeltal: antal besök, punktlighet och datakvalitet."
+    },
+    {
+     "n": 4,
+     "label": "Slottsduration simulator",
+     "text": "Testa vilken längd på tidsluckorna som passar er verkliga lossningstid."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lasa-statistiken": {
+   "summary": "Nyckeltal för vald period: antal besök, punktlighet, ankomstfördelning och ett mått på datakvaliteten.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Visa rapporter",
+    "Visa statistik"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Visa rapporter** och klicka **Visa statistik**."
+    },
+    {
+     "n": 2,
+     "text": "Välj datumintervall och tryck **Tillämpa**, eller använd **Dag**, **Vecka** och **Månad**."
+    },
+    {
+     "n": 3,
+     "text": "Bocka i vilka händelser som ska räknas med."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Exportera Excel** eller **Skriv ut / PDF** för att ta ut siffrorna."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Siffrorna blir bara meningsfulla när in- och utcheckning sker regelbundet. Saknade tider ger både låg datakvalitet och missvisande nyckeltal."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Datumintervall",
+     "text": "Välj period och tryck **Tillämpa**. **Föregående** och **Månad** bläddrar."
+    },
+    {
+     "n": 2,
+     "label": "Dag, Dag, Vecka",
+     "text": "Snabbval för periodlängd."
+    },
+    {
+     "n": 3,
+     "label": "Nästa och Skriv ut / PDF",
+     "text": "Tar ut rapporten som fil."
+    },
+    {
+     "n": 4,
+     "label": "Händelsefilter",
+     "text": "**Bokningar**, **Incheckningar**, **Utcheckningar** och **Borttagningar**. Bocka ur det du inte vill räkna med."
+    },
+    {
+     "n": 5,
+     "label": "Data quality score",
+     "text": "Lågt värde beror oftast på att tider saknas, inte på fel i verksamheten. En ny plats med få resor får alltid lågt värde."
+    },
+    {
+     "n": 6,
+     "label": "Bokning compliance",
+     "text": "Antal besök, andel i tid, uteblivna och genomsnittlig tid på området."
+    },
+    {
+     "n": 7,
+     "label": "Arrival status distribution",
+     "text": "Fördelningen mellan för tidig, i tid, sen och utebliven."
+    }
+   ],
+   "englishTerms": [
+    "Day",
+    "Week"
+   ]
+  },
+  "se-signaturer": {
+   "summary": "Alla incheckningar med tidpunkt, plats, namn och registreringsnummer. Här hittar du vem som var på området och när.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Visa rapporter",
+    "Visa signaturer"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Visa rapporter** och klicka **Visa signaturer**."
+    },
+    {
+     "n": 2,
+     "text": "Sök fritt eller välj **Startdatum** och **Slutdatum**."
+    },
+    {
+     "n": 3,
+     "text": "Tryck **Ladda ner** för att ta ut listan."
+    },
+    {
+     "n": 4,
+     "text": "Bläddra mellan sidorna med pilarna under listan."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Fritextsökning",
+     "text": "Söker i namn, registreringsnummer och plats."
+    },
+    {
+     "n": 2,
+     "label": "Datumintervall",
+     "text": "Avgränsa till en period."
+    },
+    {
+     "n": 3,
+     "label": "Ladda ner",
+     "text": "Laddar ned listan som fil."
+    },
+    {
+     "n": 4,
+     "label": "Per sida",
+     "text": "Hur många rader som visas åt gången."
+    },
+    {
+     "n": 5,
+     "label": "Tabellen",
+     "text": "Datum, plats, namn, registreringsnummer och förarens namn."
+    },
+    {
+     "n": 6,
+     "label": "Sidbläddring",
+     "text": "First, **Föregående**, **Nästa** och Last. Texten till vänster visar hur många rader som finns."
+    }
+   ],
+   "englishTerms": []
+  },
+  "hantera-avvikelserapporter": {
+   "summary": "Avvikelser som rapporterats, till exempel skadad utrustning eller fel vid lossning. Filtrera på status, kategori och period.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Visa rapporter",
+    "Avvikelserapporter"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Visa rapporter** och klicka **Avvikelserapporter**."
+    },
+    {
+     "n": 2,
+     "text": "Välj **Status** och **Kategori**, eller låt dem stå på Alla."
+    },
+    {
+     "n": 3,
+     "text": "Välj **Startdatum** och **Slutdatum**."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Exportera Excel** eller **Exportera Word** för att ta ut listan."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Status",
+     "text": "Open och **Inne** review är obehandlade. Resolved och Dismissed stänger ärendet. Superseded sätts av systemet."
+    },
+    {
+     "n": 2,
+     "label": "Kategori",
+     "text": "Filtrera på typ av avvikelse, till exempel ankomst, säkerhet eller gods."
+    },
+    {
+     "n": 3,
+     "label": "Start och Slutdatum",
+     "text": "Perioden rapporterna hämtas från."
+    },
+    {
+     "n": 4,
+     "label": "Förklaring av status",
+     "text": "Kort beskrivning av vad varje status innebär."
+    },
+    {
+     "n": 5,
+     "label": "Exportera Excel och Exportera Word",
+     "text": "Tar ut listan som fil. Rows visar hur många rader filtret ger."
+    }
+   ],
+   "englishTerms": []
+  },
+  "simulera-tidsluckor": {
+   "summary": "Räknar fram vilken längd på tidsluckorna som passar den tid lossningen faktiskt tar. Kräver minst 50 avslutade besök på platsen.",
+   "breadcrumb": [
+    "Location Admin",
+    "Din plats",
+    "Visa rapporter",
+    "Slottsduration simulator"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Visa rapporter** och klicka **Simulator för tidsluckor**."
+    },
+    {
+     "n": 2,
+     "text": "Har platsen minst 50 avslutade besök räknar simulatorn fram ett förslag."
+    },
+    {
+     "n": 3,
+     "text": "Jämför förslaget med den längd ni använder i **Kapacitet och tidsluckor**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Får ni det här meddelandet trots mycket trafik beror det nästan alltid på att utcheckning inte registreras. Se över rutinen för **Checka ut** i **Anläggning**."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Fliken",
+     "text": "Fjärde fliken i rapportvyn."
+    },
+    {
+     "n": 2,
+     "label": "Kravet på underlag",
+     "text": "Simulatorn behöver minst 50 avslutade besök, alltså besök med både in- och utcheckning."
+    },
+    {
+     "n": 3,
+     "label": "Vad som hittades",
+     "text": "Raden visar hur många användbara besök som finns och för vilken period. 0 betyder oftast att utcheckning saknas."
+    }
+   ],
+   "englishTerms": []
+  },
+  "kalla-in-en-forare": {
+   "summary": "Dagens läge i fem kolumner. Fordonen går från vänster till höger: **Bokningar**, **Kö**, **Inkalla**, In och **Utcheckade**.",
+   "breadcrumb": [
+    "Anläggning",
+    "Kolumn"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Anläggning** och välj **Kolumn**."
+    },
+    {
+     "n": 2,
+     "text": "Fordon som anlänt ligger i **Kö**."
+    },
+    {
+     "n": 3,
+     "text": "Tryck **Kalla in** på kortet. Föraren får ett SMS och kortet flyttas till **Inkalla**."
+    },
+    {
+     "n": 4,
+     "text": "När fordonet lämnat trycker du **Checka ut** på kortet i **Inne**."
+    },
+    {
+     "n": 5,
+     "text": "Du kan också dra kort mellan kolumnerna."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "**Kalla in** skickar ett riktigt SMS till föraren."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Vyer",
+     "text": "**Kolumn**, **Lista**, **Matris** och **Vecka** visar samma data på olika sätt."
+    },
+    {
+     "n": 2,
+     "label": "Kolumnerna",
+     "text": "**Bokningar**, **Kö**, **Inkalla**, In och **Utcheckade**. Siffran visar antalet."
+    },
+    {
+     "n": 3,
+     "label": "Ett fordonskort",
+     "text": "Förare, plats, spår och tid. **Ej tilldelad** betyder att ingen lastbrygga tilldelats än."
+    },
+    {
+     "n": 4,
+     "label": "Kalla in",
+     "text": "Kallar in föraren. Skickar SMS om telefonnummer finns."
+    },
+    {
+     "n": 5,
+     "label": "Checka ut",
+     "text": "Registrerar att fordonet lämnat området."
+    },
+    {
+     "n": 6,
+     "label": "Ej tilldelad",
+     "text": "Klicka för att tilldela en lastbrygga."
+    }
+   ],
+   "englishTerms": []
+  },
+  "soka-och-filtrera-fordon": {
+   "summary": "Samma fordon som på tavlan, men i en tabell som går att filtrera, sortera och söka i.",
+   "breadcrumb": [
+    "Anläggning",
+    "Lista"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Anläggning** och välj **Lista**."
+    },
+    {
+     "n": 2,
+     "text": "Välj status högst upp: **Bokningar**, **Kö**, **Inkalla**, **Inne** eller **Utcheckade**."
+    },
+    {
+     "n": 3,
+     "text": "Filtrera genom att skriva i rutorna under rubrikerna."
+    },
+    {
+     "n": 4,
+     "text": "Välj vilka kolumner som ska visas med **Kolumner**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Sökrutan uppe till höger söker på registreringsnummer, namn och referens i alla vyer."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Statusflikar",
+     "text": "Siffran visar hur många fordon varje status har. Klicka för att byta."
+    },
+    {
+     "n": 2,
+     "label": "Fordon / Bokningar",
+     "text": "Växla mellan fordon och bokningar."
+    },
+    {
+     "n": 3,
+     "label": "Kolumnrubriker",
+     "text": "**Tid**, **Registreringsnummer**, **↕**, **Lastplats**, **↕**, **↕**, **Prioritet** och **Rutt**. Klicka för att sortera."
+    },
+    {
+     "n": 4,
+     "label": "Filterrad",
+     "text": "Skriv här för att filtrera på kolumnen ovanför."
+    },
+    {
+     "n": 5,
+     "label": "Kalla in",
+     "text": "Samma inkallning som på tavlan, men direkt i listan."
+    },
+    {
+     "n": 6,
+     "label": "Kolumner",
+     "text": "Välj vilka kolumner som ska synas."
+    }
+   ],
+   "englishTerms": [
+    "Bookings",
+    "Called in",
+    "Queue"
+   ]
+  },
+  "se-lastbryggorna-over-tid": {
+   "summary": "Lastbryggor mot tid. Visar vem som står var och när, i luckor om 30 minuter.",
+   "breadcrumb": [
+    "Anläggning",
+    "Matris"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Anläggning** och välj **Matris**."
+    },
+    {
+     "n": 2,
+     "text": "Välj datum och tidsintervall."
+    },
+    {
+     "n": 3,
+     "text": "Tryck **Portar** för att välja vilka bryggor som visas som kolumner."
+    },
+    {
+     "n": 4,
+     "text": "Fordon utan brygga ligger i kolumnen **Ej tilldelad**."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Datum",
+     "text": "Vilket dygn som visas."
+    },
+    {
+     "n": 2,
+     "label": "Portar",
+     "text": "Välj vilka lastbryggor som visas. 3/3 betyder att alla tre visas."
+    },
+    {
+     "n": 3,
+     "label": "Från och Till",
+     "text": "Tidsintervallet. Auto anpassar efter innehållet."
+    },
+    {
+     "n": 4,
+     "label": "Intervall",
+     "text": "Hur långa tidsluckorna är i rutnätet."
+    },
+    {
+     "n": 5,
+     "label": "Ej tilldelad",
+     "text": "Fordon som ännu inte fått en lastbrygga."
+    },
+    {
+     "n": 6,
+     "label": "Bryggkolumner",
+     "text": "En kolumn per lastbrygga, hämtade från **Vägledning för lastytor**."
+    }
+   ],
+   "englishTerms": []
+  },
+  "se-veckan": {
+   "summary": "Hela veckan på en sida. Bra för att se kommande bokningar och belastning per dag.",
+   "breadcrumb": [
+    "Anläggning",
+    "Vecka"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Anläggning** och välj **Vecka**."
+    },
+    {
+     "n": 2,
+     "text": "Bläddra mellan veckor med pilarna."
+    },
+    {
+     "n": 3,
+     "text": "Klicka på ett kort för att öppna fordonet."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Veckonavigering",
+     "text": "Pilarna bläddrar mellan veckor. Rubriken visar veckonummer och datum."
+    },
+    {
+     "n": 2,
+     "label": "Dagar",
+     "text": "Dagens datum är märkt TODAY. CLOSED betyder att platsen är stängd den dagen."
+    },
+    {
+     "n": 3,
+     "label": "Ett kort",
+     "text": "En bokning eller ett fordon. Etiketten visar status: IN, QUEUE och så vidare."
+    },
+    {
+     "n": 4,
+     "label": "Stängd tid",
+     "text": "Snedstreckade fält ligger utanför öppettiderna."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-in-ett-fordon-manuellt": {
+   "summary": "Lägg till ett fordon som saknar bokning eller inte kan checka in själv. Du bestämmer vilken status det får.",
+   "breadcrumb": [
+    "Anläggning",
+    "Lägg till +"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Tryck **Lägg till +** uppe i **Anläggning**."
+    },
+    {
+     "n": 2,
+     "text": "Välj **Status**: **Bokning**, **Kö** eller **Inne**."
+    },
+    {
+     "n": 3,
+     "text": "Välj **Spår**. Resten av formuläret visas först då."
+    },
+    {
+     "n": 4,
+     "text": "Fyll i namn, registreringsnummer och eventuellt telefon."
+    },
+    {
+     "n": 5,
+     "text": "Vid **Bokning**: välj även datum och tid."
+    },
+    {
+     "n": 6,
+     "text": "Tryck **Add**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Fyller du i ett telefonnummer kan föraren få riktiga SMS. Lämna det tomt vid test."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Status",
+     "text": "**Bokning** förbokar en tid. **Kö** sätter fordonet i kön. In registrerar att det redan står på området."
+    },
+    {
+     "n": 2,
+     "label": "Location",
+     "text": "Vilken plats fordonet hör till."
+    },
+    {
+     "n": 3,
+     "label": "Spår",
+     "text": "Spåret, till exempel Lossing eller Lastning. Formuläret visas först när du valt."
+    },
+    {
+     "n": 4,
+     "label": "Add",
+     "text": "Lägger in fordonet och stänger dialogen."
+    },
+    {
+     "n": 5,
+     "label": "Stäng",
+     "text": "Stänger utan att lägga till något."
+    }
+   ],
+   "englishTerms": []
+  },
+  "skicka-sms-till-alla-pa-omradet": {
+   "summary": "Ett SMS till alla förare som står i kö eller är på området och har telefonnummer. Var och en får det på sitt eget språk.",
+   "breadcrumb": [
+    "Anläggning",
+    "SMS-larm"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Tryck **SMS-larm** uppe i **Anläggning**."
+    },
+    {
+     "n": 2,
+     "text": "Läs raden som visar hur många som får meddelandet."
+    },
+    {
+     "n": 3,
+     "text": "Välj en sparad mall eller skriv texten."
+    },
+    {
+     "n": 4,
+     "text": "Läs igenom texten en gång till."
+    },
+    {
+     "n": 5,
+     "text": "Tryck **Skicka**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "**Skicka** går iväg direkt och kan inte ångras. Förbered mallen i lugn och ro, inte mitt i ett nödläge."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Vem som får det",
+     "text": "Alla i kö eller på platsen med registrerat telefonnummer. Meddelandet översätts till varje förares språk."
+    },
+    {
+     "n": 2,
+     "label": "Antal mottagare",
+     "text": "Kontrollera alltid siffran innan du skickar."
+    },
+    {
+     "n": 3,
+     "label": "Mall",
+     "text": "Välj en sparad mall, eller No template för att skriva fritt."
+    },
+    {
+     "n": 4,
+     "label": "Meddelande",
+     "text": "Själva texten. Kort och tydligt."
+    },
+    {
+     "n": 5,
+     "label": "Ny mall",
+     "text": "Spara texter ni använder ofta, till exempel nödmeddelandet."
+    },
+    {
+     "n": 6,
+     "label": "Skicka",
+     "text": "Skickar direkt till riktiga telefoner."
+    }
+   ],
+   "englishTerms": []
+  },
+  "stalla-in-ko-och-lastbryggor": {
+   "summary": "Hur kön och lastbryggorna hanteras, per plats och underplats.",
+   "breadcrumb": [
+    "Anläggning",
+    "Inställningar"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Tryck **Inställningar** uppe i **Anläggning**."
+    },
+    {
+     "n": 2,
+     "text": "Kryssa i det du vill visa högst upp."
+    },
+    {
+     "n": 3,
+     "text": "Välj fliken **Köhantering** eller **Lastplatshantering**."
+    },
+    {
+     "n": 4,
+     "text": "Ställ in per plats och stäng med **Stäng**."
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Det här påverkar driften direkt. Stäm av med LUP om du är osäker."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Visningsval",
+     "text": "**Visa tillåtna fordon**, **Visa länkade företag**, **Lossningsrapport** och **Tillåt fordon på plats för idag**."
+    },
+    {
+     "n": 2,
+     "label": "Flikar",
+     "text": "**Köhantering** för kön, **Lastplatshantering** för bryggorna."
+    },
+    {
+     "n": 3,
+     "label": "Köhantering",
+     "text": "Slår på köhantering för platsen."
+    },
+    {
+     "n": 4,
+     "label": "Inkallningsläge",
+     "text": "Manual betyder att personalen kallar in manuellt."
+    },
+    {
+     "n": 5,
+     "label": "Fordonskapacitet i kön",
+     "text": "Hur många fordon som får stå i kö samtidigt."
+    },
+    {
+     "n": 6,
+     "label": "Automatisk incheckning",
+     "text": "Checkar in fordon automatiskt i stället för manuellt."
+    },
+    {
+     "n": 7,
+     "label": "Alltid stängt",
+     "text": "Stänger incheckningen på den platsen helt."
+    }
+   ],
+   "englishTerms": []
+  },
+  "valja-vilka-larm-du-far": {
+   "summary": "Vilka händelser som ska ge en signal i **Anläggning** medan du arbetar.",
+   "breadcrumb": [
+    "Anläggning",
+    "reglageikonen uppe till höger"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Klicka på reglageikonen uppe till höger i **Anläggning**."
+    },
+    {
+     "n": 2,
+     "text": "Kryssa i de larm du vill ha. Ändringen gäller direkt."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Ikonen",
+     "text": "**Larminställningar**. Ligger till vänster om klockan."
+    },
+    {
+     "n": 2,
+     "label": "Alternativen",
+     "text": "**ID-skanning**, **Alkoholtest väntar**, **Ny avvikelse**, **Ny i kö**, **Förarmedelande** och **Ljud**."
+    }
+   ],
+   "englishTerms": []
+  },
+  "tillatna-fordon-i-site": {
+   "summary": "Samma lista som **Tillåten incheckning** i **Location Admin**, men åtkomlig under drift.",
+   "breadcrumb": [
+    "Anläggning",
+    "Tillåtna fordon"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Tryck **Tillåtna fordon** uppe i **Anläggning**."
+    },
+    {
+     "n": 2,
+     "text": "Fyll i plats, registreringsnummer och namn."
+    },
+    {
+     "n": 3,
+     "text": "Lägg vid behov till giltighetsdatum och mobilnummer."
+    },
+    {
+     "n": 4,
+     "text": "Tryck **Add**."
+    }
+   ],
+   "notes": [],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Location",
+     "text": "Vilken plats fordonet gäller för."
+    },
+    {
+     "n": 2,
+     "label": "License plate och Name",
+     "text": "Registreringsnummer och namn på fordonet eller föraren."
+    },
+    {
+     "n": 3,
+     "label": "Expiry",
+     "text": "Sista giltighetsdag. Tomt betyder utan slutdatum."
+    },
+    {
+     "n": 4,
+     "label": "Mobile",
+     "text": "En förare med det numret ser fordonet i sin app."
+    },
+    {
+     "n": 5,
+     "label": "Begränsningar",
+     "text": "**Only during opening hours** och **This location only**."
+    },
+    {
+     "n": 6,
+     "label": "Sök och lista",
+     "text": "Filtrera på namn, plats och giltighet. Tabellen visar plats, nummer, namn, giltighet och begränsningar."
+    }
+   ],
+   "englishTerms": []
+  },
+  "skapa-en-bokning": {
+   "summary": "Boka en tid åt en förare direkt i **Anläggning**, till exempel när någon ringer in. Bokningen hamnar under **Bokningar** på tavlan.",
+   "breadcrumb": [
+    "Anläggning",
+    "Lägg till +",
+    "Status: Bokning"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Tryck **Lägg till +** uppe i **Anläggning**."
+    },
+    {
+     "n": 2,
+     "text": "Välj **Status**: **Bokning**.",
+     "hotspot": 1
+    },
+    {
+     "n": 3,
+     "text": "Välj **Location**.",
+     "hotspot": 2
+    },
+    {
+     "n": 4,
+     "text": "Välj **Spår**. Resten av formuläret visas först då.",
+     "hotspot": 3
+    },
+    {
+     "n": 5,
+     "text": "Fyll i namn, registreringsnummer och eventuellt telefon."
+    },
+    {
+     "n": 6,
+     "text": "Välj datum och tid för bokningen."
+    },
+    {
+     "n": 7,
+     "text": "Tryck **Add**.",
+     "hotspot": 4
+    }
+   ],
+   "notes": [
+    {
+     "type": "warning",
+     "text": "Fyller du i ett telefonnummer kan föraren få riktiga SMS. Lämna det tomt vid test."
+    },
+    {
+     "type": "tip",
+     "text": "Går det inte att välja någon tid? Kontrollera kapaciteten under **Kapacitet och tidsluckor** i **Location Admin**."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Status",
+     "text": "Välj Bokning för att boka en tid."
+    },
+    {
+     "n": 2,
+     "label": "Location",
+     "text": "Platsen bokningen gäller."
+    },
+    {
+     "n": 3,
+     "label": "Spår",
+     "text": "Spåret, till exempel Lossing eller Lastning. Resten av formuläret visas först när du valt."
+    },
+    {
+     "n": 4,
+     "label": "Namn",
+     "text": "Förarens namn."
+    },
+    {
+     "n": 5,
+     "label": "Registreringsnummer",
+     "text": "Fordonets registreringsnummer."
+    },
+    {
+     "n": 6,
+     "label": "Add",
+     "text": "Sparar bokningen."
+    }
+   ],
+   "englishTerms": []
+  },
+  "byta-lastbrygga": {
+   "summary": "Bestäm eller ändra vilken lastbrygga föraren ska köra till. Föraren får informationen automatiskt.",
+   "breadcrumb": [
+    "Anläggning",
+    "Kolumn",
+    "Fordonskortet",
+    "Ej tilldelad / bryggans namn"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Öppna **Anläggning** och välj **Kolumn**."
+    },
+    {
+     "n": 2,
+     "text": "Klicka på **Ej tilldelad** på förarens kort. Har föraren redan en brygga klickar du på bryggans namn i stället."
+    },
+    {
+     "n": 3,
+     "text": "Tryck **Add bay** vid den brygga föraren ska till.",
+     "hotspot": 3
+    },
+    {
+     "n": 4,
+     "text": "Ska föraren byta brygga? Tryck **Remove** vid den gamla bryggan.",
+     "hotspot": 4
+    },
+    {
+     "n": 5,
+     "text": "Flera bryggor? Den första i listan styr förarens vägledning. Ändra ordningen med pilarna.",
+     "hotspot": 1
+    },
+    {
+     "n": 6,
+     "text": "Tryck **Save**. Föraren får informationen om den nya bryggan automatiskt.",
+     "hotspot": 5
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "I vyn **Matris** ser du vilka bryggor som är lediga just nu."
+    }
+   ],
+   "hotspots": [
+    {
+     "n": 1,
+     "label": "Selected bays",
+     "text": "Bryggorna föraren ska till, i ordning. Den första styr förarens vägledning."
+    },
+    {
+     "n": 2,
+     "label": "Available bays",
+     "text": "Alla lastbryggor på platsen och om de är lediga."
+    },
+    {
+     "n": 3,
+     "label": "Add bay",
+     "text": "Lägger till bryggan i listan till vänster."
+    },
+    {
+     "n": 4,
+     "label": "Remove",
+     "text": "Tar bort bryggan från föraren."
+    },
+    {
+     "n": 5,
+     "label": "Save",
+     "text": "Sparar. Föraren får informationen automatiskt."
+    }
+   ],
+   "englishTerms": []
+  },
+  "lagga-till-en-anvandare": {
+   "summary": "Användarkonton skapas och ändras av LUP. Skicka ett ärende till supporten så ordnar vi det.",
+   "breadcrumb": [
+    "LUP Support"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "Skicka ett ärende till LUP Support, till exempel med knappen Kontakta support här nedanför."
+    },
+    {
+     "n": 2,
+     "text": "Skriv personens namn och e-post, vilken plats det gäller och om personen ska arbeta i **Location Admin** eller bara i **Anläggning**."
+    },
+    {
+     "n": 3,
+     "text": "Ska någon tas bort eller få ändrad behörighet? Skriv vem och vad som ska ändras."
+    },
+    {
+     "n": 4,
+     "text": "LUP lägger upp eller ändrar kontot och svarar i ärendet."
+    }
+   ],
+   "notes": [
+    {
+     "type": "tip",
+     "text": "Kontaktpersoner som förarna kan välja vid incheckning är något annat. Dem lägger du till själv under **Hantera kontakter**."
+    }
+   ],
+   "hotspots": [],
+   "englishTerms": []
+  }
+ }
+}

@@ -36,7 +36,8 @@ const PHRASES: [RegExp, string][] = [
   // Vanliga problemformuleringar
   [/\b(kan|gar|gick|far) (inte|ej) (att )?boka\b|\bingen kan boka\b|\binga (lediga )?tider\b/g, "bokningsproblem"],
   // "logga ut/in" handlar om konton, inte om logotypen
-  [/\blogg(a|ar|ade|at) (ut|in)\b/g, "inloggning"],
+  [/\blogg(a|ar|ade|at) in\b/g, "inloggning"],
+  [/\blogg(a|ar|ade|at) ut\b/g, "utloggning"],
   [/\b(igar|gardagens|forrgar)\b/g, "tidigare"],
   // "användare" och "används" får annars samma ordstam.
   [/\banvandar(e|en|na|nas|es)?\b/g, "anvandarkonto"],
@@ -83,6 +84,7 @@ const SYNONYM_GROUPS: string[][] = [
   ["grind", "bom", "barrier", "gate", "grindar", "infart", "utfart"],
   ["sms", "textmeddelande", "sm", "smsa", "sms:a", "textmeddelanden"],
   ["anvandarkonto", "konto", "inloggning", "login"],
+  ["utloggning", "logout"],
   ["losenord", "password"],
   ["bokning", "boka", "booking", "bokad", "tidsbokning", "reservation", "boking", "bokningar", "bokat"],
   ["kapacitet", "capacity"],

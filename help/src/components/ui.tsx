@@ -57,7 +57,7 @@ export function GuideCard({ guide, href, onClick }: { guide: GuideSummary; href?
       )}
       <span className="min-w-0">
         <span className="block font-semibold text-navy group-hover:text-lup-dark">{guide.title}</span>
-        <span className="mt-0.5 line-clamp-2 block text-sm text-muted">{guide.summary}</span>
+        <span className="mt-0.5 line-clamp-2 block text-sm text-muted">{guide.summary.replace(/\*\*/g, "")}</span>
         <span className="mt-1.5 block">
           <AppBadge app={guide.app} />
         </span>

@@ -17,7 +17,7 @@ export function Shell({ embed = false, children }: { embed?: boolean; children: 
       <main className={`mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 ${embed ? "py-4" : "py-6 sm:py-8"}`}>{children}</main>
       {!embed && (
         <footer className="border-t border-line bg-white py-4 text-center text-xs text-muted">
-          LUP Hjälp · Bilderna kommer från testplatsen DEMO LUP
+          LUP Hjälp · Skärmbilderna kommer från demoplatsen i app.lupnumber.com
         </footer>
       )}
     </div>

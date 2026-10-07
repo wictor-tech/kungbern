@@ -12,18 +12,22 @@ describe("hela flödet mot databasen (PGlite i minnet)", () => {
 
   it("seedar manualens 38 guider + nya guider, utkast dolda", async () => {
     const guides = await listGuides();
-    expect(guides).toHaveLength(40);
+    expect(guides).toHaveLength(41);
     expect(guides.filter((g) => g.number <= 38).every((g) => g.screenshot && g.steps.length > 0)).toBe(true);
     expect((await listGuides({ includeDrafts: true })).length).toBe(41);
-    expect(await getGuide("byta-lastbrygga")).toBeNull();
+    expect((await getGuide("byta-lastbrygga"))?.screenshot).toBe("/screens/app/byta-lastbrygga.webp");
   });
 
   it("stegen har inzoomningsdata från skärmbilderna", async () => {
     const g = (await getGuide("andra-kapacitet-per-timme"))!;
-    expect(g.screenshotSize?.[0]).toBe(1600);
-    const step = g.steps.find((s) => s.text.includes("Save capacity"))!;
+    // Aktuell svensk skärmbild från appen, med svenska knappnamn och exakta markeringar.
+    expect(g.screenshot).toBe("/screens/app/andra-kapacitet-per-timme.webp");
+    expect(g.screenshotSize?.[0]).toBe(1090); // sidomenyn är bortbeskuren
+    expect(g.screenshotAnnotated).toBe(false);
+    const step = g.steps.find((s) => s.text.includes("Spara kapacitet"))!;
     const spot = g.hotspots.find((h) => h.n === step.hotspot)!;
-    expect(spot.label).toBe("Save capacity");
+    expect(spot.label).toBe("Spara kapacitet");
+    expect(g.keywords).toContain("Save capacity");
     expect(spot.x).toBeGreaterThan(0);
   });
 

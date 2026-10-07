@@ -75,7 +75,39 @@
         "andra-kapacitet-per-timme",
         "skapa-aterkommande-bokningar"
       ],
-      "status": "published"
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Status",
+          "text": "Välj Bokning för att boka en tid."
+        },
+        {
+          "n": 2,
+          "label": "Location",
+          "text": "Platsen bokningen gäller."
+        },
+        {
+          "n": 3,
+          "label": "Track",
+          "text": "Spåret, till exempel Lossing eller Lastning. Resten av formuläret visas först när du valt."
+        },
+        {
+          "n": 4,
+          "label": "Name",
+          "text": "Förarens namn."
+        },
+        {
+          "n": 5,
+          "label": "Registration number",
+          "text": "Fordonets registreringsnummer."
+        },
+        {
+          "n": 6,
+          "label": "Add",
+          "text": "Sparar bokningen."
+        }
+      ]
     },
     {
       "id": "byta-lastbrygga",
@@ -83,14 +115,14 @@
       "title": "Byta port (lastbrygga) för en förare",
       "category": "daglig-drift",
       "app": "site",
-      "pageKey": "site-board",
+      "pageKey": "site-bay-dialog",
       "breadcrumb": [
         "Site",
         "Board",
         "Fordonskortet",
         "Unassigned / bryggans namn"
       ],
-      "summary": "Bestäm eller ändra vilken lastbrygga föraren ska köra till.",
+      "summary": "Bestäm eller ändra vilken lastbrygga föraren ska köra till. Föraren får informationen automatiskt.",
       "baseScreenshot": 30,
       "steps": [
         {
@@ -99,21 +131,27 @@
         },
         {
           "n": 2,
-          "text": "Hitta förarens kort. Unassigned betyder att ingen brygga är vald än.",
-          "hotspot": 6
+          "text": "Klicka på Unassigned på förarens kort. Har föraren redan en brygga klickar du på bryggans namn i stället."
         },
         {
           "n": 3,
-          "text": "Klicka på Unassigned (eller bryggans namn) på kortet.",
-          "hotspot": 6
+          "text": "Tryck Add bay vid den brygga föraren ska till.",
+          "hotspot": 3
         },
         {
           "n": 4,
-          "text": "[Fyll i: hur väljer man brygga i dialogen som öppnas, och hur sparar man?]"
+          "text": "Ska föraren byta brygga? Tryck Remove vid den gamla bryggan.",
+          "hotspot": 4
         },
         {
           "n": 5,
-          "text": "Föraren får informationen om den nya bryggan automatiskt."
+          "text": "Flera bryggor? Den första i listan styr förarens vägledning. Ändra ordningen med pilarna.",
+          "hotspot": 1
+        },
+        {
+          "n": 6,
+          "text": "Tryck Save. Föraren får informationen om den nya bryggan automatiskt.",
+          "hotspot": 5
         }
       ],
       "notes": [
@@ -130,14 +168,45 @@
         "flytta förare till annan port",
         "ändra lastkaj",
         "vilken port ska föraren till",
-        "assign bay"
+        "assign bay",
+        "unassigned",
+        "ej tilldelad",
+        "välja lastplats",
+        "change bay"
       ],
       "relatedGuides": [
         "se-lastbryggorna-over-tid",
         "kalla-in-en-forare",
         "lagga-till-en-lastbrygga"
       ],
-      "status": "draft"
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Selected bays",
+          "text": "Bryggorna föraren ska till, i ordning. Den första styr förarens vägledning."
+        },
+        {
+          "n": 2,
+          "label": "Available bays",
+          "text": "Alla lastbryggor på platsen och om de är lediga."
+        },
+        {
+          "n": 3,
+          "label": "Add bay",
+          "text": "Lägger till bryggan i listan till vänster."
+        },
+        {
+          "n": 4,
+          "label": "Remove",
+          "text": "Tar bort bryggan från föraren."
+        },
+        {
+          "n": 5,
+          "label": "Save",
+          "text": "Sparar. Föraren får informationen automatiskt."
+        }
+      ]
     },
     {
       "id": "lagga-till-en-anvandare",
