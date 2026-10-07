@@ -28,7 +28,7 @@ export function buildReport(
     if (!g) groups.set(sig, (g = { q: a.q!, qs: new Map(), count: 0, guideIds: new Map(), terms: engine.termSet(a.q!) }));
     g.count++;
     g.qs.set(a.q!, (g.qs.get(a.q!) ?? 0) + 1);
-    if (a.guideId && a.quality !== "none") g.guideIds.set(a.guideId, (g.guideIds.get(a.guideId) ?? 0) + 1);
+    if (a.guideId && a.quality === "good") g.guideIds.set(a.guideId, (g.guideIds.get(a.guideId) ?? 0) + 1);
   }
   const clusters = [...groups.values()].map((g) => ({
     ...g, q: [...g.qs].sort((a, b) => b[1] - a[1])[0][0],
@@ -39,7 +39,7 @@ export function buildReport(
   // Slå ihop nära kluster (t.ex. "ladda upp bild" / "byta bild") för förbättringsförslag
   const merged: { terms: Set<string>; count: number; examples: Set<string>; guides: Map<string, number>; noneCount: number; q: string }[] = [];
   for (const c of clusters) {
-    const noneCount = asks.filter((a) => a.q === c.q && a.quality === "none").length;
+    const noneCount = asks.filter((a) => a.q === c.q && a.quality !== "good").length;
     const hit = merged.find((m) => jaccard(m.terms, c.terms) >= 0.6);
     if (hit) {
       hit.count += c.count; hit.noneCount += noneCount;
@@ -51,7 +51,7 @@ export function buildReport(
   }
 
   const unansweredMap = new Map<string, number>();
-  for (const a of asks) if (a.quality === "none") unansweredMap.set(a.q!.toLowerCase(), (unansweredMap.get(a.q!.toLowerCase()) ?? 0) + 1);
+  for (const a of asks) if (a.quality !== "good") unansweredMap.set(a.q!.toLowerCase(), (unansweredMap.get(a.q!.toLowerCase()) ?? 0) + 1);
 
   // Guider
   const guideStats = new Map<string, { views: number; yes: number; no: number }>();
@@ -100,7 +100,7 @@ export function buildReport(
 
   const yes = fb.filter((e) => e.helped).length;
   const no = fb.filter((e) => e.helped === false).length;
-  const answered = asks.filter((a) => a.quality !== "none").length;
+  const answered = asks.filter((a) => a.quality === "good").length;
 
   // Dagsserie
   const days = new Map<string, { questions: number; no: number }>();

@@ -36,16 +36,22 @@ function buildSteps(id: string, steps: S[]): Step[] {
     const image = menuStep ? "p3" : imageIn;
     const pin = menuStep ? 3 : pinIn;
     const step: Step = { id: `${id}-${i + 1}`, text };
+    const menuName = menuStep ? text.match(/\*\*(.+?)\*\*/)?.[1] : undefined;
     if (image) {
       const f = FOCUS[image];
       step.image = `/media/${image}.jpg`;
       step.annotated = true;
       step.ratio = f?.ratio;
       const p = pin ? f?.pins[String(pin)] : undefined;
-      if (p) {
+      if (menuName && MENU_Y[menuName] !== undefined) {
+        // Markera exakt det menyval som steget gäller.
+        const cy = MENU_Y[menuName];
+        step.hotspot = { x: 0.775, y: cy - 0.022, w: 0.185, h: 0.044 };
+        step.annotated = false;
+      } else if (p) {
         // Zooma mot pilens spets och lite förbi den, så att hela målrutan syns.
         const dx = p.fx - p.x, dy = p.fy - p.y, len = Math.hypot(dx, dy) || 1;
-        const reach = 0.1, r = step.ratio ?? 1.6;
+        const reach = 0.08, r = step.ratio ?? 1.6;
         step.focus = { x: Math.min(0.97, Math.max(0.03, p.fx + (dx / len) * reach)), y: Math.min(0.97, Math.max(0.03, p.fy + (dy / len) * reach * r)) };
         step.pin = { x: p.x, y: p.y };
       }
@@ -53,6 +59,12 @@ function buildSteps(id: string, steps: S[]): Step[] {
     return step;
   });
 }
+
+// Radernas lodräta mittpunkt (0–1) i platsmenybilden (sida 3), för att kunna markera exakt rätt menyval.
+const MENU_Y: Record<string, number> = {
+  "Språkhantering": 0.418, "Ändra platsinformation": 0.462, "Bildhantering": 0.506, "Konfigurera bildspel": 0.55, "Tillåten incheckning": 0.594,
+  "Hantera kapacitet": 0.638, "Hantera grindar": 0.682, "Aviseringsinställningar": 0.726, "SMS-mallar": 0.768, "Ändra struktur": 0.812, "Visa rapporter": 0.856,
+};
 
 const NOW = new Date().toISOString();
 

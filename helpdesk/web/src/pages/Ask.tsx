@@ -35,21 +35,26 @@ export function Ask() {
         <GuideView guide={res.guide} question={q} queryId={res.queryId} short={res.short} related={related} />
       )}
 
-      {res && res.quality !== "good" && (
+      {res && res.quality !== "good" && (() => {
+        // Visa bara förslag som faktiskt ligger nära – hellre inget än löst relaterat brus.
+        const near = res.alternatives.filter((a) => a.score >= 0.3).slice(0, 3);
+        const weak = res.quality === "weak" && near.length > 0;
+        return (
         <div className="no-answer">
           <div className="card">
-            <h2>{res.quality === "weak" ? t.weakTitle : t.noneTitle}</h2>
-            {res.quality === "none" && <p className="muted">{t.noneHint}</p>}
-            {res.alternatives.length > 0 && <CandidateList items={res.alternatives.slice(0, 3)} />}
+            <h2>{weak ? t.weakTitle : t.noneTitle}</h2>
+            {!weak && <p className="muted">{t.noneHint}</p>}
+            {weak && <CandidateList items={near} />}
           </div>
-          {res.quality === "none" && (
+          {!weak && (
             <div className="topics">
               {config?.categories.map((c) => <Link key={c.id} to={`/c/${c.id}`} className="topic"><span aria-hidden>{catIcon(c.id)}</span><b>{catLabel(c.id)}</b></Link>)}
             </div>
           )}
           {showTicket ? <TicketForm question={q} stepsViewed={[]} queryId={res.queryId} /> : <button className="btn big" onClick={() => setShowTicket(true)}>{t.support}</button>}
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

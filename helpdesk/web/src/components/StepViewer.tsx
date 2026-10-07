@@ -27,7 +27,7 @@ export function Shot({ step, zoomed, n, showBadge = true }: { step: Step; zoomed
   const center = step.hotspot ? { x: step.hotspot.x + step.hotspot.w / 2, y: step.hotspot.y + step.hotspot.h / 2 } : step.focus;
   const baseH = w / ratio;
   const contain = Math.min(1, H / (baseH || 1));
-  const zoomScale = step.hotspot ? clamp(0.5 / Math.max(step.hotspot.w, step.hotspot.h * 0.8, 0.1), 1.3, 3.2) : step.focus ? 2.1 : 1;
+  const zoomScale = step.hotspot ? clamp(0.5 / Math.max(step.hotspot.w, step.hotspot.h * 0.8, 0.1), 1.3, 3.2) : step.focus ? 1.8 : 1;
   const s = zoomed && center ? Math.max(zoomScale, contain) : contain;
   const imgW = w * s, imgH = imgW / ratio;
   const c = zoomed && center ? center : { x: 0.5, y: 0.5 };

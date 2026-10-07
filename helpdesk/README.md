@@ -50,7 +50,7 @@ Hjälpen använder sidan som kontext ("Hur ändrar jag detta?"). Guidens `pageKe
 walkthrough-sektion (`[data-help='menu-capacity']`, klick/skriv/nästa). Se `web/public/demo-host.html`.
 
 ## Innehåll
-Första start seedar 22 guider ur manualen "Användarguide Location Admin". För att seeda om: stoppa servern och ta bort `server/data/db.json`.
+Första start seedar 25 guider ur manualen "Användarguide Location Admin". För att seeda om: stoppa servern och ta bort `server/data/db.json`.
 Lägg in video per guide i admin (mp4/webm, YouTube eller Loom) – ingen kodändring behövs.
 
 ## Säkerhet
@@ -59,3 +59,7 @@ publika endpoints är rate-limitade. Sätt `ALLOWED_ORIGINS` och kör bakom HTTP
 
 ## Nästa steg
 Embeddings (bakom `SearchEngine`), SSO för admin, Postgres, automatisk guideförbättring från analytics.
+
+## Demo-data för analytics
+`DATA_DIR=/tmp/demo npm run demo-data -w server` fyller en **separat** katalog med simulerad trafik (sessioner märkta `demo-`).
+Starta sedan en andra server: `DATA_DIR=/tmp/demo PORT=8788 ADMIN_TOKEN=demo npm start`. Blanda aldrig med riktig data.

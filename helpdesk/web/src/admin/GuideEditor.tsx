@@ -40,7 +40,7 @@ function ImageField({ step, onChange }: { step: Step; onChange: (s: Step) => voi
   if (step.image) {
     return (
       <div>
-        <HotspotEditor src={step.image} value={step.hotspot} onChange={(h) => onChange({ ...step, hotspot: h })} onRatio={(r) => step.ratio !== r && onChange({ ...step, ratio: r })} />
+        <HotspotEditor src={step.image} value={step.hotspot} onChange={(h) => onChange({ ...step, hotspot: h })} onRatio={(r) => !step.ratio && onChange({ ...step, ratio: r })} />
         <div className="row">
           <button type="button" className="btn small" onClick={() => input.current?.click()}>Byt bild</button>
           <button type="button" className="btn small ghost danger" onClick={() => onChange({ ...step, image: undefined, hotspot: undefined, focus: undefined, annotated: false })}>Ta bort bild</button>
