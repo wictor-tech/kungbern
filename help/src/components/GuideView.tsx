@@ -7,6 +7,7 @@ import { Feedback } from "./Feedback";
 import { RichText } from "./RichText";
 import { Screenshot } from "./Screenshot";
 import { StepZoom } from "./StepZoom";
+import { buildTour, hasTour } from "@/lib/tour";
 import { AppBadge, Breadcrumb, GuideCard } from "./ui";
 
 /**
@@ -53,6 +54,18 @@ export function GuideView({
   const tips = guide.notes.filter((n) => n.type === "tip");
   const allDone = guide.steps.length > 0 && done.length === guide.steps.length;
   const hasMedia = Boolean(guide.screenshot || guide.video?.url);
+  // Öppnad via "?"-knappen inne i LUPNUMBER (i en ram)? Då kan vi visa vägen direkt i appen.
+  const [embedded, setEmbedded] = useState(false);
+  useEffect(() => {
+    try {
+      setEmbedded(window.self !== window.top);
+    } catch {
+      setEmbedded(true);
+    }
+  }, []);
+  const startTour = () => {
+    window.parent.postMessage({ type: "lup-help:tour", guideId: guide.id, title: guide.title, steps: buildTour(guide) }, "*");
+  };
 
   return (
     <article className="animate-rise" aria-labelledby="guide-title">
@@ -143,6 +156,16 @@ export function GuideView({
               <strong>Var försiktig.</strong> <RichText text={n.text} />
             </p>
           ))}
+
+          {embedded && !preview && hasTour(guide) && (
+            <button
+              type="button"
+              onClick={startTour}
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-navy px-4 font-semibold text-white hover:bg-navy/90"
+            >
+              <span aria-hidden>👆</span> Visa mig i appen
+            </button>
+          )}
 
           <section aria-labelledby="steps-title">
             <h3 id="steps-title" className="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">

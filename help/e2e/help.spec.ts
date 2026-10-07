@@ -66,15 +66,46 @@ test("admin: logga in, ändra en guide, se den i sökningen", async ({ page }) =
 
 test("?-widgeten öppnar hjälpen för sidan användaren står på", async ({ page }) => {
   await page.goto("/widget-demo.html");
+  await page.getByRole("button", { name: "Kapacitet och tidsluckor" }).click();
   await page.getByRole("button", { name: "Behöver du hjälp?" }).click();
   const help = page.frameLocator('iframe[title="LUP Hjälp"]');
   await expect(help.getByText("Hjälp för sidan du står på")).toBeVisible();
   await expect(help.getByRole("link", { name: /Ändra kapacitet per timme/ })).toBeVisible();
 
   await page.getByRole("button", { name: "Stäng hjälpen" }).click();
-  await page.getByRole("button", { name: "Site › SMS Alarm" }).click();
+  await page.getByRole("button", { name: "Bildhantering" }).click();
   await page.getByRole("button", { name: "Behöver du hjälp?" }).click();
-  await expect(help.getByRole("link", { name: /Skicka SMS till alla/ })).toBeVisible();
+  await expect(help.getByRole("link", { name: /Lägga upp en bild/ })).toBeVisible();
+});
+
+test("Visa mig i appen markerar rätt knapp och går vidare när man klickar", async ({ page }) => {
+  await page.goto("/widget-demo.html");
+  await page.getByRole("button", { name: "Behöver du hjälp?" }).click();
+  const help = page.frameLocator('iframe[title="LUP Hjälp"]');
+  // I dev-läge kan ramen bli interaktiv lite senare – försök tills frågan går iväg.
+  await expect(async () => {
+    await help.getByRole("button", { name: "Ingen kan boka" }).click({ timeout: 2000 });
+    await expect(help.getByRole("heading", { name: "Ändra kapacitet per timme" })).toBeVisible({ timeout: 3000 });
+  }).toPass({ timeout: 30000 });
+  await help.getByRole("button", { name: /Visa mig i appen/ }).click();
+
+  // Steg 1: menyknappen markeras
+  const tip = page.locator(".lup-tour-tip");
+  await expect(tip).toContainText("steg 1 av 5");
+  const hl = page.locator(".lup-tour-hl");
+  const box = await page.getByRole("button", { name: "Kapacitet och tidsluckor" }).boundingBox();
+  await expect.poll(async () => Math.round((await hl.boundingBox())!.y)).toBeLessThan(box!.y);
+  // Klick på knappen i appen → nästa steg
+  await page.getByRole("button", { name: "Kapacitet och tidsluckor" }).click();
+  await expect(tip).toContainText("steg 2 av 5");
+  await tip.getByRole("button", { name: "Nästa" }).click();
+  await expect(tip).toContainText("steg 3 av 5");
+  await tip.getByRole("button", { name: "Nästa" }).click();
+  await expect(tip).toContainText("steg 4 av 5");
+  await page.getByRole("button", { name: "Spara kapacitet" }).click();
+  await expect(tip).toContainText("steg 5 av 5");
+  await tip.getByRole("button", { name: "Klar" }).click();
+  await expect(tip).toContainText("Klart!");
 });
 
 test("varje steg som pekar på en knapp visar en inzoomad bild", async ({ page }) => {

@@ -4,6 +4,8 @@ import type { NextConfig } from "next";
 const frameAncestors = ["'self'", ...(process.env.HELP_ALLOWED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean)];
 
 const nextConfig: NextConfig = {
+  // Appen ligger i en undermapp till repot (som har en egen package-lock för Remotion).
+  outputFileTracingRoot: __dirname,
   // PGlite levereras som WASM och ska inte paketeras av Next.
   serverExternalPackages: ["@electric-sql/pglite"],
   async headers() {

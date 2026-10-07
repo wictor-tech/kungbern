@@ -6,36 +6,65 @@
 <title>Widget-demo – LUP Hjälp</title>
 <style>
   body{margin:0;font:15px system-ui,sans-serif;background:#f1f5f9;color:#1e293b}
-  header{background:#064769;color:#fff;padding:14px 20px;font-weight:700}
-  main{max-width:900px;margin:24px auto;padding:0 16px}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
-  nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-  nav button{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}
-  nav button[aria-pressed=true]{background:#e8f4ff;border-color:#0da0ec}
-  code{background:#f1f5f9;padding:2px 6px;border-radius:4px}
+  header{background:#064769;color:#fff;padding:14px 20px;font-weight:700;display:flex;gap:16px;align-items:center}
+  header small{font-weight:400;opacity:.8}
+  main{display:grid;grid-template-columns:260px 1fr;gap:16px;max-width:1100px;margin:20px auto;padding:0 16px}
+  aside,.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+  aside h3{font-size:12px;letter-spacing:.06em;color:#64748b;margin:12px 0 6px}
+  aside button{display:block;width:100%;text-align:left;border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:9px 10px;margin:4px 0;cursor:pointer}
+  .dialog{display:none}.dialog.open{display:block}
+  label{display:block;font-weight:600;margin:12px 0 4px}
+  select,input{font:inherit;padding:8px;border:1px solid #cbd5e1;border-radius:8px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{border:0;background:#1a73c9;color:#fff;border-radius:18px;padding:8px 14px;cursor:pointer}
+  .btn.ghost{background:#fff;color:#1a73c9;border:1px solid #1a73c9}
+  .hours{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+  .hours input{width:100%;box-sizing:border-box;text-align:center}
+  .note{color:#64748b;font-size:13px}
+  @media (max-width:700px){main{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header>LUPNUMBER (exempelsida)</header>
+<header>LUP <small>Exempelsida som liknar Location Admin – här provar du "?"-knappen och "Visa mig i appen"</small></header>
 <main>
-  <div class="card">
-    <p>Så här ser hjälpknappen ut inne i produkten. Välj en sida nedan och tryck på <strong>Behöver du hjälp?</strong> nere till höger.</p>
-    <nav id="pages">
-      <button data-page="capacity-timeslots" data-app="location-admin" aria-pressed="true">Capacity &amp; timeslots</button>
-      <button data-page="slideshow-settings" data-app="location-admin">Slideshow settings</button>
-      <button data-page="image-management" data-app="location-admin">Image management</button>
-      <button data-page="site-board" data-app="site">Site › Board</button>
-      <button data-page="site-sms-alarm" data-app="site">Site › SMS Alarm</button>
-    </nav>
-    <p>Utvecklare: lägg in <code>&lt;script src="/widget.js" data-page="…" data-app="…" defer&gt;&lt;/script&gt;</code> och anropa <code>LupHelp.setPage(…)</code> vid sidbyte.</p>
-  </div>
+  <aside>
+    <h3>BOKNING</h3>
+    <button type="button" data-open="cap" data-page="capacity-timeslots">Kapacitet och tidsluckor</button>
+    <button type="button" data-open="book" data-page="booking-settings">Bokningsinställningar</button>
+    <h3>PLATSDETALJER</h3>
+    <button type="button" data-open="img" data-page="image-management">Bildhantering</button>
+  </aside>
+  <section>
+    <div class="card dialog open" id="start">
+      <p>Välj något i menyn till vänster, eller tryck på <b>Behöver du hjälp?</b> nere till höger.</p>
+      <p class="note">Utvecklare: <code>&lt;script src="/widget.js" data-page="…" data-app="…" defer&gt;&lt;/script&gt;</code> och <code>LupHelp.setPage(…)</code> vid sidbyte.</p>
+    </div>
+    <div class="card dialog" id="cap">
+      <h2>Kapacitet &amp; tidsluckor</h2>
+      <label for="model">Kapacitetsmodell</label>
+      <select id="model"><option>Timkapacitet</option><option>Fasta tidsluckor</option></select>
+      <div class="row" style="margin-top:12px"><span>Ställ in varje timme till</span><input id="every" size="4"><button type="button" class="btn ghost" id="apply">Tillämpa</button></div>
+      <div class="hours" id="hours"></div>
+      <p style="margin-top:14px"><button type="button" class="btn" id="save">Spara kapacitet</button> <span id="saved" class="note"></span></p>
+      <h3>Fasta tidsluckor</h3>
+      <p class="note">Exakta bokningsbara tider.</p>
+    </div>
+    <div class="card dialog" id="book"><h2>Bokningsinställningar</h2><label>Tidssteg</label><select><option>30 minuter</option></select></div>
+    <div class="card dialog" id="img"><h2>Bildhantering</h2><label>Ladda upp bild</label><input type="file"><p><button type="button" class="btn">Skapa bild</button></p></div>
+  </section>
 </main>
-<script src="/widget.js" data-page="capacity-timeslots" data-app="location-admin" defer></script>
+<script src="/widget.js" data-app="location-admin" defer></script>
 <script>
-  document.getElementById("pages").addEventListener("click", function (e) {
-    var b = e.target.closest("button"); if (!b) return;
-    document.querySelectorAll("#pages button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
-    window.LupHelp && window.LupHelp.setPage(b.dataset.page, b.dataset.app);
+  var hours = document.getElementById("hours");
+  for (var h = 6; h <= 17; h++) { var i = document.createElement("input"); i.value = "0"; i.title = (h < 10 ? "0" : "") + h + ":00"; hours.appendChild(i); }
+  document.getElementById("apply").onclick = function () { var v = document.getElementById("every").value || "0"; hours.querySelectorAll("input").forEach(function (i) { i.value = v; }); };
+  document.getElementById("save").onclick = function () { document.getElementById("saved").textContent = "Sparat (exempel – inget skickas)"; };
+  document.querySelectorAll("[data-open]").forEach(function (b) {
+    b.onclick = function () {
+      document.querySelectorAll(".dialog").forEach(function (d) { d.classList.remove("open"); });
+      document.getElementById(b.dataset.open).classList.add("open");
+      window.LupHelp && window.LupHelp.setPage(b.dataset.page, "location-admin");
+    };
   });
 </script>
 </body>
