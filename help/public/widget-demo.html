@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widget-demo – LUP Hjälp</title>
+<style>
+  body{margin:0;font:15px system-ui,sans-serif;background:#f1f5f9;color:#1e293b}
+  header{background:#0c4a6e;color:#fff;padding:14px 20px;font-weight:700}
+  main{max-width:900px;margin:24px auto;padding:0 16px}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  nav button{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}
+  nav button[aria-pressed=true]{background:#e0f2fe;border-color:#0ea5e9}
+  code{background:#f1f5f9;padding:2px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>LUPNUMBER (exempelsida)</header>
+<main>
+  <div class="card">
+    <p>Så här ser hjälpknappen ut inne i produkten. Välj en sida nedan och tryck på <strong>Behöver du hjälp?</strong> nere till höger.</p>
+    <nav id="pages">
+      <button data-page="capacity-timeslots" data-app="location-admin" aria-pressed="true">Capacity &amp; timeslots</button>
+      <button data-page="slideshow-settings" data-app="location-admin">Slideshow settings</button>
+      <button data-page="image-management" data-app="location-admin">Image management</button>
+      <button data-page="site-board" data-app="site">Site › Board</button>
+      <button data-page="site-sms-alarm" data-app="site">Site › SMS Alarm</button>
+    </nav>
+    <p>Utvecklare: lägg in <code>&lt;script src="/widget.js" data-page="…" data-app="…" defer&gt;&lt;/script&gt;</code> och anropa <code>LupHelp.setPage(…)</code> vid sidbyte.</p>
+  </div>
+</main>
+<script src="/widget.js" data-page="capacity-timeslots" data-app="location-admin" defer></script>
+<script>
+  document.getElementById("pages").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    document.querySelectorAll("#pages button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+    window.LupHelp && window.LupHelp.setPage(b.dataset.page, b.dataset.app);
+  });
+</script>
+</body>
+</html>

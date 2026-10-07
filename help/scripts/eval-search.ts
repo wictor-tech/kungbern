@@ -3,12 +3,12 @@
  *   npm run eval:search          → sammanfattning + fel
  *   npm run eval:search -- -v    → alla frågor
  */
-import { buildSeedGuides } from "../src/lib/seed";
+import { publishedSeedGuides } from "../src/lib/seed";
 import { buildIndex, judge, search } from "../src/lib/search";
 import { EVAL_CASES } from "./eval-cases";
 
 const verbose = process.argv.includes("-v");
-const index = buildIndex(buildSeedGuides());
+const index = buildIndex(publishedSeedGuides());
 
 let top1 = 0;
 let answeredCorrect = 0;

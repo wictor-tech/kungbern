@@ -370,6 +370,10 @@ export function GuideEditor({
                 src={g.screenshot}
                 hotspots={g.hotspots}
                 drawing={drawing}
+                onSize={(w, h) => {
+                  // Bildens storlek behövs för de inzoomade stegen; uppdateras när en ny bild laddats upp.
+                  if (g.screenshotSize?.[0] !== w || g.screenshotSize?.[1] !== h) setG((prev) => ({ ...prev, screenshotSize: [w, h] }));
+                }}
                 onDraw={(n, rect) => {
                   set("hotspots", g.hotspots.map((h) => (h.n === n ? { ...h, ...rect } : h)));
                   setDrawing(null);
@@ -553,10 +557,12 @@ function HotspotCanvas({
   hotspots,
   drawing,
   onDraw,
+  onSize,
 }: {
   src: string;
   hotspots: Hotspot[];
   drawing: number | null;
+  onSize: (w: number, h: number) => void;
   onDraw: (n: number, rect: { x: number; y: number; w: number; h: number }) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -596,7 +602,13 @@ function HotspotCanvas({
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" draggable={false} className="block h-auto w-full" />
+      <img
+        src={src}
+        alt=""
+        draggable={false}
+        className="block h-auto w-full"
+        onLoad={(e) => onSize(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight)}
+      />
       {hotspots
         .filter((h) => h.x !== undefined)
         .map((h) => (

@@ -13,13 +13,11 @@ export function Screenshot({
   alt,
   hotspots,
   active,
-  onHotspot,
 }: {
   src: string;
   alt: string;
   hotspots: Hotspot[];
   active?: number | null;
-  onHotspot?: (n: number) => void;
 }) {
   const [zoom, setZoom] = useState(false);
 
@@ -48,18 +46,17 @@ export function Screenshot({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt={alt} className="block h-auto w-full" />
         </button>
-        {positioned.map((h) => (
-          <button
-            key={h.n}
-            type="button"
-            onClick={() => onHotspot?.(h.n)}
-            aria-label={`Markering ${h.n}: ${h.label}`}
-            className={`absolute rounded-md border-2 transition ${
-              active === h.n ? "border-marker bg-marker/15 ring-4 ring-marker/30" : "border-marker/70 hover:bg-marker/10"
-            }`}
-            style={{ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w ?? 6}%`, height: `${h.h ?? 6}%` }}
-          />
-        ))}
+        {/* Markeringarna finns redan i bilden; här lyser bara den som hör till steget användaren pekar på. */}
+        {positioned
+          .filter((h) => h.n === active)
+          .map((h) => (
+            <span
+              key={h.n}
+              aria-hidden
+              className="pointer-events-none absolute rounded-md bg-lup/10 ring-4 ring-lup/70 ring-offset-2"
+              style={{ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w ?? 6}%`, height: `${h.h ?? 6}%` }}
+            />
+          ))}
         <span className="pointer-events-none absolute right-2 bottom-2 rounded-md bg-navy/80 px-2 py-1 text-xs font-medium text-white">
           Klicka för att förstora
         </span>

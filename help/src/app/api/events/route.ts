@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import { logView } from "@/lib/analytics";
 import { json, parseBody, preflight } from "@/lib/http";
+import { rateLimited } from "@/lib/ratelimit";
 
 const Body = z.object({
   type: z.literal("view"),
@@ -12,6 +13,7 @@ const Body = z.object({
 
 /** POST /api/events – att en guide visats (och vilka steg användaren tittat på). */
 export async function POST(req: Request) {
+  if (rateLimited(req, "events", 120)) return json(req, { error: "För många förfrågningar. Vänta en minut och försök igen." }, 429);
   const body = await parseBody(req, Body);
   if ("error" in body) return body.error;
   const e = body.data;

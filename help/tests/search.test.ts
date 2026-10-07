@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildSeedGuides } from "@/lib/seed";
+import { publishedSeedGuides } from "@/lib/seed";
 import { buildIndex, judge, search } from "@/lib/search";
 import { terms } from "@/lib/text";
 import { EVAL_CASES } from "../scripts/eval-cases";
 
-const index = buildIndex(buildSeedGuides());
+const index = buildIndex(publishedSeedGuides());
 const top = (q: string, page?: string) => {
   const { hits } = search(index, q, { page });
   return { id: hits[0]?.guide.id ?? null, ...judge(hits) };
@@ -32,7 +32,7 @@ describe("sökning", () => {
     expect(top("Hur lägger jag upp en bild?")).toMatchObject({ id: "lagga-upp-en-bild", verdict: "answered" });
     expect(top("Ändra slideshow").id).toBe("andra-bildspelet");
     expect(top("Ny bild på skärmen").id).toBe("lagga-upp-en-bild");
-    expect(top("Hur skapar jag en bokning?").id).toBe("lagga-in-ett-fordon-manuellt");
+    expect(top("Hur skapar jag en bokning?").id).toBe("skapa-en-bokning");
   });
   it("tål stavfel", () => {
     expect(top("bildpsel").id).toBe("andra-bildspelet");

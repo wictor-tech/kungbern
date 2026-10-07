@@ -5,6 +5,7 @@ import type { Guide, GuideSummary } from "@/lib/types";
 import { logViewApi } from "./client";
 import { Feedback } from "./Feedback";
 import { Screenshot } from "./Screenshot";
+import { StepZoom } from "./StepZoom";
 import { AppBadge, Breadcrumb, GuideCard } from "./ui";
 
 /**
@@ -80,10 +81,6 @@ export function GuideView({
               alt={`Skärmbild: ${guide.title}`}
               hotspots={guide.hotspots}
               active={activeHotspot}
-              onHotspot={(n) => {
-                setLegendOpen(true);
-                setActiveHotspot(n);
-              }}
             />
           )}
           {guide.hotspots.length > 0 && (
@@ -107,6 +104,8 @@ export function GuideView({
                   {guide.hotspots.map((h) => (
                     <li
                       key={h.n}
+                      onMouseEnter={() => setActiveHotspot(h.n)}
+                      onMouseLeave={() => setActiveHotspot(null)}
                       className={`flex gap-3 rounded-md p-1 text-sm ${activeHotspot === h.n ? "bg-marker-tint" : ""}`}
                     >
                       <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-marker text-xs font-bold text-white">
@@ -138,8 +137,9 @@ export function GuideView({
             <ol className="space-y-2">
               {guide.steps.map((s) => {
                 const checked = done.includes(s.n);
+                const spot = s.hotspot ? guide.hotspots.find((h) => h.n === s.hotspot && h.x !== undefined) : undefined;
                 return (
-                  <li key={s.n}>
+                  <li key={s.n} onMouseEnter={() => spot && setActiveHotspot(spot.n)} onMouseLeave={() => setActiveHotspot(null)}>
                     <button
                       type="button"
                       onClick={() => toggle(s.n)}
@@ -156,8 +156,13 @@ export function GuideView({
                       >
                         {checked ? "✓" : s.n}
                       </span>
-                      <span className={`pt-1 text-base leading-snug ${checked ? "text-muted line-through" : "text-ink"}`}>
-                        {s.text}
+                      <span className="min-w-0 flex-1 pt-1">
+                        <span className={`block text-base leading-snug ${checked ? "text-muted line-through" : "text-ink"}`}>
+                          {s.text}
+                        </span>
+                        {spot && guide.screenshot && guide.screenshotSize && !checked && (
+                          <StepZoom src={guide.screenshot} size={guide.screenshotSize} spot={spot} label={spot.label} />
+                        )}
                       </span>
                     </button>
                   </li>

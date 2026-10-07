@@ -10,7 +10,7 @@ export const EVAL_CASES: { q: string; expect: string | string[] | null; page?: s
   { q: "Hur lägger jag till en användare?", expect: null },
   { q: "Hur skickar jag ett SMS?", expect: ["skicka-sms-till-alla-pa-omradet", "andra-texten-i-ett-sms"] },
   { q: "Hur ändrar jag vilken port chauffören ska till?", expect: ["kalla-in-en-forare", "se-lastbryggorna-over-tid"] },
-  { q: "Hur skapar jag en bokning?", expect: "lagga-in-ett-fordon-manuellt" },
+  { q: "Hur skapar jag en bokning?", expect: ["skapa-en-bokning", "lagga-in-ett-fordon-manuellt"] },
   { q: "Byta bild", expect: "lagga-upp-en-bild" },
   { q: "Ny bild på skärmen", expect: "lagga-upp-en-bild" },
   { q: "Ändra slideshow", expect: "andra-bildspelet" },

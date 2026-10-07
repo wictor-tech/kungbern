@@ -52,12 +52,26 @@ hanterade. Kontrollfrågorna ger 16/17 rätt.
 ```bash
 npm run typecheck
 npm test          # enhets- och flödestester (PGlite i minnet)
-npm run e2e       # Playwright: hela användar- och adminflödet, desktop + mobil
+npm run e2e       # Playwright: hela användar- och adminflödet, widgeten, desktop + mobil
 ```
 
-## Koppla in i LUPNUMBER (förberett)
+GitHub Actions (`.github/workflows/help.yml`) kör allt detta vid varje push som rör `help/`.
 
-**"?"-knapp med sidkontext.** Öppna hjälpen i en panel eller iframe:
+**Klickbar demo** (en HTML-fil, sökningen körs i webbläsaren): `node scripts/build-demo.mjs ut.html`.
+
+## Koppla in i LUPNUMBER
+
+**"?"-knappen (färdig widget).** Lägg in en rad på varje sida i produkten:
+
+```html
+<script src="https://<hjälp-domän>/widget.js" data-page="capacity-timeslots" data-app="location-admin" defer></script>
+```
+
+Den ger en knapp "Behöver du hjälp?" som öppnar hjälpen i en sidopanel, med sidans guider överst. Vid sidbyte
+utan omladdning: `LupHelp.setPage("site-board", "site")`. Med en färdig fråga: `LupHelp.open("Hur …?")`.
+Prova på `/widget-demo.html`. Sätt `HELP_ALLOWED_ORIGINS` så att produkten får visa panelen och anropa API:t.
+
+**Utan widget** kan hjälpen öppnas i en egen panel eller iframe:
 
 ```
 https://<hjälp-domän>/?page=slideshow-settings&app=location-admin&embed=1
@@ -78,6 +92,24 @@ Sidnycklarna står på varje guide (`pageKey`) och kan ändras i admin.
 | `POST` | `/api/events` | Visning av guide och vilka steg användaren bockat av |
 
 Supportärenden skickas till `SUPPORT_WEBHOOK_URL` (Zendesk, Freshdesk, Slack …) om den är satt.
+
+## Inzoomade steg
+
+Varje steg som nämner en knapp ("Tryck **Save capacity**") visar ett inzoomat utsnitt av skärmbilden med knappen
+markerad. Positionerna räknades fram automatiskt ur de orangea markeringarna (`scripts/hotspots/`) och kan
+justeras i admin med "Rita". Vilket steg som hör till vilken markering väljs per steg i admin.
+
+## Guider som saknades i manualen
+
+`content/drafts.sv.json`: *Skapa en bokning* (publicerad, bygger helt på manualens avsnitt 34), samt
+*Byta port för en förare* och *Lägga till en användare* som **utkast** med öppna frågor `[Fyll i: …]`.
+Utkasten syns bara i admin.
+
+## Säkerhet
+
+- Admin bakom lösenord, signerad cookie, får inte bäddas in i andra sajter.
+- Begränsat antal anrop per minut på de publika API:erna (frågor, feedback, ärenden, inloggning).
+- Uppladdningar: bara bild- och videoformat, max 50 MB.
 
 ## Förberett för senare
 

@@ -1,5 +1,6 @@
 import screens from "virtual:screens";
-import { buildSeedGuides } from "@/lib/seed";
+import { buildDraftGuides, buildSeedGuides } from "@/lib/seed";
 
-/** Samma 38 guider som appen, med skärmbilderna inbäddade. */
-export const DEMO_GUIDES = buildSeedGuides().map((g) => ({ ...g, screenshot: g.screenshot ? (screens[g.screenshot] ?? g.screenshot) : null }));
+const base = buildSeedGuides();
+/** Samma publicerade guider som appen, med skärmbilderna inbäddade. */
+export const DEMO_GUIDES = [...base, ...buildDraftGuides(base).filter((g) => g.status === "published")].map((g) => ({ ...g, screenshot: g.screenshot ? (screens[g.screenshot] ?? g.screenshot) : null }));

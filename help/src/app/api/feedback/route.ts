@@ -2,6 +2,7 @@ import { z } from "zod/v4";
 import { logFeedback } from "@/lib/analytics";
 import { ask } from "@/lib/ask";
 import { json, parseBody, preflight } from "@/lib/http";
+import { rateLimited } from "@/lib/ratelimit";
 
 const Body = z.object({
   guideId: z.string().max(100).nullish(),
@@ -19,6 +20,7 @@ const Body = z.object({
  * ursprunglig fråga + vad som saknades, utan de guider som redan visats.
  */
 export async function POST(req: Request) {
+  if (rateLimited(req, "feedback", 30)) return json(req, { error: "För många förfrågningar. Vänta en minut och försök igen." }, 429);
   const body = await parseBody(req, Body);
   if ("error" in body) return body.error;
   const f = body.data;

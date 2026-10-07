@@ -38,6 +38,8 @@ export interface Guide {
   breadcrumb: string[];
   summary: string;
   screenshot: string | null;
+  /** Skärmbildens storlek i pixlar [bredd, höjd] – behövs för att zooma in på en markering. */
+  screenshotSize?: [number, number] | null;
   hotspots: Hotspot[];
   steps: Step[];
   notes: Note[];

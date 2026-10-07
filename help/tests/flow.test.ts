@@ -10,10 +10,21 @@ describe("hela flödet mot databasen (PGlite i minnet)", () => {
     delete process.env.VOYAGE_API_KEY;
   });
 
-  it("seedar alla 38 guider från manualen", async () => {
+  it("seedar manualens 38 guider + nya guider, utkast dolda", async () => {
     const guides = await listGuides();
-    expect(guides).toHaveLength(38);
+    expect(guides).toHaveLength(39);
     expect(guides.every((g) => g.screenshot && g.steps.length > 0)).toBe(true);
+    expect((await listGuides({ includeDrafts: true })).length).toBe(41);
+    expect(await getGuide("lagga-till-en-anvandare")).toBeNull();
+  });
+
+  it("stegen har inzoomningsdata från skärmbilderna", async () => {
+    const g = (await getGuide("andra-kapacitet-per-timme"))!;
+    expect(g.screenshotSize?.[0]).toBe(1600);
+    const step = g.steps.find((s) => s.text.includes("Save capacity"))!;
+    const spot = g.hotspots.find((h) => h.n === step.hotspot)!;
+    expect(spot.label).toBe("Save capacity");
+    expect(spot.x).toBeGreaterThan(0);
   });
 
   it("fråga → guide → feedback → ärende → insikter", async () => {

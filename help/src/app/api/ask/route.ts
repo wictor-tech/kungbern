@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import { ask } from "@/lib/ask";
 import { json, parseBody, preflight } from "@/lib/http";
+import { rateLimited } from "@/lib/ratelimit";
 
 const Body = z.object({
   q: z.string().max(500),
@@ -12,6 +13,7 @@ const Body = z.object({
 
 /** POST /api/ask – användarens fråga → bästa guide, kort svar och alternativ. */
 export async function POST(req: Request) {
+  if (rateLimited(req, "ask", 60)) return json(req, { error: "För många förfrågningar. Vänta en minut och försök igen." }, 429);
   const body = await parseBody(req, Body);
   if ("error" in body) return body.error;
   return json(req, await ask(body.data));

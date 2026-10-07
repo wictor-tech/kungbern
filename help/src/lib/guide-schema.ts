@@ -11,6 +11,7 @@ export const GuideInput = z.object({
   breadcrumb: z.array(z.string().max(80)).max(8),
   summary: z.string().max(600),
   screenshot: z.string().max(300).nullable(),
+  screenshotSize: z.tuple([z.number().int().positive(), z.number().int().positive()]).nullable().optional(),
   hotspots: z
     .array(
       z.object({

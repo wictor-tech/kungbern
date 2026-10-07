@@ -2,7 +2,7 @@
  * Kontrollfrågor som INTE används vid finjustering – för att se att sökningen generaliserar.
  * Kör: npx tsx scripts/eval-holdout.ts
  */
-import { buildSeedGuides } from "../src/lib/seed";
+import { publishedSeedGuides } from "../src/lib/seed";
 import { buildIndex, judge, search } from "../src/lib/search";
 
 const CASES: [string, string | null][] = [
@@ -24,7 +24,7 @@ const CASES: [string, string | null][] = [
   ["koppla vår kamera", null],
   ["hur loggar jag ut", null],
 ];
-const index = buildIndex(buildSeedGuides());
+const index = buildIndex(publishedSeedGuides());
 let ok = 0;
 let wrongSure = 0;
 for (const [q, exp] of CASES) {

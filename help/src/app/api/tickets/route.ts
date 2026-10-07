@@ -1,5 +1,6 @@
 import { z } from "zod/v4";
 import { json, parseBody, preflight } from "@/lib/http";
+import { rateLimited } from "@/lib/ratelimit";
 import { createTicket } from "@/lib/tickets";
 
 const Body = z.object({
@@ -14,6 +15,7 @@ const Body = z.object({
 
 /** POST /api/tickets – supportärende med all kontext förifylld. */
 export async function POST(req: Request) {
+  if (rateLimited(req, "tickets", 5)) return json(req, { error: "För många förfrågningar. Vänta en minut och försök igen." }, 429);
   const body = await parseBody(req, Body);
   if ("error" in body) return body.error;
   const t = body.data;

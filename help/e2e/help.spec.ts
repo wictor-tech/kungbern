@@ -63,3 +63,21 @@ test("admin: logga in, ändra en guide, se den i sökningen", async ({ page }) =
   await page.goto("/?q=flamingofilm");
   await expect(page.getByRole("heading", { name: "Lägga till en video" })).toBeVisible();
 });
+
+test("?-widgeten öppnar hjälpen för sidan användaren står på", async ({ page }) => {
+  await page.goto("/widget-demo.html");
+  await page.getByRole("button", { name: "Behöver du hjälp?" }).click();
+  const help = page.frameLocator('iframe[title="LUP Hjälp"]');
+  await expect(help.getByText("Hjälp för sidan du står på")).toBeVisible();
+  await expect(help.getByRole("link", { name: /Ändra kapacitet per timme/ })).toBeVisible();
+
+  await page.getByRole("button", { name: "Stäng hjälpen" }).click();
+  await page.getByRole("button", { name: "Site › SMS Alarm" }).click();
+  await page.getByRole("button", { name: "Behöver du hjälp?" }).click();
+  await expect(help.getByRole("link", { name: /Skicka SMS till alla/ })).toBeVisible();
+});
+
+test("varje steg som pekar på en knapp visar en inzoomad bild", async ({ page }) => {
+  await page.goto("/g/andra-kapacitet-per-timme");
+  await expect(page.getByRole("img", { name: "Inzoomat: Save capacity" })).toBeVisible();
+});

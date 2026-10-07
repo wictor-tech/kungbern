@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { adminConfigured, checkPassword, setAdminCookie } from "@/lib/auth";
+import { rateLimited } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
   if (!adminConfigured()) return NextResponse.json({ error: "ADMIN_PASSWORD är inte satt på servern." }, { status: 503 });
+  if (rateLimited(req, "login", 10)) return NextResponse.redirect(new URL("/admin/login?fel=1", req.url), 303);
   const form = await req.formData();
   const password = String(form.get("password") ?? "");
   const name = String(form.get("name") ?? "").trim().slice(0, 60);
