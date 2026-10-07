@@ -55,12 +55,20 @@ export function HelpApp(props: HelpAppProps) {
     setError(null);
     askApi(q, { page, app })
       .then((r) => !cancelled && setResult(r))
-      .catch(() => !cancelled && setError("Något gick fel. Försök igen."))
+      .catch((e: unknown) =>
+        !cancelled && setError(e instanceof Error && e.message ? e.message : "Något gick fel. Försök igen."),
+      )
       .finally(() => !cancelled && setLoading(false));
     return () => {
       cancelled = true;
     };
   }, [q, page, app]);
+
+  const pick = (g: GuideSummary, typed: string) => {
+    const p = ctxParams();
+    if (typed) p.set("q", typed);
+    router.push(`/g/${g.id}?${p.toString()}`);
+  };
 
   const guideHref = (id: string) => {
     const p = ctxParams();
@@ -77,7 +85,7 @@ export function HelpApp(props: HelpAppProps) {
           <h1 className="text-3xl font-bold tracking-tight text-navy sm:text-5xl">Vad vill du ha hjälp med?</h1>
           <p className="mt-3 text-lg text-muted">Skriv med egna ord – vi visar exakt var du klickar.</p>
           <div className="mt-6">
-            <SearchBox large autoFocus onSubmit={submit} />
+            <SearchBox large autoFocus ctx={{ page, app }} onSubmit={submit} onPick={pick} />
           </div>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {props.popular.map((p) => (
@@ -159,7 +167,7 @@ export function HelpApp(props: HelpAppProps) {
 
   return (
     <div className="space-y-6">
-      <SearchBox initial={q} busy={loading} onSubmit={submit} />
+      <SearchBox initial={q} busy={loading} ctx={{ page, app }} onSubmit={submit} onPick={pick} />
 
       {loading && !result && <ResultSkeleton />}
       {error && <p className="rounded-xl bg-marker-tint p-4 text-marker">{error}</p>}

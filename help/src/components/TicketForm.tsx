@@ -41,8 +41,8 @@ export function TicketForm({
         try {
           const { id } = await ticketApi({ queryText, guideId, page, stepsViewed, comment, contact });
           setDone(id);
-        } catch {
-          setError("Kunde inte skicka ärendet. Försök igen om en stund.");
+        } catch (err) {
+          setError(err instanceof Error && err.message ? err.message : "Kunde inte skicka ärendet. Försök igen om en stund.");
         } finally {
           setSending(false);
         }

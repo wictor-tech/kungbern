@@ -38,6 +38,13 @@ export function askApi(q: string, ctx: HelpContext) {
   return delay(run(q, ctx));
 }
 
+export async function suggestApi(q: string, ctx: HelpContext) {
+  if (q.trim().length < 3) return [];
+  const { hits } = search(index, q, { page: ctx.page, limit: 5 });
+  const top = hits[0]?.score ?? 0;
+  return hits.filter((h) => (h.coverage >= 0.5 || h.intentSim >= 0.5) && h.score >= top * 0.35).map((h) => toSummary(h.guide));
+}
+
 export function logViewApi() {}
 
 export function feedbackApi(input: { guideId: string | null; helpful: boolean; comment?: string; originalQuery?: string | null; page?: string | null; shown?: string[] }) {

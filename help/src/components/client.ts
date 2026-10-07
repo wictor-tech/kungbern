@@ -1,6 +1,6 @@
 "use client";
 
-import type { AskResult } from "@/lib/types";
+import type { AskResult, GuideSummary } from "@/lib/types";
 
 /** Anonymt sessions-id per webbläsare, för att koppla ihop fråga → guide → feedback → ärende. */
 export function sessionId(): string {
@@ -17,12 +17,24 @@ export function sessionId(): string {
 }
 
 async function post<T>(url: string, body: unknown): Promise<T> {
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Något gick fel (${res.status})`);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new Error("Ingen kontakt med servern. Kontrollera internetanslutningen och försök igen.");
+  }
+  if (!res.ok) {
+    // Visa serverns meddelande om det finns (t.ex. "För många förfrågningar…"), annars ett generellt.
+    const msg = await res
+      .json()
+      .then((j: { error?: unknown }) => (typeof j.error === "string" ? j.error : null))
+      .catch(() => null);
+    throw new Error(msg && res.status < 500 ? msg : "Något gick fel. Försök igen om en stund.");
+  }
   return res.json() as Promise<T>;
 }
 
@@ -33,6 +45,14 @@ export interface HelpContext {
 
 export function askApi(q: string, ctx: HelpContext) {
   return post<AskResult>("/api/ask", { q, page: ctx.page, app: ctx.app, sessionId: sessionId() });
+}
+
+export async function suggestApi(q: string, ctx: HelpContext, signal?: AbortSignal): Promise<GuideSummary[]> {
+  const p = new URLSearchParams({ q });
+  if (ctx.page) p.set("page", ctx.page);
+  const res = await fetch(`/api/suggest?${p.toString()}`, { signal });
+  if (!res.ok) return [];
+  return ((await res.json()) as { suggestions: GuideSummary[] }).suggestions;
 }
 
 export function logViewApi(guideId: string, queryId: string | null, stepsViewed: number[]) {

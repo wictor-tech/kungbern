@@ -1,15 +1,43 @@
 import { z } from "zod/v4";
 
+// Svenska felmeddelanden i valideringen (adminläget visar dem för redaktören).
+z.config(z.locales.sv());
+
+const FIELD: Record<string, string> = {
+  id: "Länk (id)",
+  title: "Titel",
+  category: "Kategori",
+  pageKey: "Sida i produkten",
+  breadcrumb: "Menysökväg",
+  summary: "Kort beskrivning",
+  screenshot: "Skärmbild",
+  hotspots: "Markering",
+  steps: "Steg",
+  notes: "Tips/varning",
+  alternativeQueries: "Hur frågar användarna",
+  relatedGuides: "Relaterade guider",
+  video: "Video",
+};
+
+/** "Steg 3: För lång text …" i stället för ett tekniskt felmeddelande. */
+export function describeIssue(issue: { path: PropertyKey[]; message: string } | undefined): string {
+  if (!issue) return "Ogiltig guide";
+  const [field, index] = issue.path;
+  const name = FIELD[String(field)] ?? String(field ?? "Guiden");
+  const pos = typeof index === "number" ? ` ${index + 1}` : "";
+  return `${name}${pos}: ${issue.message}`;
+}
+
 /** Validering av en guide från adminläget. */
 export const GuideInput = z.object({
   id: z.string().regex(/^[a-z0-9-]{2,60}$/, "id får bara innehålla a–z, 0–9 och bindestreck"),
   number: z.number().int().min(0),
-  title: z.string().trim().min(2).max(120),
+  title: z.string().trim().min(2, "skriv minst 2 tecken").max(120, "högst 120 tecken"),
   category: z.string().min(1).max(60),
   app: z.enum(["location-admin", "site"]),
   pageKey: z.string().max(80).default(""),
   breadcrumb: z.array(z.string().max(80)).max(8),
-  summary: z.string().max(600),
+  summary: z.string().max(600, "högst 600 tecken – håll den kort"),
   screenshot: z.string().max(300).nullable(),
   screenshotAnnotated: z.boolean().optional(),
   screenshotSize: z.tuple([z.number().int().positive(), z.number().int().positive()]).nullable().optional(),
@@ -30,7 +58,7 @@ export const GuideInput = z.object({
     .array(
       z.object({
         n: z.number().int(),
-        text: z.string().trim().min(1).max(600),
+        text: z.string().trim().min(1, "får inte vara tomt").max(600, "högst 600 tecken – dela gärna upp i flera steg"),
         hotspot: z.number().int().optional(),
         image: z.string().max(300).optional(),
         target: z.string().max(200).optional(),

@@ -81,3 +81,14 @@ test("varje steg som pekar på en knapp visar en inzoomad bild", async ({ page }
   await page.goto("/g/andra-kapacitet-per-timme");
   await expect(page.getByRole("img", { name: "Inzoomat: Spara kapacitet" })).toBeVisible();
 });
+
+test("förslag medan man skriver tar en direkt till guiden", async ({ page }) => {
+  await page.goto("/");
+  await page.getByLabel("Vad vill du ha hjälp med?").pressSequentially("kapacitet", { delay: 40 });
+  const option = page.getByRole("option", { name: /Ändra kapacitet per timme/ });
+  await expect(option).toBeVisible();
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/g\/andra-kapacitet-per-timme/);
+  await expect(page.getByRole("heading", { name: "Ändra kapacitet per timme" })).toBeVisible();
+});

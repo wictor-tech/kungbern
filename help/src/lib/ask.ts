@@ -5,7 +5,7 @@ import { listGuides, toSummary } from "./guides";
 import { buildIndex, judge, search, type Hit, type SearchIndex } from "./search";
 import { normalize } from "./text";
 import { logQuery } from "./analytics";
-import type { AskResult, Guide } from "./types";
+import type { AskResult, Guide, GuideSummary } from "./types";
 
 /** Sökindexet byggs om när en guide sparas (invalidateIndex) – annars återanvänds det. */
 const cache: { index?: Promise<{ index: SearchIndex; guides: Guide[] }> } = ((
@@ -19,6 +19,20 @@ export function invalidateIndex() {
 async function getIndex() {
   cache.index ??= listGuides().then((guides) => ({ guides, index: buildIndex(guides) }));
   return cache.index;
+}
+
+/** Snabba förslag medan användaren skriver (ingen AI, ingen loggning). */
+export async function suggest(q: string, page?: string | null): Promise<GuideSummary[]> {
+  const text = q.trim().slice(0, 200);
+  if (text.length < 2) return [];
+  const { index } = await getIndex();
+  const { hits } = search(index, text, { page, limit: 5 });
+  // Visa bara förslag som täcker en rimlig del av det som skrivits.
+  const top = hits[0]?.score ?? 0;
+  return hits
+    .filter((h) => (h.coverage >= 0.5 || h.intentSim >= 0.5) && h.score >= top * 0.35)
+    .slice(0, 5)
+    .map((h) => toSummary(h.guide));
 }
 
 export interface AskInput {
