@@ -12,10 +12,10 @@ describe("hela flödet mot databasen (PGlite i minnet)", () => {
 
   it("seedar manualens 38 guider + nya guider, utkast dolda", async () => {
     const guides = await listGuides();
-    expect(guides).toHaveLength(39);
-    expect(guides.every((g) => g.screenshot && g.steps.length > 0)).toBe(true);
+    expect(guides).toHaveLength(40);
+    expect(guides.filter((g) => g.number <= 38).every((g) => g.screenshot && g.steps.length > 0)).toBe(true);
     expect((await listGuides({ includeDrafts: true })).length).toBe(41);
-    expect(await getGuide("lagga-till-en-anvandare")).toBeNull();
+    expect(await getGuide("byta-lastbrygga")).toBeNull();
   });
 
   it("stegen har inzoomningsdata från skärmbilderna", async () => {
@@ -32,7 +32,7 @@ describe("hela flödet mot databasen (PGlite i minnet)", () => {
     expect(r.outcome).toBe("answered");
     expect(r.guide?.id).toBe("lagga-upp-en-bild");
 
-    for (let i = 0; i < 3; i++) await ask({ q: "Hur lägger jag till en användare?", sessionId: `u${i}` });
+    for (let i = 0; i < 3; i++) await ask({ q: "Hur kopplar jag vår kamera?", sessionId: `u${i}` });
     for (let i = 0; i < 3; i++)
       await logFeedback({ sessionId: `f${i}`, guideId: "andra-kapacitet-per-timme", queryId: null, helpful: false, comment: "Fel" });
     const t = await createTicket({

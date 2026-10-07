@@ -1,5 +1,5 @@
 {
-  "_comment": "Guider som saknades i manualen men som användarna frågar efter. 'published' bygger helt på manualens innehåll; 'draft' behöver granskas av någon som kan systemet innan publicering. Rader med [Fyll i: …] är öppna frågor.",
+  "_comment": "Guider som saknades i manualen men som användarna frågar efter. 'published' är granskade eller bygger helt på manualen/LUP:s svar; 'draft' behöver granskas innan publicering. Rader med [Fyll i: …] är öppna frågor.",
   "guides": [
     {
       "id": "skapa-en-bokning",
@@ -8,24 +8,73 @@
       "category": "daglig-drift",
       "app": "site",
       "pageKey": "site-add",
-      "breadcrumb": ["Site", "Add +", "Status: Booking"],
+      "breadcrumb": [
+        "Site",
+        "Add +",
+        "Status: Booking"
+      ],
       "summary": "Boka en tid åt en förare direkt i Site, till exempel när någon ringer in. Bokningen hamnar under Bookings på tavlan.",
       "baseScreenshot": 34,
       "steps": [
-        { "n": 1, "text": "Tryck Add + uppe i Site." },
-        { "n": 2, "text": "Välj Status: Booking.", "hotspot": 1 },
-        { "n": 3, "text": "Välj Location.", "hotspot": 2 },
-        { "n": 4, "text": "Välj Track. Resten av formuläret visas först då.", "hotspot": 3 },
-        { "n": 5, "text": "Fyll i namn, registreringsnummer och eventuellt telefon." },
-        { "n": 6, "text": "Välj datum och tid för bokningen." },
-        { "n": 7, "text": "Tryck Add.", "hotspot": 4 }
+        {
+          "n": 1,
+          "text": "Tryck Add + uppe i Site."
+        },
+        {
+          "n": 2,
+          "text": "Välj Status: Booking.",
+          "hotspot": 1
+        },
+        {
+          "n": 3,
+          "text": "Välj Location.",
+          "hotspot": 2
+        },
+        {
+          "n": 4,
+          "text": "Välj Track. Resten av formuläret visas först då.",
+          "hotspot": 3
+        },
+        {
+          "n": 5,
+          "text": "Fyll i namn, registreringsnummer och eventuellt telefon."
+        },
+        {
+          "n": 6,
+          "text": "Välj datum och tid för bokningen."
+        },
+        {
+          "n": 7,
+          "text": "Tryck Add.",
+          "hotspot": 4
+        }
       ],
       "notes": [
-        { "type": "warning", "text": "Fyller du i ett telefonnummer kan föraren få riktiga SMS. Lämna det tomt vid test." },
-        { "type": "tip", "text": "Går det inte att välja någon tid? Kontrollera kapaciteten under Capacity & timeslots i Location Admin." }
+        {
+          "type": "warning",
+          "text": "Fyller du i ett telefonnummer kan föraren få riktiga SMS. Lämna det tomt vid test."
+        },
+        {
+          "type": "tip",
+          "text": "Går det inte att välja någon tid? Kontrollera kapaciteten under Capacity & timeslots i Location Admin."
+        }
       ],
-      "alternativeQueries": ["skapa en bokning", "ny bokning", "boka en tid", "boka åt en förare", "förare ringer och vill boka", "lägga in bokning", "boka lossning", "boka tid åt chaufför", "manuell bokning"],
-      "relatedGuides": ["lagga-in-ett-fordon-manuellt", "andra-kapacitet-per-timme", "skapa-aterkommande-bokningar"],
+      "alternativeQueries": [
+        "skapa en bokning",
+        "ny bokning",
+        "boka en tid",
+        "boka åt en förare",
+        "förare ringer och vill boka",
+        "lägga in bokning",
+        "boka lossning",
+        "boka tid åt chaufför",
+        "manuell bokning"
+      ],
+      "relatedGuides": [
+        "lagga-in-ett-fordon-manuellt",
+        "andra-kapacitet-per-timme",
+        "skapa-aterkommande-bokningar"
+      ],
       "status": "published"
     },
     {
@@ -35,44 +84,114 @@
       "category": "daglig-drift",
       "app": "site",
       "pageKey": "site-board",
-      "breadcrumb": ["Site", "Board", "Fordonskortet", "Unassigned / bryggans namn"],
+      "breadcrumb": [
+        "Site",
+        "Board",
+        "Fordonskortet",
+        "Unassigned / bryggans namn"
+      ],
       "summary": "Bestäm eller ändra vilken lastbrygga föraren ska köra till.",
       "baseScreenshot": 30,
       "steps": [
-        { "n": 1, "text": "Öppna Site och välj Board." },
-        { "n": 2, "text": "Hitta förarens kort. Unassigned betyder att ingen brygga är vald än.", "hotspot": 6 },
-        { "n": 3, "text": "Klicka på Unassigned (eller bryggans namn) på kortet.", "hotspot": 6 },
-        { "n": 4, "text": "[Fyll i: hur väljer man brygga i dialogen som öppnas, och hur sparar man?]" },
-        { "n": 5, "text": "[Fyll i: får föraren besked om den nya bryggan, t.ex. via SMS?]" }
+        {
+          "n": 1,
+          "text": "Öppna Site och välj Board."
+        },
+        {
+          "n": 2,
+          "text": "Hitta förarens kort. Unassigned betyder att ingen brygga är vald än.",
+          "hotspot": 6
+        },
+        {
+          "n": 3,
+          "text": "Klicka på Unassigned (eller bryggans namn) på kortet.",
+          "hotspot": 6
+        },
+        {
+          "n": 4,
+          "text": "[Fyll i: hur väljer man brygga i dialogen som öppnas, och hur sparar man?]"
+        },
+        {
+          "n": 5,
+          "text": "Föraren får informationen om den nya bryggan automatiskt."
+        }
       ],
       "notes": [
-        { "type": "tip", "text": "I vyn Matrix ser du vilka bryggor som är lediga just nu." }
+        {
+          "type": "tip",
+          "text": "I vyn Matrix ser du vilka bryggor som är lediga just nu."
+        }
       ],
-      "alternativeQueries": ["byta port", "ändra vilken port chauffören ska till", "tilldela lastbrygga", "byta brygga", "flytta förare till annan port", "ändra lastkaj", "vilken port ska föraren till", "assign bay"],
-      "relatedGuides": ["se-lastbryggorna-over-tid", "kalla-in-en-forare", "lagga-till-en-lastbrygga"],
+      "alternativeQueries": [
+        "byta port",
+        "ändra vilken port chauffören ska till",
+        "tilldela lastbrygga",
+        "byta brygga",
+        "flytta förare till annan port",
+        "ändra lastkaj",
+        "vilken port ska föraren till",
+        "assign bay"
+      ],
+      "relatedGuides": [
+        "se-lastbryggorna-over-tid",
+        "kalla-in-en-forare",
+        "lagga-till-en-lastbrygga"
+      ],
       "status": "draft"
     },
     {
       "id": "lagga-till-en-anvandare",
       "number": 41,
-      "title": "Lägga till en användare",
+      "title": "Lägga till eller ta bort en användare",
       "category": "kom-igang",
       "app": "location-admin",
       "pageKey": "",
-      "breadcrumb": ["[Fyll i: menysökväg]"],
-      "summary": "Ge en ny kollega en egen inloggning till LUPNUMBER.",
+      "breadcrumb": [
+        "LUP Support"
+      ],
+      "summary": "Användarkonton skapas och ändras av LUP. Skicka ett ärende till supporten så ordnar vi det.",
       "baseScreenshot": null,
       "steps": [
-        { "n": 1, "text": "[Fyll i: var i LUPNUMBER skapas användarkonton – Location Admin, Site eller av LUP?]" },
-        { "n": 2, "text": "[Fyll i: vilka uppgifter behövs (namn, e-post, roll)?]" },
-        { "n": 3, "text": "[Fyll i: hur får den nya användaren sitt lösenord?]" }
+        {
+          "n": 1,
+          "text": "Skicka ett ärende till LUP Support, till exempel med knappen Kontakta support här nedanför."
+        },
+        {
+          "n": 2,
+          "text": "Skriv personens namn och e-post, vilken plats det gäller och om personen ska arbeta i Location Admin eller bara i Site."
+        },
+        {
+          "n": 3,
+          "text": "Ska någon tas bort eller få ändrad behörighet? Skriv vem och vad som ska ändras."
+        },
+        {
+          "n": 4,
+          "text": "LUP lägger upp eller ändrar kontot och svarar i ärendet."
+        }
       ],
       "notes": [
-        { "type": "tip", "text": "Kontaktpersoner som förarna kan välja vid incheckning är något annat; de läggs till under Manage contacts." }
+        {
+          "type": "tip",
+          "text": "Kontaktpersoner som förarna kan välja vid incheckning är något annat. Dem lägger du till själv under Manage contacts."
+        }
       ],
-      "alternativeQueries": ["lägga till användare", "ny användare", "skapa konto", "ny inloggning", "ge kollega tillgång", "lägga till personal", "behörighet", "ta bort användare"],
-      "relatedGuides": ["lagga-till-en-kontaktperson"],
-      "status": "draft"
+      "alternativeQueries": [
+        "lägga till användare",
+        "ny användare",
+        "skapa konto",
+        "ny inloggning",
+        "ge kollega tillgång",
+        "lägga till personal",
+        "behörighet",
+        "ta bort användare",
+        "ändra behörighet",
+        "ny kollega ska logga in",
+        "användarkonto"
+      ],
+      "relatedGuides": [
+        "lagga-till-en-kontaktperson"
+      ],
+      "status": "published"
     }
   ]
 }

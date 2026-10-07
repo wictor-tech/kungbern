@@ -31,7 +31,7 @@ test("fråga → visuell guide → Nej → supportärende", async ({ page }) => 
 });
 
 test("fråga utan guide ger ärligt svar", async ({ page }) => {
-  await page.goto("/?q=" + encodeURIComponent("Hur lägger jag till en användare?"));
+  await page.goto("/?q=" + encodeURIComponent("Hur kopplar jag vår kamera?"));
   await expect(page.getByText("Vi har ingen guide för det än.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Skicka till support" })).toBeVisible();
 });

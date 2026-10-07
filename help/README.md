@@ -91,7 +91,9 @@ Sidnycklarna står på varje guide (`pageKey`) och kan ändras i admin.
 | `POST` | `/api/tickets` | Supportärende med fråga, guide, sida och visade steg |
 | `POST` | `/api/events` | Visning av guide och vilka steg användaren bockat av |
 
-Supportärenden skickas till `SUPPORT_WEBHOOK_URL` (Zendesk, Freshdesk, Slack …) om den är satt.
+Supportärenden skapas i **Zendesk** när `ZENDESK_SUBDOMAIN`, `ZENDESK_EMAIL` och `ZENDESK_API_TOKEN` är satta
+(taggen `lup_hjalp`, all kontext i ärendet). De sparas alltid också i hjälpens databas och syns under Insikter.
+En kopia kan dessutom skickas till `SUPPORT_WEBHOOK_URL` (t.ex. Slack).
 
 ## Inzoomade steg
 
@@ -122,9 +124,11 @@ Utkasten syns bara i admin.
 
 ## Produktion
 
-- `DATABASE_URL` → Postgres (t.ex. Neon). Samma tabeller skapas automatiskt.
-- Uppladdningar sparas lokalt i `UPLOAD_DIR`. Byt `saveUpload` i `src/lib/media.ts` mot S3/R2.
-- Sätt `ADMIN_PASSWORD`, `SESSION_SECRET` och gärna `ANTHROPIC_API_KEY`.
+Steg-för-steg för Vercel: **[DEPLOY.md](DEPLOY.md)**.
+
+- `DATABASE_URL` → Postgres (Neon via Vercel Storage). Tabellerna skapas och guiderna läses in automatiskt.
+- Uppladdningar: Vercel Blob när `BLOB_READ_WRITE_TOKEN` finns, annars lokal disk (`UPLOAD_DIR`).
+- Sätt `ADMIN_PASSWORD`, `SESSION_SECRET`, `HELP_ALLOWED_ORIGINS` och gärna `ANTHROPIC_API_KEY`.
 
 ## Struktur
 

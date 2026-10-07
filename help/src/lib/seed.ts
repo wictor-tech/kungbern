@@ -76,7 +76,7 @@ export function buildDraftGuides(base: Guide[]): Guide[] {
       video: null,
       version: 1,
       updatedAt: now,
-      updatedBy: d.status === "published" ? "utkast från manualen (avsnitt 34)" : "utkast – behöver granskas",
+      updatedBy: d.status === "published" ? "ny guide (manualen + LUP)" : "utkast – behöver granskas",
     } satisfies Guide;
   });
 }

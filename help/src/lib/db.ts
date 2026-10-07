@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   status        text NOT NULL DEFAULT 'open',
   created_at    timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE tickets ADD COLUMN IF NOT EXISTS external_id text;
 `;
 
 /** Objekt och listor skickas som JSON-strängar så att jsonb-kolumner fungerar likadant i båda drivrutinerna. */
@@ -102,7 +103,8 @@ async function createPglite(dataDir?: string): Promise<Db> {
 
 async function createPostgres(url: string): Promise<Db> {
   const { default: postgres } = await import("postgres");
-  const sql = postgres(url, { max: 5, prepare: false });
+  const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
+  const sql = postgres(url, { max: 5, prepare: false, ssl: local ? false : "require" });
   return {
     async query<T>(text: string, params: unknown[] = []) {
       return (await sql.unsafe(text, params.map(toParam) as never[])) as unknown as T[];
@@ -119,7 +121,9 @@ const holder: Holder = ((globalThis as unknown as { __lupHelpDb?: Holder }).__lu
 export function getDb(): Promise<Db> {
   if (!holder.promise) {
     holder.promise = (async () => {
-      const url = process.env.DATABASE_URL?.trim();
+      const url = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
+      if (!url && process.env.VERCEL)
+        throw new Error("DATABASE_URL saknas. Koppla en Postgres-databas (t.ex. Neon) till projektet i Vercel – se DEPLOY.md.");
       let db: Db;
       if (!url) db = await createPglite(path.join(process.cwd(), ".data", "pglite"));
       else if (url === "memory://") db = await createPglite();

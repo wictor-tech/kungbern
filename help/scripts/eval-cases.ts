@@ -7,7 +7,7 @@ export const EVAL_CASES: { q: string; expect: string | string[] | null; page?: s
   // Briefens exempel
   { q: "Hur lägger jag upp en bild?", expect: "lagga-upp-en-bild" },
   { q: "Hur ändrar jag ett bildspel?", expect: "andra-bildspelet" },
-  { q: "Hur lägger jag till en användare?", expect: null },
+  { q: "Hur lägger jag till en användare?", expect: "lagga-till-en-anvandare" },
   { q: "Hur skickar jag ett SMS?", expect: ["skicka-sms-till-alla-pa-omradet", "andra-texten-i-ett-sms"] },
   { q: "Hur ändrar jag vilken port chauffören ska till?", expect: ["kalla-in-en-forare", "se-lastbryggorna-over-tid"] },
   { q: "Hur skapar jag en bokning?", expect: ["skapa-en-bokning", "lagga-in-ett-fordon-manuellt"] },

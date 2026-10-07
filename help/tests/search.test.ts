@@ -39,7 +39,8 @@ describe("sökning", () => {
     expect(top("kappacitet").id).toBe("andra-kapacitet-per-timme");
   });
   it("svarar ärligt när guide saknas", () => {
-    expect(top("Hur lägger jag till en användare?").verdict).not.toBe("answered");
+    expect(top("Hur lägger jag till en användare?").id).toBe("lagga-till-en-anvandare");
+    expect(top("koppla vår kamera").verdict).not.toBe("answered");
     expect(top("vad kostar lup").verdict).toBe("none");
   });
   it("använder sidkontext för 'detta' men låter tydliga frågor vinna", () => {

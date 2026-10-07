@@ -3,8 +3,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 /**
- * Medielagring. MVP: lokal disk (UPLOAD_DIR), serveras via /media/... .
- * Produktion: byt saveUpload mot en S3/R2-implementation med samma signatur.
+ * Medielagring.
+ * - BLOB_READ_WRITE_TOKEN satt (Vercel Blob): filerna sparas i Vercel Blob och serveras därifrån.
+ * - Annars: lokal disk (UPLOAD_DIR), serveras via /media/... (utveckling och egen server).
  */
 
 export const ALLOWED_TYPES: Record<string, string> = {
@@ -26,9 +27,17 @@ export async function saveUpload(file: File): Promise<{ url: string; kind: "imag
   if (!ext) throw new Error("Filtypen stöds inte. Använd PNG, JPG, WebP, GIF, MP4 eller WebM.");
   if (file.size > MAX_BYTES) throw new Error("Filen är för stor (max 50 MB).");
   const name = `${new Date().toISOString().slice(0, 10)}-${randomUUID().slice(0, 8)}.${ext}`;
+  const kind = file.type.startsWith("video/") ? "video" : "image";
+
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const { put } = await import("@vercel/blob");
+    const blob = await put(`help/${name}`, file, { access: "public", contentType: file.type });
+    return { url: blob.url, kind };
+  }
+
   await fs.mkdir(uploadDir(), { recursive: true });
   await fs.writeFile(path.join(uploadDir(), name), Buffer.from(await file.arrayBuffer()));
-  return { url: `/media/${name}`, kind: file.type.startsWith("video/") ? "video" : "image" };
+  return { url: `/media/${name}`, kind };
 }
 
 export async function readUpload(name: string): Promise<{ data: Buffer; type: string } | null> {
