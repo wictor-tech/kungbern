@@ -6,7 +6,13 @@ import { feedbackApi } from "./client";
 import { TicketForm } from "./TicketForm";
 import { GuideCard } from "./ui";
 
-const QUICK_REASONS = ["Hittar inte knappen", "Ser annorlunda ut hos mig", "Det var fel guide", "Det fungerar ändå inte"];
+/** Snabbval. Vissa går att lösa med en annan guide, andra behöver en människa direkt. */
+const QUICK_REASONS: { text: string; retry: boolean }[] = [
+  { text: "Det var fel guide", retry: true },
+  { text: "Hittar inte knappen", retry: true },
+  { text: "Ser annorlunda ut hos mig", retry: false },
+  { text: "Det fungerar ändå inte", retry: false },
+];
 
 type State =
   | { s: "ask" }
@@ -45,13 +51,14 @@ export function Feedback({
     feedbackApi({ guideId, queryId, helpful: true }).catch(() => {});
   }
 
-  async function sendNo(text: string) {
+  async function sendNo(text: string, retry = true) {
     setError(null);
     setState({ s: "retrying" });
     try {
       const res = await feedbackApi({ guideId, queryId, helpful: false, comment: text, originalQuery, page });
       const r = res.retry;
-      if (r && (r.guide || r.alternatives.length > 0)) setState({ s: "retried", result: r });
+      // Visa bara nya förslag om sökningen faktiskt hittade något rimligt – annars direkt till support.
+      if (retry && r && r.outcome !== "none" && (r.guide || r.alternatives.length > 0)) setState({ s: "retried", result: r });
       else setState({ s: "ticket" });
     } catch {
       setError("Kunde inte skicka. Försök igen.");
@@ -111,15 +118,15 @@ export function Feedback({
           <div className="flex flex-wrap gap-2">
             {QUICK_REASONS.map((r) => (
               <button
-                key={r}
+                key={r.text}
                 type="button"
                 onClick={() => {
-                  setComment(r);
-                  void sendNo(r);
+                  setComment(r.text);
+                  void sendNo(r.text, r.retry);
                 }}
                 className="rounded-full border border-line bg-canvas px-3 py-1.5 text-sm hover:border-lup"
               >
-                {r}
+                {r.text}
               </button>
             ))}
           </div>

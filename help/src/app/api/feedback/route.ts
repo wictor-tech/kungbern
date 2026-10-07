@@ -35,6 +35,8 @@ export async function POST(req: Request) {
     page: f.page,
     sessionId: f.sessionId,
     exclude: [...(f.shown ?? []), ...(f.guideId ? [f.guideId] : [])],
+    // Försöket är en del av samma fråga – det ska inte räknas som en ny fråga i statistiken.
+    log: false,
   });
   return json(req, { ok: true, retry });
 }

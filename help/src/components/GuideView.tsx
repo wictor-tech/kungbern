@@ -19,6 +19,7 @@ export function GuideView({
   page,
   answer,
   onOpenGuide,
+  preview = false,
 }: {
   guide: Guide;
   related: GuideSummary[];
@@ -27,6 +28,8 @@ export function GuideView({
   page: string | null;
   answer?: string;
   onOpenGuide?: (id: string) => void;
+  /** Förhandsgranskning i admin: ingen loggning och ingen feedback. */
+  preview?: boolean;
 }) {
   const [done, setDone] = useState<number[]>([]);
   const [legendOpen, setLegendOpen] = useState(false);
@@ -39,8 +42,9 @@ export function GuideView({
     setLegendOpen(false);
     setActiveHotspot(null);
     // Visningen loggas när användaren lämnar guiden, med de steg hen bockat av.
+    if (preview) return;
     return () => logViewApi(guide.id, queryId, doneRef.current);
-  }, [guide.id, queryId]);
+  }, [guide.id, queryId, preview]);
 
   const toggle = (n: number) => setDone((d) => (d.includes(n) ? d.filter((x) => x !== n) : [...d, n].sort((a, b) => a - b)));
   const warnings = guide.notes.filter((n) => n.type === "warning");
@@ -60,7 +64,7 @@ export function GuideView({
         <Breadcrumb items={guide.breadcrumb} />
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="space-y-3 lg:sticky lg:top-4 lg:self-start">
           {guide.video?.url ? (
             <video
@@ -169,7 +173,7 @@ export function GuideView({
             </p>
           ))}
 
-          <Feedback
+          {!preview && <Feedback
             key={`${guide.id}-${queryId}`}
             guideId={guide.id}
             queryId={queryId}
@@ -178,7 +182,7 @@ export function GuideView({
             stepsViewed={done}
             highlight={allDone}
             onOpenGuide={onOpenGuide}
-          />
+          />}
         </div>
       </div>
 

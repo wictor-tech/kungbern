@@ -149,7 +149,8 @@ export function search(index: SearchIndex, query: string, opts: SearchOptions = 
     score *= 0.5 + coverage;
 
     const onPage = Boolean(opts.page) && d.guide.pageKey === opts.page;
-    if (onPage) score = score * 1.25 + (deictic ? 4 : 1);
+    // Sidkontext: avgörande för "hur ändrar jag detta?", bara en lätt knuff när frågan är tydlig.
+    if (onPage) score = deictic ? score * 1.25 + 4 : score * 1.08;
     if (opts.app && d.guide.app === opts.app) score *= 1.05;
     return { guide: d.guide, score, coverage, intentSim, contextual: onPage && deictic };
   });

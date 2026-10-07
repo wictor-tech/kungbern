@@ -152,7 +152,8 @@ export function terms(s: string): string[] {
   for (const w of words) {
     if (STOPWORDS.has(w)) continue;
     const st = stem(w);
-    out.push(SYNONYMS.get(st) ?? SYNONYMS.get(w) ?? st);
+    // Böjda former kan behöva kortas två gånger för att hitta synonymen ("chauffören" → "chauffor" → "chauff").
+    out.push(SYNONYMS.get(st) ?? SYNONYMS.get(w) ?? SYNONYMS.get(stem(st)) ?? st);
   }
   return out;
 }

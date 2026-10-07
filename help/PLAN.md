@@ -3,7 +3,7 @@
 Underlag: *Användarguide LUPNUMBER* (40 sidor, 38 avsnitt, oktober 2026). Den har gjorts om till
 strukturerad data i [`content/guides.sv.json`](content/guides.sv.json).
 
-Status: **förslag att godkänna innan bygget börjar.** Beslut som behöver ditt svar finns sist i dokumentet.
+Status: **MVP byggd** (se [README.md](README.md)). Endast svenska och desktop i första versionen, men mobilen fungerar också.
 
 ---
 
