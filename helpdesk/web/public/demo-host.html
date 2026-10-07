@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo: värdprogram med inbäddad hjälp</title>
+<style>
+  body{margin:0;font:16px system-ui,sans-serif;background:#eef3f7;color:#11283a}
+  header{background:#0ea5e9;color:#fff;padding:12px 18px;font-weight:700}
+  .wrap{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 48px)}
+  @media(max-width:700px){.wrap{grid-template-columns:1fr}}
+  aside{background:#fff;border-right:1px solid #d9e4ec;padding:12px;position:relative}
+  .loc{width:100%;text-align:left;padding:12px;border:1px solid #cfdbe4;border-radius:8px;background:#e6f4fd;font:inherit;cursor:pointer}
+  .menu{margin-top:8px;border:1px solid #d9e4ec;border-radius:8px;background:#fff;display:none}
+  .menu.open{display:block}
+  .menu button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;background:none;font:inherit;cursor:pointer;border-bottom:1px solid #eef3f7}
+  .menu button:hover{background:#f1f7fb}
+  main{padding:18px}
+  .panel{background:#fff;border:1px solid #d9e4ec;border-radius:12px;padding:16px;max-width:560px}
+  input{padding:10px;border:1px solid #cfdbe4;border-radius:8px;width:120px;font:inherit}
+  .save{margin-top:12px;padding:10px 16px;border:0;border-radius:8px;background:#f08a24;color:#fff;font:700 16px system-ui;cursor:pointer}
+  .ctx{font-size:.85rem;color:#5d7285}
+</style>
+</head>
+<body>
+<header>LUP Location Admin <span style="font-weight:400">(demo-värd – hjälpen är inbäddad)</span></header>
+<div class="wrap">
+  <aside>
+    <button class="loc" data-help="location-item" id="loc">PN TPL DEMO &nbsp;#46001</button>
+    <div class="menu" id="menu">
+      <button data-help="menu-lang" data-page="languages">Språkhantering</button>
+      <button data-help="menu-info" data-page="location-info">Ändra platsinformation</button>
+      <button data-help="menu-capacity" data-page="capacity">Hantera kapacitet</button>
+      <button data-help="menu-gates" data-page="gates">Hantera grindar</button>
+    </div>
+  </aside>
+  <main>
+    <p class="ctx">Aktuell sida enligt hjälpen: <b id="pg">start</b></p>
+    <div class="panel" id="view"><p>Välj en plats till vänster. Klicka sedan på <b>?</b> längst ner till höger och skriv till exempel <i>"Hur ändrar jag detta?"</i> – hjälpen vet var du är.</p></div>
+  </main>
+</div>
+<script src="/embed.js"></script>
+<script>
+  LupHelp.init({ page: "start", lang: "sv" });
+  const menu = document.getElementById("menu"), view = document.getElementById("view"), pg = document.getElementById("pg");
+  function page(p) { pg.textContent = p; LupHelp.setContext({ page: p }); }
+  document.getElementById("loc").onclick = () => { menu.classList.toggle("open"); };
+  menu.querySelectorAll("button").forEach((b) => b.onclick = () => {
+    page(b.dataset.page);
+    if (b.dataset.page === "capacity") {
+      view.innerHTML = '<h3>Hantera kapacitet</h3><label>Max lastbilar/h <input data-help="cap-input" type="number" value="4"></label><br><button class="save" data-help="cap-save" id="save">Uppdatera kapacitet</button><p id="ok"></p>';
+      document.getElementById("save").onclick = () => { document.getElementById("ok").textContent = "✓ Sparat"; };
+    } else view.innerHTML = "<h3>" + b.textContent + "</h3><p>(Mockad sida)</p>";
+  });
+</script>
+</body>
+</html>

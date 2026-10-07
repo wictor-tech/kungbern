@@ -1,0 +1,23 @@
+{
+  "name": "lup-helpdesk",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI-first visuell hj\u00e4lp f\u00f6r LUPNUMBER \u2013 fr\u00e5geruta, visuella guider, adminl\u00e4ge och analytics",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w server\" \"npm run dev -w web\"",
+    "build": "npm run build -w web",
+    "start": "npm run start -w server",
+    "test": "npm test -w server",
+    "typecheck": "npm run typecheck -w server && npm run typecheck -w web",
+    "demo-data": "npm run demo-data -w server",
+    "e2e": "node e2e/smoke.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "playwright-core": "^1.63.0"
+  }
+}
