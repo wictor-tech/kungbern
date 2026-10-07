@@ -111,7 +111,7 @@ export function createApp(cfg: Config, store: Store, ai?: AiProvider) {
 
   // ---------- Publikt API ----------
   app.get("/api/config", (c) => c.json({
-    categories: CATEGORIES, langs: LANGS.map((l) => ({ id: l, name: LANG_NAMES[l] })), aiEnabled, aiProvider: provider.name,
+    categories: CATEGORIES.map((c) => ({ ...c, count: published().filter((g) => g.category === c.id).length })), langs: LANGS.map((l) => ({ id: l, name: LANG_NAMES[l] })), aiEnabled, aiProvider: provider.name,
   }));
 
   app.get("/api/guides", (c) => {
@@ -274,7 +274,7 @@ export function createApp(cfg: Config, store: Store, ai?: AiProvider) {
       stats.set(e.guideId, s);
     }
     return c.json(store.listGuides().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map((g) => ({
-      id: g.id, title: g.title, status: g.status, category: g.category, updatedAt: g.updatedAt, steps: g.steps.length,
+      id: g.id, title: g.title, status: g.status, category: g.category, updatedAt: g.updatedAt, steps: g.steps.filter((x) => x.text || x.image).length, todo: g.todo,
       hasVideo: !!g.video, langs: Object.keys(g.translations), ...(stats.get(g.id) ?? { views: 0, yes: 0, no: 0 }),
     })));
   });

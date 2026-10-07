@@ -44,7 +44,8 @@ function conceptsFor(token: string): { id: string; weight: number }[] {
   for (const e of WORD_LIST) {
     if (e.word.length < 4) continue;
     // sammansättning: token börjar med eller slutar på ett känt ord ("bildspelet", "sms-utskrift", "telefonnummer")
-    if (token.startsWith(e.word) || token.endsWith(e.word) || (e.word.length >= 6 && token.includes(e.word))) {
+    // Sammansättningar: början (>=4 tecken), slut (>=5 tecken – annars matchar t.ex. 'support' mot 'port'), eller innehåll (>=6).
+    if (token.startsWith(e.word) || (e.word.length >= 5 && token.endsWith(e.word)) || (e.word.length >= 6 && token.includes(e.word))) {
       if (!seen.has(e.id)) { seen.add(e.id); found.push({ id: e.id, weight: e.weight * 0.6 }); }
       if (found.length >= 2) break;
     }

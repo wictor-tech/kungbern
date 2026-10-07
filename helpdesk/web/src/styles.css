@@ -151,3 +151,9 @@ main { display: grid; gap: 20px; }
 .thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; } .thumbs img { height: 70px; border-radius: 8px; border: 1px solid var(--line); }
 .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #11283a; color: #fff; padding: 10px 18px; border-radius: 12px; z-index: 60; }
 @media (max-width: 600px) { .step-edit .head { flex-wrap: wrap; } .step-edit .head input { flex: 1 1 100%; order: 2; } .step-edit .head .badge { order: 1; margin-right: auto; } .step-edit .head .mini { order: 1; } }
+
+.where { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.where-head { display: flex; gap: 10px; align-items: center; width: 100%; min-height: 48px; padding: 8px 14px; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.where-path { flex: 1; font-size: .95rem; color: var(--muted); } .where-path b { color: var(--ink); } .where-path i { font-style: normal; }
+.where-toggle { color: var(--muted); }
+.where-shot { padding: 0 8px 8px; cursor: zoom-in; } .where-shot .shot { border-radius: 10px; }

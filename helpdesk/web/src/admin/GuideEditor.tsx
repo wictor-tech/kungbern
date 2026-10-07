@@ -4,6 +4,7 @@ import { LANGS, LANG_NAMES, type Guide, type Lang, type Step } from "../../../sh
 import { api, type AdminGuideRow, type Config } from "../api";
 import { Markup } from "../components/Markup";
 import { StepViewer } from "../components/StepViewer";
+import { Where } from "../components/Where";
 import { HotspotEditor } from "./HotspotEditor";
 import { ago } from "./GuideList";
 import { DRAFT_KEY } from "./AiDraftModal";
@@ -178,6 +179,7 @@ export function GuideEditor() {
         </div>
       </div>
       {msg && <div className="toast" role="status">{msg}</div>}
+      {g.todo && <div className="note warn" style={{ marginBottom: 14 }}><strong>📝 Behöver innehåll</strong><p>{g.todo}</p></div>}
       {notes.length > 0 && <div className="note tip" style={{ marginBottom: 14 }}><strong>✨ AI-förslag – granska och justera</strong>{notes.map((n, i) => <p key={i}>Bild {i + 1}: {n}</p>)}</div>}
 
       <div className="editor">
@@ -225,6 +227,18 @@ export function GuideEditor() {
             ))}
             <button type="button" className="btn" onClick={() => set({ steps: [...g.steps, { id: uid(), text: "" }] })}>＋ Lägg till steg</button>
             <p className="muted small">Tips: använd **fet text** för knappnamn. Klistra in en skärmbild (Ctrl+V) var som helst för att skapa ett nytt steg.</p>
+          </section>
+
+          <section className="panel">
+            <h3>Så hittar du hit (valfritt)</h3>
+            <p className="muted small">Var i programmet funktionen ligger. Visas som en kompakt rad med liten bild i stället för ett eget steg – så börjar guiden direkt med uppgiften.</p>
+            <Tags value={g.location?.path ?? []} onChange={(v) => set({ location: v.length ? { ...g.location, path: v } : undefined })} placeholder="t.ex. Platsmenyn – Enter, sedan Hantera kapacitet" />
+            {g.location && (
+              <ImageField
+                step={{ id: "loc", text: "", image: g.location.image, hotspot: g.location.hotspot, ratio: g.location.ratio }}
+                onChange={(x) => set({ location: { ...g.location!, image: x.image, hotspot: x.hotspot, ratio: x.ratio } })}
+              />
+            )}
           </section>
 
           <section className="panel">
@@ -279,6 +293,7 @@ export function GuideEditor() {
           <h3 className="section-title">Förhandsvisning (som användaren ser den)</h3>
           <div className="card guide">
             <header><h1>{g.title || "Titel"}</h1><p className="short">{g.summary || "Kort svar visas här."}</p></header>
+            {g.location && <Where location={g.location} />}
             {preview && preview.length > 0 && <StepViewer steps={preview} />}
             {g.warning && <aside className="note warn"><strong>⚠ Var försiktig</strong><p><Markup text={g.warning} /></p></aside>}
             {g.tip && <aside className="note tip"><strong>💡 Tips</strong><p><Markup text={g.tip} /></p></aside>}

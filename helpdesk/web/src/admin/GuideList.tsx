@@ -35,7 +35,7 @@ export function GuideList() {
             return (
               <tr key={r.id}>
                 <td><Link to={`/admin/guides/${r.id}`}>{r.title}</Link><br /><small className="muted">{r.steps} steg{r.hasVideo ? " · video" : ""}{r.langs.length ? ` · ${r.langs.join(", ")}` : ""}</small></td>
-                <td><span className={r.status === "published" ? "pill pub" : "pill"}>{r.status === "published" ? "Publicerad" : "Utkast"}</span></td>
+                <td><span className={r.status === "published" ? "pill pub" : "pill"}>{r.status === "published" ? "Publicerad" : "Utkast"}</span>{r.todo && <> <span className="pill warn" title={r.todo}>Behöver innehåll</span></>}</td>
                 <td>{r.category}</td>
                 <td title={r.updatedAt}>{ago(r.updatedAt)}</td>
                 <td>{r.views}</td>

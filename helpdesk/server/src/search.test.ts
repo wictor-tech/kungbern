@@ -18,7 +18,6 @@ const CASES: [string, string][] = [
   ["Bild hochladen", "images-add"],
   ["Hur skickar jag ett SMS?", "notifications"],
   ["ändra sms texten", "sms-templates"],
-  ["Hur ändrar jag vilken port chauffören ska till?", "gates"],
   ["hur ändrar jag språk", "languages"],
   ["lägga till språk", "languages"],
   ["fler lastbilar per timme", "capacity"],
@@ -42,7 +41,7 @@ for (const [q, id] of CASES) {
 }
 
 // Det finns ingen guide för detta – ska inte låtsas att det gör det.
-for (const q of ["Hur skapar jag en bokning?", "Hur lägger jag till en användare?", "vad är vädret", "asdfgh"]) {
+for (const q of ["Hur ändrar jag vilken port chauffören ska till?", "Hur skapar jag en bokning?", "Hur lägger jag till en användare?", "vad är vädret", "asdfgh"]) {
   test(`inget säkert svar: "${q}"`, () => {
     const h = top(q);
     assert.notEqual(h ? qualityOf(h.score) : "none", "good", `fick ${h?.guide.id} (${h?.score.toFixed(2)})`);

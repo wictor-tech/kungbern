@@ -63,3 +63,17 @@ Embeddings (bakom `SearchEngine`), SSO för admin, Postgres, automatisk guidefö
 ## Demo-data för analytics
 `DATA_DIR=/tmp/demo npm run demo-data -w server` fyller en **separat** katalog med simulerad trafik (sessioner märkta `demo-`).
 Starta sedan en andra server: `DATA_DIR=/tmp/demo PORT=8788 ADMIN_TOKEN=demo npm start`. Blanda aldrig med riktig data.
+
+## Mät sökkvaliteten (`npm run eval -w server`)
+`server/src/eval/cases.ts` innehåller en **syntetisk** testmängd (skriven av utvecklaren, inte riktiga ärenden) i tre delar:
+`dev` (får användas för att justera), `held` (justerades inte mot), `fresh` (skriven efter justeringen, aldrig använd för den).
+Mätvärden: rätt guide direkt, **säkert fel svar** (ska vara nära 0), rätt guide bland topp 3, och ärligt "inget svar" utanför scope.
+
+Senaste körning: dev 94 %, held 79 %, fresh 64 % rätt direkt; rätt guide bland topp 3: 92 % på fresh.
+Siffran på `fresh` är den realistiska – justering mot kända frågor generaliserar dåligt. **Ersätt med riktiga frågor:**
+`EVAL_FILE=riktiga.json npm run eval -w server` (format: `[{"q": "...", "expected": "guide-id" | "none"}]`).
+
+## Luckor och "behöver innehåll"
+Utkast med fältet `todo` är *kända luckor* (t.ex. bokning och användare, som manualen inte täcker). De publiceras aldrig,
+men om en fråga matchar en lucka bättre än en publicerad guide visas bara förslag – aldrig ett säkert, felaktigt svar.
+Tomma ämnen döljs för användarna. "Så hittar du hit" (`location`) visar var i programmet funktionen ligger som en kompakt rad.

@@ -7,7 +7,7 @@ import { Markup } from "./Markup";
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 /** En skärmbild som zoomar mot rätt knapp. Markeringar (ring/ruta) ligger i samma transformerade lager som bilden. */
-export function Shot({ step, zoomed, n, showBadge = true }: { step: Step; zoomed: boolean; n?: number; showBadge?: boolean }) {
+export function Shot({ step, zoomed, n, showBadge = true, height }: { step: Step; zoomed: boolean; n?: number; showBadge?: boolean; height?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [w, setW] = useState(0);
   const [ratio, setRatio] = useState(step.ratio ?? 1.6);
@@ -23,7 +23,7 @@ export function Shot({ step, zoomed, n, showBadge = true }: { step: Step; zoomed
   }, []);
   useEffect(() => { setLoaded(false); if (step.ratio) setRatio(step.ratio); }, [step.image, step.ratio]);
 
-  const H = Math.round(Math.min(w * 0.72, 440)) || 240;
+  const H = height ?? (Math.round(Math.min(w * 0.72, 440)) || 240);
   const center = step.hotspot ? { x: step.hotspot.x + step.hotspot.w / 2, y: step.hotspot.y + step.hotspot.h / 2 } : step.focus;
   const baseH = w / ratio;
   const contain = Math.min(1, H / (baseH || 1));

@@ -83,6 +83,12 @@ export function sanitizeGuide(input: any, existing?: Guide, takenIds: Set<string
     const url = mediaUrl(v.url) ?? (/^https:\/\/[^\s]+$/.test(str(v.url, 500)) ? str(v.url, 500) : undefined);
     if (url) g.video = { url, start: typeof v.start === "number" && v.start >= 0 ? v.start : undefined, end: typeof v.end === "number" && v.end > 0 ? v.end : undefined, poster: mediaUrl(v.poster) };
   }
+  const loc = input?.location;
+  if (loc && Array.isArray(loc.path)) {
+    const path = strList(loc.path, 6, 80);
+    if (path.length) g.location = { path, image: mediaUrl(loc.image), hotspot: sanitizeHotspot(loc.hotspot), ratio: typeof loc.ratio === "number" && loc.ratio > 0.1 && loc.ratio < 10 ? loc.ratio : undefined };
+  }
+  g.todo = str(input?.todo, 400) || undefined;
   if (Array.isArray(input?.walkthrough)) {
     g.walkthrough = input.walkthrough.slice(0, 30).map((w: any) => ({
       selector: str(w?.selector, 200), text: str(w?.text, 200),

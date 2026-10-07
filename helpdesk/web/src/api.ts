@@ -2,7 +2,7 @@ import type { AnalyticsReport, AskResponse, Candidate, Category, Guide, Lang, Lo
 
 export interface Config { categories: Category[]; langs: { id: Lang; name: string }[]; aiEnabled: boolean; aiProvider: string }
 export interface GuideListItem { id: string; title: string; summary: string; category: string; hasVideo: boolean; hasWalkthrough: boolean; untranslated: boolean }
-export interface AdminGuideRow { id: string; title: string; status: "draft" | "published"; category: string; updatedAt: string; steps: number; hasVideo: boolean; langs: string[]; views: number; yes: number; no: number }
+export interface AdminGuideRow { todo?: string; id: string; title: string; status: "draft" | "published"; category: string; updatedAt: string; steps: number; hasVideo: boolean; langs: string[]; views: number; yes: number; no: number }
 
 export class ApiError extends Error { constructor(public status: number, message: string) { super(message); } }
 

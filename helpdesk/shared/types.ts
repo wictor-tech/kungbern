@@ -74,6 +74,10 @@ export interface Guide {
   warning?: string;
   video?: GuideVideo;
   walkthrough?: WalkthroughStep[];
+  /** "Så hittar du hit": var i programmet funktionen ligger (visas som en kompakt rad i stället för ett eget steg). */
+  location?: { path: string[]; image?: string; hotspot?: Hotspot; ratio?: number };
+  /** Internt: utkast som behöver innehåll (visas bara i adminläget). */
+  todo?: string;
   /** Vilka sidor/funktioner i programmet guiden gäller (för kontextmedveten hjälp). */
   pageKeys: string[];
   roles: string[];
@@ -94,7 +98,7 @@ export interface LocalizedGuide extends Omit<Guide, "translations"> {
   untranslated?: boolean;
 }
 
-export interface Category { id: string; icon: string; labels: Partial<Record<Lang, string>> }
+export interface Category { id: string; icon: string; labels: Partial<Record<Lang, string>>; /** Antal publicerade guider (sätts av API:t). */ count?: number }
 
 export interface AskContext {
   /** Sidnyckel från programmet, t.ex. "slideshow". */

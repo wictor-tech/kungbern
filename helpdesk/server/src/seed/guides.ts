@@ -27,28 +27,20 @@ interface Def {
   walkthrough?: WalkthroughStep[];
   en?: { title: string; summary: string; steps: string[]; tip?: string; warning?: string; alt?: string[] };
   video?: Guide["video"];
+  todo?: string;
+  draft?: boolean;
 }
 
 function buildSteps(id: string, steps: S[]): Step[] {
-  return steps.map(([text, imageIn, pinIn], i) => {
-    // "Öppna X i platsmenyn" → visa platsmenyn (sida 3) så att även första steget är visuellt.
-    const menuStep = !imageIn && /^Öppna \*\*.+\*\* i platsmenyn/.test(text);
-    const image = menuStep ? "p3" : imageIn;
-    const pin = menuStep ? 3 : pinIn;
+  return steps.map(([text, image, pin], i) => {
     const step: Step = { id: `${id}-${i + 1}`, text };
-    const menuName = menuStep ? text.match(/\*\*(.+?)\*\*/)?.[1] : undefined;
     if (image) {
       const f = FOCUS[image];
       step.image = `/media/${image}.jpg`;
       step.annotated = true;
       step.ratio = f?.ratio;
       const p = pin ? f?.pins[String(pin)] : undefined;
-      if (menuName && MENU_Y[menuName] !== undefined) {
-        // Markera exakt det menyval som steget gäller.
-        const cy = MENU_Y[menuName];
-        step.hotspot = { x: 0.775, y: cy - 0.022, w: 0.185, h: 0.044 };
-        step.annotated = false;
-      } else if (p) {
+      if (p) {
         // Zooma mot pilens spets och lite förbi den, så att hela målrutan syns.
         const dx = p.fx - p.x, dy = p.fy - p.y, len = Math.hypot(dx, dy) || 1;
         const reach = 0.08, r = step.ratio ?? 1.6;
@@ -87,7 +79,7 @@ const DEFS: Def[] = [
     id: "languages", category: "settings", pages: ["languages"],
     title: "Lägg till eller ta bort språk",
     summary: "Välj vilka språk platsen stöder – bildspel, video och SMS finns på varje språk.",
-    alt: ["lägga till språk", "ta bort språk", "ändra språk", "byta språk", "hur ändrar jag språk", "fler språk för föraren", "översätta bildspelet", "språkhantering", "ukrainska polska ryska språk", "add a language", "change language", "remove language", "translate slideshow", "sprog tilføje", "Sprache hinzufügen", "ajouter une langue", "taal toevoegen", "dodaj język", "lisää kieli"],
+    alt: ["vi behöver ukrainska", "ta bort ryska", "lägga till tyska", "lägga till språk", "ta bort språk", "ändra språk", "byta språk", "hur ändrar jag språk", "fler språk för föraren", "översätta bildspelet", "språkhantering", "ukrainska polska ryska språk", "add a language", "change language", "remove language", "translate slideshow", "sprog tilføje", "Sprache hinzufügen", "ajouter une langue", "taal toevoegen", "dodaj język", "lisää kieli"],
     steps: [
       ["Öppna **Språkhantering** i platsmenyn"],
       ["Klicka **Lägg till språk** (ett språk) eller **Lägg till alla språk**", "p4", 1],
@@ -103,7 +95,7 @@ const DEFS: Def[] = [
     id: "location-info", category: "settings", pages: ["location-info"],
     title: "Ändra platsnamn, adress och logotyp",
     summary: "Ändra grunduppgifterna om platsen under Ändra platsinformation.",
-    alt: ["byta namn på platsen", "ändra adress", "ändra kontaktinformation", "byta logga", "ladda upp logotyp", "ny profilbild", "ta bort logga", "visa namn i bildspelet", "change site name", "change address", "upload logo", "change logo", "ändra platsinformation", "Firmenlogo ändern", "changer le logo"],
+    alt: ["ändra adressen", "ändra företagsnamn", "byta namn på anläggningen", "byta namn på platsen", "ändra adress", "ändra kontaktinformation", "byta logga", "ladda upp logotyp", "ny profilbild", "ta bort logga", "visa namn i bildspelet", "change site name", "change address", "upload logo", "change logo", "ändra platsinformation", "Firmenlogo ändern", "changer le logo"],
     steps: [
       ["Öppna **Ändra platsinformation** i platsmenyn"],
       ["Skriv **Platsnamn**, **Adress** och **Kontaktinformation**", "p5", 1],
@@ -133,7 +125,7 @@ const DEFS: Def[] = [
     id: "opening-hours", category: "bookings", pages: ["location-info", "opening-hours"],
     title: "Ändra öppettider",
     summary: "Ange en allmän öppettid och egna tider per veckodag, och spara.",
-    alt: ["ändra öppettider", "nya öppettider", "kortare på fredagar", "stänga tidigare", "öppna senare", "när platsen öppnar", "lördag söndag stängt", "öppningstid stängningstid", "fill all opening hours", "change opening hours", "opening times", "set working hours", "Öffnungszeiten ändern", "heures d'ouverture", "åbningstider", "avoin", "godziny otwarcia", "openingstijden"],
+    alt: ["ändra tider", "olika tider olika dagar", "tider på fredagar", "ändra öppettider", "nya öppettider", "kortare på fredagar", "stänga tidigare", "öppna senare", "när platsen öppnar", "lördag söndag stängt", "öppningstid stängningstid", "fill all opening hours", "change opening hours", "opening times", "set working hours", "Öffnungszeiten ändern", "heures d'ouverture", "åbningstider", "avoin", "godziny otwarcia", "openingstijden"],
     steps: [
       ["Öppna **Ändra platsinformation** och scrolla ner"],
       ["Skriv **Allmänt** öppnings- och stängningstid, t.ex. 07:00 och 17:00", "p6", 1],
@@ -149,7 +141,7 @@ const DEFS: Def[] = [
     id: "images-add", category: "slideshow", pages: ["images", "slideshow"],
     title: "Lägg till en bild i bildspelet",
     summary: "Dra in bilden i Bildhantering, skriv en rubrik och spara.",
-    alt: ["hur lägger jag upp en bild", "ladda upp bild", "ladda upp foto", "lägga till bild", "byta bild", "ny bild på skärmen", "ändra slideshow", "ändra bildspel", "ny bild i bildspelet", "lägga in en bild", "slideshow image", "upload a picture", "upload an image", "add photo to slideshow", "change slideshow", "new picture on screen", "Bild hochladen", "Diashow ändern", "télécharger une image", "billede uploade", "afbeelding uploaden", "dodaj zdjęcie", "lataa kuva", "bilde laste opp", "säkerhetsinformation bild", "skyddsutrustning information"],
+    alt: ["byta ut bilden", "en ruta med bara text", "ny skylt i bildspelet", "lägga till en jpg", "nytt foto på skärmen", "bild för chaufförerna", "hur lägger jag upp en bild", "ladda upp bild", "ladda upp foto", "lägga till bild", "byta bild", "ny bild på skärmen", "ändra slideshow", "ändra bildspel", "ny bild i bildspelet", "lägga in en bild", "slideshow image", "upload a picture", "upload an image", "add photo to slideshow", "change slideshow", "new picture on screen", "Bild hochladen", "Diashow ändern", "télécharger une image", "billede uploade", "afbeelding uploaden", "dodaj zdjęcie", "lataa kuva", "bilde laste opp", "säkerhetsinformation bild", "skyddsutrustning information"],
     steps: [
       ["Öppna **Bildhantering** i platsmenyn"],
       ["Dra in bilden i det grå fältet – eller klicka i fältet och välj fil", "p7", 1],
@@ -165,7 +157,7 @@ const DEFS: Def[] = [
     id: "images-remove", category: "slideshow", pages: ["images", "slideshow"],
     title: "Ta bort eller flytta en bild",
     summary: "Ta bort en bild med papperskorgen eller ändra ordning med pilarna – och spara.",
-    alt: ["ta bort bild", "radera bild", "ta bort foto från bildspelet", "ändra ordning på bilderna", "flytta bild", "byta plats på bilder", "dölj bild", "delete image", "remove picture", "reorder slideshow images", "move image up", "Bild löschen", "supprimer une image"],
+    alt: ["ordningen på bilderna är fel", "ta bort en bild", "remove a slide", "bild i fel ordning", "ta bort bild", "radera bild", "ta bort foto från bildspelet", "ändra ordning på bilderna", "flytta bild", "byta plats på bilder", "dölj bild", "delete image", "remove picture", "reorder slideshow images", "move image up", "Bild löschen", "supprimer une image"],
     steps: [
       ["Öppna **Bildhantering** i platsmenyn"],
       ["Ändra ordning med pilarna upp/ner", "p7", 4],
@@ -179,7 +171,7 @@ const DEFS: Def[] = [
     id: "slideshow-config", category: "slideshow", pages: ["slideshow"],
     title: "Välj vilka bilder som visas i bildspelet",
     summary: "Bocka i de bilder som ska visas för föraren, välj ordning i utskriften och uppdatera.",
-    alt: ["konfigurera bildspel", "vilka bilder visas för föraren", "dölja en bild i bildspelet", "visa bild offentligt", "utskriftsposition", "utskriftstext", "bildspel inställningar", "ändra bildspelet", "säkerhetsinformationen föraren ser", "which images does the driver see", "configure slideshow", "hide image from slideshow", "slideshow settings", "Diashow konfigurieren", "configurer le diaporama"],
+    alt: ["show only some pictures", "dölja en bild", "välja vilka bilder som visas", "konfigurera bildspel", "vilka bilder visas för föraren", "dölja en bild i bildspelet", "visa bild offentligt", "utskriftsposition", "utskriftstext", "bildspel inställningar", "ändra bildspelet", "säkerhetsinformationen föraren ser", "which images does the driver see", "configure slideshow", "hide image from slideshow", "slideshow settings", "Diashow konfigurieren", "configurer le diaporama"],
     steps: [
       ["Öppna **Konfigurera bildspel** i platsmenyn", "p8", 1],
       ["**Visa i bildspel**: bocka de bilder föraren ska se", "p8", 2],
@@ -314,7 +306,7 @@ const DEFS: Def[] = [
     id: "gates", category: "gates", pages: ["gates"],
     title: "Namnge och styra grindar",
     summary: "Namnge grindarna vakten kan öppna och låt dem öppnas automatiskt när en förare kallas in.",
-    alt: ["styra grindar", "ändra vilken port chauffören ska till", "vilken grind ska föraren åka till", "öppna grinden automatiskt", "grind vid inkallning", "lägga till grind", "grind in och ut", "gatekeeper knapp", "styrenhet", "relä", "port för lastning", "change gate", "which gate should the driver use", "open gate automatically", "add a gate", "Tor steuern", "porte automatique", "poort openen"],
+    alt: ["styra grindar", "öppna grinden automatiskt", "grind vid inkallning", "lägga till grind", "grind in och ut", "gatekeeper knapp", "styrenhet", "relä", "port för lastning", "change gate", "which gate should the driver use", "open gate automatically", "add a gate", "Tor steuern", "porte automatique", "poort openen"],
     steps: [
       ["Öppna **Hantera grindar** i platsmenyn"],
       ["Skriv ett namn i **Grindens namn**, t.ex. Grind 1", "p16", 1],
@@ -330,7 +322,7 @@ const DEFS: Def[] = [
     id: "notifications", category: "sms", pages: ["notifications"],
     title: "Få SMS eller e-post när något händer",
     summary: "Välj händelse, metod och mottagare – t.ex. SMS när en förare checkar in.",
-    alt: ["få sms när förare checkar in", "skicka sms", "hur skickar jag ett sms", "aviseringar", "meddelande vid bokning", "mejla vid incheckning", "ny mottagare för avisering", "notis när lastbil kallas in", "send me an SMS", "email notification on check-in", "notify me when driver arrives", "set up notifications", "Benachrichtigung einrichten", "recevoir un SMS", "tekstviesti kuljettajan saapuessa"],
+    alt: ["mail när chauffören kommit", "mejl när föraren anlänt", "sms när bil checkar in", "få sms när förare checkar in", "skicka sms", "hur skickar jag ett sms", "aviseringar", "meddelande vid bokning", "mejla vid incheckning", "ny mottagare för avisering", "notis när lastbil kallas in", "send me an SMS", "email notification on check-in", "notify me when driver arrives", "set up notifications", "Benachrichtigung einrichten", "recevoir un SMS", "tekstviesti kuljettajan saapuessa"],
     steps: [
       ["Öppna **Aviseringsinställningar** i platsmenyn"],
       ["**Typ**: välj händelse (Check-in, Booking, Called in …)", "p17", 1],
@@ -362,7 +354,7 @@ const DEFS: Def[] = [
     id: "structure", category: "settings", pages: ["structure"],
     title: "Dela upp en plats i spår (lastning och lossning)",
     summary: "Organisera platser i en hierarki med underplatser och spår.",
-    alt: ["ändra struktur", "lägga till spår", "lastning och lossning separat", "underplats", "koppla loss plats", "flytta plats", "hierarki", "dela upp platsen", "add track", "split location into loading and unloading", "sub-location", "Struktur ändern", "modifier la structure"],
+    alt: ["lastning och lossning på olika ställen", "olika spår för lastning och lossning", "ändra struktur", "lägga till spår", "lastning och lossning separat", "underplats", "koppla loss plats", "flytta plats", "hierarki", "dela upp platsen", "add track", "split location into loading and unloading", "sub-location", "Struktur ändern", "modifier la structure"],
     steps: [
       ["Öppna **Ändra struktur** i platsmenyn"],
       ["Välj roll: **Underplats** eller **Spår**", "p19", 1],
@@ -441,24 +433,52 @@ const DEFS: Def[] = [
     tip: "Siffran bredvid användarnamnet visar hur många nya rapporter som väntar.",
     related: ["reports-categories"],
   },
+  // ---- Utkast för ämnen som manualen (Location Admin) inte täcker. Inget innehåll är påhittat – de väntar på en person som kan produkten.
+  {
+    id: "booking-create", category: "bookings", pages: [], draft: true, title: "Skapa en bokning", summary: "", steps: [["", undefined, undefined]],
+    alt: ["hur skapar jag en bokning", "boka en tid", "ny bokning", "boka lastbil", "create a booking", "book a time slot"],
+    todo: "Saknas i manualen. Fyll i stegen från bokningsvyn (och bokningsflödet för åkerier om det är ett annat).",
+  },
+  {
+    id: "user-add", category: "users", pages: [], draft: true, title: "Lägg till en användare", summary: "", steps: [["", undefined, undefined]],
+    alt: ["hur lägger jag till en användare", "ny användare", "skapa konto", "ge någon behörighet", "add a user", "invite a colleague"],
+    todo: "Saknas i manualen. Beskriv hur användare och behörigheter hanteras.",
+  },
+  {
+    id: "driver-gate", category: "gates", pages: ["gates"], draft: true, title: "Ändra vilken grind föraren ska till", summary: "", steps: [["", undefined, undefined]],
+    alt: ["ändra vilken port chauffören ska till", "vilken grind ska föraren åka till", "skicka föraren till rätt grind", "which gate should the driver use"],
+    todo: "Bekräfta med någon som kan produkten om detta styrs via grindar, spår/struktur eller något annat. Guiden 'Namnge och styra grindar' svarar bara på en del av frågan.",
+  },
 ];
+
+const MENU_RE = /^Öppna \*\*(.+?)\*\* i platsmenyn$/;
 
 export function seedGuides(): Guide[] {
   return DEFS.map((d) => {
-    const steps = buildSteps(d.id, d.steps);
+    // Ett rent "Öppna X i platsmenyn"-steg blir en kompakt "Så hittar du hit"-rad (med exakt menyval markerat)
+    // i stället för ett eget steg – så börjar varje guide direkt med själva uppgiften.
+    let steps0 = d.steps, en = d.en, location: Guide["location"];
+    const m = !d.steps[0][1] ? d.steps[0][0].match(MENU_RE) : null;
+    if (m && MENU_Y[m[1]] !== undefined) {
+      const cy = MENU_Y[m[1]];
+      location = { path: ["Platsmenyn", m[1]], image: "/media/p3.jpg", ratio: FOCUS.p3?.ratio, hotspot: { x: 0.775, y: cy - 0.022, w: 0.185, h: 0.044 } };
+      steps0 = d.steps.slice(1);
+      if (en) en = { ...en, steps: en.steps.slice(1) };
+    }
+    const steps = buildSteps(d.id, steps0);
     const translations: Partial<Record<Lang, GuideTranslation>> = {};
-    if (d.en) {
+    if (en) {
       translations.en = {
-        title: d.en.title, summary: d.en.summary,
-        steps: Object.fromEntries(steps.map((s, i) => [s.id, d.en!.steps[i] ?? s.text])),
-        tip: d.en.tip, warning: d.en.warning, updatedAt: NOW,
+        title: en.title, summary: en.summary,
+        steps: Object.fromEntries(steps.map((s, i) => [s.id, en!.steps[i] ?? s.text])),
+        tip: en.tip, warning: en.warning, updatedAt: NOW,
       };
     }
     return {
-      id: d.id, status: "published", title: d.title, summary: d.summary, category: d.category,
-      altQueries: d.alt, steps, tip: d.tip, warning: d.warning, video: d.video, walkthrough: d.walkthrough,
+      id: d.id, status: d.draft ? "draft" : "published", title: d.title, summary: d.summary, category: d.category,
+      altQueries: d.alt, steps, tip: d.tip, warning: d.warning, video: d.video, walkthrough: d.walkthrough, location, todo: d.todo,
       pageKeys: d.pages, roles: d.roles ?? [], lang: "sv", translations, related: d.related ?? [],
-      createdAt: NOW, updatedAt: NOW, publishedAt: NOW,
+      createdAt: NOW, updatedAt: NOW, publishedAt: d.draft ? undefined : NOW,
     } satisfies Guide;
   });
 }

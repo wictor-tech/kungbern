@@ -7,6 +7,7 @@ import { Markup } from "./Markup";
 import { StepViewer } from "./StepViewer";
 import { TicketForm } from "./TicketForm";
 import { VideoPlayer } from "./VideoPlayer";
+import { Where } from "./Where";
 
 export function CandidateList({ items }: { items: Candidate[] }) {
   const { catIcon } = useHelp();
@@ -116,6 +117,8 @@ export function GuideView({ guide: initial, question, queryId, short, related, e
           </div>
         )}
       </header>
+
+      {guide.location && <Where location={guide.location} />}
 
       {guide.video && (
         <div className="tabs" role="tablist">

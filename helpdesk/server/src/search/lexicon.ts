@@ -43,7 +43,16 @@ export const GROUPS: Group[] = [
   { id: "v_show", weight: 0.35, words: "visa visar se ser show view see anzeigen voir bekijken pokaz nayta vis".split(" ") },
   { id: "v_send", weight: 0.5, words: "skicka skickar skickas send sending senden envoyer versturen wyslij laheta sende".split(" ") },
   { id: "v_save", weight: 0.4, words: "spara sparar save speichern enregistrer opslaan zapisz tallenna gem lagre".split(" ") },
+  // ----- Fler begrepp (utökade efter utvärdering) -----
+  { id: "language", weight: 1, words: "ukrainska ryska polska tyska engelska svenska finska danska norska franska spanska italienska ukrainian russian polish german english swedish finnish danish norwegian french spanish".split(" ") },
+  { id: "locinfo", weight: 1.1, words: "adress adressen address namn namnet name foretagsnamn foretaget company kontaktuppgifter kontaktinformation platsnamn".split(" ") },
+  { id: "arrive", weight: 0.5, words: "kommit kommer kom anlant anlanger ankommit anlander arrived arrives arrive checkar checkade checkat checkas".split(" ") },
+  { id: "support", weight: 1.3, words: "support kundtjanst supporten ringa ringer ringt call contact kontakta kontakt".split(" ") },
+  { id: "reset", weight: 1.2, words: "glomt glomma glommer forgot forgotten aterstall aterstalla reset nollstall nollstalla nollstaller".split(" ") },
+  // Ämnen som inte hör till hjälpen – ska aldrig ge ett "säkert" svar.
+  { id: "offtopic", weight: 1.3, words: "pris priset kostar kostnad price cost faktura fakturera fakturerar invoice vader weather farg farger color colour integrera integration sap erp tull tullverket customs utbildning training dator datorn computer".split(" ") },
 ];
+
 
 export const STOPWORDS = new Set(
   ("hur jag vill kan man ska maste far en ett ar att pa i av for med och eller det den de som har hade till fran om mig min mitt mina vad var nar varfor vilken vilket vilka kanske gor gora goras " +

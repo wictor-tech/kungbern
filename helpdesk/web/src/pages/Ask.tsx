@@ -48,7 +48,7 @@ export function Ask() {
           </div>
           {!weak && (
             <div className="topics">
-              {config?.categories.map((c) => <Link key={c.id} to={`/c/${c.id}`} className="topic"><span aria-hidden>{catIcon(c.id)}</span><b>{catLabel(c.id)}</b></Link>)}
+              {config?.categories.filter((c) => (c.count ?? 1) > 0).map((c) => <Link key={c.id} to={`/c/${c.id}`} className="topic"><span aria-hidden>{catIcon(c.id)}</span><b>{catLabel(c.id)}</b></Link>)}
             </div>
           )}
           {showTicket ? <TicketForm question={q} stepsViewed={[]} queryId={res.queryId} /> : <button className="btn big" onClick={() => setShowTicket(true)}>{t.support}</button>}

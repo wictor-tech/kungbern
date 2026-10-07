@@ -7,7 +7,8 @@
     "start": "tsx src/index.ts",
     "test": "tsx --test src/**/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "demo-data": "tsx src/demo-data.ts"
+    "demo-data": "tsx src/demo-data.ts",
+    "eval": "tsx src/eval/run.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",

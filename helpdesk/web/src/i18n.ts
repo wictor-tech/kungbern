@@ -61,6 +61,7 @@ const sv = {
   poweredBy: "Hjälp",
   ask: "Fråga",
   stepsShort: "Steg",
+  whereTo: "Så hittar du hit",
 };
 export type Strings = typeof sv;
 
@@ -81,6 +82,7 @@ const en: Strings = {
   related: "See also", tip: "Tip", warning: "Be careful", machineTranslated: "Machine translated", untranslated: "This guide isn't available in your language yet.",
   translate: "Translate", walkthrough: "Show me in the app", home: "Home", language: "Language", noGuides: "No guides here yet.", loadError: "Something went wrong. Try again.",
   video: "Video", steps: "steps", poweredBy: "Help", ask: "Ask", stepsShort: "Step",
+  whereTo: "Where to find it",
 };
 
 const da: Strings = {
@@ -99,6 +101,7 @@ const da: Strings = {
   related: "Se også", tip: "Tip", warning: "Vær forsigtig", machineTranslated: "Maskinoversat", untranslated: "Denne guide findes ikke på dit sprog endnu.",
   translate: "Oversæt", walkthrough: "Vis mig i programmet", home: "Forside", language: "Sprog", noGuides: "Ingen guider endnu.", loadError: "Noget gik galt. Prøv igen.",
   video: "Video", steps: "trin", poweredBy: "Hjælp", ask: "Spørg", stepsShort: "Trin",
+  whereTo: "Sådan finder du det",
 };
 
 const no: Strings = {
@@ -117,6 +120,7 @@ const no: Strings = {
   related: "Se også", tip: "Tips", warning: "Vær forsiktig", machineTranslated: "Maskinoversatt", untranslated: "Denne guiden finnes ikke på ditt språk ennå.",
   translate: "Oversett", walkthrough: "Vis meg i programmet", home: "Forside", language: "Språk", noGuides: "Ingen guider ennå.", loadError: "Noe gikk galt. Prøv igjen.",
   video: "Video", steps: "steg", poweredBy: "Hjelp", ask: "Spør", stepsShort: "Steg",
+  whereTo: "Slik finner du det",
 };
 
 const fi: Strings = {
@@ -135,6 +139,7 @@ const fi: Strings = {
   related: "Katso myös", tip: "Vinkki", warning: "Ole varovainen", machineTranslated: "Konekäännetty", untranslated: "Tätä ohjetta ei ole vielä omalla kielelläsi.",
   translate: "Käännä", walkthrough: "Näytä ohjelmassa", home: "Etusivu", language: "Kieli", noGuides: "Ei ohjeita vielä.", loadError: "Jokin meni pieleen. Yritä uudelleen.",
   video: "Video", steps: "vaihetta", poweredBy: "Apua", ask: "Kysy", stepsShort: "Vaihe",
+  whereTo: "Näin löydät sen",
 };
 
 const de: Strings = {
@@ -153,6 +158,7 @@ const de: Strings = {
   related: "Siehe auch", tip: "Tipp", warning: "Vorsicht", machineTranslated: "Maschinell übersetzt", untranslated: "Diese Anleitung gibt es noch nicht in Ihrer Sprache.",
   translate: "Übersetzen", walkthrough: "Im Programm zeigen", home: "Startseite", language: "Sprache", noGuides: "Noch keine Anleitungen.", loadError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
   video: "Video", steps: "Schritte", poweredBy: "Hilfe", ask: "Fragen", stepsShort: "Schritt",
+  whereTo: "So finden Sie es",
 };
 
 const fr: Strings = {
@@ -171,6 +177,7 @@ const fr: Strings = {
   related: "Voir aussi", tip: "Astuce", warning: "Attention", machineTranslated: "Traduit automatiquement", untranslated: "Ce guide n'est pas encore disponible dans votre langue.",
   translate: "Traduire", walkthrough: "Montrez-moi dans le programme", home: "Accueil", language: "Langue", noGuides: "Pas encore de guides.", loadError: "Une erreur s'est produite. Réessayez.",
   video: "Vidéo", steps: "étapes", poweredBy: "Aide", ask: "Demander", stepsShort: "Étape",
+  whereTo: "Où le trouver",
 };
 
 const nl: Strings = {
@@ -189,6 +196,7 @@ const nl: Strings = {
   related: "Zie ook", tip: "Tip", warning: "Let op", machineTranslated: "Automatisch vertaald", untranslated: "Deze handleiding is nog niet in jouw taal beschikbaar.",
   translate: "Vertalen", walkthrough: "Laat zien in het programma", home: "Start", language: "Taal", noGuides: "Nog geen handleidingen.", loadError: "Er ging iets mis. Probeer opnieuw.",
   video: "Video", steps: "stappen", poweredBy: "Hulp", ask: "Vraag", stepsShort: "Stap",
+  whereTo: "Zo vind je het",
 };
 
 const pl: Strings = {
@@ -207,6 +215,7 @@ const pl: Strings = {
   related: "Zobacz też", tip: "Wskazówka", warning: "Uwaga", machineTranslated: "Tłumaczenie maszynowe", untranslated: "Ta instrukcja nie jest jeszcze dostępna w Twoim języku.",
   translate: "Przetłumacz", walkthrough: "Pokaż mi w programie", home: "Start", language: "Język", noGuides: "Brak instrukcji.", loadError: "Coś poszło nie tak. Spróbuj ponownie.",
   video: "Wideo", steps: "kroków", poweredBy: "Pomoc", ask: "Zapytaj", stepsShort: "Krok",
+  whereTo: "Gdzie to znaleźć",
 };
 
 export const STRINGS: Record<Lang, Strings> = { sv, en, da, no, fi, de, fr, nl, pl };

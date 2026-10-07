@@ -56,7 +56,7 @@ export function Home() {
       <section>
         <h2 className="section-title">{t.topics}</h2>
         <div className="topics">
-          {config?.categories.map((c) => (
+          {config?.categories.filter((c) => (c.count ?? 1) > 0).map((c) => (
             <Link key={c.id} to={`/c/${c.id}`} className="topic"><span aria-hidden>{catIcon(c.id)}</span><b>{catLabel(c.id)}</b></Link>
           ))}
         </div>
