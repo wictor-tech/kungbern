@@ -101,6 +101,13 @@ export function Feedback({
           >
             👎 Nej
           </button>
+          <button
+            type="button"
+            onClick={() => setState({ s: "ticket" })}
+            className="w-full text-left text-sm text-muted underline hover:text-navy"
+          >
+            Kontakta support
+          </button>
         </div>
       )}
 

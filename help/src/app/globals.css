@@ -1,22 +1,52 @@
 @import "tailwindcss";
 
-/* LUP-färger (från användarguiden; justeras mot lupnumber.com). */
+/* LUP:s varumärke (från lupnumber.com): Rubik, blått #0da0ec, mörkblått #064769. */
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/rubik-latin-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/rubik-latin-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url("/fonts/rubik-latin-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/rubik-latin-800italic.woff2") format("woff2");
+}
+
 @theme {
-  --color-lup: #0ea5e9;
-  --color-lup-dark: #0284c7;
-  --color-lup-tint: #e0f2fe;
-  --color-navy: #0c4a6e;
-  --color-ink: #1e293b;
-  --color-muted: #64748b;
-  --color-line: #e2e8f0;
-  --color-canvas: #f8fafc;
+  --color-lup: #0da0ec;
+  --color-lup-dark: #0886c9;
+  --color-lup-tint: #e8f4ff;
+  --color-navy: #064769;
+  --color-ink: #2f3337;
+  --color-muted: #5f656b;
+  --color-line: #dfe5ea;
+  --color-canvas: #f6f8fa;
   --color-marker: #e8431a;
   --color-marker-tint: #fcebe7;
   --color-tip: #ecfdf5;
   --color-tip-ink: #065f46;
-  --color-warn: #fef3c7;
-  --color-warn-ink: #92400e;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-warn: #fff3cd;
+  --color-warn-ink: #7a5300;
+  --color-sun: #f5ba3d;
+  --font-sans: "Rubik", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 html {
@@ -28,9 +58,12 @@ body {
   color: var(--color-ink);
 }
 
-:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--color-lup) 55%, transparent);
-  outline-offset: 2px;
+/* I base-lagret så att komponenternas egna fokusregler (utilities) vinner. */
+@layer base {
+  :focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-lup) 55%, transparent);
+    outline-offset: 2px;
+  }
 }
 
 @keyframes rise {

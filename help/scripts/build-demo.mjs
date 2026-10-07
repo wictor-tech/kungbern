@@ -59,9 +59,16 @@ const js = await esbuild.build({
 const cssIn = fs.readFileSync(r("src/app/globals.css"), "utf8") + `\n@source "../../demo";\n`;
 const css = await postcss([tailwind({ base: root, optimize: { minify: true } })]).process(cssIn, { from: r("src/app/globals.css") });
 
+// Typsnitten bäddas in, eftersom demon är en enda fil.
+let cssOut = css.css;
+for (const f of fs.readdirSync(r("public/fonts"))) {
+  const data = `data:font/woff2;base64,${fs.readFileSync(r(`public/fonts/${f}`)).toString("base64")}`;
+  cssOut = cssOut.split(`/fonts/${f}`).join(data);
+}
+
 const html = `<title>LUP Hjälp</title>
 <meta name="description" content="Klickbar demo av LUP Hjälp">
-<style>${css.css}</style>
+<style>${cssOut}</style>
 <div id="root"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>

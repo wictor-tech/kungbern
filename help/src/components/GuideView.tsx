@@ -51,6 +51,7 @@ export function GuideView({
   const warnings = guide.notes.filter((n) => n.type === "warning");
   const tips = guide.notes.filter((n) => n.type === "tip");
   const allDone = guide.steps.length > 0 && done.length === guide.steps.length;
+  const hasMedia = Boolean(guide.screenshot || guide.video?.url);
 
   return (
     <article className="animate-rise" aria-labelledby="guide-title">
@@ -65,7 +66,12 @@ export function GuideView({
         <Breadcrumb items={guide.breadcrumb} />
       </header>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div
+        className={
+          hasMedia ? "grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]" : "grid max-w-2xl grid-cols-1 gap-6"
+        }
+      >
+        {hasMedia && (
         <div className="space-y-3 lg:sticky lg:top-4 lg:self-start">
           {guide.video?.url ? (
             <video
@@ -122,6 +128,7 @@ export function GuideView({
             </div>
           )}
         </div>
+        )}
 
         <div className="space-y-4">
           {warnings.map((n, i) => (

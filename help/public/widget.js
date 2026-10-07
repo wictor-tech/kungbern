@@ -18,14 +18,14 @@
 
   var css =
     ".lup-help-btn{position:fixed;right:20px;bottom:20px;z-index:2147483000;display:flex;align-items:center;gap:8px;" +
-    "height:48px;padding:0 18px 0 8px;border:0;border-radius:24px;background:#0ea5e9;color:#fff;font:600 15px/1 system-ui,sans-serif;" +
+    "height:48px;padding:0 18px 0 8px;border:0;border-radius:24px;background:#0da0ec;color:#fff;font:500 15px/1 Rubik,system-ui,sans-serif;" +
     "box-shadow:0 6px 20px rgba(12,74,110,.25);cursor:pointer}" +
-    ".lup-help-btn:hover{background:#0284c7}.lup-help-btn:focus-visible{outline:3px solid #0c4a6e;outline-offset:2px}" +
-    ".lup-help-btn span{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#fff;color:#0ea5e9;font-size:18px}" +
+    ".lup-help-btn:hover{background:#0886c9}.lup-help-btn:focus-visible{outline:3px solid #064769;outline-offset:2px}" +
+    ".lup-help-btn span{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#fff;color:#0da0ec;font-size:18px}" +
     ".lup-help-panel{position:fixed;top:0;right:0;bottom:0;z-index:2147483001;width:min(560px,100vw);background:#f8fafc;" +
     "box-shadow:-8px 0 30px rgba(12,74,110,.2);transform:translateX(100%);transition:transform .2s ease;display:flex;flex-direction:column}" +
     ".lup-help-panel.open{transform:none}" +
-    ".lup-help-head{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 12px 0 16px;background:#fff;border-bottom:1px solid #e2e8f0;font:700 16px system-ui,sans-serif;color:#0c4a6e}" +
+    ".lup-help-head{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 12px 0 16px;background:#fff;border-bottom:1px solid #e2e8f0;font:700 16px system-ui,sans-serif;color:#064769}" +
     ".lup-help-head button{border:0;background:none;font-size:22px;cursor:pointer;color:#64748b;width:40px;height:40px}" +
     ".lup-help-panel iframe{flex:1;border:0;width:100%}" +
     "@media (prefers-reduced-motion:reduce){.lup-help-panel{transition:none}}";

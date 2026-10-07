@@ -4,12 +4,14 @@ import type { AppArea, GuideSummary } from "@/lib/types";
 
 export function Logo({ embed = false }: { embed?: boolean }) {
   return (
-    <Link href={embed ? "/?embed=1" : "/"} className="flex items-baseline gap-2" aria-label="LUP Hjälp – till startsidan">
-      <span className="text-xl font-extrabold tracking-tight">
-        <span className="text-lup">LUP</span>
-        <span className="text-navy">NUMBER</span>
+    <Link href={embed ? "/?embed=1" : "/"} className="flex items-center gap-3" aria-label="LUP Hjälp – till startsidan">
+      <span
+        aria-hidden
+        className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-b from-[#1fb0f5] to-lup text-[15px] font-extrabold tracking-tight text-white italic shadow-sm"
+      >
+        LUP
       </span>
-      <span className="rounded-md bg-lup-tint px-2 py-0.5 text-sm font-semibold text-navy">Hjälp</span>
+      <span className="text-lg font-semibold text-navy">Hjälp</span>
     </Link>
   );
 }
