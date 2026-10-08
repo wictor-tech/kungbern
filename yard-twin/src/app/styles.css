@@ -61,7 +61,7 @@ button, select, input { font: inherit; color: inherit; }
 
 .app { display: grid; grid-template-columns: 300px minmax(0, 1fr); grid-template-rows: auto 1fr; min-height: 100vh; }
 .app[data-present="true"] { grid-template-columns: minmax(0, 1fr); }
-header.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
+header.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; flex-wrap: wrap; }
 .wordmark { font-weight: 800; letter-spacing: 0.02em; font-size: 1.25em; white-space: nowrap; }
 .wordmark .lup { color: var(--accent); }
 .wordmark .number { color: var(--heading); }

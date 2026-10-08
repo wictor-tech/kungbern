@@ -13,6 +13,7 @@ import { Report } from "./components/Report.tsx";
 import { TruckList } from "./components/TruckList.tsx";
 import { YardView } from "./components/YardView.tsx";
 import { dataset } from "./data.ts";
+import { EMBED } from "./env.ts";
 import { download, monteCarloCsv, trucksCsv } from "./exporters.ts";
 import { fmtNum, makeT, type Lang } from "./i18n.ts";
 import type { RunOutput } from "./jobs.ts";
@@ -24,6 +25,19 @@ import { sim } from "./worker-client.ts";
 
 const Yard3D = lazy(() => import("./components/Yard3D.tsx"));
 const SPEEDS = [1, 5, 15, 40];
+
+/** Starttema: sparat val, annars värdmiljöns val, annars systemets inställning. */
+function initialTheme(): "light" | "dark" {
+  const saved = readPref("yt.theme");
+  if (saved === "light" || saved === "dark") return saved;
+  const host = document.documentElement.dataset.theme;
+  if (host === "light" || host === "dark") return host;
+  try {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
 
 function readPref(key: string): string | null {
   try {
@@ -43,7 +57,7 @@ function writePref(key: string, v: string): void {
 export function App() {
   const ds = dataset;
   const [lang, setLang] = useState<Lang>((readPref("yt.lang") as Lang) ?? "sv");
-  const [theme, setTheme] = useState<"light" | "dark">((readPref("yt.theme") as "light" | "dark") ?? "light");
+  const [theme, setTheme] = useState<"light" | "dark">(initialTheme);
   const [present, setPresent] = useState(false);
   const [view, setView] = useState<"2d" | "3d">("2d");
   const [c, setC] = useState<Controls>(() => ({ ...defaultControls(ds), ...(decodeShare(location.hash) ?? {}) }));
@@ -191,7 +205,7 @@ export function App() {
             <button aria-pressed={theme === "light"} onClick={() => setTheme("light")}>{t_("light")}</button>
             <button aria-pressed={theme === "dark"} onClick={() => setTheme("dark")}>{t_("dark")}</button>
           </div>
-          {!present && (
+          {!present && !EMBED && (
             <>
               <button className="btn" onClick={share}>{t_("share")}</button>
               <button className="btn" onClick={() => window.print()} disabled={!out}>{t_("exportPdf")}</button>

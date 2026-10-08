@@ -17,7 +17,8 @@
     "scenario": "node --experimental-strip-types scripts/run-scenario.ts",
     "recalibrate": "node --experimental-strip-types scripts/recalibrate.ts",
     "test:e2e": "playwright test",
-    "ci": "tsc --noEmit && vitest run && vite build"
+    "ci": "tsc --noEmit && vitest run && vite build",
+    "build:embed": "VITE_EMBED=1 vite build --outDir dist-embed"
   },
   "dependencies": {
     "react": "18.3.1",

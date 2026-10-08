@@ -10,6 +10,7 @@ import type { RunOutput } from "../jobs.ts";
 import { timeBounds } from "../playback.ts";
 import { encodeShare, withBooking, withoutBooking } from "../scenarioBuilder.ts";
 import type { Controls, Dataset } from "../types.ts";
+import { EMBED } from "../env.ts";
 import { sim } from "../worker-client.ts";
 import { Gantt } from "./Gantt.tsx";
 
@@ -93,7 +94,7 @@ export function ComparePanel({ c, ds, model, base, t_, lang, setBaseline }: Prop
         </select>
         <label className="small"><input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> {lang === "sv" ? "uppdatera automatiskt" : "auto-update"}</label>
         <button className="btn primary" onClick={run} disabled={busy}>{busy ? t_("computing") : t_("runAnalysis")}</button>
-        <button className="btn" onClick={() => navigator.clipboard?.writeText(`${location.origin}${location.pathname}${encodeShare(c)}`)}>{t_("share")}</button>
+        {!EMBED && <button className="btn" onClick={() => navigator.clipboard?.writeText(`${location.origin}${location.pathname}${encodeShare(c)}`)}>{t_("share")}</button>}
       </div>
       {res && (
         <>
