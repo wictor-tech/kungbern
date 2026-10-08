@@ -1,3 +1,5 @@
+> **LUPNUMBER Yard Twin**: den kalibrerade digitala tvillingen av gård och dockar finns i [`yard-twin/`](yard-twin/README.md).
+
 # lupnumber short
 
 18-sekunders vertikalt (9:16, 1080×1920) reklamklipp för lupnumber.com, byggt med [Remotion](https://www.remotion.dev).

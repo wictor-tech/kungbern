@@ -1,0 +1,41 @@
+name: yard-twin
+
+on:
+  push:
+    paths: ["yard-twin/**", ".github/workflows/yard-twin.yml"]
+  pull_request:
+    paths: ["yard-twin/**", ".github/workflows/yard-twin.yml"]
+
+defaults:
+  run:
+    working-directory: yard-twin
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: yard-twin/package-lock.json
+      - run: npm ci
+      - name: Typkontroll
+        run: npx tsc --noEmit
+      - name: Enhets- och integrationstester (motor, pipeline, analys, API, isolering)
+        run: npx vitest run
+      - name: Demodatasetet är reproducerbart (byggs om och jämförs)
+        run: npm run demo-data && git diff --exit-code -- src/app/demo/demo-dataset.json
+      - name: Bygg
+        run: npx vite build
+      - name: Installera Chromium
+        run: npx playwright install --with-deps chromium
+      - name: UI-tester med skärmbilder
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: yard-twin-screens
+          path: yard-twin/test-results

@@ -82,9 +82,9 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
       </div>
       {err && <div className="warnbox small" role="alert">{err}</div>}
 
-      <div className="two" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="analysis-grid">
         {/* Dörrar */}
-        <div>
+        <div data-analysis="doors">
           <div className="card-head"><h3>{t_("doorsNeeded")}</h3><span className="spacer" /><Btn k="doors" onClick={() => go("doors", "doors", setDoors, model, s, target, Math.max(c.doors * 2, c.doors + 6), REPS)} /></div>
           {doors && (
             <>
@@ -94,7 +94,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
               <table className="list">
                 <thead><tr><th>{t_("doors")}</th><th>P90 ({t_("median")})</th><th>10–90 %</th><th>{L("Vinst", "Gain")}</th><th>{L("Detention/dag", "Detention/day")}</th></tr></thead>
                 <tbody>
-                  {doors.steps.map((st) => (
+                  {doors.steps.filter((st) => st.doors <= Math.max(c.doors, doors.minimalDoors ?? c.doors) + 3).map((st) => (
                     <tr key={st.doors} style={{ fontWeight: st.doors === doors.minimalDoors ? 700 : 400 }}>
                       <td>{st.doors} {st.meetsTarget ? "✓" : ""}</td>
                       <td className="num">{min(st.summary.p90Wait.median)}</td>
@@ -110,7 +110,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
         </div>
 
         {/* Flaskhals */}
-        <div>
+        <div data-analysis="bottleneck">
           <div className="card-head"><h3>{t_("bottleneck")}</h3><span className="spacer" /><Btn k="bn" onClick={() => go("bn", "bottleneck", setBn, model, s, 40)} /></div>
           {bn && (
             <>
@@ -137,7 +137,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
         </div>
 
         {/* Kapacitet */}
-        <div>
+        <div data-analysis="capacity">
           <div className="card-head"><h3>{t_("capacity")}</h3><span className="spacer" /><Btn k="cap" onClick={() => go("cap", "capacity", setCap, model, s, target, REPS)} /></div>
           {cap && (
             <>
@@ -156,7 +156,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
         </div>
 
         {/* Slotdesign */}
-        <div>
+        <div data-analysis="slots">
           <div className="card-head"><h3>{t_("slotDesign")}</h3><span className="spacer" /><Btn k="slot" onClick={() => go("slot", "slotDesign", setSlot, model, withBooking(s, c), 40)} /></div>
           {slot && (
             <>
@@ -181,13 +181,13 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
         </div>
 
         {/* Känslighet */}
-        <div>
+        <div data-analysis="tornado">
           <div className="card-head"><h3>{t_("tornado")}</h3><span className="spacer" /><Btn k="tor" onClick={() => go("tor", "tornado", setTor, model, s, REPS)} /></div>
           {tor && <TornadoChart tor={tor} lang={lang} />}
         </div>
 
         {/* ROI */}
-        <div>
+        <div data-analysis="roi">
           <div className="card-head"><h3>{t_("roi")}</h3></div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "end" }}>
             <div className="field" style={{ margin: 0 }}>
@@ -277,7 +277,7 @@ function CapacityChart({ cap, target, lang }: { cap: CapacityResult; target: num
       <line x1={P} x2={W - 8} y1={fy(target)} y2={fy(target)} stroke="var(--bad)" strokeDasharray="5 4" />
       <text x={W - 10} y={fy(target) - 4} fontSize={10} textAnchor="end" fill="var(--bad)">{lang === "sv" ? "mål" : "target"} {target} min</text>
       <line x1={fx(1)} x2={fx(1)} y1={10} y2={H - 20} stroke="var(--muted)" strokeDasharray="2 3" />
-      {pts.map((p) => <text key={p.factor} x={fx(p.factor)} y={H - 6} fontSize={10} textAnchor="middle" fill="var(--muted)">×{fmtNum(lang, p.factor, 1)}</text>)}
+      {pts.filter((p, i) => i === 0 || fx(p.factor) - fx(pts[i - 1].factor) >= 34 || i === pts.length - 1).map((p) => <text key={p.factor} x={fx(p.factor)} y={H - 6} fontSize={10} textAnchor="middle" fill="var(--muted)">×{fmtNum(lang, p.factor, 1)}</text>)}
     </svg>
   );
 }

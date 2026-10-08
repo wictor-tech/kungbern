@@ -13,7 +13,11 @@
     "test:watch": "vitest",
     "bench": "vitest run test/perf.test.ts --reporter=verbose",
     "server": "node --experimental-strip-types src/server/main.ts",
-    "demo-data": "node --experimental-strip-types scripts/build-demo-data.ts"
+    "demo-data": "node --experimental-strip-types scripts/build-demo-data.ts",
+    "scenario": "node --experimental-strip-types scripts/run-scenario.ts",
+    "recalibrate": "node --experimental-strip-types scripts/recalibrate.ts",
+    "test:e2e": "playwright test",
+    "ci": "tsc --noEmit && vitest run && vite build"
   },
   "dependencies": {
     "react": "18.3.1",
@@ -21,13 +25,14 @@
     "three": "0.170.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.56.1",
     "@types/node": "22.10.2",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
+    "@types/three": "0.170.0",
     "@vitejs/plugin-react": "4.3.4",
     "typescript": "5.6.3",
     "vite": "5.4.11",
-    "vitest": "2.1.8",
-    "@types/three": "0.170.0"
+    "vitest": "2.1.8"
   }
 }
