@@ -18,6 +18,7 @@ export type ArrivalSpec =
   | { pattern: "recorded"; volumeFactor: number; serviceTimes: "recorded" | "sampled" }
   | { pattern: "booked"; volumeFactor: number; slot: SlotDesign }
   | { pattern: "poisson"; volumeFactor: number }
+  | { pattern: "historical"; volumeFactor: number }
   | { pattern: "burst"; volumeFactor: number; burst: { from: Minutes; to: Minutes; multiplier: number } };
 
 export interface GenerateContext {
@@ -98,6 +99,8 @@ export function generateDay(model: SiteModel, spec: ArrivalSpec, ctx: GenerateCo
     }
     case "booked":
       return booked(model, spec.slot, spec.volumeFactor, sampler, arrRng, attrRng, unloadFactor);
+    case "historical":
+      return historical(model, spec.volumeFactor, sampler, arrRng, attrRng, unloadFactor);
   }
 }
 
@@ -211,6 +214,31 @@ function booked(model: SiteModel, design: SlotDesign, factor: number, sampler: U
   }
   trucks.sort((x, y) => x.arrival - y.arrival);
   return trucks;
+}
+
+/**
+ * "Som i dag": välj en historisk driftdag per repetition och använd dess ankomsttider och bokningar.
+ * Volym < 1 tunnar ut, volym > 1 lägger till kopior av slumpade bilar med tidsjitter (som "recorded").
+ * Attribut och lossningstid dras på samma sätt som i övriga mönster (common random numbers).
+ */
+function historical(model: SiteModel, factor: number, sampler: UnloadSampler, arrRng: Rng, attrRng: Rng, unloadFactor: number): Truck[] {
+  const days = model.arrivalDays ?? [];
+  if (days.length === 0) throw new Error('Mönstret "historical" kräver historiska ankomstdagar i profilen');
+  const day = days[arrRng.int(days.length)];
+  const picks: { t: number; s: number | null; extra: boolean }[] = [];
+  for (const a of day) if (factor >= 1 || arrRng.bernoulli(factor)) picks.push({ ...a, extra: false });
+  if (factor > 1 && day.length > 0) {
+    const extra = arrRng.roundStochastic((factor - 1) * day.length);
+    for (let i = 0; i < extra; i++) {
+      const a = arrRng.pick(day);
+      picks.push({ t: Math.max(0, a.t + arrRng.uniform(-RECORDED_UPSCALE_JITTER_MIN, RECORDED_UPSCALE_JITTER_MIN)), s: null, extra: true });
+    }
+  }
+  picks.sort((a, b) => a.t - b.t);
+  return picks.map((p, k) => {
+    const a = drawAttributes(model, sampler, attrRng, unloadFactor);
+    return mk(k, p.t, p.s, null, a.v, a.gate, a.unload, a.paper, p.extra);
+  });
 }
 
 /** Närmaste slot med ledig kapacitet: först den som innehåller önskad tid, sedan växelvis senare/tidigare. */

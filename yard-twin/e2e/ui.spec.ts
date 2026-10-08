@@ -40,7 +40,7 @@ test("what if med slottbokning räknas om och jämförelsen visar deltan", async
   await expect(page.getByLabel(/Slot adherence/)).toBeVisible();
   await page.getByRole("slider", { name: "Hoppa till" }).fill("510");
   await shot(page, "02-whatif-booked");
-  const cmp = page.locator("section", { has: page.getByRole("heading", { name: "Utan vs med slottbokning" }) });
+  const cmp = page.locator("section", { has: page.getByRole("heading", { name: "Med full slottbokning – jämfört med utgångsläget" }) });
   await cmp.getByRole("button", { name: "Kör analys" }).click();
   await expect(cmp.locator("table.cmp-table")).toBeVisible({ timeout: 20_000 });
   await expect(cmp.getByText(/Med slottbokning (sjunker|ökar) medelväntan/)).toBeVisible();
@@ -73,8 +73,8 @@ test("mörkt tema, engelska och presentationsläge", async ({ page }) => {
   await page.getByRole("button", { name: "EN", exact: true }).click();
   await expect(page.getByText("Trucks on site")).toBeVisible();
   await page.getByRole("button", { name: "Presentation mode" }).click();
-  await expect(page.getByRole("button", { name: "With slot booking" })).toBeVisible();
-  await page.getByRole("button", { name: "With slot booking" }).click();
+  await expect(page.getByRole("button", { name: "With slot booking", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "With slot booking", exact: true }).click();
   await page.getByRole("slider", { name: "Jump to" }).fill("540");
   await shot(page, "05-present-dark-en");
 });

@@ -472,10 +472,11 @@ describe("syntetisk sajt → pipeline", () => {
 });
 
 describe("demodataset", () => {
-  it("byggs deterministiskt, har UI-formen, < 3 MB och ingen PII (WRITE_DEMO=1 skriver filen)", () => {
+  it("byggs deterministiskt, har UI-formen, < 4 MB och ingen PII (WRITE_DEMO=1 skriver filen)", () => {
     const json = demoDatasetJson(DEMO_SEED);
     expect(demoDatasetJson(DEMO_SEED)).toBe(json);
-    expect(Buffer.byteLength(json)).toBeLessThan(3 * 1024 * 1024);
+    // Gräns 4 MB okomprimerat (≈ 0,45 MB gzip över nätet); historiska ankomstmönster lades till i v1.1.
+    expect(Buffer.byteLength(json)).toBeLessThan(4 * 1024 * 1024);
     const d = JSON.parse(json);
     expect(d.kind).toBe("demo");
     expect(d.site).toEqual({ siteId: "demo", label: "Demo DC Nord", tz: TZ, open: "05:00", close: "15:00", doors: 8 });

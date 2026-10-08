@@ -271,7 +271,7 @@ export function App() {
             </div>
           </div>
 
-          {compiled && <ComparePanel c={c} ds={ds} model={model} base={scenario} t_={t_} lang={lang} />}
+          {compiled && <ComparePanel c={c} ds={ds} model={model} base={scenario} t_={t_} lang={lang} setBaseline={(b) => set({ baseline: b })} />}
           {compiled && !present && <AnalysisPanel c={c} ds={ds} model={model} scenario={scenario} t_={t_} lang={lang} />}
           <p className="small muted">{t_("demoNote")}</p>
         </main>

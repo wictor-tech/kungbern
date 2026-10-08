@@ -8,7 +8,9 @@
 **I mötet – fyra klick**
 1. **"Så här var dagen."** Spela upp i 40x. Peka på kön, de orange bilarna som väntar och Gantt-schemat. Den som kör replay ser att
    modellens väntan ligger nära den verkliga. Det är poängen.
-2. **"Utan bokning" och "Med slottbokning".** Visa jämförelsen. Läs upp insikten och **intervallet**, inte bara medianen.
+2. **Jämförelsen "Med full slottbokning – jämfört med utgångsläget".** Utgångsläget är **"Som i dag"**, alltså sajtens
+   egna historiska dagar. Läs upp insikten och **intervallet**, inte bara medianen. "Ingen bokning" är ett hypotetiskt
+   läge. Använd det bara för en prospekt som inte bokar alls i dag.
 3. **"Hur många dörrar behövs?" och "Var ligger flaskhalsen?"** Svaret visar avtagande nytta per dörr.
 4. **ROI.** Ange driftdagar per månad. Läs upp **intervallet** per år och visa listan med antaganden.
 

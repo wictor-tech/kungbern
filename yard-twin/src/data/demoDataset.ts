@@ -101,6 +101,7 @@ export function buildDemoDataset(seed: string = DEMO_SEED, truth: SyntheticSiteT
           gateSamples: roundDeep(m.gateSamples, DEMO_MINUTE_DECIMALS),
           paperSamples: roundDeep(m.paperSamples, DEMO_MINUTE_DECIMALS),
           slotDeviationSamples: roundDeep(m.slotDeviationSamples, DEMO_MINUTE_DECIMALS),
+          ...(m.arrivalDays ? { arrivalDays: roundDeep(m.arrivalDays, DEMO_MINUTE_DECIMALS) } : {}),
         },
       ]),
     ),

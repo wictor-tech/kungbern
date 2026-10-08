@@ -63,6 +63,7 @@ export function buildCalibrationSummary(input: CalibrationSummaryInput) {
   const sc = compileScenario(file);
   const expected = ho.model.hourlyArrivals.reduce((a, b) => a + b, 0);
   const testSet = new Set(ho.testDates);
+  const genRows = (pattern: "historical" | "poisson"): BacktestDayRow[] => {
   const rows: BacktestDayRow[] = [];
   for (const day of input.days) {
     if (!testSet.has(day.date) || !(day.doorsObserved >= 1) || expected <= 0) continue;
@@ -70,7 +71,12 @@ export function buildCalibrationSummary(input: CalibrationSummaryInput) {
     // felmåtten jämförs mot verkliga nyckeltal för fullständigt mätta besök (liten, konservativ skillnad).
     const measured = day.trucks.filter((t) => !t.shadow).length;
     if (measured === 0) continue;
-    const mc = runMonteCarlo(ho.model, { ...withGenericDoors(sc, day.doorsObserved), arrivals: { pattern: "poisson", volumeFactor: day.trucks.length / expected }, seed: `generated|${input.siteId}|${day.date}` }, { reps: input.reps ?? 30 });
+    const mc = runMonteCarlo(ho.model, {
+        ...withGenericDoors(sc, day.doorsObserved),
+        // "historical": slumpa bland TRÄNINGSdagarnas ankomstmönster (modellen är kalibrerad på dem) – inget läckage.
+        arrivals: { pattern, volumeFactor: day.trucks.length / (pattern === "historical" ? meanHistDay : expected) },
+        seed: `generated|${input.siteId}|${day.date}`,
+      }, { reps: input.reps ?? 30 });
     const actual = {} as Record<BacktestMetric, number>;
     const simulated = {} as Record<BacktestMetric, Interval>;
     const error = {} as Record<BacktestMetric, number>;
@@ -83,7 +89,15 @@ export function buildCalibrationSummary(input: CalibrationSummaryInput) {
     }
     rows.push({ date: day.date, trucks: measured, doors: day.doorsObserved, actual, simulated, error, inInterval });
   }
+  return rows;
+  };
+  const histDays = ho.model.arrivalDays ?? [];
+  const meanHistDay = histDays.length ? histDays.reduce((a, d) => a + d.length, 0) / histDays.length : expected;
+  // "Som i dag" (historiska ankomstmönster) är baslinjen i What if/jämförelse/ROI och avgör varningen.
+  // Poisson ("ingen bokning") är ett hypotetiskt läge som inte kan valideras mot en sajt som bokar – redovisas som info.
+  const rows = genRows(histDays.length ? "historical" : "poisson");
   const gen = errorStats(rows, "avgWait");
+  const pois = errorStats(genRows("poisson"), "avgWait");
   const reasons = [...g.reasons];
   let warning = g.warning;
   if (g.grade !== "insufficient" && rows.length > 0) {
@@ -93,9 +107,15 @@ export function buildCalibrationSummary(input: CalibrationSummaryInput) {
     if (bad) warning = true;
     const pc = (x: number) => `${Math.round(x * 100)} %`;
     reasons.push({
-      sv: `${bad ? "✗" : "✓"} Med genererade ankomster (What if, jämförelse, ROI): fel ${pc(w)}, systematiskt ${b < 0 ? "underskattat" : "överskattat"} ${pc(Math.abs(b))} (gräns ${pc(GENERATED_ARRIVALS_LIMITS.wmape)} / ${pc(GENERATED_ARRIVALS_LIMITS.relBias)})`,
-      en: `${bad ? "✗" : "✓"} With generated arrivals (What if, comparison, ROI): error ${pc(w)}, systematically ${b < 0 ? "under" : "over"}estimated by ${pc(Math.abs(b))} (limit ${pc(GENERATED_ARRIVALS_LIMITS.wmape)} / ${pc(GENERATED_ARRIVALS_LIMITS.relBias)})`,
+      sv: `${bad ? "✗" : "✓"} Med genererade ankomster "som i dag" (What if, jämförelse, ROI): fel ${pc(w)}, systematiskt ${b < 0 ? "underskattat" : "överskattat"} ${pc(Math.abs(b))} (gräns ${pc(GENERATED_ARRIVALS_LIMITS.wmape)} / ${pc(GENERATED_ARRIVALS_LIMITS.relBias)})`,
+      en: `${bad ? "✗" : "✓"} With generated "as today" arrivals (What if, comparison, ROI): error ${pc(w)}, systematically ${b < 0 ? "under" : "over"}estimated by ${pc(Math.abs(b))} (limit ${pc(GENERATED_ARRIVALS_LIMITS.wmape)} / ${pc(GENERATED_ARRIVALS_LIMITS.relBias)})`,
     });
+    if (histDays.length && pois.wmape !== null && pois.relativeBias !== null) {
+      reasons.push({
+        sv: `ℹ Slumpmässiga ankomster utan bokning (hypotetiskt läge): ${pois.relativeBias < 0 ? "lägre" : "högre"} väntan än verkligheten med ${pc(Math.abs(pois.relativeBias))} – visar hur mycket dagens ankomstmönster redan jämnar ut kön.`,
+        en: `ℹ Random arrivals without booking (hypothetical): ${pois.relativeBias < 0 ? "lower" : "higher"} waits than reality by ${pc(Math.abs(pois.relativeBias))} – shows how much today's arrival pattern already smooths the queue.`,
+      });
+    }
   }
   const metrics: Record<string, { mae: number; wmape: number; relBias: number; coverage: number; n: number }> = {};
   for (const m of BACKTEST_METRICS) {

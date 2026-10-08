@@ -290,3 +290,26 @@ describe("skuggbilar och censurering", () => {
     expect(late.metrics.avgWait).toBeGreaterThanOrEqual(0);
   });
 });
+
+describe("mönstret historical (som i dag)", () => {
+  const days = [
+    [{ t: 300, s: 300 }, { t: 320, s: null }, { t: 400, s: 390 }],
+    [{ t: 310, s: 300 }, { t: 500, s: 480 }],
+  ];
+  const model = { ...testModel(), arrivalDays: days };
+  it("använder en historisk dags ankomster och bokningar", () => {
+    const ts = generateDay(model, { pattern: "historical", volumeFactor: 1 }, { seed: "h", rep: 0 });
+    const match = days.find((d) => d.length === ts.length)!;
+    expect(ts.map((t) => t.arrival)).toEqual(match.map((a) => a.t));
+    expect(ts.map((t) => t.slotStart)).toEqual(match.map((a) => a.s));
+  });
+  it("volymfaktor skalar antalet", () => {
+    const big = { ...testModel(), arrivalDays: [Array.from({ length: 100 }, (_, i) => ({ t: 300 + i, s: null }))] };
+    const n = mean(Array.from({ length: 50 }, (_, r) => generateDay(big, { pattern: "historical", volumeFactor: 1.5 }, { seed: "hv", rep: r }).length));
+    expect(n).toBeGreaterThan(145);
+    expect(n).toBeLessThan(155);
+  });
+  it("kräver historiska dagar", () => {
+    expect(() => generateDay(testModel(), { pattern: "historical", volumeFactor: 1 }, { seed: "h", rep: 0 })).toThrow(/historiska/);
+  });
+});

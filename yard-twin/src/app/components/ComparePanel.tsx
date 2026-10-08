@@ -20,6 +20,7 @@ interface Props {
   base: ScenarioFile;
   t_: T;
   lang: Lang;
+  setBaseline: (b: Controls["baseline"]) => void;
 }
 
 const ROWS: { key: MetricKey; sv: string; en: string; kind: "min" | "n" | "money" | "pct" | "clock"; lowerIsBetter: boolean }[] = [
@@ -33,7 +34,7 @@ const ROWS: { key: MetricKey; sv: string; en: string; kind: "min" | "n" | "money
 ];
 
 /** Sida vid sida: utan vs med slottbokning, samma volym och seed (parvisa deltan). */
-export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
+export function ComparePanel({ c, ds, model, base, t_, lang, setBaseline }: Props) {
   const [res, setRes] = useState<{ without: RunOutput; with: RunOutput } | null>(null);
   const [busy, setBusy] = useState(false);
   const [auto, setAuto] = useState(false);
@@ -71,7 +72,7 @@ export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
   const insights = useMemo(
     () =>
       res
-        ? generateInsights({ result: res.with.detail, mc: res.with.mc, lang, currency: c.currency, compare: { label: lang === "sv" ? "slottbokning" : "slot booking", mc: res.with.mc, baseLabel: lang === "sv" ? "ankomster utan bokning" : "unbooked arrivals", baseMc: res.without.mc } }).filter((i) => i.id.startsWith("compare"))
+        ? generateInsights({ result: res.with.detail, mc: res.with.mc, lang, currency: c.currency, compare: { label: lang === "sv" ? "slottbokning" : "slot booking", mc: res.with.mc, baseLabel: c.baseline === "historical" ? (lang === "sv" ? "dagens ankomstmönster" : "today's arrival pattern") : (lang === "sv" ? "ankomster utan bokning" : "unbooked arrivals"), baseMc: res.without.mc } }).filter((i) => i.id.startsWith("compare"))
         : [],
     [res, lang, c.currency],
   );
@@ -85,6 +86,11 @@ export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
         {res && ranFor !== sig && <span className="tag assume" role="status">{t_("stale")}</span>}
         <span className="muted small">{lang === "sv" ? `Samma volym (× ${fmtNum(lang, c.volumeFactor, 2)}), samma dörrar och samma slumpströmmar – skillnaden beror på bokningen.` : `Same volume, doors and random streams – the difference is due to booking.`}</span>
         <span className="spacer" />
+        <label className="small" htmlFor="baseline">{t_("baseline")}</label>
+        <select id="baseline" value={c.baseline} onChange={(e) => setBaseline(e.target.value as Controls["baseline"])}>
+          {model.arrivalDays?.length ? <option value="historical">{t_("baseHistorical")}</option> : null}
+          <option value="poisson">{t_("basePoisson")}</option>
+        </select>
         <label className="small"><input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> {lang === "sv" ? "uppdatera automatiskt" : "auto-update"}</label>
         <button className="btn primary" onClick={run} disabled={busy}>{busy ? t_("computing") : t_("runAnalysis")}</button>
         <button className="btn" onClick={() => navigator.clipboard?.writeText(`${location.origin}${location.pathname}${encodeShare(c)}`)}>{t_("share")}</button>
@@ -95,7 +101,7 @@ export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
             <thead>
               <tr>
                 <th></th>
-                <th>{t_("without")}</th>
+                <th>{c.baseline === "historical" ? t_("baseHistorical") : t_("basePoisson")}</th>
                 <th>{t_("with")}</th>
                 <th>{t_("delta")} ({t_("median")}, 10–90 %)</th>
               </tr>
@@ -132,7 +138,7 @@ export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
               const doors = Array.from(new Set(o.detail.doorIntervals.map((d) => d.doorId))).sort((x, y) => Number(x.slice(1)) - Number(y.slice(1)));
               return (
                 <div key={k}>
-                  <h3>{t_(k)}</h3>
+                  <h3>{k === "with" ? t_("with") : c.baseline === "historical" ? t_("baseHistorical") : t_("basePoisson")}</h3>
                   <Gantt result={o.detail} doors={doors} bounds={timeBounds(o.detail, openFrom, openTo)} openFrom={openFrom} openTo={openTo} t={openFrom} onSeek={() => undefined} t_={t_} />
                 </div>
               );

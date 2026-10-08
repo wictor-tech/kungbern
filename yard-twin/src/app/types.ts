@@ -30,7 +30,7 @@ export interface Dataset {
   quality?: { totalVisits: number; includedVisits: number; excludedByReason: Record<string, number>; firstDate: string; lastDate: string; distinctDays: number };
 }
 
-export type Pattern = "recorded" | "booked" | "poisson" | "burst";
+export type Pattern = "recorded" | "booked" | "poisson" | "burst" | "historical";
 
 export interface Controls {
   mode: "replay" | "whatif";
@@ -56,5 +56,7 @@ export interface Controls {
   detentionCostPerHour: number;
   staffCostPerHour: number;
   costSource: string;
+  /** Utgångsläge i jämförelse och ROI. */
+  baseline: "historical" | "poisson";
   reps: number;
 }

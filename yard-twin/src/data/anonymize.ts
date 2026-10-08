@@ -91,6 +91,8 @@ export function toDemoModel(model: SiteModel, rules: QualityRules = DEFAULT_QUAL
     paperSamples: [...model.paperSamples],
     slotDeviationSamples: [...model.slotDeviationSamples],
     noShowRate: model.noShowRate,
+    // Bara tider (ingen identitet) – säkert att visa i demo.
+    ...(model.arrivalDays ? { arrivalDays: model.arrivalDays.map((d) => d.map((a) => ({ t: a.t, s: a.s }))) } : {}),
     provenance: stripProvenance(model.provenance),
   };
 }

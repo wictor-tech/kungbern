@@ -179,6 +179,15 @@ export function calibrateSite(derived: readonly DerivedVisit[], opts: CalibrateO
   const cancellations = bookingsAll.filter((d) => isCancelled(d.visit));
   const lateCanc = cancellations.filter((d) => isLateCancellation(d.visit)).length;
 
+  // Historiska ankomstmönster per driftdag (endast tider, inga identiteter) för mönstret "historical".
+  const byDay = new Map<string, { t: number; s: number | null }[]>();
+  for (const d of arrivals) {
+    let arr = byDay.get(d.serviceDate);
+    if (!arr) byDay.set(d.serviceDate, (arr = []));
+    arr.push({ t: d.arrivalMin!, s: d.slotStartMin });
+  }
+  const arrivalDays = [...byDay.keys()].sort().map((k) => byDay.get(k)!.sort((a, b) => a.t - b.t));
+
   const measured = (n: number, what?: string): Provenance => ({ kind: "measured", source: src(n, what), n });
   const model: SiteModel = {
     siteId: opts.siteId,
@@ -190,6 +199,7 @@ export function calibrateSite(derived: readonly DerivedVisit[], opts: CalibrateO
     paperSamples: paperObs.map((d) => d.paperMin!),
     slotDeviationSamples: slotObs.map((d) => d.slotDeviation!),
     noShowRate,
+    arrivalDays,
     provenance: {
       hourlyArrivals: measured(arrivals.length, "ankomster"),
       unloadSamples: measured(unloadSamples.length, "inkluderade besök"),
@@ -197,6 +207,7 @@ export function calibrateSite(derived: readonly DerivedVisit[], opts: CalibrateO
       paperSamples: measured(paperObs.length, "papperstider"),
       slotDeviationSamples: measured(slotObs.length, "bokade ankomster"),
       noShowRate: measured(bookedActive.length, "bokningar ej avbokade"),
+      arrivalDays: measured(arrivalDays.length, "driftdagar med ankomstmönster"),
     },
   };
 

@@ -54,6 +54,7 @@ export function defaultControls(ds: Dataset): Controls {
     burstTo: "09:00",
     burstMultiplier: 2,
     ...DEMO_COST_ASSUMPTIONS,
+    baseline: model.arrivalDays?.length ? "historical" : "poisson",
     reps: 300,
   };
 }
@@ -119,12 +120,17 @@ export function withBooking(s: ScenarioFile, c: Controls): ScenarioFile {
   };
 }
 
-/** Utan slottbokning = slumpmässiga ankomster enligt historisk timprofil. */
+/**
+ * Utgångsläge för jämförelse och ROI:
+ *  - "historical" (standard): sajtens egna historiska ankomstmönster – "som i dag", inkl. dagens bokningsandel.
+ *  - "poisson": slumpmässiga ankomster enligt timprofilen – hypotetiskt läge utan någon bokning.
+ */
 export function withoutBooking(s: ScenarioFile, c: Controls): ScenarioFile {
   return {
     ...s,
-    id: `${s.id}-unbooked`,
-    arrivals: { pattern: "poisson", volumeFactor: s.arrivals.volumeFactor },
+    id: `${s.id}-${c.baseline}`,
+    name: c.baseline === "historical" ? "Som i dag" : "Ingen bokning",
+    arrivals: { pattern: c.baseline, volumeFactor: s.arrivals.volumeFactor },
     strategy: { ...s.strategy, kind: c.strategy === "booked-first" ? "fcfs" : c.strategy },
     monteCarlo: { reps: c.reps, seed: s.monteCarlo?.seed ?? s.id },
   };

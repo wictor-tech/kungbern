@@ -16,7 +16,7 @@ export interface ScenarioFile {
   /** Datum (YYYY-MM-DD) för mönstret "recorded". */
   date?: string;
   arrivals: {
-    pattern: "recorded" | "booked" | "poisson" | "burst";
+    pattern: "recorded" | "booked" | "poisson" | "burst" | "historical";
     volumeFactor: number;
     serviceTimes?: "recorded" | "sampled";
     slot?: {
@@ -69,7 +69,7 @@ export interface CompiledScenario {
 
 export const DEFAULT_REPS = 300;
 const KINDS: StrategyKind[] = ["fcfs", "booked-first", "priority", "specialized"];
-const PATTERNS = ["recorded", "booked", "poisson", "burst"] as const;
+const PATTERNS = ["recorded", "booked", "poisson", "burst", "historical"] as const;
 
 /** Validerar och returnerar en lista med fel på svenska (tom = OK). */
 export function validateScenario(x: unknown): string[] {
@@ -155,6 +155,9 @@ export function compileScenario(s: ScenarioFile): CompiledScenario {
       break;
     case "poisson":
       arrivals = { pattern: "poisson", volumeFactor: a.volumeFactor };
+      break;
+    case "historical":
+      arrivals = { pattern: "historical", volumeFactor: a.volumeFactor };
       break;
     case "burst":
       arrivals = { pattern: "burst", volumeFactor: a.volumeFactor, burst: { from: parseClock(a.burst!.from), to: parseClock(a.burst!.to), multiplier: a.burst!.multiplier } };

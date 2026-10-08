@@ -37,6 +37,12 @@ export interface SiteModel {
   /** Ankomst minus bokad slotstart (min). Negativ = tidig. */
   slotDeviationSamples: number[];
   noShowRate: number;
+  /**
+   * Historiska ankomstmönster (en lista per driftdag): ankomsttid och bokad slotstart, inga identiteter.
+   * Används av mönstret "historical" ("Som i dag") – en bootstrap av hela dagar som bevarar dagens verkliga
+   * ankomstprocess inkl. bokningsandel och punktlighet. Saknas i äldre modeller.
+   */
+  arrivalDays?: { t: number; s: number | null }[][];
   provenance: Record<string, Provenance>;
 }
 

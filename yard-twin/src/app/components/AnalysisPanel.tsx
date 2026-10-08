@@ -44,9 +44,9 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
   const [ranFor, setRanFor] = useState<Record<string, string>>({});
 
   const s = useMemo<ScenarioFile>(() => {
-    const base = scenario.arrivals.pattern === "recorded" ? { ...scenario, arrivals: { pattern: "poisson" as const, volumeFactor: scenario.arrivals.volumeFactor } } : scenario;
+    const base = scenario.arrivals.pattern === "recorded" ? { ...scenario, arrivals: { pattern: (model.arrivalDays?.length ? "historical" : "poisson") as "historical" | "poisson", volumeFactor: scenario.arrivals.volumeFactor } } : scenario;
     return { ...base, monteCarlo: { reps: REPS, seed: scenario.monteCarlo?.seed ?? scenario.id } };
-  }, [scenario]);
+  }, [scenario, model]);
   const target: WaitTarget = { metric: "p90Wait", max: targetMax, quantile: "median" };
   const L = (sv: string, en: string) => (lang === "sv" ? sv : en);
   const min = (v: number) => `${fmtNum(lang, v)} min`;
@@ -77,7 +77,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
         <h2>{t_("analysis")}</h2>
         <span className="muted small">
           {scenario.arrivals.pattern === "recorded"
-            ? L("Körs på en typisk dag för veckodagen (samma timprofil, slumpade ankomster).", "Runs on a typical day for the weekday (same hourly profile, random arrivals).")
+            ? L("Körs på slumpade historiska dagar för veckodagen (som i dag).", "Runs on randomly drawn historical days for the weekday (as today).")
             : L("Körs på aktuellt scenario.", "Runs on the current scenario.")}{" "}
           {REPS} {L("repetitioner per steg, samma seed.", "repetitions per step, same seed.")}
         </span>

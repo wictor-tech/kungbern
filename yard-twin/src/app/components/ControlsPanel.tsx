@@ -10,7 +10,7 @@ interface Props {
   lang: Lang;
 }
 
-const PATTERNS: Pattern[] = ["recorded", "booked", "poisson", "burst"];
+const PATTERNS: Pattern[] = ["recorded", "historical", "booked", "poisson", "burst"];
 const STRATS: StrategyKind[] = ["fcfs", "booked-first", "priority", "specialized"];
 
 /** Vänsterpanelen. Alla ändringar utom läge/dag växlar automatiskt till "What if". */

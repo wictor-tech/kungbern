@@ -19,15 +19,15 @@ aldrig har sett, med de verkliga ankomsterna och samplade lossningstider. Simule
 
 **Två backtester, båda visas:**
 1. **Verkliga ankomster** (replay av testdagarna, samplade lossningstider). Det ger betyget.
-2. **Genererade ankomster** (Poisson enligt den kalibrerade timprofilen, skalad till dagens volym). Det är det
-   What if, jämförelsen och ROI bygger på. Över 20 % fel eller 15 % systematiskt fel ger en varning även om betyget är bra.
+2. **Genererade ankomster "som i dag"**: varje repetition slumpar fram en av *träningsdagarnas* egna ankomstmönster,
+   inklusive bokningsandel och punktlighet. Det är baslinjen i What if, jämförelsen och ROI. Över 20 % fel eller 15 %
+   systematiskt fel ger en varning även om betyget är bra.
 
-**Demosajten** (syntetisk) får i dag betyget **Medel ⚠**:
-- **Replay:** wMAPE 7,8 % och systematisk underskattning 4,6 %. Kölogiken ensam har 2,6 % fel.
+Dessutom redovisas läget **"ingen bokning"** (Poisson enligt timprofilen) som information. Det är hypotetiskt för en sajt
+som redan bokar, så det kan inte valideras mot verkligheten.
+
+**Demosajten** (syntetisk) får i dag betyget **Medel**:
+- **Replay:** wMAPE 7,8 % och underskattning 4,6 %. Kölogiken ensam har 2,6 % fel.
 - **Täckning:** 66,7 %, under gränsen 70 % för Hög.
-- **Genererade ankomster:** 20 % fel och **överskattning med 8 %**. Det är precis över varningsgränsen.
-
-Förklaringen är logistisk. 85 % av demosajtens bilar är redan bokade, så de verkliga ankomsterna är jämnare än
-slumpmässiga (Poisson) ankomster. "Utan slottbokning" i jämförelsen är därför ett *hypotetiskt* utgångsläge, inte dagens
-verklighet. För en kund som redan bokar mäter ROI värdet av bokningen jämfört med att inte ha den, inte nyttan av mer
-bokning. Det ska sägas i mötet.
+- **"Som i dag":** 17 % fel, systematiskt bara +0,7 % och täckning 85 %. Ingen varning.
+- **"Ingen bokning":** 8 % högre väntan än verkligheten. Det visar hur mycket dagens bokningar (85 % av bilarna) redan jämnar ut kön.
