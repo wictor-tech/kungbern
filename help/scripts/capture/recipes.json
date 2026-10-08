@@ -534,5 +534,61 @@
     "text": "Alert settings"
    }
   ]
+ },
+ {
+  "id": "andra-eller-ta-bort-en-bokning",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "selector": "text=Testförare (hjälpdemo)"
+   },
+   {
+    "text": "More actions…",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "id": "rapportera-en-avvikelse",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "selector": "text=Testförare Inne"
+   },
+   {
+    "text": "Report a deviation",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "id": "checka-ut-ett-fordon",
+  "start": "https://app.lupnumber.com/site",
+  "steps": []
+ },
+ {
+  "id": "lagga-en-bokning-i-kon",
+  "start": "https://app.lupnumber.com/site",
+  "steps": []
+ },
+ {
+  "id": "byta-sprak-och-utseende",
+  "start": "https://app.lupnumber.com/site",
+  "steps": [
+   {
+    "selector": "button.site-avatar",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "id": "skapa-en-ny-plats",
+  "start": "https://app.lupnumber.com/home",
+  "steps": [
+   {
+    "text": "Add new location",
+    "wait": 2000
+   }
+  ]
  }
 ]

@@ -12,9 +12,9 @@ describe("hela flödet mot databasen (PGlite i minnet)", () => {
 
   it("seedar manualens 38 guider + nya guider, utkast dolda", async () => {
     const guides = await listGuides();
-    expect(guides).toHaveLength(41);
+    expect(guides).toHaveLength(47);
     expect(guides.filter((g) => g.number <= 38).every((g) => g.screenshot && g.steps.length > 0)).toBe(true);
-    expect((await listGuides({ includeDrafts: true })).length).toBe(41);
+    expect((await listGuides({ includeDrafts: true })).length).toBe(47);
     expect((await getGuide("byta-lastbrygga"))?.screenshot).toBe("/screens/app/byta-lastbrygga.webp");
   });
 

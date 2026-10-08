@@ -22,7 +22,7 @@ const CASES: [string, string | null][] = [
   ["hur exporterar jag avvikelser till word", "hantera-avvikelserapporter"],
   ["filma en instruktion till förarna", "lagga-till-en-video"],
   ["koppla vår kamera", null],
-  ["hur loggar jag ut", null],
+  ["hur loggar jag ut", "byta-sprak-och-utseende"],
 ];
 const index = buildIndex(publishedSeedGuides());
 let ok = 0;

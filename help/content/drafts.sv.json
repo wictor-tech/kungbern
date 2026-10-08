@@ -261,6 +261,548 @@
         "lagga-till-en-kontaktperson"
       ],
       "status": "published"
+    },
+    {
+      "id": "andra-eller-ta-bort-en-bokning",
+      "number": 42,
+      "title": "Ändra eller ta bort en bokning",
+      "category": "daglig-drift",
+      "app": "site",
+      "pageKey": "site-booking-details",
+      "breadcrumb": [
+        "Site",
+        "Board",
+        "Klicka på kortet",
+        "More actions…"
+      ],
+      "summary": "Klicka på ett fordonskort för att se allt om besöket. Där ändrar du uppgifter, skriver en notering, ser vem som ändrat vad eller tar bort bokningen.",
+      "steps": [
+        {
+          "n": 1,
+          "text": "Öppna Site och välj Board."
+        },
+        {
+          "n": 2,
+          "text": "Klicka på förarens namn på kortet. Bokningsdetaljerna öppnas."
+        },
+        {
+          "n": 3,
+          "text": "Vill du ändra namn, registreringsnummer, telefon eller tid? Tryck More actions… och sedan Edit. Ändra i fälten och tryck Save.",
+          "hotspot": 1
+        },
+        {
+          "n": 4,
+          "text": "Ska bokningen bort helt? Tryck More actions… och sedan Delete.",
+          "hotspot": 2
+        },
+        {
+          "n": 5,
+          "text": "Skriv en intern anteckning under Notes. Föraren ser den inte.",
+          "hotspot": 3
+        },
+        {
+          "n": 6,
+          "text": "Tryck Show changes för att se vem som ändrat vad och när.",
+          "hotspot": 4
+        },
+        {
+          "n": 7,
+          "text": "Stäng med krysset uppe till höger."
+        }
+      ],
+      "notes": [
+        {
+          "type": "warning",
+          "text": "Delete går inte att ångra. Har föraren bara gått hem? Checka ut i stället, så finns besöket kvar i rapporterna."
+        },
+        {
+          "type": "tip",
+          "text": "Har kortet hamnat i fel kolumn? Under Status finns en knapp som flyttar tillbaka det ett steg, till exempel Move back to Booked."
+        }
+      ],
+      "alternativeQueries": [
+        "ändra en bokning",
+        "ta bort en bokning",
+        "radera bokning",
+        "avboka",
+        "ändra tid på bokning",
+        "ändra registreringsnummer",
+        "skriva en notering",
+        "anteckning på förare",
+        "se historik för en bokning",
+        "vem ändrade bokningen",
+        "bokningsdetaljer",
+        "fel registreringsnummer",
+        "booking details",
+        "delete booking"
+      ],
+      "relatedGuides": [
+        "skapa-en-bokning",
+        "checka-ut-ett-fordon",
+        "rapportera-en-avvikelse"
+      ],
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Edit",
+          "text": "Gör fälten i bokningen redigerbara."
+        },
+        {
+          "n": 2,
+          "label": "Delete",
+          "text": "Tar bort bokningen helt."
+        },
+        {
+          "n": 3,
+          "label": "Notes",
+          "text": "Interna anteckningar om besöket."
+        },
+        {
+          "n": 4,
+          "label": "Show changes",
+          "text": "Historik över alla ändringar."
+        },
+        {
+          "n": 5,
+          "label": "More actions…",
+          "text": "Fler val för bokningen."
+        }
+      ]
+    },
+    {
+      "id": "rapportera-en-avvikelse",
+      "number": 43,
+      "title": "Rapportera en avvikelse",
+      "category": "daglig-drift",
+      "app": "site",
+      "pageKey": "site-booking-details",
+      "breadcrumb": [
+        "Site",
+        "Board",
+        "Klicka på kortet",
+        "Report a deviation"
+      ],
+      "summary": "Något var fel med ett besök, till exempel saknad skyddsutrustning eller skadat gods? Rapportera det direkt på bokningen så hamnar det i avvikelserapporterna.",
+      "steps": [
+        {
+          "n": 1,
+          "text": "Öppna Site och klicka på förarens namn på kortet."
+        },
+        {
+          "n": 2,
+          "text": "Tryck Report a deviation under Deviations."
+        },
+        {
+          "n": 3,
+          "text": "Välj Category, till exempel Safety, Goods eller Arrival.",
+          "hotspot": 1
+        },
+        {
+          "n": 4,
+          "text": "Välj Type, det vill säga vad som hänt.",
+          "hotspot": 2
+        },
+        {
+          "n": 5,
+          "text": "Beskriv kort vad som hänt under Description.",
+          "hotspot": 3
+        },
+        {
+          "n": 6,
+          "text": "Lägg gärna till en bild under Evidence (optional).",
+          "hotspot": 4
+        },
+        {
+          "n": 7,
+          "text": "Tryck Submit deviation.",
+          "hotspot": 5
+        }
+      ],
+      "notes": [
+        {
+          "type": "tip",
+          "text": "Alla avvikelser samlas i Location Admin under View reports och Deviation reports."
+        }
+      ],
+      "alternativeQueries": [
+        "rapportera avvikelse",
+        "rapportera ett fel",
+        "skadat gods",
+        "föraren saknade skyddsutrustning",
+        "saknar västen",
+        "rapportera incident",
+        "anmäla avvikelse",
+        "avvikelse på en förare",
+        "report deviation",
+        "försenad leverans rapportera"
+      ],
+      "relatedGuides": [
+        "hantera-avvikelserapporter",
+        "andra-eller-ta-bort-en-bokning"
+      ],
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Category",
+          "text": "Typ av avvikelse: säkerhet, gods, ankomst eller annat."
+        },
+        {
+          "n": 2,
+          "label": "Type",
+          "text": "Vad som hände."
+        },
+        {
+          "n": 3,
+          "label": "Description",
+          "text": "Din beskrivning."
+        },
+        {
+          "n": 4,
+          "label": "Evidence (optional)",
+          "text": "En bild som visar avvikelsen."
+        },
+        {
+          "n": 5,
+          "label": "Submit deviation",
+          "text": "Skickar avvikelsen."
+        }
+      ]
+    },
+    {
+      "id": "checka-ut-ett-fordon",
+      "number": 44,
+      "title": "Checka ut ett fordon",
+      "category": "daglig-drift",
+      "app": "site",
+      "pageKey": "site-board",
+      "breadcrumb": [
+        "Site",
+        "Board",
+        "In",
+        "Check out"
+      ],
+      "summary": "När föraren är klar och lämnar området checkar du ut fordonet. Kortet flyttas till Checked-out och bryggan blir ledig.",
+      "steps": [
+        {
+          "n": 1,
+          "text": "Öppna Site och välj Board."
+        },
+        {
+          "n": 2,
+          "text": "Leta upp föraren i kolumnen In.",
+          "hotspot": 1
+        },
+        {
+          "n": 3,
+          "text": "Tryck Check out på kortet.",
+          "hotspot": 2
+        },
+        {
+          "n": 4,
+          "text": "Kortet flyttas till Checked-out.",
+          "hotspot": 3
+        }
+      ],
+      "notes": [
+        {
+          "type": "tip",
+          "text": "Checkade du ut fel förare? Öppna kortet och tryck Move back to In under Status."
+        }
+      ],
+      "alternativeQueries": [
+        "checka ut",
+        "checka ut en förare",
+        "föraren är klar",
+        "föraren har åkt",
+        "avsluta besök",
+        "markera som klar",
+        "checkout",
+        "lastbilen har lämnat",
+        "frigöra bryggan",
+        "check out"
+      ],
+      "relatedGuides": [
+        "kalla-in-en-forare",
+        "andra-eller-ta-bort-en-bokning"
+      ],
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "In",
+          "text": "Fordon som är inne på området."
+        },
+        {
+          "n": 2,
+          "label": "Check out",
+          "text": "Checkar ut fordonet."
+        },
+        {
+          "n": 3,
+          "label": "Checked-out",
+          "text": "Fordon som har lämnat."
+        }
+      ]
+    },
+    {
+      "id": "lagga-en-bokning-i-kon",
+      "number": 45,
+      "title": "Flytta en bokning till kön",
+      "category": "daglig-drift",
+      "app": "site",
+      "pageKey": "site-board",
+      "breadcrumb": [
+        "Site",
+        "Board",
+        "Bookings",
+        "ADD TO QUEUE"
+      ],
+      "summary": "När en bokad förare kommer fram utan att ha checkat in själv lägger du bokningen i kön. Sedan kan du kalla in föraren som vanligt.",
+      "steps": [
+        {
+          "n": 1,
+          "text": "Öppna Site och välj Board."
+        },
+        {
+          "n": 2,
+          "text": "Leta upp bokningen i kolumnen Bookings. Tiden på kortet är den bokade tiden.",
+          "hotspot": 1
+        },
+        {
+          "n": 3,
+          "text": "Tryck ADD TO QUEUE på kortet.",
+          "hotspot": 2
+        },
+        {
+          "n": 4,
+          "text": "Kortet flyttas till Queue. Därifrån kallar du in föraren.",
+          "hotspot": 3
+        }
+      ],
+      "notes": [
+        {
+          "type": "tip",
+          "text": "Bokningar visas bara för den dag de gäller. Använd Week för att se kommande dagar."
+        }
+      ],
+      "alternativeQueries": [
+        "lägga bokning i kön",
+        "föraren har kommit",
+        "bokad förare har kommit",
+        "flytta till kö",
+        "bokning till kö",
+        "add to queue",
+        "föraren har anlänt",
+        "checka in en bokning"
+      ],
+      "relatedGuides": [
+        "kalla-in-en-forare",
+        "skapa-en-bokning",
+        "se-veckan"
+      ],
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Bookings",
+          "text": "Dagens bokningar."
+        },
+        {
+          "n": 2,
+          "label": "ADD TO QUEUE",
+          "text": "Lägger bokningen i kön."
+        },
+        {
+          "n": 3,
+          "label": "Queue",
+          "text": "Förare som väntar på att kallas in."
+        }
+      ]
+    },
+    {
+      "id": "byta-sprak-och-utseende",
+      "number": 46,
+      "title": "Byta språk eller mörkt tema",
+      "category": "daglig-drift",
+      "app": "site",
+      "pageKey": "site-profile",
+      "breadcrumb": [
+        "Site",
+        "Din profil (rundeln uppe till höger)"
+      ],
+      "summary": "Välj vilket språk appen visas på och om du vill ha mörkt tema. Här loggar du också ut.",
+      "steps": [
+        {
+          "n": 1,
+          "text": "Klicka på rundeln med dina initialer uppe till höger."
+        },
+        {
+          "n": 2,
+          "text": "Välj språk i listan under Language.",
+          "hotspot": 1
+        },
+        {
+          "n": 3,
+          "text": "Kryssa i Dark theme om du vill ha mörk bakgrund.",
+          "hotspot": 2
+        },
+        {
+          "n": 4,
+          "text": "Tryck Log out när du vill logga ut.",
+          "hotspot": 3
+        }
+      ],
+      "notes": [
+        {
+          "type": "tip",
+          "text": "Språket gäller bara dig. Förarna väljer sitt eget språk när de checkar in."
+        }
+      ],
+      "alternativeQueries": [
+        "byta språk",
+        "ändra språk",
+        "appen är på engelska",
+        "svenska i appen",
+        "mörkt läge",
+        "dark mode",
+        "logga ut",
+        "mörkt tema",
+        "change language",
+        "profil"
+      ],
+      "relatedGuides": [
+        "lagga-till-sprak"
+      ],
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Language",
+          "text": "Appens språk för dig."
+        },
+        {
+          "n": 2,
+          "label": "Dark theme",
+          "text": "Mörk bakgrund."
+        },
+        {
+          "n": 3,
+          "label": "Log out",
+          "text": "Loggar ut."
+        },
+        {
+          "n": 4,
+          "label": "Profile",
+          "text": "Dina uppgifter."
+        }
+      ]
+    },
+    {
+      "id": "skapa-en-ny-plats",
+      "number": 47,
+      "title": "Skapa en ny plats",
+      "category": "kom-igang",
+      "app": "location-admin",
+      "pageKey": "location-menu",
+      "breadcrumb": [
+        "Location Admin",
+        "Add new location"
+      ],
+      "summary": "Lägg till en ny plats, till exempel ett nytt lager eller en ny anläggning. Efteråt ställer du in den precis som de andra platserna.",
+      "steps": [
+        {
+          "n": 1,
+          "text": "Öppna Location Admin."
+        },
+        {
+          "n": 2,
+          "text": "Tryck Add new location nere till höger."
+        },
+        {
+          "n": 3,
+          "text": "Kontrollera att rätt företag är valt under Company.",
+          "hotspot": 1
+        },
+        {
+          "n": 4,
+          "text": "Skriv platsens namn under Location name.",
+          "hotspot": 2
+        },
+        {
+          "n": 5,
+          "text": "Välj Visibility. Public syns för förarna, Hidden gör det inte.",
+          "hotspot": 3
+        },
+        {
+          "n": 6,
+          "text": "Fyll i adressen. Kontrollera att Latitude och Longitude pekar på rätt ställe.",
+          "hotspot": 4
+        },
+        {
+          "n": 7,
+          "text": "Tryck Create.",
+          "hotspot": 5
+        },
+        {
+          "n": 8,
+          "text": "Klicka på den nya platsen i listan och ställ in öppettider, språk och bildspel."
+        }
+      ],
+      "notes": [
+        {
+          "type": "warning",
+          "text": "Skapa inga testplatser i ert riktiga konto. Platser syns för förarna om de är Public."
+        },
+        {
+          "type": "tip",
+          "text": "Underplatser som Lossing och Lastning lägger du till under Edit structure."
+        }
+      ],
+      "alternativeQueries": [
+        "skapa ny plats",
+        "lägga till plats",
+        "ny anläggning",
+        "nytt lager",
+        "ny location",
+        "add location",
+        "lägga till ett nytt område",
+        "skapa plats"
+      ],
+      "relatedGuides": [
+        "hitta-ratt-installning",
+        "andra-platsinformation",
+        "andra-platsstrukturen"
+      ],
+      "status": "published",
+      "hotspots": [
+        {
+          "n": 1,
+          "label": "Company",
+          "text": "Företaget platsen hör till."
+        },
+        {
+          "n": 2,
+          "label": "Location name",
+          "text": "Platsens namn."
+        },
+        {
+          "n": 3,
+          "label": "Visibility",
+          "text": "Om platsen syns för förarna."
+        },
+        {
+          "n": 4,
+          "label": "Latitude och Longitude",
+          "text": "Platsens position på kartan."
+        },
+        {
+          "n": 5,
+          "label": "Create",
+          "text": "Skapar platsen."
+        }
+      ]
     }
   ]
 }

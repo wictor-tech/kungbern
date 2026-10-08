@@ -96,6 +96,9 @@ def find_boxes(label, ps, en_texts, parts=None, sv_texts=()):
         out.append(near_sv(e, sv_texts) or paired.get(id(e)) or e)
     return out
 
+# Guider där sidomenyn eller en dialog som börjar till vänster behövs i bilden.
+FULL_WIDTH = {"hitta-ratt-installning", "skapa-en-ny-plats"}
+
 result = {}
 for g in guides:
     if g["id"] not in views:
@@ -106,7 +109,7 @@ for g in guides:
     FW, FH = im.size
     # Beskär: sidomenyn i Location Admin tar plats utan att hjälpa (utom i guiden som handlar om den),
     # och tom yta längst ned tas bort så att det viktiga blir större.
-    left = 350 if sv["url"] == "/home" and g["id"] != "hitta-ratt-installning" else 0
+    left = 350 if sv["url"] == "/home" and g["id"] not in FULL_WIDTH else 0
     content = [t for t in sv["texts"] if t["x"] + t["w"] > left and t["y"] < FH and not re.search(r"OpenStreetMap|Leaflet|ny plats|new location|Flytta till plats|Move to location|^Adress$|^Mark", t["text"])]
     bottom = max([t["y"] + t["h"] for t in content] + [400]) + 36
     bottom = min(FH, max(bottom, 420))
@@ -117,7 +120,7 @@ for g in guides:
     spots = {}
     for h in g["hotspots"]:
         anchor = ANCHORS.get(g["id"], {}).get(str(h["n"]))
-        en_texts = [t for t in en["texts"] if not (en["url"] == "/home" and t["x"] < 350 and g["id"] != "hitta-ratt-installning")]
+        en_texts = [t for t in en["texts"] if not (en["url"] == "/home" and t["x"] < 350 and g["id"] not in FULL_WIDTH)]
         rect = ANCHORS.get(g["id"], {}).get(f"rect{h['n']}")
         boxes = [dict(zip("xywh", rect))] if rect else find_boxes(h["label"], ps, en_texts, anchor, sv["texts"])
         if not boxes:

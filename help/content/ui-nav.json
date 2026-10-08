@@ -48,5 +48,8 @@
  "Site": "Anläggning",
  "Location Admin": "Location Admin",
  "Unassigned": "Ej tilldelad",
- "Change bay": "Byt lastplats"
+ "Change bay": "Byt lastplats",
+ "More actions…": "Fler åtgärder…",
+ "Report a deviation": "Rapportera en avvikelse",
+ "Add new location": "Lägg till ny plats"
 }
