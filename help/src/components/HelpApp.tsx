@@ -79,85 +79,118 @@ export function HelpApp(props: HelpAppProps) {
 
   // ---------- Startläge ----------
   if (!q) {
+    const total = props.categories.reduce((n, c) => n + c.count, 0);
+    const search = <SearchBox large autoFocus ctx={{ page, app }} onSubmit={submit} onPick={pick} />;
+    const chips = (light: boolean) => (
+      <div className={`flex flex-wrap gap-2 ${light ? "justify-center" : ""}`}>
+        {props.popular.map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => submit(p)}
+            className={
+              light
+                ? "rounded-full bg-white/12 px-4 py-2 text-sm font-medium text-white ring-1 ring-white/35 transition hover:bg-white hover:text-navy"
+                : "rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition hover:border-lup hover:text-lup-dark"
+            }
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+    );
+
+    // I panelen inne i produkten: kompakt, utan stor banner.
+    if (embed)
+      return (
+        <div className="space-y-6">
+          <section className="space-y-4 pt-2">
+            <h1 className="text-2xl font-bold tracking-tight text-navy">Vad vill du ha hjälp med?</h1>
+            {search}
+            {chips(false)}
+          </section>
+          {props.contextGuides.length > 0 && <ContextGuides guides={props.contextGuides} href={guideHref} />}
+        </div>
+      );
+
     return (
-      <div className={embed ? "space-y-6" : "space-y-12"}>
-        <section className={`mx-auto max-w-3xl text-center ${embed ? "pt-2" : "pt-10 sm:pt-16"}`}>
-          <h1 className="text-3xl font-bold tracking-tight text-navy sm:text-5xl">Vad vill du ha hjälp med?</h1>
-          <p className="mt-3 text-lg text-muted">Skriv med egna ord – vi visar exakt var du klickar.</p>
-          <div className="mt-6">
-            <SearchBox large autoFocus ctx={{ page, app }} onSubmit={submit} onPick={pick} />
-          </div>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {props.popular.map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => submit(p)}
-                className="rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition hover:border-lup hover:text-lup-dark"
-              >
-                {p}
-              </button>
-            ))}
+      <div className="space-y-12">
+        <section className="full-bleed bg-brand relative -mt-6 overflow-hidden text-white sm:-mt-8">
+          <DockDoors />
+          <div className="relative mx-auto max-w-3xl px-4 pt-14 pb-48 text-center sm:px-6 sm:pt-20 sm:pb-56">
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-wider uppercase ring-1 ring-white/25">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-sun" /> {total} guider med bilder från appen
+            </p>
+            <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-6xl">Vad vill du ha hjälp med?</h1>
+            <p className="mx-auto mt-4 max-w-xl text-lg text-white/85 sm:text-xl">
+              Skriv med egna ord – vi visar exakt var du klickar.
+            </p>
+            <div className="mt-8 text-left text-ink">{search}</div>
+            <div className="mt-5">{chips(true)}</div>
           </div>
         </section>
 
-        {props.contextGuides.length > 0 && (
-          <section className="mx-auto max-w-3xl" aria-labelledby="ctx-title">
-            <h2 id="ctx-title" className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
-              Hjälp för sidan du står på
-            </h2>
-            <div className="space-y-2">
-              {props.contextGuides.map((g) => (
-                <GuideCard key={g.id} guide={g} href={guideHref(g.id)} />
-              ))}
-            </div>
-          </section>
-        )}
+        {props.contextGuides.length > 0 && <ContextGuides guides={props.contextGuides} href={guideHref} />}
 
-        {!embed && (
-          <section className="grid gap-6 lg:grid-cols-2" aria-label="Bläddra bland guiderna">
-            <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-              <h2 className="text-xl font-bold text-navy">Location Admin</h2>
-              <p className="text-sm text-muted">Ställ in platsen: öppettider, bilder, bokning, SMS och grindar.</p>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                {props.categories
-                  .filter((c) => c.app === "location-admin")
-                  .map((c) => (
-                    <li key={c.id}>
-                      <Link
-                        href={`/k/${c.id}`}
-                        className="flex min-h-14 items-center gap-3 rounded-xl border border-line px-3 py-2 transition hover:border-lup hover:bg-lup-tint/40"
-                      >
-                        <span aria-hidden className="text-2xl">
-                          {c.icon}
-                        </span>
-                        <span>
-                          <span className="block font-semibold text-ink">{c.label}</span>
-                          <span className="block text-xs text-muted">{c.count} {c.count === 1 ? "guide" : "guider"}</span>
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
+        <section className="relative z-10 -mt-32 grid items-start gap-6 sm:-mt-36 lg:grid-cols-2" aria-label="Bläddra bland guiderna">
+          <AppPanel
+            title="Location Admin"
+            text="Ställ in platsen: öppettider, bilder, bokning, SMS och grindar."
+            tone="navy"
+            count={props.categories.filter((c) => c.app === "location-admin").reduce((n, c) => n + c.count, 0)}
+          >
+            {props.categories
+              .filter((c) => c.app === "location-admin")
+              .map((c) => (
+                <li key={c.id}>
+                  <Link
+                    href={`/k/${c.id}`}
+                    className="lift group flex min-h-16 items-center gap-3 rounded-xl border border-line bg-white px-3 py-2 hover:border-lup"
+                  >
+                    <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lup-tint text-2xl">
+                      {c.icon}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold text-ink group-hover:text-navy">{c.label}</span>
+                      <span className="block text-xs text-muted">
+                        {c.count} {c.count === 1 ? "guide" : "guider"}
+                      </span>
+                    </span>
+                    <Arrow />
+                  </Link>
+                </li>
+              ))}
+          </AppPanel>
+          <AppPanel title="Site" text="Daglig drift: kalla in, checka ut, kö och SMS till alla." tone="blue" count={props.siteGuides.length}>
+            {props.siteGuides.map((g) => (
+              <li key={g.id}>
+                <Link
+                  href={`/g/${g.id}`}
+                  className="lift group flex min-h-16 items-center gap-3 rounded-xl border border-line bg-white px-4 py-2 hover:border-lup"
+                >
+                  <span className="min-w-0 flex-1 font-semibold text-ink group-hover:text-navy">{g.title}</span>
+                  <Arrow />
+                </Link>
+              </li>
+            ))}
+          </AppPanel>
+        </section>
+
+        <section className="grid gap-4 sm:grid-cols-3" aria-label="Så fungerar hjälpen">
+          {[
+            ["1", "Fråga med egna ord", "Skriv som du skulle fråga en kollega. Stavfel gör inget."],
+            ["2", "Se exakt var du klickar", "Skärmbilder från appen med numrerade markeringar, steg för steg."],
+            ["3", "Fastnar du? Vi tar över", "Tryck 👎 så skickas din fråga och guiden med till supporten."],
+          ].map(([n, t, d]) => (
+            <div key={n} className="flex gap-4 rounded-2xl bg-white p-5 ring-1 ring-line">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy text-lg font-bold text-white">{n}</span>
+              <span>
+                <span className="block font-bold text-navy">{t}</span>
+                <span className="mt-1 block text-sm text-muted">{d}</span>
+              </span>
             </div>
-            <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-              <h2 className="text-xl font-bold text-navy">Site</h2>
-              <p className="text-sm text-muted">Daglig drift: kalla in, checka ut, kö och SMS till alla.</p>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                {props.siteGuides.map((g) => (
-                  <li key={g.id}>
-                    <Link
-                      href={`/g/${g.id}`}
-                      className="flex min-h-14 items-center rounded-xl border border-line px-3 py-2 font-semibold text-ink transition hover:border-lup hover:bg-lup-tint/40"
-                    >
-                      {g.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
+          ))}
+        </section>
       </div>
     );
   }
@@ -241,5 +274,91 @@ function ResultSkeleton() {
         <div className="h-16 rounded-xl bg-slate-200" />
       </div>
     </div>
+  );
+}
+
+function ContextGuides({ guides, href }: { guides: GuideSummary[]; href: (id: string) => string }) {
+  return (
+    <section className="mx-auto max-w-3xl" aria-labelledby="ctx-title">
+      <h2 id="ctx-title" className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
+        Hjälp för sidan du står på
+      </h2>
+      <div className="space-y-2">
+        {guides.map((g) => (
+          <GuideCard key={g.id} guide={g} href={href(g.id)} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AppPanel({
+  title,
+  text,
+  tone,
+  count,
+  children,
+}: {
+  title: string;
+  text: string;
+  tone: "navy" | "blue";
+  count: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="overflow-hidden rounded-3xl bg-white shadow-xl shadow-navy/10 ring-1 ring-line">
+      <div className={`flex items-end justify-between gap-4 px-6 py-5 text-white ${tone === "navy" ? "bg-navy" : "bg-lup"}`}>
+        <div>
+          <h2 className="text-2xl font-bold">{title}</h2>
+          <p className="mt-0.5 text-sm text-white/85">{text}</p>
+        </div>
+        <span className="shrink-0 text-right leading-none">
+          <span className="block text-3xl font-extrabold italic tabular-nums">{count}</span>
+          <span className="text-xs text-white/75">guider</span>
+        </span>
+      </div>
+      <ul className="grid gap-2 bg-canvas/60 p-4 sm:grid-cols-2 sm:p-5">{children}</ul>
+    </div>
+  );
+}
+
+function Arrow() {
+  return (
+    <span
+      aria-hidden
+      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lup-tint text-lup-dark transition group-hover:bg-lup group-hover:text-white"
+    >
+      →
+    </span>
+  );
+}
+
+/** Dekor: en rad numrerade lastbryggor längst ner i bannern – det LUPNUMBER styr trafiken till. */
+function DockDoors() {
+  const doors = Array.from({ length: 14 }, (_, i) => i);
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-44 w-full opacity-[0.14] sm:h-52"
+      viewBox="0 0 1400 200"
+      preserveAspectRatio="xMidYMax slice"
+      fill="none"
+      stroke="white"
+    >
+      {doors.map((i) => {
+        const x = 20 + i * 100;
+        return (
+          <g key={i}>
+            <text x={x + 40} y="52" fill="white" stroke="none" fontSize="26" fontWeight="700" textAnchor="middle" fontStyle="italic">
+              {String(i + 1).padStart(2, "0")}
+            </text>
+            <rect x={x} y="68" width="80" height="132" strokeWidth="3" />
+            {[0, 1, 2, 3, 4, 5].map((k) => (
+              <line key={k} x1={x + 6} x2={x + 74} y1={86 + k * 18} y2={86 + k * 18} strokeWidth="2" />
+            ))}
+          </g>
+        );
+      })}
+    </svg>
   );
 }

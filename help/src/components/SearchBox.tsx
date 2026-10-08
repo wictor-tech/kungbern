@@ -95,13 +95,14 @@ export function SearchBox({
       className="relative"
     >
       <div
-        className={`flex w-full items-center gap-2 rounded-2xl border-2 bg-white shadow-sm transition focus-within:border-lup focus-within:shadow-md ${
-          large ? "border-lup/40 p-2" : "border-line p-1.5"
+        className={`flex w-full items-center gap-2 rounded-2xl border-2 bg-white transition focus-within:border-lup ${
+          large ? "border-white p-2 shadow-2xl shadow-navy/40" : "border-line p-1.5 shadow-sm focus-within:shadow-md"
         }`}
       >
-        <span aria-hidden className={`pl-2 text-muted ${large ? "text-2xl" : "text-lg"}`}>
-          🔎
-        </span>
+        <svg aria-hidden viewBox="0 0 24 24" className={`ml-2 shrink-0 text-lup ${large ? "h-7 w-7" : "h-5 w-5"}`} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m15.5 15.5 5 5" />
+        </svg>
         <label htmlFor="q" className="sr-only">
           Vad vill du ha hjälp med?
         </label>
@@ -145,7 +146,7 @@ export function SearchBox({
         <button
           type="submit"
           disabled={busy || !value.trim()}
-          className={`shrink-0 rounded-xl bg-lup font-semibold text-white transition hover:bg-lup-dark disabled:opacity-40 ${
+          className={`shrink-0 rounded-xl bg-lup font-semibold text-white transition hover:bg-lup-dark disabled:cursor-not-allowed disabled:opacity-100 ${
             large ? "h-14 px-6 text-lg" : "h-11 px-5"
           }`}
         >

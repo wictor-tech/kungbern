@@ -29,14 +29,30 @@ export function AppBadge({ app }: { app: AppArea }) {
 }
 
 /** Menysökvägen ("Location Admin › DEMO LUP › …") som i manualens blå ruta. */
-export function Breadcrumb({ items }: { items: string[] }) {
+export function Breadcrumb({ items, onDark = false }: { items: string[]; onDark?: boolean }) {
   return (
-    <nav aria-label="Var du hittar det" className="rounded-lg border-l-4 border-lup bg-lup-tint/70 px-3 py-2 text-sm text-navy">
-      <span className="sr-only">Var: </span>
+    <nav aria-label="Var du hittar det" className={`flex flex-wrap items-center gap-x-1 gap-y-1.5 text-sm ${onDark ? "text-white" : "text-navy"}`}>
+      <span className={`mr-1 text-xs font-semibold tracking-wider uppercase ${onDark ? "text-white/70" : "text-muted"}`}>Här hittar du det</span>
       {items.map((item, i) => (
-        <span key={i}>
-          {i > 0 && <span className="mx-1.5 text-lup">›</span>}
-          <span className={i === items.length - 1 ? "font-semibold" : ""}>{item}</span>
+        <span key={i} className="flex items-center gap-1">
+          {i > 0 && (
+            <span aria-hidden className={onDark ? "text-white/60" : "text-lup"}>
+              ›
+            </span>
+          )}
+          <span
+            className={`rounded-full px-3 py-1 ${
+              i === items.length - 1
+                ? onDark
+                  ? "bg-white font-semibold text-navy"
+                  : "bg-navy font-semibold text-white"
+                : onDark
+                  ? "bg-white/15 ring-1 ring-white/25"
+                  : "bg-lup-tint text-navy"
+            }`}
+          >
+            {item}
+          </span>
         </span>
       ))}
     </nav>
@@ -65,7 +81,7 @@ export function GuideCard({ guide, href, onClick }: { guide: GuideSummary; href?
     </>
   );
   const cls =
-    "group flex w-full items-start gap-4 rounded-xl border border-line bg-white p-3 text-left transition hover:border-lup hover:shadow-sm";
+    "lift group flex w-full items-start gap-4 rounded-2xl border border-line bg-white p-3 text-left hover:border-lup";
   if (onClick)
     return (
       <button type="button" onClick={onClick} className={cls}>

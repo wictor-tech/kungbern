@@ -85,3 +85,30 @@ body {
     animation: none;
   }
 }
+
+/* Samma diagonala blå → mörkblå som på lupnumber.com. */
+.bg-brand {
+  background-image: linear-gradient(118deg, #0da0ec 0%, #0a86c8 38%, #064769 100%);
+}
+/* Sträcker ett block över hela fönsterbredden inifrån en centrerad container. */
+.full-bleed {
+  margin-inline: calc(50% - 50vw);
+}
+html {
+  overflow-x: clip;
+}
+.lift {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -12px rgb(6 71 105 / 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lift:hover {
+    transform: none;
+  }
+}

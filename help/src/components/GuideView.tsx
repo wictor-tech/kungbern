@@ -8,7 +8,7 @@ import { RichText } from "./RichText";
 import { Screenshot } from "./Screenshot";
 import { StepZoom } from "./StepZoom";
 import { buildTour, hasTour } from "@/lib/tour";
-import { AppBadge, Breadcrumb, GuideCard } from "./ui";
+import { Breadcrumb, GuideCard } from "./ui";
 
 /**
  * En guide: var den finns, skärmbilden och stegen. Stegen går att bocka av,
@@ -70,14 +70,17 @@ export function GuideView({
   return (
     <article className="animate-rise" aria-labelledby="guide-title">
       {answer && <p className="mb-2 text-lg font-medium text-ink">{answer}</p>}
-      <header className="mb-4 space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 id="guide-title" className="text-2xl font-bold tracking-tight text-navy sm:text-3xl">
+      <header className="bg-brand relative mb-6 space-y-3 overflow-hidden rounded-3xl px-5 py-5 text-white sm:space-y-4 sm:px-8 sm:py-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 id="guide-title" className="text-2xl font-bold tracking-tight text-balance sm:text-4xl">
             {guide.title}
           </h2>
-          <AppBadge app={guide.app} />
+          <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold ring-1 ring-white/30">
+            {guide.app === "site" ? "Site" : "Location Admin"}
+          </span>
         </div>
-        <Breadcrumb items={guide.breadcrumb} />
+        {guide.summary && <p className="max-w-3xl text-white/85">{guide.summary.replace(/\*\*/g, "")}</p>}
+        <Breadcrumb items={guide.breadcrumb} onDark />
       </header>
 
       <div
@@ -86,7 +89,7 @@ export function GuideView({
         }
       >
         {hasMedia && (
-        <div className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+        <div className="space-y-3 lg:sticky lg:top-20 lg:self-start">
           {guide.video?.url ? (
             <video
               src={`${guide.video.url}${guide.video.startSec ? `#t=${guide.video.startSec}${guide.video.endSec ? `,${guide.video.endSec}` : ""}` : ""}`}
@@ -152,8 +155,13 @@ export function GuideView({
 
         <div className="space-y-4">
           {warnings.map((n, i) => (
-            <p key={i} role="note" className="rounded-xl border border-amber-200 bg-warn px-4 py-3 text-sm text-warn-ink">
-              <strong>Var försiktig.</strong> <RichText text={n.text} />
+            <p key={i} role="note" className="flex gap-3 rounded-2xl border-l-4 border-sun bg-warn px-4 py-3 text-sm text-warn-ink">
+              <span aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sun text-base font-bold text-navy">
+                !
+              </span>
+              <span className="pt-1">
+                <strong>Var försiktig.</strong> <RichText text={n.text} />
+              </span>
             </p>
           ))}
 
@@ -161,16 +169,27 @@ export function GuideView({
             <button
               type="button"
               onClick={startTour}
-              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-navy px-4 font-semibold text-white hover:bg-navy/90"
+              className="bg-brand flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-4 font-semibold text-white shadow-lg shadow-lup/30 hover:opacity-95"
             >
               <span aria-hidden>👆</span> Visa mig i appen
             </button>
           )}
 
           <section aria-labelledby="steps-title">
-            <h3 id="steps-title" className="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">
-              Gör så här
-            </h3>
+            <div className="mb-3 flex items-center gap-3">
+              <h3 id="steps-title" className="text-xl font-bold text-navy">
+                Gör så här
+              </h3>
+              <span className="ml-auto text-sm text-muted tabular-nums" aria-live="polite">
+                {done.length} av {guide.steps.length} klara
+              </span>
+            </div>
+            <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-line" aria-hidden>
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${allDone ? "bg-emerald-500" : "bg-lup"}`}
+                style={{ width: `${guide.steps.length ? (done.length / guide.steps.length) * 100 : 0}%` }}
+              />
+            </div>
             <ol className="space-y-2">
               {guide.steps.map((s) => {
                 const checked = done.includes(s.n);
@@ -182,12 +201,12 @@ export function GuideView({
                       onClick={() => toggle(s.n)}
                       aria-pressed={checked}
                       className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition sm:p-4 ${
-                        checked ? "border-emerald-300 bg-emerald-50" : "border-line bg-white hover:border-lup"
+                        checked ? "border-emerald-300 bg-emerald-50" : "lift border-line bg-white shadow-sm hover:border-lup"
                       }`}
                     >
                       <span
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                          checked ? "bg-emerald-500 text-white" : "bg-lup text-white"
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold ${
+                          checked ? "bg-emerald-500 text-white" : "bg-navy text-white"
                         }`}
                         aria-hidden
                       >
@@ -210,7 +229,7 @@ export function GuideView({
           </section>
 
           {tips.map((n, i) => (
-            <p key={i} role="note" className="rounded-xl border border-emerald-200 bg-tip px-4 py-3 text-sm text-tip-ink">
+            <p key={i} role="note" className="rounded-2xl border-l-4 border-emerald-500 bg-tip px-4 py-3 text-sm text-tip-ink">
               <strong>Tips.</strong> <RichText text={n.text} />
             </p>
           ))}
@@ -230,7 +249,7 @@ export function GuideView({
 
       {related.length > 0 && (
         <section className="mt-10" aria-labelledby="related-title">
-          <h3 id="related-title" className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
+          <h3 id="related-title" className="mb-3 text-xl font-bold text-navy">
             Nästa steg
           </h3>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

@@ -66,7 +66,7 @@ export function Feedback({
     }
   }
 
-  const box = `rounded-xl border p-4 transition ${highlight && state.s === "ask" ? "border-lup bg-lup-tint/50" : "border-line bg-white"}`;
+  const box = `rounded-2xl border p-5 transition ${highlight && state.s === "ask" ? "border-lup bg-lup-tint ring-4 ring-lup/15" : "border-line bg-white shadow-sm"}`;
 
   if (state.s === "thanks")
     return (
@@ -86,18 +86,18 @@ export function Feedback({
     <div className={box}>
       {state.s === "ask" && (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="w-full font-semibold text-navy sm:mr-auto sm:w-auto">Löste detta ditt problem?</p>
+          <p className="w-full text-lg font-bold text-navy">Löste detta ditt problem?</p>
           <button
             type="button"
             onClick={sendYes}
-            className="min-h-12 flex-1 rounded-xl sm:flex-none border border-line bg-white px-5 font-semibold text-ink hover:border-emerald-400 hover:bg-emerald-50"
+            className="min-h-12 flex-1 rounded-full border-2 border-line bg-white px-6 font-semibold text-ink hover:border-emerald-400 hover:bg-emerald-50"
           >
             👍 Ja
           </button>
           <button
             type="button"
             onClick={() => setState({ s: "why" })}
-            className="min-h-12 flex-1 rounded-xl sm:flex-none border border-line bg-white px-5 font-semibold text-ink hover:border-marker hover:bg-marker-tint"
+            className="min-h-12 flex-1 rounded-full border-2 border-line bg-white px-6 font-semibold text-ink hover:border-marker hover:bg-marker-tint"
           >
             👎 Nej
           </button>
