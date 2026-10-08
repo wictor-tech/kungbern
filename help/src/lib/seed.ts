@@ -69,7 +69,8 @@ export function buildDraftGuides(base: Guide[]): Guide[] {
       screenshot: shot?.screenshot ?? null,
       screenshotSize: shot?.screenshotSize ?? null,
       screenshotAnnotated: shot?.screenshotAnnotated,
-      hotspots: shot?.hotspots ?? [],
+      // Egna markeringar (positioner från appen läggs på i applyAppCapture) går före manualbildens.
+      hotspots: "hotspots" in d && d.hotspots ? d.hotspots : (shot?.hotspots ?? []),
       steps: d.steps,
       notes: d.notes.map((n) => ({ type: n.type === "warning" ? "warning" : "tip", text: n.text })),
       alternativeQueries: d.alternativeQueries,
