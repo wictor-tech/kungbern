@@ -19,6 +19,16 @@ npm run demo-data      # bygg om det syntetiska demodatasetet (deterministiskt)
 npm run server         # API (demoläge) på http://localhost:8787
 ```
 
+## Publicera demon
+
+Demon är en helt statisk sajt. Den har ingen backend, och det enda dataset den kan nå är det syntetiska.
+
+- **Vercel:** skapa ett nytt projekt från repot, sätt *Root Directory* till `yard-twin` och låt `vercel.json` ta hand om
+  resten. Alternativt: `cd yard-twin && npx vercel deploy --prod`.
+- **Annan statisk värd:** `npm run build` och ladda upp `dist/`.
+
+`X-Robots-Tag: noindex` är satt så att demon inte indexeras av sökmotorer.
+
 ## Vad finns
 
 | Del | Var | Vad |
