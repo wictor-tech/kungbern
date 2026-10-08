@@ -1,6 +1,7 @@
 import type { RecordedDay } from "../data/contract.ts";
 import type { SiteModel } from "../engine/model.ts";
 import type { ScenarioFile } from "../engine/scenario.ts";
+import { UNLIMITED_GATE_LANES } from "../analysis/calibrationSummary.ts";
 import type { Controls, Dataset } from "./types.ts";
 
 /**
@@ -37,7 +38,7 @@ export function defaultControls(ds: Dataset): Controls {
     pattern: "recorded",
     volumeFactor: 1,
     doors: day?.doorsObserved ?? ds.site.doors,
-    gateLanes: 1,
+    gateLanes: 0,
     parkingSpaces: null,
     open: ds.site.open,
     close: ds.site.close,
@@ -82,7 +83,8 @@ export function buildScenario(c: Controls, ds: Dataset, id = "ui"): ScenarioFile
     },
     site: {
       doors: replay ? (dayOf(ds, c.date)?.doorsObserved ?? c.doors) : c.doors,
-      gateLanes: c.gateLanes,
+      // 0 = obegränsat: grindtiden från data innehåller redan grindkön (beslut D20).
+      gateLanes: replay || c.gateLanes === 0 ? UNLIMITED_GATE_LANES : c.gateLanes,
       parkingSpaces: c.parkingSpaces,
       open: c.open,
       close: c.close,

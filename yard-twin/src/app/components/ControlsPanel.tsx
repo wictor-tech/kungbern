@@ -83,7 +83,7 @@ export function ControlsPanel({ c, set, ds, t_, lang }: Props) {
             <Range id="bm" label={t_("burstMult")} value={c.burstMultiplier} min={1} max={4} step={0.1} show={`× ${fmtNum(lang, c.burstMultiplier, 1)}`} onChange={(v) => what({ burstMultiplier: v })} />
           </>
         )}
-        <Num id="lanes" label={t_("gateLanes")} value={c.gateLanes} min={1} max={6} onChange={(v) => what({ gateLanes: v })} />
+        <Num id="lanes" label={`${t_("gateLanes")} (0 = ${t_("unlimited")})`} value={c.gateLanes} min={0} max={6} onChange={(v) => what({ gateLanes: v })} />
         <div className="field">
           <label htmlFor="park">{t_("parking")} <span className="muted">{c.parkingSpaces === null ? t_("unlimited") : ""}</span></label>
           <input id="park" type="number" min={0} placeholder={t_("unlimited")} value={c.parkingSpaces ?? ""} onChange={(e) => what({ parkingSpaces: e.target.value === "" ? null : Math.max(0, Number(e.target.value)) })} />

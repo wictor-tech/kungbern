@@ -16,7 +16,7 @@
   },
   "site": {
     "doors": 8,
-    "gateLanes": 1,
+    "gateLanes": 999,
     "parkingSpaces": null,
     "open": "05:00",
     "close": "15:00",

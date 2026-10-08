@@ -260,9 +260,9 @@ export function App() {
               )}
             </section>
             <div style={{ display: "grid", gap: 16, alignContent: "start" }}>
-              {out && <InsightsCard out={out} t_={t_} lang={lang} currency={c.currency} />}
+              {out && <InsightsCard out={out} t_={t_} lang={lang} currency={c.currency} doors={doors.length} closeAt={openTo} />}
               <CalibrationCard cal={ds.calibration} t_={t_} lang={lang} />
-              <LimitationsCard t_={t_} lang={lang} model={model} />
+              <LimitationsCard t_={t_} lang={lang} model={model} calibrationDays={ds.calibration?.calibrationDays} />
             </div>
           </div>
 

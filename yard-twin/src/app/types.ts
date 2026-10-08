@@ -11,6 +11,7 @@ export interface CalibrationSummary {
   visits: number;
   testDays: number;
   metrics: Record<string, { mae: number; wmape: number; relBias: number; coverage: number; n: number }>;
+  replayAvgWaitWmape?: number | null;
   trainRange: [string, string];
   testRange: [string, string];
 }
