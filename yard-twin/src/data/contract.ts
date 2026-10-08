@@ -107,3 +107,26 @@ export const DEFAULT_QUALITY_RULES: QualityRules = {
   minSegmentN: 30,
   kAnonymity: 20,
 };
+
+/** Verkliga nyckeltal för en dag, härledda ur DerivedVisit (samma definitioner som motorns RunMetrics). */
+export interface ActualDayMetrics {
+  date: string;
+  trucks: number;
+  avgWait: number;
+  p90Wait: number;
+  /** Max antal ankomna som ännu inte påbörjat lossning. */
+  maxQueue: number;
+  /** Lossningstid inom öppettid / (dörrar × öppettid). */
+  doorUtilization: number;
+  timeToEmpty: number;
+}
+
+/** En inspelad dag: underlag för replay och backtest. */
+export interface RecordedDay {
+  date: string;
+  isoWeekday: number;
+  trucks: import("../engine/model.ts").RecordedTruck[];
+  actual: ActualDayMetrics;
+  /** Antal dörrar som användes den dagen (observerat). */
+  doorsObserved: number;
+}

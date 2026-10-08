@@ -42,7 +42,9 @@ const MIN_CONDITIONAL_CANDIDATES = 10;
 /** Index för betingad bootstrap: lossningstid samplas bland besök med samma godstyp och liknande pallantal. */
 export class UnloadSampler {
   private byGoods = new Map<string, VisitSample[]>();
-  constructor(private readonly samples: readonly VisitSample[]) {
+  private readonly samples: readonly VisitSample[];
+  constructor(samples: readonly VisitSample[]) {
+    this.samples = samples;
     if (samples.length === 0) throw new Error("Inga lossningsobservationer – kan inte sampla lossningstid");
     for (const s of samples) {
       let arr = this.byGoods.get(s.goodsType);

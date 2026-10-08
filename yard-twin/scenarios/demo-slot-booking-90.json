@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "demo-slot-booking-90",
+  "name": "Slottbokning + 90 % i tid",
+  "description": "Som slottbokning men med förbättrad punktlighet (90 % inom ±15 min).",
+  "siteId": "demo",
+  "dayType": "weekday:2",
+  "arrivals": {
+    "pattern": "booked",
+    "volumeFactor": 1,
+    "slot": {
+      "lengthMin": 30,
+      "capacityPerHour": 12,
+      "from": "05:00",
+      "to": "15:00",
+      "adherence": 0.9,
+      "toleranceMin": 15
+    }
+  },
+  "site": {
+    "doors": 8,
+    "gateLanes": 1,
+    "parkingSpaces": null,
+    "open": "05:00",
+    "close": "15:00",
+    "allowOvertime": true
+  },
+  "strategy": {
+    "kind": "booked-first",
+    "onTimeToleranceMin": 15,
+    "priorities": {
+      "frys": 2,
+      "kyl": 1
+    }
+  },
+  "costs": {
+    "currency": "SEK",
+    "detentionFreeMin": 60,
+    "detentionCostPerHour": 600,
+    "staffCostPerHour": 450,
+    "source": "Antagande för demo – ersätt med kundens siffror"
+  },
+  "monteCarlo": {
+    "reps": 300,
+    "seed": "demo-v1"
+  }
+}

@@ -13,13 +13,9 @@ import type {
   TruckOutcome,
 } from "./types.ts";
 
-const enum Ev {
-  Arrive,
-  GateDone,
-  UnloadDone,
-  Depart,
-  Open,
-}
+// Vanligt objekt i stället för enum, så att filen kan köras direkt i Node med typstrippning.
+const Ev = { Arrive: 0, GateDone: 1, UnloadDone: 2, Depart: 3, Open: 4 } as const;
+type Ev = (typeof Ev)[keyof typeof Ev];
 
 interface Event {
   time: number;

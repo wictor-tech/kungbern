@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "demo-baseline",
+  "name": "Utan slottbokning",
+  "description": "Slumpmässiga ankomster enligt historisk timprofil för en tisdag.",
+  "siteId": "demo",
+  "dayType": "weekday:2",
+  "arrivals": {
+    "pattern": "poisson",
+    "volumeFactor": 1
+  },
+  "site": {
+    "doors": 8,
+    "gateLanes": 1,
+    "parkingSpaces": null,
+    "open": "05:00",
+    "close": "15:00",
+    "allowOvertime": true
+  },
+  "strategy": {
+    "kind": "fcfs",
+    "onTimeToleranceMin": 15,
+    "priorities": {
+      "frys": 2,
+      "kyl": 1
+    }
+  },
+  "costs": {
+    "currency": "SEK",
+    "detentionFreeMin": 60,
+    "detentionCostPerHour": 600,
+    "staffCostPerHour": 450,
+    "source": "Antagande för demo – ersätt med kundens siffror"
+  },
+  "monteCarlo": {
+    "reps": 300,
+    "seed": "demo-v1"
+  }
+}

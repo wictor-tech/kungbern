@@ -1,0 +1,26 @@
+# Beslutslogg
+
+Du bad mig att "tänka logistik och göra det som är bäst". Här står de beslut jag tog och varför.
+Alla kan ändras. De ligger som exporterade konstanter eller som scenarioparametrar, och ingen av dem är begravd i koden.
+
+| # | Beslut | Motivering | Var i koden | Ändra om … |
+| --- | --- | --- | --- | --- |
+| D1 | **Ankomst = första LPR-läsning vid grind**, med incheckning som reserv. | Det är det enda objektiva mått som finns innan någon människa har agerat. Föraren upplever att väntan börjar där, och det är där detention-klockan börjar i de flesta transportavtal. | `src/data/rules.ts` | LPR-kameran sitter långt före grinden, eller missar många bilar. |
+| D2 | **"I tid" = ±15 min från slotstart.** | Vanlig tolerans i nordisk slottbokning för dagligvaror och 3PL. Den är inställbar per scenario (`toleranceMin`). | `rules.ts`, scenario | Kunden har avtalat en annan tolerans. |
+| D3 | **No-show = bokad, inte avbokad och ingen ankomst.** | Det är den enkla definitionen som går att mäta. | `rules.ts` | Kunden räknar sena avbokningar som no-show. |
+| D4 | **Sen avbokning = mindre än 24 h före slotstart.** | Branschpraxis. Under 24 h går det sällan att fylla sloten igen. | `rules.ts` | – |
+| D5 | **Detention-klockan startar vid bokad tid om bilen kom tidigt, annars vid ankomst.** | En bil som kommer två timmar för tidigt ska inte kunna fakturera väntetid. Det speglar hur väntetidsklausuler brukar skrivas. | `src/engine/simulate.ts` | Kundens avtal säger något annat. |
+| D6 | **Kalibrering kräver ≥ 90 dagar och ≥ 500 besök för betyget Hög.** | En säsong plus veckodagsvariation. Med färre observationer blir P90 och segmenten instabila. | `src/analysis/grade.ts` | – |
+| D7 | **Betyg (se `docs/kalibreringsbetyg.md`): felmåttet är wMAPE för medelväntan på hold-out-dagar.** | Vanlig MAPE exploderar på dagar med nästan ingen väntan. wMAPE (Σ\|fel\| / Σ verkligt) är stabil och lätt att förklara. Över 20 % ger varning. | `grade.ts` | – |
+| D8 | **Hold-out = kronologisk delning: de första 70 % av dagarna kalibrerar, de sista 30 % testar.** | Slumpmässig delning läcker säsong och trend och gör modellen bättre än den är. Kronologisk delning testar det vi faktiskt lovar, nämligen att förutsäga kommande dagar. | `src/analysis/backtest.ts` | – |
+| D9 | **Lossningstid samplas som hela observerade besök** (godstyp, transportör, pallar och tid tillsammans). | Korrelationen mellan pallantal och lossningstid bevaras utan att vi antar en formel. För inspelade bilar utan uppmätt tid används betingad bootstrap på godstyp och pallantal. | `src/engine/arrivals.ts` | – |
+| D10 | **Common random numbers**: lastbil nr k har samma attribut i alla scenarier och repetitioner med samma seed. | Skillnaden mellan "utan" och "med" beror då på åtgärden och inte på slumpen. Intervallen för deltan blir smalare och ärliga (parvisa differenser). | `arrivals.ts`, `montecarlo.ts` | – |
+| D11 | **Övertid tillåts som standard.** Bilarna lossas efter stängning, och övertiden redovisas. | Så fungerar de flesta DC i verkligheten. Alternativet (bilen skickas hem) kan väljas per scenario. | scenario `allowOvertime` | – |
+| D12 | **Pappersarbete blockerar inte dörren.** | Föraren kör normalt undan innan papperen klaras av. Detta står som begränsning i UI:t. | `simulate.ts` | Kunden har pappersarbete vid dörren. |
+| D13 | **Truckar och personal modelleras inte separat i v1.** | Den uppmätta lossningstiden innehåller redan truck- och personaleffekten. Att lägga till dem skulle dubbelräkna. Truckbrist syns i stället via känslighetsanalysen för lossningstid. | – | Vi får data om truckar och skift. |
+| D14 | **Utan slottbokning = Poisson-ankomster enligt historisk timprofil.** | Det är den ärliga motpolen: samma volym och samma dygnsmönster, men ingen styrning. | `src/app/scenarioBuilder.ts` | – |
+| D15 | **Kostnader har inga dolda standardvärden.** I demon är de märkta "Antagande för demo". | Krav från dig. `costs.source` är obligatoriskt i scenarioschemat, och API:t avvisar scenarier utan källa. | `src/engine/scenario.ts` | – |
+| D16 | **k-anonymitet k = 20** innan något segment får användas i demo. Transportörer döps om till "Transportör A, B …". | Ett segment med färre än 20 besök kan i praktiken peka ut en enskild transportör. | `src/data/anonymize.ts` | – |
+| D17 | **Repot `kungbern` är publikt**, så här finns bara syntetisk data. Riktig kalibrering körs i plattformens miljö, och bara k-anonymiserade aggregat lämnar den. | Säkerhet. | – | **Flytta Yard Twin till ett privat repo innan riktig data kopplas in.** |
+| D18 | **Motorn i TypeScript utan beroenden** och körs i webbläsaren (Web Worker). | Demon fungerar offline i ett säljmöte, varje reglageändring räknas om direkt, och samma kod går att flytta in i plattformen. | `src/engine/` | – |
+| D19 | **Valuta SEK som standard**, EUR som val. | Svensk marknad först. | UI | – |
