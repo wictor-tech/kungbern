@@ -1609,17 +1609,17 @@
     },
     {
      "n": 5,
-     "label": "Data quality score",
+     "label": "Datakvalitetspoäng",
      "text": "Lågt värde beror oftast på att tider saknas, inte på fel i verksamheten. En ny plats med få resor får alltid lågt värde."
     },
     {
      "n": 6,
-     "label": "Bokning compliance",
+     "label": "Överensstämmelse med bokning",
      "text": "Antal besök, andel i tid, uteblivna och genomsnittlig tid på området."
     },
     {
      "n": 7,
-     "label": "Arrival status distribution",
+     "label": "Fördelning av ankomststatus",
      "text": "Fördelningen mellan för tidig, i tid, sen och utebliven."
     }
    ],

@@ -34,5 +34,9 @@ Hjälpfiler som skrivs för hand:
 - `content/hotspot-anchors.json`: vilket element en markering pekar på när namnet inte står i appen, eller en fast ruta.
 - `content/localized-overrides.json`: enstaka steg som skrivits om för hand.
 
+Efter en körning: `npx tsx scripts/audit-images.ts` listar guider utan bild och markeringar utan position.
+`capture.mjs` varnar för bilder som inte gick att hämta. Appens uppladdade bilder ligger på
+`s3taste.lupnumber.com`, så den domänen måste vara nåbar, annars blir förhandsbilderna tomma.
+
 `src/lib/seed.ts` (`applyAppCapture`) lägger ihop allt när databasen fylls första gången.
 Engelska knappnamn sparas som dolda sökord, så att användare med engelsk app också hittar rätt.

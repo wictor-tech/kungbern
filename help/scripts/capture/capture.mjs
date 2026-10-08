@@ -99,6 +99,20 @@ for (const r of recipes) {
         await page.waitForTimeout(step.wait ?? 2000);
       }
       const tag = locale === "en-US" ? "en" : "sv";
+      // Vänta tills vyn laddat klart: inga "Laddar…"-texter och alla bilder hämtade (högst 20 s).
+      await page
+        .waitForFunction(
+          () =>
+            !/Laddar|Loading/.test(document.body.innerText) &&
+            [...document.images].filter((i) => i.getBoundingClientRect().width > 0).every((i) => i.complete),
+          null,
+          { timeout: 20000 },
+        )
+        .catch(() => console.log(r.id, tag, "VARNING: vyn laddade inte klart inom 20 s"));
+      const broken = await page.evaluate(() =>
+        [...document.images].filter((i) => i.getBoundingClientRect().width > 0 && i.complete && !i.naturalWidth).map((i) => i.src),
+      );
+      for (const src of broken) console.log(r.id, tag, "VARNING: bild kunde inte hämtas:", src.slice(0, 120));
       await page.screenshot({ path: `${out}/${r.id}.${tag}.png` });
       fs.writeFileSync(`${out}/${r.id}.${tag}.json`, JSON.stringify({ url: new URL(page.url()).pathname, log, texts: await dumpTexts(page) }));
       console.log(r.id, tag, "ok", log.join(" "));

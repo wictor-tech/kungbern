@@ -132,6 +132,10 @@
   "3": [
    "ASD123",
    "Valid until 2027-03-25"
+  ],
+  "2": [
+   "Plate",
+   "User…"
   ]
  },
  "andra-bokningsinstallningar": {
@@ -207,6 +211,9 @@
   "6": [
    "Add gate",
    "Save gates"
+  ],
+  "4": [
+   "No control unit has registered"
   ]
  },
  "andra-platsstrukturen": {
@@ -237,6 +244,9 @@
   "5": [
    "Date",
    "License plate number"
+  ],
+  "6": [
+   "Per page"
   ]
  },
  "hantera-avvikelserapporter": {
@@ -292,6 +302,12 @@
   "6": [
    "Gate 1",
    "Gate 3"
+  ],
+  "rect1": [
+   20,
+   80,
+   116,
+   34
   ]
  },
  "se-veckan": {
@@ -303,7 +319,7 @@
    "Sun 11/10"
   ],
   "3": [
-   "23:51 · Testförare (hjälpdemo)"
+   "Testförare (hjälpdemo)"
   ],
   "4": [
    "Closed"
@@ -372,6 +388,12 @@
   "2": [
    "ID scan",
    "Sound"
+  ]
+ },
+ "lagga-upp-en-bild": {
+  "3": [
+   "Preview",
+   "05_handtruck.svg"
   ]
  }
 }
