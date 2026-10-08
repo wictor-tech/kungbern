@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { generateInsights } from "../../analysis/insights.ts";
 import type { SiteModel } from "../../engine/model.ts";
 import { pairedDelta } from "../../engine/montecarlo.ts";
@@ -39,12 +39,22 @@ export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
   const [auto, setAuto] = useState(false);
   const files = useMemo(() => ({ without: withoutBooking(base, c), with: withBooking(base, c) }), [base, c]);
 
+  const reqId = useRef(0);
+  const [ranFor, setRanFor] = useState<string | null>(null);
+  const sig = useMemo(() => JSON.stringify([files, model.siteId, model.dayType]), [files, model]);
   const run = () => {
+    const id = ++reqId.current;
+    const at = sig;
     setBusy(true);
     sim
       .call<{ without: RunOutput; with: RunOutput }>("compare", model, files.without, files.with)
-      .then(setRes)
-      .finally(() => setBusy(false));
+      .then((r) => {
+        // Bara det senaste anropet får skriva – annars kan ett äldre svar skriva över ett nyare.
+        if (id !== reqId.current) return;
+        setRes(r);
+        setRanFor(at);
+      })
+      .finally(() => id === reqId.current && setBusy(false));
   };
   useEffect(() => {
     if (!auto) return;
@@ -72,6 +82,7 @@ export function ComparePanel({ c, ds, model, base, t_, lang }: Props) {
     <section className="card">
       <div className="card-head">
         <h2>{t_("compareTitle")}</h2>
+        {res && ranFor !== sig && <span className="tag assume" role="status">{t_("stale")}</span>}
         <span className="muted small">{lang === "sv" ? `Samma volym (× ${fmtNum(lang, c.volumeFactor, 2)}), samma dörrar och samma slumpströmmar – skillnaden beror på bokningen.` : `Same volume, doors and random streams – the difference is due to booking.`}</span>
         <span className="spacer" />
         <label className="small"><input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> {lang === "sv" ? "uppdatera automatiskt" : "auto-update"}</label>

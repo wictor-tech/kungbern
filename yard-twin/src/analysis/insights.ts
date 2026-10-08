@@ -1,8 +1,14 @@
 /**
  * Automatiska insikter i klartext. Varje mening räknas fram ur simuleringsdata – inga färdiga påståenden.
  * En insikt vars underliggande tal inte är ändligt (NaN/Infinity) skickas aldrig ut.
+ *
+ * Med Monte Carlo (`mc`, fler än en repetition) bygger nyckeltalen på medianen över repetitionerna
+ * med p10–p90 som intervall – en enskild körning är bara ett utfall av många. Tidsserie och
+ * dörrintervall (köfönster, dörrbeläggning per timme) finns bara för den detaljerade körningen och
+ * beskrivs därför uttryckligen som "exempeldagen". Utan `mc` sägs allt gälla "i den här körningen".
  */
 import { pairedDelta, type MonteCarloResult } from "../engine/montecarlo.ts";
+import type { Interval } from "../engine/stats.ts";
 import type { RunResult, SeriesPoint, DoorInterval } from "../engine/types.ts";
 import type { Lang } from "./common.ts";
 import { fmtClock, fmtMin, fmtMinRange, fmtMoney, fmtMoneyRange, fmtNum, fmtPct } from "./i18n-format.ts";
@@ -33,6 +39,8 @@ export interface InsightInput {
   doorCount?: number;
   /** Stängningstid (min sedan midnatt) – ger "X min före stängning". */
   closeAt?: number;
+  /** Öppningstid (min sedan midnatt). Dörrbeläggning per timme bedöms bara inom [openAt, closeAt). */
+  openAt?: number;
 }
 
 export function generateInsights(input: InsightInput): Insight[] {
@@ -43,19 +51,43 @@ export function generateInsights(input: InsightInput): Insight[] {
   };
   const L = (sv: string, en: string) => (lang === "sv" ? sv : en);
 
-  // 1. Köfönster
+  const mc = input.mc;
+  // "5–18, 80 % intervall" (p10–p90) för ett Monte Carlo-intervall.
+  const rng = (i: Interval, f: (x: number) => string) => `${f(i.p10)}–${f(i.p90)}, ${INTERVAL_LABEL[lang]}`;
+  const cnt = (x: number) => fmtNum(x, lang);
+  const mins = (x: number) => fmtMin(x, lang);
+
+  // 1. Köfönster (tidsserien finns bara för exempeldagen) och maxkö
   const w = peakWindow(input.result.series);
-  if (w) {
+  if (mc) {
+    const q = mc.summary.maxQueue;
+    const reps = mc.reps;
+    if (w || q.median > 0) {
+      const winSv = w ? `På exempeldagen uppstår köerna ${fmtClock(w.from)}–${fmtClock(w.to)}. ` : "";
+      const winEn = w ? `On the example day queues build up ${fmtClock(w.from)}–${fmtClock(w.to)}. ` : "";
+      push(
+        "queue-peak",
+        q.median >= 3 ? "warn" : "info",
+        L(
+          `${winSv}En typisk dag väntar som mest ${cnt(q.median)} lastbilar samtidigt (${rng(q, cnt)}, ${reps} simulerade dagar).`,
+          `${winEn}On a typical day at most ${cnt(q.median)} trucks wait at once (${rng(q, cnt)}, ${reps} simulated days).`,
+        ),
+        q.median, q.p10, q.p90, ...(w ? [w.from, w.to] : []),
+      );
+    } else if (input.result.series.length > 0) {
+      push("queue-none", "good", L("En typisk dag uppstår ingen kö.", "On a typical day no queue builds up."));
+    }
+  } else if (w) {
     push(
       "queue-peak",
       w.max >= 3 ? "warn" : "info",
-      L(`Köerna uppstår ${fmtClock(w.from)}–${fmtClock(w.to)} (som mest ${w.max} lastbilar väntar samtidigt).`, `Queues build up ${fmtClock(w.from)}–${fmtClock(w.to)} (at most ${w.max} trucks waiting at once).`),
+      L(`I den här körningen uppstår köerna ${fmtClock(w.from)}–${fmtClock(w.to)} (som mest ${w.max} lastbilar väntar samtidigt).`, `In this run queues build up ${fmtClock(w.from)}–${fmtClock(w.to)} (at most ${w.max} trucks waiting at once).`),
       w.from,
       w.to,
       w.max,
     );
   } else if (input.result.series.length > 0) {
-    push("queue-none", "good", L("Ingen kö uppstår under dagen.", "No queue builds up during the day."));
+    push("queue-none", "good", L("Ingen kö uppstår i den här körningen.", "No queue builds up in this run."));
   }
 
   // 2. Jämförelse (parvisa deltan)
@@ -104,21 +136,23 @@ export function generateInsights(input: InsightInput): Insight[] {
     push(
       "detention",
       "warn",
-      L(`${m.overDetention} lastbilar överskrider fri tid; detentionkostnad ${fmtMoney(m.detentionCost, input.currency, "sv")}.`, `${m.overDetention} trucks exceed free time; detention cost ${fmtMoney(m.detentionCost, input.currency, "en")}.`),
+      L(`I den här körningen överskrider ${m.overDetention} lastbilar fri tid; detentionkostnad ${fmtMoney(m.detentionCost, input.currency, "sv")}.`, `In this run ${m.overDetention} trucks exceed free time; detention cost ${fmtMoney(m.detentionCost, input.currency, "en")}.`),
       m.overDetention,
       m.detentionCost,
     );
   }
 
-  // 4. Dörrbeläggning per timme
+  // 4. Dörrbeläggning per timme (exempeldagen), bara inom öppettiden
   const doors = input.doorCount ?? new Set(input.result.doorIntervals.map((d) => d.doorId)).size;
-  const hours = hourlyDoorUtilization(input.result.doorIntervals, doors);
+  const hours = hourlyDoorUtilization(input.result.doorIntervals, doors, { from: input.openAt, to: input.closeAt });
   if (hours.length > 0) {
     const peak = hours.reduce((a, b) => (b.util > a.util ? b : a));
+    const daySv = mc ? "På exempeldagen är dörrarna" : "I den här körningen är dörrarna";
+    const dayEn = mc ? "On the example day doors are" : "In this run doors are";
     push(
       "door-peak",
       peak.util >= 0.9 ? "warn" : "info",
-      L(`Dörrarna är mest belagda ${hh(peak.hour)}–${hh(peak.hour + 1)} (${fmtPct(peak.util, "sv")}).`, `Doors are busiest ${hh(peak.hour)}–${hh(peak.hour + 1)} (${fmtPct(peak.util, "en")}).`),
+      L(`${daySv} mest belagda ${span(peak)} (${fmtPct(peak.util, "sv")}).`, `${dayEn} busiest ${span(peak)} (${fmtPct(peak.util, "en")}).`),
       peak.util,
     );
     const idle = hours.filter((h) => h.util < IDLE_DOOR_UTILIZATION);
@@ -128,8 +162,8 @@ export function generateInsights(input: InsightInput): Insight[] {
         "door-idle",
         "info",
         L(
-          `${idle.length} timmar har under ${fmtPct(IDLE_DOOR_UTILIZATION, "sv")} dörrbeläggning, lägst ${hh(low.hour)}–${hh(low.hour + 1)} (${fmtPct(low.util, "sv")}) – utrymme att flytta ankomster dit.`,
-          `${idle.length} hours have below ${fmtPct(IDLE_DOOR_UTILIZATION, "en")} door utilization, lowest ${hh(low.hour)}–${hh(low.hour + 1)} (${fmtPct(low.util, "en")}) – room to shift arrivals there.`,
+          `${mc ? "På exempeldagen har" : "I den här körningen har"} ${idle.length} timmar inom öppettiden under ${fmtPct(IDLE_DOOR_UTILIZATION, "sv")} dörrbeläggning, lägst ${span(low)} (${fmtPct(low.util, "sv")}) – utrymme att flytta ankomster dit.`,
+          `${mc ? "On the example day" : "In this run"} ${idle.length} opening hours have below ${fmtPct(IDLE_DOOR_UTILIZATION, "en")} door utilization, lowest ${span(low)} (${fmtPct(low.util, "en")}) – room to shift arrivals there.`,
         ),
         low.util,
       );
@@ -137,12 +171,52 @@ export function generateInsights(input: InsightInput): Insight[] {
   }
 
   // 5. Tid till tom gård vs stängning
-  if (m.unloaded > 0) {
+  if (mc) {
+    const ot = mc.summary.overtimeMin;
+    const tte = mc.summary.timeToEmpty;
+    const clk = (x: number) => fmtClock(x);
+    if (mc.summary.unloaded.median > 0) {
+      if (ot.median > 0) {
+        push(
+          "overtime",
+          "warn",
+          L(
+            `En typisk dag blir sista lossningen klar ${mins(ot.median)} efter stängning (${rng(ot, mins)}); gården är tom ${clk(tte.median)} (${rng(tte, clk)}).`,
+            `On a typical day the last unload finishes ${mins(ot.median)} after closing (${rng(ot, mins)}); the yard is empty at ${clk(tte.median)} (${rng(tte, clk)}).`,
+          ),
+          ot.median, ot.p10, ot.p90, tte.median, tte.p10, tte.p90,
+        );
+      } else {
+        const marginSv = input.closeAt !== undefined && input.closeAt - tte.median >= 0 ? `, ${fmtMin(input.closeAt - tte.median, "sv")} före stängning` : "";
+        const marginEn = input.closeAt !== undefined && input.closeAt - tte.median >= 0 ? `, ${fmtMin(input.closeAt - tte.median, "en")} before closing` : "";
+        push(
+          input.closeAt !== undefined ? "empty-before-close" : "empty",
+          "good",
+          L(
+            `En typisk dag är all lossning klar före stängning; gården är tom ${clk(tte.median)} (${rng(tte, clk)})${marginSv}.`,
+            `On a typical day all unloading is done before closing; the yard is empty at ${clk(tte.median)} (${rng(tte, clk)})${marginEn}.`,
+          ),
+          tte.median, tte.p10, tte.p90,
+        );
+        if (ot.p90 > 0) {
+          push(
+            "overtime-risk",
+            "info",
+            L(
+              `Minst 10 % av de simulerade dagarna blir det ändå övertid (upp till ${mins(ot.p90)} vid p90).`,
+              `At least 10% of simulated days still run into overtime (up to ${mins(ot.p90)} at p90).`,
+            ),
+            ot.p90,
+          );
+        }
+      }
+    }
+  } else if (m.unloaded > 0) {
     if (m.overtimeMin > 0) {
       push(
         "overtime",
         "warn",
-        L(`Sista lossningen blir klar ${fmtMin(m.overtimeMin, "sv")} efter stängning; gården är tom ${fmtClock(m.timeToEmpty)}.`, `The last unload finishes ${fmtMin(m.overtimeMin, "en")} after closing; the yard is empty at ${fmtClock(m.timeToEmpty)}.`),
+        L(`I den här körningen blir sista lossningen klar ${fmtMin(m.overtimeMin, "sv")} efter stängning; gården är tom ${fmtClock(m.timeToEmpty)}.`, `In this run the last unload finishes ${fmtMin(m.overtimeMin, "en")} after closing; the yard is empty at ${fmtClock(m.timeToEmpty)}.`),
         m.overtimeMin,
         m.timeToEmpty,
       );
@@ -152,34 +226,80 @@ export function generateInsights(input: InsightInput): Insight[] {
         "empty-before-close",
         "good",
         margin >= 0
-          ? L(`Gården är tom ${fmtClock(m.timeToEmpty)}, ${fmtMin(margin, "sv")} före stängning.`, `The yard is empty at ${fmtClock(m.timeToEmpty)}, ${fmtMin(margin, "en")} before closing.`)
-          : L(`All lossning klar före stängning; gården är tom ${fmtClock(m.timeToEmpty)}.`, `All unloading done before closing; the yard is empty at ${fmtClock(m.timeToEmpty)}.`),
+          ? L(`I den här körningen är gården tom ${fmtClock(m.timeToEmpty)}, ${fmtMin(margin, "sv")} före stängning.`, `In this run the yard is empty at ${fmtClock(m.timeToEmpty)}, ${fmtMin(margin, "en")} before closing.`)
+          : L(`I den här körningen är all lossning klar före stängning; gården är tom ${fmtClock(m.timeToEmpty)}.`, `In this run all unloading is done before closing; the yard is empty at ${fmtClock(m.timeToEmpty)}.`),
         m.timeToEmpty,
         margin,
       );
     } else {
-      push("empty", "good", L(`All lossning klar före stängning; gården är tom ${fmtClock(m.timeToEmpty)}.`, `All unloading done before closing; the yard is empty at ${fmtClock(m.timeToEmpty)}.`), m.timeToEmpty);
+      push("empty", "good", L(`I den här körningen är all lossning klar före stängning; gården är tom ${fmtClock(m.timeToEmpty)}.`, `In this run all unloading is done before closing; the yard is empty at ${fmtClock(m.timeToEmpty)}.`), m.timeToEmpty);
     }
   }
 
   // 6. Overflow och olossade
-  if (m.overflowTrucks > 0) {
-    push(
-      "overflow",
-      "warn",
-      L(`${m.overflowTrucks} lastbilar får vänta utanför gården (uppställningen full; som mest ${m.maxParking} uppställda).`, `${m.overflowTrucks} trucks have to wait outside the site (parking full; at most ${m.maxParking} parked).`),
-      m.overflowTrucks,
-      m.maxParking,
-    );
-  }
-  if (m.notUnloaded > 0) {
-    push("not-unloaded", "warn", L(`${m.notUnloaded} lastbilar hinner inte lossas samma dag.`, `${m.notUnloaded} trucks are not unloaded the same day.`), m.notUnloaded);
+  if (mc) {
+    const of = mc.summary.overflowTrucks;
+    const mp = mc.summary.maxParking;
+    const nu = mc.summary.notUnloaded;
+    if (of.median > 0) {
+      push(
+        "overflow",
+        "warn",
+        L(
+          `En typisk dag får ${cnt(of.median)} lastbilar vänta utanför gården (${rng(of, cnt)}); uppställningen är full med som mest ${cnt(mp.median)} uppställda.`,
+          `On a typical day ${cnt(of.median)} trucks have to wait outside the site (${rng(of, cnt)}); parking is full with at most ${cnt(mp.median)} parked.`,
+        ),
+        of.median, of.p10, of.p90, mp.median,
+      );
+    } else if (of.p90 > 0) {
+      push(
+        "overflow-risk",
+        "info",
+        L(
+          `Uppställningen räcker en typisk dag, men minst 10 % av de simulerade dagarna får upp till ${cnt(of.p90)} lastbilar vänta utanför gården (p90).`,
+          `Parking suffices on a typical day, but on at least 10% of simulated days up to ${cnt(of.p90)} trucks wait outside the site (p90).`,
+        ),
+        of.p90,
+      );
+    }
+    if (nu.median > 0) {
+      push(
+        "not-unloaded",
+        "warn",
+        L(`En typisk dag hinner ${cnt(nu.median)} lastbilar inte lossas samma dag (${rng(nu, cnt)}).`, `On a typical day ${cnt(nu.median)} trucks are not unloaded the same day (${rng(nu, cnt)}).`),
+        nu.median, nu.p10, nu.p90,
+      );
+    } else if (nu.p90 > 0) {
+      push(
+        "not-unloaded-risk",
+        "info",
+        L(
+          `En typisk dag lossas alla, men minst 10 % av de simulerade dagarna hinner upp till ${cnt(nu.p90)} lastbilar inte lossas (p90).`,
+          `On a typical day all trucks are unloaded, but on at least 10% of simulated days up to ${cnt(nu.p90)} are not (p90).`,
+        ),
+        nu.p90,
+      );
+    }
+  } else {
+    if (m.overflowTrucks > 0) {
+      push(
+        "overflow",
+        "warn",
+        L(`I den här körningen får ${m.overflowTrucks} lastbilar vänta utanför gården (uppställningen full; som mest ${m.maxParking} uppställda).`, `In this run ${m.overflowTrucks} trucks have to wait outside the site (parking full; at most ${m.maxParking} parked).`),
+        m.overflowTrucks,
+        m.maxParking,
+      );
+    }
+    if (m.notUnloaded > 0) {
+      push("not-unloaded", "warn", L(`I den här körningen hinner ${m.notUnloaded} lastbilar inte lossas samma dag.`, `In this run ${m.notUnloaded} trucks are not unloaded the same day.`), m.notUnloaded);
+    }
   }
   return out;
 }
 
-function hh(h: number): string {
-  return fmtClock(h * 60);
+/** "08:00–09:00" för en (eventuellt av öppettiden avkortad) timme. */
+function span(h: HourUtil): string {
+  return `${fmtClock(h.from)}–${fmtClock(h.to)}`;
 }
 
 export interface PeakWindow {
@@ -210,16 +330,40 @@ export function peakWindow(series: readonly SeriesPoint[]): PeakWindow | null {
   return { from, to, max };
 }
 
-/** Dörrbeläggning per klocktimme mellan första och sista lossning. */
-export function hourlyDoorUtilization(intervals: readonly DoorInterval[], doors: number): { hour: number; util: number }[] {
+export interface HourUtil {
+  /** Klocktimme (0–23, kan vara ≥ 24 vid övertid). */
+  hour: number;
+  /** Bedömt intervall (min sedan midnatt): klocktimmen avkortad till öppettiden. */
+  from: number;
+  to: number;
+  util: number;
+}
+
+/**
+ * Dörrbeläggning per klocktimme. Utan fönster: hela timmar mellan första och sista lossning. Med `window.from`
+ * och/eller `window.to` (öppettid) bedöms bara tid inom [from, to): timmar helt utanför utelämnas och
+ * delvis öppna timmar avkortas (beläggning räknas på den öppna delen). Då ingår även öppettimmar
+ * utan lossning – de är verkligt ledig kapacitet.
+ */
+export function hourlyDoorUtilization(
+  intervals: readonly DoorInterval[],
+  doors: number,
+  window: { from?: number; to?: number } = {},
+): HourUtil[] {
   if (intervals.length === 0 || !(doors > 0)) return [];
-  const h0 = Math.floor(Math.min(...intervals.map((i) => i.start)) / 60);
-  const h1 = Math.ceil(Math.max(...intervals.map((i) => i.end)) / 60);
-  const out: { hour: number; util: number }[] = [];
+  const lo = window.from ?? Math.floor(Math.min(...intervals.map((i) => i.start)) / 60) * 60;
+  const hi = window.to ?? Math.ceil(Math.max(...intervals.map((i) => i.end)) / 60) * 60;
+  if (!(hi > lo)) return [];
+  const h0 = Math.floor(lo / 60);
+  const h1 = Math.ceil(hi / 60);
+  const out: HourUtil[] = [];
   for (let h = h0; h < h1; h++) {
+    const from = Math.max(h * 60, lo);
+    const to = Math.min((h + 1) * 60, hi);
+    if (!(to > from)) continue;
     let busy = 0;
-    for (const iv of intervals) busy += Math.max(0, Math.min(iv.end, (h + 1) * 60) - Math.max(iv.start, h * 60));
-    out.push({ hour: h, util: busy / (doors * 60) });
+    for (const iv of intervals) busy += Math.max(0, Math.min(iv.end, to) - Math.max(iv.start, from));
+    out.push({ hour: h, from, to, util: busy / (doors * (to - from)) });
   }
   return out;
 }

@@ -40,6 +40,8 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
   const [cap, setCap] = useState<CapacityResult | null>(null);
   const [slot, setSlot] = useState<SlotDesignResult | null>(null);
   const [roi, setRoi] = useState<RoiResult | null>(null);
+  // Nyckel för vilket scenario resultaten räknades på – annars visas inaktuella siffror som aktuella.
+  const [ranFor, setRanFor] = useState<Record<string, string>>({});
 
   const s = useMemo<ScenarioFile>(() => {
     const base = scenario.arrivals.pattern === "recorded" ? { ...scenario, arrivals: { pattern: "poisson" as const, volumeFactor: scenario.arrivals.volumeFactor } } : scenario;
@@ -49,11 +51,15 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
   const L = (sv: string, en: string) => (lang === "sv" ? sv : en);
   const min = (v: number) => `${fmtNum(lang, v)} min`;
 
+  const sig = JSON.stringify([s, targetMax, c.slotLengthMin, c.capacityPerHour, c.adherence, c.detentionCostPerHour, c.staffCostPerHour, c.costSource, opDays, carrierFee]);
+  const Stale = ({ k }: { k: string }) => (ranFor[k] && ranFor[k] !== sig ? <span className="tag assume" role="status">{t_("stale")}</span> : null);
   const go = async <R,>(key: string, fn: string, set: (r: R) => void, ...args: unknown[]) => {
     setBusy(key);
     setErr(null);
+    const at = sig;
     try {
       set(await sim.call<R>(fn, ...args));
+      setRanFor((p) => ({ ...p, [key]: at }));
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -85,7 +91,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
       <div className="analysis-grid">
         {/* Dörrar */}
         <div data-analysis="doors">
-          <div className="card-head"><h3>{t_("doorsNeeded")}</h3><span className="spacer" /><Btn k="doors" onClick={() => go("doors", "doors", setDoors, model, s, target, Math.max(c.doors * 2, c.doors + 6), REPS)} /></div>
+          <div className="card-head"><h3>{t_("doorsNeeded")}</h3><Stale k="doors" /><span className="spacer" /><Btn k="doors" onClick={() => go("doors", "doors", setDoors, model, s, target, Math.max(c.doors * 2, c.doors + 6), REPS)} /></div>
           {doors && (
             <>
               <p className="small" style={{ marginTop: 0 }}>
@@ -99,7 +105,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
                       <td>{st.doors} {st.meetsTarget ? "✓" : ""}</td>
                       <td className="num">{min(st.summary.p90Wait.median)}</td>
                       <td className="num">{min(st.summary.p90Wait.p10)}–{min(st.summary.p90Wait.p90)}</td>
-                      <td className="num">{st.marginalGain === null ? "" : `−${min(st.marginalGain)}`}</td>
+                      <td className="num">{st.marginalGain === null ? "" : st.marginalGain >= 0 ? `−${min(st.marginalGain)}` : `+${min(-st.marginalGain)}`}</td>
                       <td className="num">{fmtMoney(lang, st.detentionCost.median, c.currency)}</td>
                     </tr>
                   ))}
@@ -111,7 +117,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
 
         {/* Flaskhals */}
         <div data-analysis="bottleneck">
-          <div className="card-head"><h3>{t_("bottleneck")}</h3><span className="spacer" /><Btn k="bn" onClick={() => go("bn", "bottleneck", setBn, model, s, 40)} /></div>
+          <div className="card-head"><h3>{t_("bottleneck")}</h3><Stale k="bn" /><span className="spacer" /><Btn k="bn" onClick={() => go("bn", "bottleneck", setBn, model, s, 40)} /></div>
           {bn && (
             <>
               <p className="small" style={{ marginTop: 0 }}>{bn.explanation[lang]}</p>
@@ -138,7 +144,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
 
         {/* Kapacitet */}
         <div data-analysis="capacity">
-          <div className="card-head"><h3>{t_("capacity")}</h3><span className="spacer" /><Btn k="cap" onClick={() => go("cap", "capacity", setCap, model, s, target, REPS)} /></div>
+          <div className="card-head"><h3>{t_("capacity")}</h3><Stale k="cap" /><span className="spacer" /><Btn k="cap" onClick={() => go("cap", "capacity", setCap, model, s, target, REPS)} /></div>
           {cap && (
             <>
               <p className="small" style={{ marginTop: 0 }}>
@@ -157,7 +163,7 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
 
         {/* Slotdesign */}
         <div data-analysis="slots">
-          <div className="card-head"><h3>{t_("slotDesign")}</h3><span className="spacer" /><Btn k="slot" onClick={() => go("slot", "slotDesign", setSlot, model, withBooking(s, c), 40)} /></div>
+          <div className="card-head"><h3>{t_("slotDesign")}</h3><Stale k="slot" /><span className="spacer" /><Btn k="slot" onClick={() => go("slot", "slotDesign", setSlot, model, withBooking(s, c), 40)} /></div>
           {slot && (
             <>
               <p className="small" style={{ marginTop: 0 }}>{slot.reason[lang]}</p>
@@ -182,13 +188,13 @@ export function AnalysisPanel({ c, model, scenario, t_, lang }: Props) {
 
         {/* Känslighet */}
         <div data-analysis="tornado">
-          <div className="card-head"><h3>{t_("tornado")}</h3><span className="spacer" /><Btn k="tor" onClick={() => go("tor", "tornado", setTor, model, s, REPS)} /></div>
+          <div className="card-head"><h3>{t_("tornado")}</h3><Stale k="tor" /><span className="spacer" /><Btn k="tor" onClick={() => go("tor", "tornado", setTor, model, s, REPS)} /></div>
           {tor && <TornadoChart tor={tor} lang={lang} />}
         </div>
 
         {/* ROI */}
         <div data-analysis="roi">
-          <div className="card-head"><h3>{t_("roi")}</h3></div>
+          <div className="card-head"><h3>{t_("roi")}</h3><Stale k="roi" /></div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "end" }}>
             <div className="field" style={{ margin: 0 }}>
               <label htmlFor="opdays">{t_("operatingDays")}</label>

@@ -89,7 +89,12 @@ export interface DerivedVisit {
 export interface QualityRules {
   minUnloadMin: number;
   maxUnloadMin: number;
-  /** Två besök med samma pseudonyma visitId eller samma (carrier, ankomst inom N min, dörr) = dubblett. */
+  /**
+   * Dubblettfönster (min). Samma pseudonyma visitId = dubblett. Annars krävs samma (carrier, dörr),
+   * ankomst inom N min OCH att lossningen visar att det är samma bil (överlappande/identiska
+   * lossningsintervall, eller en post utan lossningstider vars ankomst ligger inom N min från den
+   * andras lossningsstart). Se findDuplicates i derive.ts.
+   */
   duplicateWindowMin: number;
   /** Andel av tidsstämplarna på en dag som är exakt :00/:15/:30/:45 med sekund 0 – över gränsen flaggas dagen. */
   roundTimeShareThreshold: number;

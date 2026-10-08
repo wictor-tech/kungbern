@@ -87,11 +87,24 @@ export function withSlot(sc: CompiledScenario, slot: SlotDesign): CompiledScenar
   return { ...sc, arrivals: { pattern: "booked", volumeFactor: sc.arrivals.volumeFactor, slot } };
 }
 
-/** Förväntat antal ankomster per dag (före no-show för bokat; inspelade = antal inspelade × faktor). */
+/**
+ * Förväntat antal ANKOMSTER per dag, dvs. EFTER no-show: timprofilen är kalibrerad på lastbilar som
+ * faktiskt kom (inspelade = antal inspelade × faktor). Antal bokningar (inkl. no-show) ger
+ * `expectedBookingDemand`.
+ */
 export function expectedDailyTrucks(model: SiteModel, sc: CompiledScenario, recorded?: readonly RecordedTruck[]): number {
   if (sc.arrivals.pattern === "recorded") return (recorded?.length ?? 0) * sc.arrivals.volumeFactor;
   const total = model.hourlyArrivals.reduce((a, b) => a + b, 0);
   return total * sc.arrivals.volumeFactor;
+}
+
+/**
+ * Förväntat antal BOKNINGAR per dag, inkl. de som sedan blir no-show: ankomster / (1 − no-show-andel).
+ * Samma efterfrågan som motorn drar bokningar ur i bokat läge (för UI: "så många slots behövs").
+ */
+export function expectedBookingDemand(model: SiteModel, volumeFactor: number): number {
+  const arrivals = model.hourlyArrivals.reduce((a, b) => a + b, 0) * volumeFactor;
+  return arrivals / Math.max(1e-9, 1 - model.noShowRate);
 }
 
 export interface RepOutput {

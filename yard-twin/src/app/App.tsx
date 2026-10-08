@@ -84,7 +84,8 @@ export function App() {
   const reqRef = useRef(0);
   useEffect(() => {
     if (!compiled) {
-      setError("Ogiltigt scenario");
+      setError(t_("invalidScenario"));
+      setOut(null);
       return;
     }
     const id = ++reqRef.current;
@@ -97,11 +98,15 @@ export function App() {
           setOut(r);
           setError(null);
         })
-        .catch((e: Error) => id === reqRef.current && setError(e.message))
+        .catch((e: Error) => {
+          if (id !== reqRef.current) return;
+          setError(e.message);
+          setOut(null);
+        })
         .finally(() => id === reqRef.current && setBusy(false));
     }, 120);
     return () => clearTimeout(h);
-  }, [scenario, model, compiled, day]);
+  }, [scenario, model, compiled, day, t_]);
 
   const openFrom = parseClock(c.open);
   const openTo = parseClock(c.close);
@@ -260,9 +265,9 @@ export function App() {
               )}
             </section>
             <div style={{ display: "grid", gap: 16, alignContent: "start" }}>
-              {out && <InsightsCard out={out} t_={t_} lang={lang} currency={c.currency} doors={doors.length} closeAt={openTo} />}
+              {out && <InsightsCard out={out} t_={t_} lang={lang} currency={c.currency} doors={doors.length} closeAt={openTo} openAt={openFrom} />}
               <CalibrationCard cal={ds.calibration} t_={t_} lang={lang} />
-              <LimitationsCard t_={t_} lang={lang} model={model} calibrationDays={ds.calibration?.calibrationDays} />
+              <LimitationsCard t_={t_} lang={lang} model={model} calibrationDays={ds.quality?.distinctDays} />
             </div>
           </div>
 
@@ -271,7 +276,7 @@ export function App() {
           <p className="small muted">{t_("demoNote")}</p>
         </main>
       </div>
-      {out && compiled && <Report c={c} ds={ds} out={out} scenario={scenario} t_={t_} lang={lang} />}
+      {out && compiled && <Report c={c} ds={ds} out={out} scenario={scenario} t_={t_} lang={lang} doors={doors.length} openFrom={openFrom} openTo={openTo} />}
     </>
   );
 }

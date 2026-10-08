@@ -109,6 +109,34 @@ describe("deriveVisits", () => {
     expect(dup.sort()).toEqual(["a@361", "b@365"]);
     expect(ds.map((d) => d.visit.visitId)).toEqual(["a", "a", "b", "c", "d"]);
   });
+  it("dubbletter: två verkliga bilar efter varandra vid samma dörr (ej överlappande lossning) är INTE dubbletter", () => {
+    const ds = deriveVisits([
+      mk("x1", { arr: "06:00", us: "06:05", ue: "06:35", dep: "06:45" }),
+      mk("x2", { arr: "06:06", us: "06:36", ue: "07:10", dep: "07:20" }), // köade bakom x1
+    ]);
+    expect(ds.filter((d) => d.issues.includes("duplicate"))).toEqual([]);
+    expect(ds.every((d) => d.included)).toBe(true);
+  });
+  it("dubbletter: dubbel LPR-läsning (identisk eller överlappande lossning) ÄR dubblett", () => {
+    const ds = deriveVisits([
+      mk("y1", { arr: "06:00", us: "06:10", ue: "06:40", dep: "06:50" }),
+      mk("y2", { arr: "06:02", us: "06:10", ue: "06:40", dep: "06:50" }), // identisk lossning
+      mk("z1", { arr: "08:00", us: "08:10", ue: "08:40" }),
+      mk("z2", { arr: "08:03", us: "08:12", ue: "08:41" }), // överlappar
+    ]);
+    const dup = ds.filter((d) => d.issues.includes("duplicate")).map((d) => d.visit.visitId);
+    expect(dup.sort()).toEqual(["y2", "z2"]);
+  });
+  it("dubbletter: post utan lossningstider nära en annans lossningsstart är dubblett; posten med mätningar behålls", () => {
+    const ds = deriveVisits([
+      mk("w1", { arr: "06:00" }, { status: "in_progress" }), // bara LPR-läsning
+      mk("w2", { arr: "06:03", us: "06:08", ue: "06:40" }),
+      mk("q1", { arr: "09:00", us: "09:30", ue: "10:00" }),
+      mk("q2", { arr: "09:05" }, { status: "in_progress" }), // lossningsstart 25 min bort → egen bil
+    ]);
+    const dup = ds.filter((d) => d.issues.includes("duplicate")).map((d) => d.visit.visitId);
+    expect(dup).toEqual(["w1"]);
+  });
   it("flaggar varje problemtyp", () => {
     const ok = { arr: "06:00", us: "06:10", ue: "06:40", dep: "06:50" };
     const cases: [Visit, string, boolean][] = [
@@ -387,6 +415,43 @@ describe("syntetisk sajt → pipeline", () => {
     // Avvikelser kommer bara från brusinjicerade besök (exkluderade bilar, manuella tider, LPR-bortfall).
     expect(median(sorted)).toBeLessThan(0.5);
     expect(sorted[Math.floor(sorted.length * 0.9)]).toBeLessThan(1.5);
+  });
+
+  it("replay med skuggbilar: exkluderade men ankomna besök upptar dörrar, och biasen minskar", () => {
+    const T = DEMO_SITE_TRUTH;
+    const site = { ...syntheticSiteConfig(T), gateLanes: 999 };
+    const shadows = res.days.flatMap((d) => d.trucks.filter((t) => t.shadow));
+    expect(shadows.length).toBeGreaterThan(0);
+    // Skuggbilar: aldrig dubbletter/avbokade/no-show, och deras orimliga tider saknas (dras i stället).
+    const byId = new Map(res.derived.map((d) => [d.visit.visitId, d]));
+    for (const t of shadows) {
+      const d = byId.get(t.id)!;
+      expect(d.included).toBe(false);
+      expect(d.issues).not.toContain("duplicate");
+      if (d.issues.includes("unload_too_long") || d.issues.includes("missing_unload")) expect(t.unloadMin).toBeNull();
+    }
+    let sumActual = 0;
+    let errNew = 0;
+    let errOld = 0;
+    for (const day of res.days) {
+      const included = res.derived.filter((d) => d.serviceDate === day.date && d.included).length;
+      expect(day.actual.trucks).toBe(included);
+      const run = (recorded: typeof day.trucks) => {
+        const trucks = generateDay(res.profiles.all, { pattern: "recorded", volumeFactor: 1, serviceTimes: "recorded" }, { seed: "shadow", rep: 0, recorded });
+        return simulateDay(trucks, site, { kind: "fcfs", onTimeToleranceMin: 15 }, { currency: "SEK", detentionFreeMin: 120, detentionCostPerHour: 0 }).metrics;
+      };
+      const withShadows = run(day.trucks);
+      // Nyckeltalen räknar bara inkluderade bilar – skuggbilarna syns inte i antalet.
+      expect(withShadows.trucks).toBe(included);
+      const old = run(day.trucks.filter((t) => !t.shadow));
+      sumActual += day.actual.avgWait;
+      errNew += withShadows.avgWait - day.actual.avgWait;
+      errOld += old.avgWait - day.actual.avgWait;
+    }
+    const relNew = errNew / sumActual;
+    const relOld = errOld / sumActual;
+    expect(relOld).toBeLessThan(0); // utan skuggbilar underskattas väntan
+    expect(Math.abs(relNew)).toBeLessThan(Math.abs(relOld));
   });
 
   it("demomodell: k-anonym, ommärkt och utan PII", () => {

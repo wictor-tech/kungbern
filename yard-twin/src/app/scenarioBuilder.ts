@@ -30,7 +30,8 @@ export function modelFor(ds: Dataset, date: string): SiteModel {
 export function defaultControls(ds: Dataset): Controls {
   const day = ds.days[Math.floor(ds.days.length * 0.85)] ?? ds.days[ds.days.length - 1];
   const model = day ? modelFor(ds, day.date) : Object.values(ds.profiles)[0];
-  const daily = model.hourlyArrivals.reduce((a, b) => a + b, 0);
+  // Bokningsbehov = ankomster / (1 − no-show), eftersom även no-shows tar en slot.
+  const daily = model.hourlyArrivals.reduce((a, b) => a + b, 0) / Math.max(0.01, 1 - model.noShowRate);
   const openH = hours(ds.site.open, ds.site.close);
   return {
     mode: "replay",

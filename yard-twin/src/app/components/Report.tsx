@@ -10,19 +10,19 @@ import type { Controls, Dataset } from "../types.ts";
  * Utskriftsvy = PDF-rapport för kundmöte (webbläsarens "Spara som PDF"). Den syns bara vid utskrift.
  * Innehåll: scenario, antaganden med källa, kalibreringsbetyg, resultat med intervall, insikter, begränsningar.
  */
-export function Report({ c, ds, out, scenario, t_, lang }: { c: Controls; ds: Dataset; out: RunOutput; scenario: ScenarioFile; t_: T; lang: Lang }) {
+export function Report({ c, ds, out, scenario, t_, lang, doors, openFrom, openTo }: { c: Controls; ds: Dataset; out: RunOutput; scenario: ScenarioFile; t_: T; lang: Lang; doors: number; openFrom: number; openTo: number }) {
   const s = out.mc.summary;
   const L = (sv: string, en: string) => (lang === "sv" ? sv : en);
   const min = (v: number) => `${fmtNum(lang, v)} min`;
   const cal = ds.calibration;
-  const insights = generateInsights({ result: out.detail, mc: out.mc.reps > 1 ? out.mc : undefined, lang, currency: c.currency });
+  const insights = generateInsights({ result: out.detail, mc: out.mc.reps > 1 ? out.mc : undefined, lang, currency: c.currency, doorCount: doors, closeAt: openTo, openAt: openFrom });
   const rows: [string, string][] = [
     [L("Medelväntan till dörr", "Average wait to door"), `${min(s.avgWait.median)} (${min(s.avgWait.p10)}–${min(s.avgWait.p90)})`],
     [L("P90-väntan", "P90 wait"), `${min(s.p90Wait.median)} (${min(s.p90Wait.p10)}–${min(s.p90Wait.p90)})`],
     [L("Max kö", "Max queue"), `${fmtNum(lang, s.maxQueue.median)} (${fmtNum(lang, s.maxQueue.p10)}–${fmtNum(lang, s.maxQueue.p90)})`],
     [L("Bilar över detention-gräns", "Trucks over detention limit"), `${fmtNum(lang, s.overDetention.median)} (${fmtNum(lang, s.overDetention.p10)}–${fmtNum(lang, s.overDetention.p90)})`],
     [L("Detention-kostnad per dag", "Detention cost per day"), `${fmtMoney(lang, s.detentionCost.median, c.currency)} (${fmtMoney(lang, s.detentionCost.p10, c.currency)}–${fmtMoney(lang, s.detentionCost.p90, c.currency)})`],
-    [L("Dörrbeläggning", "Door utilisation"), `${fmtNum(lang, s.doorUtilization.median * 100)} %`],
+    [L("Dörrbeläggning", "Door utilisation"), `${fmtNum(lang, s.doorUtilization.median * 100)} % (${fmtNum(lang, s.doorUtilization.p10 * 100)}–${fmtNum(lang, s.doorUtilization.p90 * 100)} %)`],
     [L("Gården tom", "Yard empty"), `${formatClock(s.timeToEmpty.median)} (${formatClock(s.timeToEmpty.p10)}–${formatClock(s.timeToEmpty.p90)})`],
   ];
   return (

@@ -6,6 +6,7 @@ import type { SiteModel } from "../engine/model.ts";
 import { runMonteCarlo } from "../engine/montecarlo.ts";
 import type { CompiledScenario } from "../engine/scenario.ts";
 import type { MetricKey } from "../engine/types.ts";
+import { UNLIMITED_GATE_LANES } from "./calibrationSummary.ts";
 import { assertReps, lt, withDoors, withSite, withVolumeFactor, type LocalizedText, type RunOpts } from "./common.ts";
 
 export type TornadoParam = "volumeFactor" | "doors" | "unloadTimeFactor" | "slotAdherence" | "gateLanes" | "detentionFreeMin";
@@ -91,7 +92,10 @@ function variants(model: SiteModel, sc: CompiledScenario, metric: MetricKey): Va
     }
   }
   const g = sc.site.gateLanes;
-  out.push({ param: "gateLanes", label: lt("Grindfiler", "Gate lanes"), low: Math.max(1, g - S.gateLanesDelta), high: g + S.gateLanesDelta, apply: (s, v) => withSite(s, { gateLanes: v }) });
+  // Obegränsad grind (D20: grindtid från data innehåller redan grindkön) – ±1 fil är meningslöst.
+  if (g < UNLIMITED_GATE_LANES) {
+    out.push({ param: "gateLanes", label: lt("Grindfiler", "Gate lanes"), low: Math.max(1, g - S.gateLanesDelta), high: g + S.gateLanesDelta, apply: (s, v) => withSite(s, { gateLanes: v }) });
+  }
   if (COST_METRICS.includes(metric)) {
     const f = sc.cost.detentionFreeMin;
     out.push({

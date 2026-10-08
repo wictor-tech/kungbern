@@ -38,6 +38,8 @@ export interface SlotDesignResult {
   reason: LocalizedText;
   /** Median lossningstid i historiken (inkl. scenariots lossningsfaktor). */
   medianUnloadMin: number;
+  /** Medellossningstid (inkl. lossningsfaktor). Genomströmning = dörrar × 60 / medel – medianen underskattar dörrtiden vid högerskev fördelning. */
+  meanUnloadMin: number;
   expectedDemand: number;
   /** Kombinationer som hoppades över eftersom kapaciteten inte räcker till efterfrågan. */
   skippedInsufficient: number;
@@ -83,12 +85,15 @@ export function suggestSlotDesign(model: SiteModel, scenario: CompiledScenario, 
     grid
       .filter((g) => g.p90Wait.median <= best + SLOT_TIE_TOLERANCE_MIN)
       .sort((a, b) => a.bookableSlots - b.bookableSlots || b.lengthMin - a.lengthMin)[0] ?? null;
-  const medianUnloadMin = median(model.unloadSamples.map((s) => s.unloadMin * scenario.unloadFactor));
+  const unloads = model.unloadSamples.map((s) => s.unloadMin * scenario.unloadFactor);
+  const medianUnloadMin = median(unloads);
+  const meanUnloadMin = unloads.length > 0 ? unloads.reduce((a, b) => a + b, 0) / unloads.length : NaN;
   return {
     grid,
     recommended,
-    reason: reasonText(recommended, medianUnloadMin, scenario.site.doors.length),
+    reason: reasonText(recommended, medianUnloadMin, meanUnloadMin, scenario.site.doors.length),
     medianUnloadMin,
+    meanUnloadMin,
     expectedDemand: demand,
     skippedInsufficient: skipped,
     reps,
@@ -107,21 +112,22 @@ function capacities(range: [number, number] | undefined, avgNeed: number): numbe
   return [...new Set(SLOT_CAPACITY_MULTIPLIERS.map((m) => Math.max(1, Math.ceil(avgNeed * m))))];
 }
 
-function reasonText(rec: SlotGridRow | null, medUnload: number, doors: number): LocalizedText {
+function reasonText(rec: SlotGridRow | null, medUnload: number, meanUnload: number, doors: number): LocalizedText {
   if (!rec) {
     return lt(
       "Ingen slotdesign i rutnätet har tillräcklig kapacitet för efterfrågan – öka kapaciteten per timme eller bokningsfönstret.",
       "No slot design in the grid has enough capacity for demand – increase capacity per hour or the booking window.",
     );
   }
-  const perHour = (doors * 60) / medUnload;
+  // Genomströmning bygger på MEDEL-lossningstiden: dörrarnas totala tid = antal × medel.
+  const perHour = (doors * 60) / meanUnload;
   const lenSv = rec.lengthMin >= medUnload ? "täcker en typisk lossning" : "är kortare än en typisk lossning, så kapaciteten per timme måste hållas nere";
   const lenEn = rec.lengthMin >= medUnload ? "covers a typical unload" : "is shorter than a typical unload, so capacity per hour must be kept down";
   return lt(
-    `Medianlossning ${fmtMin(medUnload, "sv")} ⇒ ${doors} dörrar hinner ca ${fmtNum(perHour, "sv", 1)} lastbilar/timme. ` +
+    `Lossningstid median ${fmtMin(medUnload, "sv")}, medel ${fmtMin(meanUnload, "sv")} ⇒ ${doors} dörrar hinner ca ${fmtNum(perHour, "sv", 1)} lastbilar/timme (räknat på medel). ` +
       `Rekommenderat: ${rec.lengthMin}-minuters slots med ${rec.capacityPerHour} bokningar/timme – slotlängden ${lenSv}. ` +
       `p90-väntan ${fmtMin(rec.p90Wait.median, "sv")}, ${fmtPct(rec.walkInShare.median, "sv")} obokade.`,
-    `Median unload ${fmtMin(medUnload, "en")} ⇒ ${doors} doors can handle about ${fmtNum(perHour, "en", 1)} trucks/hour. ` +
+    `Unload time median ${fmtMin(medUnload, "en")}, mean ${fmtMin(meanUnload, "en")} ⇒ ${doors} doors can handle about ${fmtNum(perHour, "en", 1)} trucks/hour (based on the mean). ` +
       `Recommended: ${rec.lengthMin}-minute slots with ${rec.capacityPerHour} bookings/hour – the slot length ${lenEn}. ` +
       `p90 wait ${fmtMin(rec.p90Wait.median, "en")}, ${fmtPct(rec.walkInShare.median, "en")} unbooked.`,
   );

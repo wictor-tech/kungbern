@@ -5,6 +5,7 @@
 import type { SiteModel } from "../engine/model.ts";
 import type { CompiledScenario } from "../engine/scenario.ts";
 import { median } from "../engine/stats.ts";
+import { UNLIMITED_GATE_LANES } from "./calibrationSummary.ts";
 import { assertReps, lt, simulateReps, withDoors, withSite, type LocalizedText, type RunOpts } from "./common.ts";
 import { fmtMin, fmtPct } from "./i18n-format.ts";
 
@@ -89,6 +90,8 @@ export function analyzeBottleneck(model: SiteModel, scenario: CompiledScenario, 
 function relieve(sc: CompiledScenario, b: Resource): { sc: CompiledScenario; change: LocalizedText } | null {
   switch (b) {
     case "gate": {
+      // Obegränsad grind kan inte avlastas med fler filer.
+      if (sc.site.gateLanes >= UNLIMITED_GATE_LANES) return null;
       const n = sc.site.gateLanes + CASCADE_RELIEF.gateLanes;
       return { sc: withSite(sc, { gateLanes: n }), change: lt(`+${CASCADE_RELIEF.gateLanes} grindfil (${n} totalt)`, `+${CASCADE_RELIEF.gateLanes} gate lane (${n} total)`) };
     }
@@ -134,10 +137,12 @@ export function snapshot(model: SiteModel, sc: CompiledScenario, run: RunOpts): 
   const avgWait = median(avgW);
   const p90Wait = median(p90W);
   const meaningfulWait = avgWait >= T.noBottleneckAvgWaitMin;
-  const gate: ResourceStat = { resource: "gate", utilization: median(gateU), waitShare: median(gateShare), saturated: false };
+  // Obegränsad grind (UNLIMITED_GATE_LANES, beslut D20): beläggningen är meningslös och grinden kan inte vara flaskhals.
+  const gateUnlimited = sc.site.gateLanes >= UNLIMITED_GATE_LANES;
+  const gate: ResourceStat = { resource: "gate", utilization: gateUnlimited ? null : median(gateU), waitShare: median(gateShare), saturated: false };
   const doors: ResourceStat = { resource: "doors", utilization: median(doorU), waitShare: median(doorShare), saturated: false };
   const parking: ResourceStat = { resource: "parking", utilization: parkingFinite ? median(parkU) : null, waitShare: median(overflowShare), saturated: false };
-  for (const r of [gate, doors]) {
+  for (const r of gateUnlimited ? [doors] : [gate, doors]) {
     r.saturated = (r.utilization ?? 0) >= T.saturationUtilization || (meaningfulWait && r.waitShare >= T.dominantWaitShare);
   }
   parking.saturated = parkingFinite && ((parking.utilization ?? 0) >= T.parkingSaturation || parking.waitShare >= T.parkingOverflowShare);
@@ -145,7 +150,7 @@ export function snapshot(model: SiteModel, sc: CompiledScenario, run: RunOpts): 
   // Väntan först: grind eller dörrar beroende på vilken som står för störst del av väntan.
   // Uppställning blir flaskhals bara när väntan är liten men många ändå hamnar utanför gården.
   let bottleneck: Resource | "none" = "none";
-  if (meaningfulWait) bottleneck = gate.waitShare > doors.waitShare ? "gate" : "doors";
+  if (meaningfulWait) bottleneck = !gateUnlimited && gate.waitShare > doors.waitShare ? "gate" : "doors";
   else if (parkingFinite && parking.waitShare >= T.parkingOverflowShare) bottleneck = "parking";
 
   const resources = [gate, doors, parking];
@@ -155,11 +160,11 @@ export function snapshot(model: SiteModel, sc: CompiledScenario, run: RunOpts): 
     bottleneck,
     avgWait,
     p90Wait,
-    explanation: explain(bottleneck, gate, doors, parking, avgWait),
+    explanation: explain(bottleneck, gate, doors, parking, avgWait, gateUnlimited),
   };
 }
 
-function explain(b: Resource | "none", gate: ResourceStat, doors: ResourceStat, parking: ResourceStat, avgWait: number): LocalizedText {
+function explain(b: Resource | "none", gate: ResourceStat, doors: ResourceStat, parking: ResourceStat, avgWait: number, gateUnlimited = false): LocalizedText {
   const pctSv = (x: number | null) => (x === null ? "–" : fmtPct(x, "sv"));
   const pctEn = (x: number | null) => (x === null ? "–" : fmtPct(x, "en"));
   let sv: string, en: string;
@@ -184,6 +189,10 @@ function explain(b: Resource | "none", gate: ResourceStat, doors: ResourceStat, 
   if (b !== "parking" && parking.saturated) {
     sv += ` Dessutom får ${pctSv(parking.waitShare)} av lastbilarna vänta utanför gården.`;
     en += ` In addition, ${pctEn(parking.waitShare)} of trucks have to wait outside the site.`;
+  }
+  if (gateUnlimited) {
+    sv += " Grinden är obegränsad: grindtiden kommer från data och innehåller redan eventuell grindkö, så fler grindfiler prövas inte.";
+    en += " The gate is unlimited: gate time comes from data and already includes any gate queue, so more gate lanes are not tested.";
   }
   return lt(sv, en);
 }

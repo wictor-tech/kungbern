@@ -31,8 +31,8 @@ export function CalibrationCard({ cal, t_, lang }: { cal?: CalibrationSummary; t
       {cal.grade !== "insufficient" && w && (
         <p className="small" style={{ marginTop: 0 }}>
           {lang === "sv"
-            ? `Backtest på ${cal.testDays} senare dagar som modellen inte sett (${cal.testRange[0]}–${cal.testRange[1]}): medelväntan avviker ${fmtNum(lang, w.wmape * 100)} % (wMAPE), systematisk avvikelse ${fmtNum(lang, w.relBias * 100)} %, verkligheten låg inom modellens 10–90 %-intervall ${fmtNum(lang, w.coverage * 100)} % av dagarna.`
-            : `Backtest on ${cal.testDays} later days unseen by the model (${cal.testRange[0]}–${cal.testRange[1]}): average wait error ${fmtNum(lang, w.wmape * 100)} % (wMAPE), bias ${fmtNum(lang, w.relBias * 100)} %, reality inside the model's 10–90 % interval on ${fmtNum(lang, w.coverage * 100)} % of days.`}
+            ? `Backtest med verkliga ankomster på ${cal.testDays} senare dagar som modellen inte sett (${cal.testRange[0]}–${cal.testRange[1]}): medelväntan avviker ${fmtNum(lang, w.wmape * 100)} % (wMAPE), systematisk avvikelse ${fmtNum(lang, w.relBias * 100)} %, verkligheten låg inom modellens 10–90 %-intervall ${fmtNum(lang, w.coverage * 100)} % av dagarna.`
+            : `Backtest with real arrivals on ${cal.testDays} later days unseen by the model (${cal.testRange[0]}–${cal.testRange[1]}): average wait error ${fmtNum(lang, w.wmape * 100)} % (wMAPE), bias ${fmtNum(lang, w.relBias * 100)} %, reality inside the model's 10–90 % interval on ${fmtNum(lang, w.coverage * 100)} % of days.`}
         </p>
       )}
       <ul className="small" style={{ margin: 0, paddingLeft: 18 }}>

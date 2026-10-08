@@ -17,5 +17,17 @@ aldrig har sett, med de verkliga ankomsterna och samplade lossningstider. Simule
 - **Replay-fel** = felet när även de verkliga lossningstiderna används. Det mäter bara kölogiken. Är replay-felet litet
   men det totala stort, kommer felet från fördelningen av lossningstider (t.ex. säsong eller förändrad personalstyrka).
 
-**Demosajten** får i dag betyget **Medel**. wMAPE är 9 %, men modellen underskattar väntan med 6,5 %, och täckningen är
-69,7 %, strax under gränsen för Hög. Det är avsiktligt att det visas öppet.
+**Två backtester, båda visas:**
+1. **Verkliga ankomster** (replay av testdagarna, samplade lossningstider). Det ger betyget.
+2. **Genererade ankomster** (Poisson enligt den kalibrerade timprofilen, skalad till dagens volym). Det är det
+   What if, jämförelsen och ROI bygger på. Över 20 % fel eller 15 % systematiskt fel ger en varning även om betyget är bra.
+
+**Demosajten** (syntetisk) får i dag betyget **Medel ⚠**:
+- **Replay:** wMAPE 7,8 % och systematisk underskattning 4,6 %. Kölogiken ensam har 2,6 % fel.
+- **Täckning:** 66,7 %, under gränsen 70 % för Hög.
+- **Genererade ankomster:** 20 % fel och **överskattning med 8 %**. Det är precis över varningsgränsen.
+
+Förklaringen är logistisk. 85 % av demosajtens bilar är redan bokade, så de verkliga ankomsterna är jämnare än
+slumpmässiga (Poisson) ankomster. "Utan slottbokning" i jämförelsen är därför ett *hypotetiskt* utgångsläge, inte dagens
+verklighet. För en kund som redan bokar mäter ROI värdet av bokningen jämfört med att inte ha den, inte nyttan av mer
+bokning. Det ska sägas i mötet.

@@ -60,7 +60,46 @@ function compareForKeep(a: Visit, b: Visit): number {
   return sa < sb ? -1 : sa > sb ? 1 : 0;
 }
 
-/** Index (i `visits`) för besök som är dubbletter enligt reglerna. Det tidigaste behålls. */
+/** Lossningsintervall [start, slut] i ms; null om besöket saknar lossningstider helt. */
+function unloadInterval(v: Visit): [number, number] | null {
+  const s = ms(v.unloadStart);
+  const e = ms(v.unloadEnd);
+  if (s === null && e === null) return null;
+  return [s ?? e!, e ?? s!];
+}
+
+/**
+ * Är `a` och `b` (samma sajt + transportör + dörr, ankomst inom fönstret) samma fysiska besök?
+ *  - Båda har lossningstider: ja om intervallen är identiska eller överlappar. En dörr lossar en bil
+ *    i taget, så två verkliga bilar vid samma dörr kan inte ha överlappande lossning.
+ *  - Exakt en saknar lossningstider helt: ja om den andras lossningsstart ligger inom fönstret från
+ *    den förstas ankomst (en extra LPR-läsning strax före/efter samma bils lossning).
+ *  - Båda saknar lossningstider: nej – det går inte att skilja dem åt, och att slå ihop riktiga bilar
+ *    ger systematiskt för låg belastning.
+ */
+function sameVisit(a: Visit, b: Visit, windowMin: number): boolean {
+  const ia = unloadInterval(a);
+  const ib = unloadInterval(b);
+  if (ia && ib) {
+    if (ia[0] === ib[0] && ia[1] === ib[1]) return true;
+    return Math.max(ia[0], ib[0]) < Math.min(ia[1], ib[1]);
+  }
+  if (!ia && !ib) return false;
+  const [withUnload, without] = ia ? [a, b] : [b, a];
+  const start = ms(withUnload.unloadStart) ?? ms(withUnload.unloadEnd)!;
+  const arr = ms(arrivalOf(without).iso);
+  return arr !== null && Math.abs(start - arr) / MS_PER_MIN <= windowMin;
+}
+
+/**
+ * Index (i `visits`) för besök som är dubbletter. Regel (beslut, se QualityRules.duplicateWindowMin):
+ *  1) Samma pseudonyma visitId inom tenant+sajt ⇒ dubblett (det tidigaste behålls).
+ *  2) Annars: samma tenant+sajt+carrierKey+doorId, ankomst inom `duplicateWindowMin` OCH lossningen
+ *     visar att det är samma bil (se `sameVisit`). Två verkliga bilar från samma transportör som
+ *     lossar efter varandra vid samma dörr är INTE dubbletter, även om de anlände tätt.
+ *     Det tidigaste behålls – utom när det saknar lossningstider och det senare har dem; då behålls
+ *     posten med mätningar.
+ */
 function findDuplicates(visits: readonly Visit[], rules: QualityRules): Set<number> {
   const dup = new Set<number>();
   const order = visits.map((_, i) => i).sort((i, j) => compareForKeep(visits[i], visits[j]));
@@ -74,19 +113,31 @@ function findDuplicates(visits: readonly Visit[], rules: QualityRules): Set<numb
     else seenId.add(key);
   }
 
-  // 2) Samma transportör + dörr + sajt med ankomst inom fönstret (t.ex. dubbel LPR-läsning).
-  const lastKept = new Map<string, number>();
+  // 2) Samma transportör + dörr + sajt, ankomst inom fönstret och samma lossning (t.ex. dubbel LPR-läsning).
+  const kept = new Map<string, { idx: number; t: number }[]>();
   for (const i of order) {
     if (dup.has(i)) continue;
     const v = visits[i];
     const t = ms(arrivalOf(v).iso);
     if (t === null || v.carrierKey === null || v.doorId === null) continue;
     const key = `${v.tenantId}|${v.siteId}|${v.carrierKey}|${v.doorId}`;
-    const prev = lastKept.get(key);
-    if (prev !== undefined && (t - prev) / MS_PER_MIN <= rules.duplicateWindowMin) {
-      dup.add(i);
+    let list = kept.get(key);
+    if (!list) kept.set(key, (list = []));
+    // Bara behållna besök inom fönstret är kandidater (ordningen är stigande ankomst).
+    while (list.length > 0 && (t - list[0].t) / MS_PER_MIN > rules.duplicateWindowMin) list.shift();
+    const match = list.findIndex((k) => sameVisit(visits[k.idx], v, rules.duplicateWindowMin));
+    if (match < 0) {
+      list.push({ idx: i, t });
+      continue;
+    }
+    const prev = list[match];
+    if (unloadInterval(visits[prev.idx]) === null && unloadInterval(v) !== null) {
+      // Behåll posten med lossningstider.
+      dup.add(prev.idx);
+      list.splice(match, 1);
+      list.push({ idx: i, t });
     } else {
-      lastKept.set(key, t);
+      dup.add(i);
     }
   }
   return dup;

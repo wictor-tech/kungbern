@@ -12,6 +12,7 @@ export interface CalibrationSummary {
   testDays: number;
   metrics: Record<string, { mae: number; wmape: number; relBias: number; coverage: number; n: number }>;
   replayAvgWaitWmape?: number | null;
+  generatedArrivals?: { wmape: number | null; relBias: number | null; coverage: number; n: number } | null;
   trainRange: [string, string];
   testRange: [string, string];
 }

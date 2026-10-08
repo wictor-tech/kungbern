@@ -2,6 +2,10 @@ import type { CostConfig, RunResult, TruckOutcome } from "../engine/types.ts";
 
 export type TruckStatus = "planned" | "queue" | "gate" | "wait" | "overflow" | "unload" | "leave" | "done";
 
+/**
+ * Status vid tid t. Begränsning: motorn sparar inte när en overflow-bil flyttas in på uppställningen,
+ * så en sådan bil visas som "väntar utanför" tills den får dörr.
+ */
 export function statusAt(o: TruckOutcome, t: number): TruckStatus {
   if (t < o.arrival) return "planned";
   if (t < o.gateStart) return "queue";
@@ -50,6 +54,8 @@ export function kpisAt(r: RunResult, t: number, cost: CostConfig): LiveKpis {
     if (t < o.arrival) continue;
     const leave = o.departure ?? Infinity;
     if (t < leave) onSite++;
+    // Skuggbilar (ofullständigt mätta besök) syns på gården men räknas inte i väntan/detention – samma som motorn.
+    if (o.shadow) continue;
     if (o.doorStart === null || t < o.doorStart) {
       waiting++;
       // pågående väntan räknas med – annars ser en växande kö bra ut
@@ -68,7 +74,7 @@ export function kpisAt(r: RunResult, t: number, cost: CostConfig): LiveKpis {
     waiting,
     avgWaitSoFar: waitN > 0 ? waitSum / waitN : 0,
     unloaded,
-    planned: r.trucks.length,
+    planned: r.trucks.filter((o) => !o.shadow).length,
     detentionCostSoFar: (detMin / 60) * cost.detentionCostPerHour,
   };
 }

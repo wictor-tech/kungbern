@@ -1,15 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { analyzeBottleneck } from "../src/analysis/bottleneck.ts";
 import { capacityLimit, CAPACITY_TOLERANCE } from "../src/analysis/capacity.ts";
-import { withDoors } from "../src/analysis/common.ts";
+import { expectedBookingDemand, expectedDailyTrucks, withDoors } from "../src/analysis/common.ts";
 import { fmtMin, fmtMoney, fmtNum, fmtPct, THIN_SPACE } from "../src/analysis/i18n-format.ts";
-import { generateInsights, peakWindow } from "../src/analysis/insights.ts";
+import { generateInsights, hourlyDoorUtilization, peakWindow } from "../src/analysis/insights.ts";
 import { dataLimitations, LIMITATIONS } from "../src/analysis/limitations.ts";
 import { doorSweep, slotSweep } from "../src/analysis/optimize.ts";
 import { computeRoi, RoiInputError, type RoiInputs } from "../src/analysis/roi.ts";
 import { tornado } from "../src/analysis/sensitivity.ts";
+import { UNLIMITED_GATE_LANES } from "../src/analysis/calibrationSummary.ts";
 import { suggestSlotDesign } from "../src/analysis/slotDesign.ts";
-import { runDetailed, runMonteCarlo } from "../src/engine/montecarlo.ts";
+import { runDetailed, runMonteCarlo, summarizeRuns, type MonteCarloResult } from "../src/engine/montecarlo.ts";
 import type { RunMetrics, RunResult } from "../src/engine/types.ts";
 import { testModel, testScenario, testScenarioFile } from "./fixtures.ts";
 
@@ -50,6 +51,28 @@ describe("tornado", () => {
     expect(adh.highSetting).toBeCloseTo(0.95);
     const free = t.bars.find((x) => x.param === "detentionFreeMin")!;
     expect(free.highValue).toBeLessThanOrEqual(free.lowValue);
+  });
+  it("obegränsad grind (UNLIMITED_GATE_LANES) ger ingen grindfilsstapel", () => {
+    const unl = testScenario({ site: { ...siteFile, gateLanes: UNLIMITED_GATE_LANES } });
+    const t = tornado(model, unl, { reps: 10 });
+    expect(t.bars.some((x) => x.param === "gateLanes")).toBe(false);
+    expect(t.bars.some((x) => x.param === "doors")).toBe(true);
+  });
+});
+
+describe("efterfrågan", () => {
+  it("expectedDailyTrucks = ankomster efter no-show; expectedBookingDemand = ankomster / (1 − no-show)", () => {
+    const arrivals = model.hourlyArrivals.reduce((a, b) => a + b, 0);
+    expect(expectedDailyTrucks(model, sc)).toBe(arrivals);
+    expect(expectedBookingDemand(model, 1)).toBeCloseTo(arrivals / 0.95);
+    expect(expectedBookingDemand(model, 1.2)).toBeCloseTo((arrivals * 1.2) / 0.95);
+    expect(expectedBookingDemand({ ...model, noShowRate: 0 }, 1)).toBe(arrivals);
+  });
+  it("matchar motorns medelantal ankomster i bokat läge", () => {
+    const booked = testScenario({ arrivals: { pattern: "booked", volumeFactor: 1, slot: { lengthMin: 30, capacityPerHour: 40, from: "05:00", to: "15:00", adherence: 0.8, toleranceMin: 15 } } });
+    const mc = runMonteCarlo(model, booked, { reps: 200 });
+    const meanTrucks = mc.perRep.reduce((a, r) => a + r.trucks, 0) / mc.perRep.length;
+    expect(Math.abs(meanTrucks - expectedDailyTrucks(model, booked)) / expectedDailyTrucks(model, booked)).toBeLessThan(0.05);
   });
 });
 
@@ -123,6 +146,18 @@ describe("flaskhals", () => {
     expect(r.cascade[1].avgWait).toBeLessThan(r.cascade[0].avgWait);
     expect(r.resources.find((x) => x.resource === "parking")!.utilization).not.toBeNull();
   });
+  it("obegränsad grind: aldrig flaskhals, inga grindfiler i kaskaden, förklaringen säger att grindtiden kommer från data", () => {
+    const m = { ...model, gateSamples: [9, 10, 11] };
+    const s = testScenario({ site: { ...siteFile, doors: 3, gateLanes: UNLIMITED_GATE_LANES } });
+    const r = analyzeBottleneck(m, s, { reps: 10 });
+    expect(r.bottleneck).not.toBe("gate");
+    const gate = r.resources.find((x) => x.resource === "gate")!;
+    expect(gate.utilization).toBeNull();
+    expect(gate.saturated).toBe(false);
+    for (const step of r.cascade) expect(step.config.gateLanes).toBe(UNLIMITED_GATE_LANES);
+    expect(r.explanation.sv).toMatch(/Grinden är obegränsad: grindtiden kommer från data och innehåller redan eventuell grindkö/);
+    expect(r.explanation.en).toMatch(/gate time comes from data/);
+  });
 });
 
 describe("slotdesign", () => {
@@ -133,8 +168,17 @@ describe("slotdesign", () => {
     expect(r.recommended).not.toBeNull();
     const best = Math.min(...r.grid.map((g) => g.p90Wait.median));
     expect(r.recommended!.p90Wait.median).toBeLessThanOrEqual(best + 1);
-    expect(r.reason.sv).toMatch(/^Medianlossning \d+ min/);
-    expect(r.reason.en).toMatch(/^Median unload/);
+    expect(r.reason.sv).toMatch(/^Lossningstid median \d+ min, medel \d+ min/);
+    expect(r.reason.en).toMatch(/^Unload time median .* mean /);
+  });
+  it("genomströmningen räknas på medellossning, inte median", () => {
+    // Högerskev fördelning: median 10, medel 40 → 2 dörrar × 60 / 40 = 3 lastbilar/timme (median skulle ge 12).
+    const skew = { ...model, unloadSamples: [10, 10, 10, 130].map((u, i) => ({ ...model.unloadSamples[i], unloadMin: u })) };
+    const two = testScenario({ site: { ...siteFile, doors: 2 } });
+    const r = suggestSlotDesign(skew, two, { lengths: [60], capacityRange: [20, 20], reps: 2 });
+    expect(r.medianUnloadMin).toBe(10);
+    expect(r.meanUnloadMin).toBe(40);
+    expect(r.reason.sv).toContain("medel 40 min ⇒ 2 dörrar hinner ca 3 lastbilar/timme (räknat på medel)");
   });
 });
 
@@ -194,11 +238,55 @@ describe("insikter", () => {
   it("köfönster ur konstruerad tidsserie", () => {
     expect(peakWindow(fakeResult().series)).toEqual({ from: 480, to: 600, max: 10 });
     const sv = generateInsights({ result: fakeResult(), lang: "sv", currency: "SEK", closeAt: 15 * 60 });
-    expect(sv.find((i) => i.id === "queue-peak")!.text).toContain("Köerna uppstår 08:00–10:00");
+    expect(sv.find((i) => i.id === "queue-peak")!.text).toContain("I den här körningen uppstår köerna 08:00–10:00");
     expect(sv.find((i) => i.id === "empty-before-close")!.text).toContain("60 min före stängning");
     const en = generateInsights({ result: fakeResult(), lang: "en", currency: "SEK" });
     expect(en.find((i) => i.id === "queue-peak")!.text).toContain("08:00–10:00");
     expect(en.find((i) => i.id === "door-peak")!.text).toContain("08:00–09:00 (100%)");
+  });
+  it("med Monte Carlo: medianer med 80 %-intervall, köfönstret kallas exempeldagen", () => {
+    // 10 repetitioner med kända värden → kända medianer/kvantiler.
+    const base = fakeResult().metrics;
+    const perRep: RunMetrics[] = Array.from({ length: 10 }, (_, i) => ({
+      ...base, maxQueue: 2 + i, overtimeMin: i < 5 ? 0 : 10 * i, timeToEmpty: 900 + 10 * i, overflowTrucks: i, notUnloaded: 0,
+    }));
+    const mc: MonteCarloResult = { reps: 10, seed: "x", summary: summarizeRuns(perRep), perRep, elapsedMs: 0 };
+    // Exempeldagen (rep 0) har maxkö 10 och ingen övertid – texten ska ändå bygga på MC.
+    const sv = generateInsights({ result: fakeResult(), mc, lang: "sv", currency: "SEK", closeAt: 15 * 60, openAt: 6 * 60 });
+    const q = sv.find((i) => i.id === "queue-peak")!.text;
+    expect(q).toContain("På exempeldagen uppstår köerna 08:00–10:00");
+    expect(q).toContain(`som mest ${fmtNum(mc.summary.maxQueue.median, "sv")} lastbilar samtidigt (${fmtNum(mc.summary.maxQueue.p10, "sv")}–${fmtNum(mc.summary.maxQueue.p90, "sv")}, 80 % intervall`);
+    const ot = sv.find((i) => i.id === "overtime")!.text;
+    expect(ot).toMatch(/^En typisk dag blir sista lossningen klar .* efter stängning \(.*80 % intervall\)/);
+    expect(sv.find((i) => i.id === "overflow")!.text).toContain("80 % intervall");
+    expect(sv.find((i) => i.id === "not-unloaded")).toBeUndefined();
+    expect(sv.find((i) => i.id === "door-peak")!.text).toMatch(/^På exempeldagen/);
+    for (const i of sv) expect(i.text).not.toMatch(/NaN|Infinity|undefined|I den här körningen/);
+    const en = generateInsights({ result: fakeResult(), mc, lang: "en", currency: "SEK" });
+    expect(en.find((i) => i.id === "queue-peak")!.text).toContain("80% interval");
+    // Median 0 men p90 > 0 → risktext i stället för påstående.
+    const calm = perRep.map((r, i) => ({ ...r, overtimeMin: i < 8 ? 0 : 30 }));
+    const mc2: MonteCarloResult = { ...mc, summary: summarizeRuns(calm), perRep: calm };
+    const out2 = generateInsights({ result: fakeResult(), mc: mc2, lang: "sv", currency: "SEK", closeAt: 16 * 60 });
+    expect(out2.find((i) => i.id === "overtime")).toBeUndefined();
+    expect(out2.find((i) => i.id === "empty-before-close")!.text).toMatch(/^En typisk dag är all lossning klar/);
+    expect(out2.find((i) => i.id === "overtime-risk")!.text).toContain("10 %");
+  });
+  it("dörrbeläggning per timme bara inom öppettiden – föreslår aldrig timmar utanför", () => {
+    // Utan öppettid: 10:00–11:00 (25 %) föreslås som lugn timme.
+    const free = generateInsights({ result: fakeResult(), lang: "sv", currency: "SEK" });
+    expect(free.find((i) => i.id === "door-idle")!.text).toContain("10:00–11:00");
+    // Öppet 08–10: den timmen ligger utanför och nämns inte.
+    const open = generateInsights({ result: fakeResult(), lang: "sv", currency: "SEK", openAt: 8 * 60, closeAt: 10 * 60 });
+    for (const i of open) expect(i.text).not.toContain("10:00–11:00");
+    expect(open.find((i) => i.id === "door-idle")).toBeUndefined();
+    // Öppet 07:30–10:00: den lugnaste tiden är öppettimmen 07:30–08:00, inte 07:00–08:00.
+    const early = generateInsights({ result: fakeResult(), lang: "sv", currency: "SEK", openAt: 7 * 60 + 30, closeAt: 10 * 60 });
+    expect(early.find((i) => i.id === "door-idle")!.text).toContain("07:30–08:00");
+    // Lossning efter stängning (övertid) räknas inte in i timmarna.
+    const hours = hourlyDoorUtilization([...fakeResult().doorIntervals, { doorId: "D1", truckId: "z", start: 1000, end: 1100 }], 2, { from: 6 * 60, to: 15 * 60 });
+    expect(hours.every((h) => h.from >= 360 && h.to <= 900)).toBe(true);
+    expect(hours.map((h) => h.hour)).toEqual([6, 7, 8, 9, 10, 11, 12, 13, 14]);
   });
   it("utelämnar insikter vars tal är NaN", () => {
     const out = generateInsights({ result: fakeResult({ overDetention: 2, detentionCost: NaN, overtimeMin: NaN }), lang: "sv", currency: "SEK" });

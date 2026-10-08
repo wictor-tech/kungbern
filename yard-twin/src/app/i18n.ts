@@ -134,6 +134,8 @@ const sv = {
   assumptions: "Antaganden",
   results: "Resultat",
   generated: "Genererad",
+  invalidScenario: "Ogiltigt scenario – kontrollera reglagen",
+  stale: "Inaktuellt – reglagen har ändrats, kör igen",
 } as const;
 
 export type Key = keyof typeof sv;
@@ -272,6 +274,8 @@ const en: Record<Key, string> = {
   assumptions: "Assumptions",
   results: "Results",
   generated: "Generated",
+  invalidScenario: "Invalid scenario – check the controls",
+  stale: "Out of date – controls changed, run again",
 };
 
 const dicts: Record<Lang, Record<Key, string>> = { sv, en };
