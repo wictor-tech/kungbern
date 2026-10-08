@@ -22,8 +22,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           {cat.icon}
         </span>
         <div className="min-w-0">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{cat.label}</h1>
-          <p className="mt-1 text-white/85">
+          <h1 className="text-3xl font-extrabold tracking-[-0.02em] sm:text-4xl">{cat.label}</h1>
+          <p className="mt-1 text-white/75">
             {APP_LABEL[cat.app]} · {cat.description} · {guides.length} {guides.length === 1 ? "guide" : "guider"}
           </p>
         </div>

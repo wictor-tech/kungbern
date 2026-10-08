@@ -6,12 +6,12 @@ export function Shell({ embed = false, children }: { embed?: boolean; children: 
     <div className="flex min-h-dvh flex-col">
       {!embed && (
         <header className="sticky top-0 z-40 border-b border-line/70 bg-white/95 backdrop-blur">
-          <div className="flex h-16 items-center gap-4 pr-4 sm:pr-6">
-            {/* LUP-blocket i hörnet, som på lupnumber.com. */}
-            <Link href="/" className="group flex h-full items-center gap-4" aria-label="LUP Hjälp – till startsidan">
+          <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
+            {/* LUP-kvadraten, som på lupnumber.com. */}
+            <Link href="/" className="group flex items-center gap-3" aria-label="LUP Hjälp – till startsidan">
               <span
                 aria-hidden
-                className="flex h-full w-16 items-center justify-center bg-gradient-to-b from-[#1fb0f5] to-[#0886c9] text-2xl font-extrabold tracking-tight text-white italic"
+                className="flex h-10 w-10 items-center justify-center bg-sky text-lg font-extrabold tracking-tight text-white italic"
               >
                 LUP
               </span>
@@ -22,7 +22,7 @@ export function Shell({ embed = false, children }: { embed?: boolean; children: 
             </Link>
             <a
               href="https://app.lupnumber.com/site"
-              className="ml-auto inline-flex min-h-10 items-center rounded-full bg-lup px-4 text-sm font-semibold text-white transition hover:bg-lup-dark sm:px-5"
+              className="glow ml-auto inline-flex min-h-10 items-center rounded-full bg-lup px-4 text-sm font-bold text-white transition hover:bg-lup-dark sm:px-5"
             >
               Till LUPNUMBER<span aria-hidden className="ml-1.5 hidden sm:inline">→</span>
             </a>

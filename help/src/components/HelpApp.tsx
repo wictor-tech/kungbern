@@ -90,7 +90,7 @@ export function HelpApp(props: HelpAppProps) {
             onClick={() => submit(p)}
             className={
               light
-                ? "rounded-full bg-white/12 px-4 py-2 text-sm font-medium text-white ring-1 ring-white/35 transition hover:bg-white hover:text-navy"
+                ? "rounded-full bg-white/[0.06] px-4 py-2 text-sm font-medium text-white ring-1 ring-white/20 transition hover:bg-white hover:text-navy"
                 : "rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition hover:border-lup hover:text-lup-dark"
             }
           >
@@ -118,11 +118,11 @@ export function HelpApp(props: HelpAppProps) {
         <section className="full-bleed bg-brand relative -mt-6 overflow-hidden text-white sm:-mt-8">
           <DockDoors />
           <div className="relative mx-auto max-w-3xl px-4 pt-14 pb-48 text-center sm:px-6 sm:pt-20 sm:pb-56">
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-wider uppercase ring-1 ring-white/25">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-sun" /> {total} guider med bilder från appen
-            </p>
-            <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-6xl">Vad vill du ha hjälp med?</h1>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-white/85 sm:text-xl">
+            <p className="eyebrow eyebrow-dark mb-5">Hjälpcenter · {total} guider</p>
+            <h1 className="text-4xl leading-[1.05] font-extrabold tracking-[-0.02em] text-balance sm:text-6xl">
+              Vad vill du ha <span className="text-sky">hjälp</span> med?
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-lg text-white/80 sm:text-xl">
               Skriv med egna ord – vi visar exakt var du klickar.
             </p>
             <div className="mt-8 text-left text-ink">{search}</div>
@@ -176,20 +176,31 @@ export function HelpApp(props: HelpAppProps) {
           </AppPanel>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-3" aria-label="Så fungerar hjälpen">
-          {[
-            ["1", "Fråga med egna ord", "Skriv som du skulle fråga en kollega. Stavfel gör inget."],
-            ["2", "Se exakt var du klickar", "Skärmbilder från appen med numrerade markeringar, steg för steg."],
-            ["3", "Fastnar du? Vi tar över", "Tryck 👎 så skickas din fråga och guiden med till supporten."],
-          ].map(([n, t, d]) => (
-            <div key={n} className="flex gap-4 rounded-2xl bg-white p-5 ring-1 ring-line">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy text-lg font-bold text-white">{n}</span>
-              <span>
-                <span className="block font-bold text-navy">{t}</span>
-                <span className="mt-1 block text-sm text-muted">{d}</span>
-              </span>
-            </div>
-          ))}
+        <section className="text-center" aria-labelledby="how-title">
+          <p className="eyebrow">Så fungerar hjälpen</p>
+          <h2 id="how-title" className="mt-3 text-3xl font-extrabold tracking-[-0.02em] text-navy sm:text-4xl">
+            Från fråga till klick på några sekunder.
+          </h2>
+          <ol className="relative mt-10 grid gap-8 sm:grid-cols-3">
+            <span aria-hidden className="absolute top-7 right-[16%] left-[16%] hidden h-0.5 bg-lup/25 sm:block" />
+            {[
+              ["Fråga med egna ord", "Skriv som du skulle fråga en kollega. Stavfel gör inget."],
+              ["Se exakt var du klickar", "Skärmbilder från appen med numrerade markeringar, steg för steg."],
+              ["Fastnar du? Vi tar över", "Tryck 👎 så skickas din fråga och guiden med till supporten."],
+            ].map(([t, d], i) => (
+              <li key={t} className="relative flex flex-col items-center px-4">
+                <span
+                  className={`flex h-14 w-14 items-center justify-center rounded-full text-lg font-extrabold ${
+                    i === 0 ? "glow bg-lup text-white ring-8 ring-lup/15" : "border-2 border-lup bg-white text-lup"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <span className="mt-4 block text-lg font-bold text-navy">{t}</span>
+                <span className="mt-1 block max-w-xs text-sm text-muted">{d}</span>
+              </li>
+            ))}
+          </ol>
         </section>
       </div>
     );
@@ -280,7 +291,7 @@ function ResultSkeleton() {
 function ContextGuides({ guides, href }: { guides: GuideSummary[]; href: (id: string) => string }) {
   return (
     <section className="mx-auto max-w-3xl" aria-labelledby="ctx-title">
-      <h2 id="ctx-title" className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
+      <h2 id="ctx-title" className="eyebrow mb-3">
         Hjälp för sidan du står på
       </h2>
       <div className="space-y-2">
@@ -339,7 +350,7 @@ function DockDoors() {
   return (
     <svg
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-44 w-full opacity-[0.14] sm:h-52"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-44 w-full opacity-[0.08] sm:h-52"
       viewBox="0 0 1400 200"
       preserveAspectRatio="xMidYMax slice"
       fill="none"

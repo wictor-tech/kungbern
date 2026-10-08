@@ -72,14 +72,14 @@ export function GuideView({
       {answer && <p className="mb-2 text-lg font-medium text-ink">{answer}</p>}
       <header className="bg-brand relative mb-6 space-y-3 overflow-hidden rounded-3xl px-5 py-5 text-white sm:space-y-4 sm:px-8 sm:py-8">
         <div className="flex flex-wrap items-center gap-3">
-          <h2 id="guide-title" className="text-2xl font-bold tracking-tight text-balance sm:text-4xl">
+          <h2 id="guide-title" className="text-2xl font-extrabold tracking-[-0.02em] text-balance sm:text-4xl">
             {guide.title}
           </h2>
-          <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold ring-1 ring-white/30">
+          <span className="rounded-full bg-sky/15 px-3 py-1 text-xs font-semibold text-sky ring-1 ring-sky/40">
             {guide.app === "site" ? "Site" : "Location Admin"}
           </span>
         </div>
-        {guide.summary && <p className="max-w-3xl text-white/85">{guide.summary.replace(/\*\*/g, "")}</p>}
+        {guide.summary && <p className="max-w-3xl text-white/75">{guide.summary.replace(/\*\*/g, "")}</p>}
         <Breadcrumb items={guide.breadcrumb} onDark />
       </header>
 
@@ -169,7 +169,7 @@ export function GuideView({
             <button
               type="button"
               onClick={startTour}
-              className="bg-brand flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-4 font-semibold text-white shadow-lg shadow-lup/30 hover:opacity-95"
+              className="glow flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-lup px-4 font-bold text-white hover:bg-lup-dark"
             >
               <span aria-hidden>👆</span> Visa mig i appen
             </button>
