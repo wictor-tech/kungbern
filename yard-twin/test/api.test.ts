@@ -140,3 +140,23 @@ describe("API – demoserver", () => {
     expect(() => new DemoStore(dataset("tenant", "x", "acme"))).toThrow();
   });
 });
+
+describe("API – dagtyp", () => {
+  it("okänd eller farlig dagtyp ger 422, inte 500 eller tyst fallback", async () => {
+    const { mkdtemp, mkdir, writeFile } = await import("node:fs/promises");
+    const dir = await mkdtemp(join(tmpdir(), "yt-dt-"));
+    await mkdir(join(dir, "acme"), { recursive: true });
+    await writeFile(join(dir, "acme", "site1.json"), JSON.stringify(dataset("tenant", "site1", "acme")));
+    const { server, base } = await start(createHandler({ store: new TenantStore(dir), auth: await auth(), log: new MemoryRunLog() }));
+    try {
+      for (const dayType of ["__proto__", "constructor", "weekday:9"]) {
+        const r = await fetch(`${base}/api/tenants/acme/sites/site1/runs`, { method: "POST", headers: { authorization: "Bearer k-acme" }, body: JSON.stringify({ scenario: { ...scen("site1"), dayType } }) });
+        expect(r.status).toBe(422);
+      }
+      const ok = await fetch(`${base}/api/tenants/acme/sites/site1/runs`, { method: "POST", headers: { authorization: "Bearer k-acme" }, body: JSON.stringify({ scenario: { ...scen("site1"), dayType: "all" } }) });
+      expect((await ok.json()).profile).toBe("all");
+    } finally {
+      server.close();
+    }
+  });
+});

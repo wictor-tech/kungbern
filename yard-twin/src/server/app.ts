@@ -101,8 +101,9 @@ export function createHandler(deps: AppDeps) {
         const reps = scenario!.monteCarlo?.reps ?? 300;
         if (reps > maxReps) throw new HttpError(422, `monteCarlo.reps får vara högst ${maxReps}`);
         const ds = await loadDataset(tenantId, siteId);
-        const model = ds.profiles[scenario!.dayType ?? "all"] ?? ds.profiles.all;
-        if (!model) throw new HttpError(422, `Ingen profil för dagtyp ${scenario!.dayType}`);
+        const dayType = scenario!.dayType ?? "all";
+        if (!Object.hasOwn(ds.profiles, dayType)) throw new HttpError(422, `Ingen profil för dagtyp ${JSON.stringify(dayType)} (finns: ${Object.keys(ds.profiles).join(", ")})`);
+        const model = ds.profiles[dayType];
         const sc = compileScenario(scenario!);
         let recorded;
         if (sc.arrivals.pattern === "recorded") {
@@ -118,6 +119,7 @@ export function createHandler(deps: AppDeps) {
           siteId,
           scenarioId: scenario!.id,
           scenarioHash: hash,
+          profile: dayType,
           pipelineVersion: ds.pipelineVersion,
           reps: mc.reps,
           seed: mc.seed,

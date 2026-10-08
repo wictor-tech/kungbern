@@ -268,3 +268,25 @@ describe("Monte Carlo", () => {
     expect(quantile(det.trucks.map((t) => t.waitToDoor ?? 0), 0.9)).toBeCloseTo(det.metrics.p90Wait);
   });
 });
+
+describe("skuggbilar och censurering", () => {
+  it("skuggbil upptar dörren men räknas inte i nyckeltalen", () => {
+    const ts = [truck("s", 0, 60, { shadow: true }), truck("a", 10, 10)];
+    const r = simulateDay(ts, site(1), FCFS, COST, { detail: true });
+    expect(r.metrics.trucks).toBe(1);
+    expect(r.metrics.avgWait).toBe(50); // a väntar på skuggbilen
+    expect(r.metrics.maxQueue).toBe(1);
+    expect(r.trucks.find((t) => t.id === "s")!.shadow).toBe(true);
+  });
+  it("ej lossade bilar utan övertid räknas som väntande minst till stängning", () => {
+    const s = site(1, { openFrom: 0, openTo: 300, allowOvertime: false });
+    // a lossar 0–310 (övertid för påbörjad lossning); b skulle få dörr först 310 > stängning 300.
+    // Sista händelsen sker vid 310, så censurering vid max(310, 300) = 310 ⇒ b har väntat 300 min.
+    const r = simulateDay([truck("a", 0, 310), truck("b", 10, 200)], s, FCFS, COST);
+    expect(r.metrics.notUnloaded).toBe(1);
+    expect(r.metrics.avgWait).toBe((0 + 300) / 2);
+    // bil som kommer efter stängning och aldrig lossas får väntan ≥ 0, aldrig negativ
+    const late = simulateDay([truck("x", 400, 10)], s, FCFS, COST);
+    expect(late.metrics.avgWait).toBeGreaterThanOrEqual(0);
+  });
+});

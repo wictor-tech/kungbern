@@ -256,13 +256,14 @@ function fromRecorded(
     const keep = f >= 1 || arrRng.bernoulli(f);
     const s = pickService(r);
     if (!keep) continue;
-    out.push({ id: r.id, arrival: r.arrival, slotStart: r.slotStart, slotEnd: r.slotEnd, carrier: r.carrier, goodsType: r.goodsType, pallets: r.pallets, gateTime: s.gate, unloadTime: s.unload, paperTime: s.paper });
+    out.push({ id: r.id, arrival: r.arrival, slotStart: r.slotStart, slotEnd: r.slotEnd, carrier: r.carrier, goodsType: r.goodsType, pallets: r.pallets, gateTime: s.gate, unloadTime: s.unload, paperTime: s.paper, shadow: r.shadow ?? false });
   }
   if (f > 1 && rec.length > 0) {
     const extra = arrRng.roundStochastic((f - 1) * rec.length);
     for (let i = 0; i < extra; i++) {
       const r = arrRng.pick(rec);
       const s = pickService(r);
+      if (r.shadow) continue; // uppskalning utgår bara från fullständigt mätta besök
       const shift = arrRng.uniform(-RECORDED_UPSCALE_JITTER_MIN, RECORDED_UPSCALE_JITTER_MIN);
       out.push({ id: `X${String(i + 1).padStart(3, "0")}`, arrival: Math.max(0, r.arrival + shift), slotStart: null, slotEnd: null, carrier: r.carrier, goodsType: r.goodsType, pallets: r.pallets, gateTime: s.gate, unloadTime: s.unload, paperTime: s.paper, walkIn: true });
     }

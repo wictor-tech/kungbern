@@ -137,7 +137,7 @@ export function simulateDay(
       doorBusy[d] = true;
       doorOf[i] = d;
       doorStart[i] = now;
-      waitingCount--;
+      if (!trucks[i].shadow) waitingCount--;
       schedule(now + Math.max(0, trucks[i].unloadTime), Ev.UnloadDone, i);
     }
   };
@@ -151,7 +151,7 @@ export function simulateDay(
     switch (ev.type) {
       case Ev.Arrive: {
         onSite++;
-        waitingCount++;
+        if (!trucks[ev.idx].shadow) waitingCount++;
         gateQueue.push(ev.idx);
         tryGate(now);
         break;
@@ -215,11 +215,26 @@ export function simulateDay(
   let firstArrival = Infinity;
   let overflowTrucks = 0;
 
+  // Ej lossade bilar censureras vid den senare av stängning och simuleringens slut, så att
+  // scenarier utan övertid inte ser bättre ut än de är (en bil som aldrig lossas har väntat minst till stängning).
+  const censorAt = Math.max(endTime, site.openTo);
+  let measured = 0;
   for (let i = 0; i < n; i++) {
     const t = trucks[i];
     const served = !Number.isNaN(doorStart[i]);
-    // Ej lossade räknas som väntande fram till simuleringens slut (censurerat, men döljer inte problemet).
-    const wait = served ? doorStart[i] - t.arrival : endTime - t.arrival;
+    const shadow = t.shadow === true;
+    if (detail && shadow) {
+      outcomes.push({
+        id: t.id, arrival: t.arrival, slotStart: t.slotStart, gateStart: gateStart[i], gateEnd: gateEnd[i],
+        doorStart: served ? doorStart[i] : null, doorEnd: served ? doorEnd[i] : null,
+        departure: Number.isNaN(departure[i]) ? null : departure[i], doorId: served ? site.doors[doorOf[i]].id : null,
+        waitToDoor: served ? doorStart[i] - t.arrival : null, detentionMin: 0, overflow: overflow[i] === 1,
+        goodsType: t.goodsType, carrier: t.carrier, pallets: t.pallets, walkIn: t.walkIn ?? false, shadow: true,
+      });
+    }
+    if (shadow) continue;
+    measured++;
+    const wait = Math.max(0, served ? doorStart[i] - t.arrival : censorAt - t.arrival);
     waits.push(wait);
     if (served) {
       unloaded++;
@@ -228,7 +243,7 @@ export function simulateDay(
       if (doorEnd[i] > lastDoorEnd) lastDoorEnd = doorEnd[i];
     }
     if (!Number.isNaN(gateEnd[i])) gateBusy += gateEnd[i] - gateStart[i];
-    const leave = Number.isNaN(departure[i]) ? endTime : departure[i];
+    const leave = Number.isNaN(departure[i]) ? censorAt : departure[i];
     if (!Number.isNaN(departure[i]) && departure[i] > lastDeparture) lastDeparture = departure[i];
     if (t.arrival < firstArrival) firstArrival = t.arrival;
     // Detentionklockan startar vid bokad tid om bilen kom tidigt, annars vid ankomst.
@@ -256,6 +271,7 @@ export function simulateDay(
         carrier: t.carrier,
         pallets: t.pallets,
         walkIn: t.walkIn ?? false,
+        shadow: false,
       });
     }
   }
@@ -266,12 +282,12 @@ export function simulateDay(
   for (const w of waits) sumWait += w;
 
   const metrics: RunMetrics = {
-    trucks: n,
+    trucks: measured,
     unloaded,
-    notUnloaded: n - unloaded,
-    avgWait: n > 0 ? sumWait / n : 0,
-    p90Wait: n > 0 ? quantile(waits, 0.9) : 0,
-    maxWait: n > 0 ? Math.max(...waits) : 0,
+    notUnloaded: measured - unloaded,
+    avgWait: measured > 0 ? sumWait / measured : 0,
+    p90Wait: measured > 0 ? quantile(waits, 0.9) : 0,
+    maxWait: measured > 0 ? Math.max(...waits) : 0,
     maxQueue,
     overDetention,
     detentionCost: (detentionMinTotal / 60) * cost.detentionCostPerHour,

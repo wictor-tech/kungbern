@@ -52,4 +52,6 @@ export interface RecordedTruck {
   unloadMin: number | null;
   gateMin: number | null;
   paperMin: number | null;
+  /** Upptog resurser men räknas inte i nyckeltalen (se Truck.shadow). */
+  shadow?: boolean;
 }

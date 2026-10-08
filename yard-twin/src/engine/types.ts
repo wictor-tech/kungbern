@@ -23,6 +23,12 @@ export interface Truck {
   paperTime: number;
   /** Ej bokad trots bokningsläge (bokningskapaciteten tog slut). */
   walkIn?: boolean;
+  /**
+   * "Skuggbil": fanns fysiskt på gården och upptog resurser, men exkluderas ur nyckeltalen
+   * (t.ex. besök med saknad lossningstid i data). Används i replay/backtest så att kön blir rätt
+   * utan att osäkra mätningar påverkar felmåtten.
+   */
+  shadow?: boolean;
 }
 
 export interface DoorSpec {
@@ -81,6 +87,7 @@ export interface TruckOutcome {
   carrier: string;
   pallets: number | null;
   walkIn: boolean;
+  shadow: boolean;
 }
 
 export interface SeriesPoint {
