@@ -79,9 +79,15 @@ CREATE TABLE IF NOT EXISTS tickets (
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE tickets ADD COLUMN IF NOT EXISTS external_id text;
+
+-- Rader som tidigare sparats som jsonb-strängar (JSON i en sträng) blir riktiga objekt.
+UPDATE guides SET data = (data #>> '{}')::jsonb WHERE jsonb_typeof(data) = 'string';
+UPDATE guide_embeddings SET vector = (vector #>> '{}')::jsonb WHERE jsonb_typeof(vector) = 'string';
+UPDATE guide_views SET steps_viewed = (steps_viewed #>> '{}')::jsonb WHERE jsonb_typeof(steps_viewed) = 'string';
+UPDATE tickets SET steps_viewed = (steps_viewed #>> '{}')::jsonb WHERE jsonb_typeof(steps_viewed) = 'string';
 `;
 
-/** Objekt och listor skickas som JSON-strängar så att jsonb-kolumner fungerar likadant i båda drivrutinerna. */
+/** PGlite: objekt och listor skickas som JSON-strängar till jsonb-kolumner. */
 function toParam(v: unknown) {
   return v !== null && typeof v === "object" && !(v instanceof Date) ? JSON.stringify(v) : v;
 }
@@ -104,10 +110,12 @@ async function createPglite(dataDir?: string): Promise<Db> {
 async function createPostgres(url: string): Promise<Db> {
   const { default: postgres } = await import("postgres");
   const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
-  const sql = postgres(url, { max: 5, prepare: false, ssl: local ? false : "require" });
+  const sql = postgres(url, { max: 5, prepare: false, ssl: local ? false : "require", onnotice: () => {} });
   return {
     async query<T>(text: string, params: unknown[] = []) {
-      return (await sql.unsafe(text, params.map(toParam) as never[])) as unknown as T[];
+      // Objekt och listor som json – en JSON-sträng skulle sparas som en jsonb-sträng, inte som ett objekt.
+      const values = params.map((v) => (v !== null && typeof v === "object" && !(v instanceof Date) ? sql.json(v as never) : v));
+      return (await sql.unsafe(text, values as never[])) as unknown as T[];
     },
     async exec(text: string) {
       await sql.unsafe(text);
