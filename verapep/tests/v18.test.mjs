@@ -230,6 +230,17 @@ test('v18 security regressions stay fixed', async t => {
   assert.ok(ready.payload.blockers.length >= 19, 'no blocker was removed');
 });
 
+test('v18 seed data never contains real orders, customers or reviews', () => {
+  const read = name => JSON.parse(fs.readFileSync(path.join(root, 'data', name), 'utf8'));
+  assert.deepEqual(read('orders.json'), []);
+  assert.deepEqual(read('returns.json'), []);
+  assert.deepEqual(read('withdrawals.json'), []);
+  assert.deepEqual(read('customers.json').customers, []);
+  assert.deepEqual(read('reviews.json').reviews, []);
+  const tracked = execFileSync('git', ['ls-files', 'data'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map(file => path.basename(file));
+  for (const name of dataFiles) assert.ok(tracked.includes(name), `data/${name} must be in git so a clean checkout is complete`);
+});
+
 test('v18 secret scanner detects planted secrets and passes on the project', () => {
   const stripe = ['sk', 'live', 'A1b2C3d4E5f6G7h8I9j0K1l2'].join('_');
   assert.ok(scanText(`STRIPE_SECRET_KEY=${stripe}`, 'x').some(item => item.pattern.startsWith('Stripe')));

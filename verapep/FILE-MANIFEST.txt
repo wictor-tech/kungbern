@@ -6,7 +6,7 @@ Files listed: 226 (manifest excludes itself and runtime database/outbox/backup f
 
 Path | Bytes | SHA-256 (first 16)
 .env.example | 2803 | b6d46a13706f32bb
-.gitignore | 279 | 7a9a0ad078d863a5
+.gitignore | 428 | d6f3dbe3e30a06f9
 404.html | 5837 | 5b5253c062e05b0a
 DEPLOYMENT.md | 1385 | dd7e4f6f3606f404
 DESIGN-QA-V12.6.md | 3637 | 56fb46e8130aaff9
@@ -208,7 +208,7 @@ scripts/retry-email-outbox.mjs | 3033 | a49c5e61b0150793
 scripts/scrub-audit-log.mjs | 8895 | bdab7f3fdf0b5c3a
 scripts/secret-scan.mjs | 5364 | 85d266d881c0ca90
 scripts/source/catalogue-data.js | 27296 | 7a1536b945504f11
-scripts/verify-release.mjs | 5106 | d58575db5f791958
+scripts/verify-release.mjs | 5610 | c87d38b55ab359ed
 scripts/write-manifest.mjs | 1817 | 8b3f3b43e8889bc1
 server.mjs | 162921 | 08933e113af9bf58
 shipping-returns.html | 7121 | db3df9c949e7987e
@@ -227,7 +227,7 @@ tests/v14.test.mjs | 5776 | ceb87febd393cdbc
 tests/v141.test.mjs | 7449 | 556973b582ab1c9e
 tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
 tests/v17.test.mjs | 34219 | 8e647c8cbe3b7e8d
-tests/v18.test.mjs | 19573 | 2d275ab61a8205cf
+tests/v18.test.mjs | 20286 | b5366bdc087ef77d
 tests/v9.test.mjs | 7478 | 6eb6faa257dab498
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
 tests/vendor/axe.min.js | 553290 | b511cd9dec01c76f

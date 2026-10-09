@@ -47,6 +47,12 @@ verifyTree(root, entries);
 const listed = new Set(entries.map(entry => entry.file));
 for (const file of releaseFiles()) if (!listed.has(file)) fail(`not in manifest (run node scripts/write-manifest.mjs): ${file}`);
 for (const file of listed) if (FORBIDDEN_FILES.some(rule => rule.test(file))) fail(`forbidden file in manifest: ${file}`);
+// v18: a file that exists locally but is not committed (e.g. via .gitignore) makes a clean
+// checkout incomplete — v15–v17 shipped complete ZIPs while git lacked data/orders.json.
+try {
+  const tracked = new Set(execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).split('\n'));
+  for (const file of listed) if (!tracked.has(file)) fail(`release file is not committed to git: ${file}`);
+} catch { /* not a git checkout (e.g. an unpacked ZIP) */ }
 console.log(`Manifest: ${entries.length} entries checked against the working tree.`);
 
 const zipIndex = args.indexOf('--zip');
