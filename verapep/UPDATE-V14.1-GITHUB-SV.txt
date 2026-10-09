@@ -1,0 +1,15 @@
+VERAPEP V14.1 - UPPDATERA GITHUB
+
+1. Oppna GitHub Desktop och valj verapep-friends-test.
+2. Repository -> Show in Explorer.
+3. Packa upp VERAPEP-v14.1-OPERATIONAL-HARDENING-UPDATE.zip.
+4. Markera allt i den uppackade mappen (Ctrl+A) och kopiera (Ctrl+C).
+5. Klistra in i verapep-friends-test-mappen (Ctrl+V).
+6. Valj "Ersatt filerna i malet" om Windows fragar.
+7. Kontrollera GitHub Desktop. render.yaml ska inte behovas andras av V14.1.
+8. Summary: Operational hardening v14.1
+9. Commit to main.
+10. Push origin.
+11. Render deployar automatiskt till samma friend-test-lank.
+
+V14.1 aktiverar INTE livebetalningar och gor INTE forsknings-/referensprodukterna live.

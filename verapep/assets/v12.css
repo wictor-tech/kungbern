@@ -1,0 +1,632 @@
+/* VERAPEP V12 — pixel-match pass based on the selected Mockup 1. */
+body.theme-v12 {
+  --v12-deep:#044a52;
+  --v12-ink:#0b3541;
+  --v12-teal:#006f78;
+  --v12-soft:#effafb;
+  --v12-line:rgba(4,86,96,.13);
+  background:#fff;
+}
+body.theme-v12 .shell{width:min(1260px,calc(100% - 44px));max-width:1260px}
+
+/* Compact assurance bar */
+body.theme-v12 .trust-bar--v11{min-height:34px;background:linear-gradient(90deg,#044650,#075c63 50%,#044650)}
+body.theme-v12 .trust-bar--v11 .trust-bar__inner{min-height:34px;font-size:10px;letter-spacing:.02em}
+body.theme-v12 .trust-bar--v11 .trust-bar__inner i{width:18px;height:18px;font-size:11px}
+
+/* Simplified navigation */
+body.theme-v12 .site-header--v11{background:rgba(255,255,255,.985);border-bottom:1px solid rgba(8,78,88,.10);box-shadow:0 2px 10px rgba(5,64,72,.025)}
+body.theme-v12 .header-inner--v11{min-height:64px;gap:48px}
+body.theme-v12 .brand--v11{font-size:25px;letter-spacing:.12em}
+body.theme-v12 .nav__links--v12{gap:31px}
+body.theme-v12 .nav__links--v12 a{font-size:12px;font-weight:650;color:#143944}
+body.theme-v12 .header-search--v11{width:310px;height:42px;border-color:rgba(10,83,92,.16);background:#fbfdfd}
+body.theme-v12 .header-search--v11 input{font-size:11px}
+body.theme-v12 .nav__actions--v11{gap:14px}
+body.theme-v12 .header-icon-button,
+body.theme-v12 .cart-header-button{width:40px;height:44px;padding:8px 9px 16px;border-radius:10px;overflow:visible}
+body.theme-v12 .header-icon-button::after,
+body.theme-v12 .cart-header-button::after{position:absolute;left:50%;bottom:1px;transform:translateX(-50%);font-size:7px;font-weight:650;color:#557078;white-space:nowrap}
+body.theme-v12 .nav__actions--v11 > a.header-icon-button::after{content:'Account'}
+body.theme-v12 .nav-saved-button::after{content:'Wishlist'}
+body.theme-v12 .cart-header-button::after{content:'Cart'}
+body.theme-v12 .nav-saved-button span,
+body.theme-v12 .cart-header-button strong{top:0;right:-1px}
+
+/* Hero — use supplied 4K bubble asset */
+body.theme-v12 .hero--v11{min-height:335px;background:linear-gradient(90deg,#f2fbfc 0%,#eef9fb 46%,#d7f3f7 100%)}
+body.theme-v12 .hero--v11::before{z-index:2;background:linear-gradient(90deg,rgba(244,252,253,.995) 0%,rgba(244,252,253,.97) 30%,rgba(244,252,253,.72) 43%,rgba(244,252,253,.08) 63%,rgba(244,252,253,0) 100%)}
+body.theme-v12 .hero-liquid-media--v12{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:1}
+body.theme-v12 .hero-bubbles-v12{position:absolute;right:-3%;top:50%;width:76%;height:auto;max-width:none;transform:translate3d(var(--v12-bubble-x,0),calc(-50% + var(--v12-bubble-y,0)),0) scale(1.02);transform-origin:center;filter:saturate(.88) brightness(1.03);will-change:transform}
+body.theme-v12 .hero-grid--v11{min-height:335px;padding:32px 0 38px}
+body.theme-v12 .hero-copy--v11{width:520px;max-width:47%}
+body.theme-v12 .hero-pill--v11{margin-bottom:12px;padding:6px 11px;background:rgba(198,229,232,.72);font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+body.theme-v12 .hero-copy--v11 h1{margin:0 0 10px;color:#0b3944;font-family:Georgia,'Times New Roman',serif;font-size:48px;font-weight:400;line-height:1.04;letter-spacing:-.035em}
+body.theme-v12 .hero-copy--v11 > p:not(.hero-pill){max-width:430px;margin:0;color:#355e66;font-size:13px;line-height:1.55}
+body.theme-v12 .hero-actions--v11{display:flex;gap:14px;margin-top:17px}
+body.theme-v12 .hero-actions--v11 .button{min-width:184px;min-height:44px;border-radius:7px;font-size:10px;font-weight:800;letter-spacing:.02em}
+body.theme-v12 .hero-actions--v11 .button--teal{background:linear-gradient(135deg,#087881,#00656f)}
+body.theme-v12 .hero-actions--v11 .button--outline{background:rgba(255,255,255,.86);border-color:rgba(7,92,101,.26)}
+body.theme-v12 .hero-proof-grid--v12{display:grid;grid-template-columns:repeat(3,1fr);width:520px;max-width:100%;margin-top:14px;border:1px solid rgba(8,85,94,.10);border-radius:10px;background:rgba(255,255,255,.88);box-shadow:0 9px 24px rgba(7,88,96,.08);overflow:hidden}
+body.theme-v12 .hero-proof-grid--v12 span{position:relative;min-height:47px;display:flex;align-items:center;gap:8px;padding:9px 12px;color:#294f57;font-size:9px}
+body.theme-v12 .hero-proof-grid--v12 span:not(:last-child)::after{content:'';position:absolute;right:0;top:10px;bottom:10px;width:1px;background:rgba(8,85,94,.10)}
+body.theme-v12 .hero-proof-grid--v12 i{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#eaf8f8;color:#08737b;font-style:normal;font-size:11px}
+body.theme-v12 .hero-proof-grid--v12 b{font-weight:720}
+
+/* Goal panel overlaps hero exactly as navigation step */
+body.theme-v12 .goal-strip-section{margin-top:-24px}
+body.theme-v12 .goal-strip{border-radius:12px;box-shadow:0 15px 35px rgba(10,78,86,.13)}
+body.theme-v12 .focus-grid--v11 .focus-option{min-height:64px;grid-template-columns:39px 1fr;padding:10px 15px}
+body.theme-v12 .focus-grid--v11 .focus-option__icon{width:36px;height:36px;border-radius:10px}
+body.theme-v12 .focus-grid--v11 .focus-option strong{font-size:10px}
+
+/* Featured cards: direct shopping, no hover-only action */
+body.theme-v12 .featured-section--v11{padding:18px 0 10px}
+body.theme-v12 .featured-heading{margin-bottom:8px}
+body.theme-v12 .featured-heading h2{font-size:22px}
+body.theme-v12 .featured-heading p{font-size:9px}
+body.theme-v12 .featured-heading>a{font-size:10px}
+body.theme-v12 .featured-product-grid--v11{gap:14px}
+body.theme-v12 .featured-product-grid--v11 .product-card{min-height:247px;border-radius:10px;box-shadow:0 7px 20px rgba(7,72,79,.045)}
+body.theme-v12 .featured-product-grid--v11 .product-card__visual{height:143px;min-height:143px;background:linear-gradient(180deg,#fff 0%,#f8fcfc 100%)}
+body.theme-v12 .featured-product-grid--v11 .product-vial-svg{width:92px;max-height:142px;filter:drop-shadow(0 9px 14px rgba(15,65,70,.13))}
+body.theme-v12 .featured-product-grid--v11 .product-card__content{min-height:66px;padding:6px 10px 8px}
+body.theme-v12 .featured-product-grid--v11 .product-card h3{min-height:auto;margin:0 0 3px;font-size:9px}
+body.theme-v12 .featured-product-grid--v11 .product-rating{margin-bottom:3px}
+body.theme-v12 .featured-product-grid--v11 .rating-stars{font-size:9px}
+body.theme-v12 .featured-product-grid--v11 .rating-score,
+body.theme-v12 .featured-product-grid--v11 .rating-count,
+body.theme-v12 .featured-product-grid--v11 .rating-copy{font-size:7px}
+body.theme-v12 .featured-product-grid--v11 .product-price{font-size:11px}
+body.theme-v12 .featured-product-grid--v11 .product-card__actions{position:relative;left:auto;right:auto;bottom:auto;display:grid;margin:0 7px 7px;border-radius:6px;opacity:1;transform:none;pointer-events:auto}
+body.theme-v12 .featured-product-grid--v11 .product-card:hover .product-card__actions,
+body.theme-v12 .featured-product-grid--v11 .product-card:focus-within .product-card__actions{transform:none}
+body.theme-v12 .featured-product-grid--v11 .product-card__actions a,
+body.theme-v12 .featured-product-grid--v11 .product-card__actions button{min-height:32px;background:linear-gradient(135deg,#077881,#00646e);color:#fff;font-size:8px;font-weight:800;text-transform:none}
+body.theme-v12 .featured-product-grid--v11 .heart-button{top:7px;right:7px;width:28px;height:28px;font-size:15px}
+body.theme-v12 .featured-next{right:-14px;width:34px;height:34px}
+
+/* Informational cards remain premium but visually quieter than products */
+body.theme-v12 .trust-cards-section--v11{padding:4px 0 18px}
+body.theme-v12 .trust-card-grid--v11{gap:14px}
+body.theme-v12 .trust-card--v11{border-radius:12px;box-shadow:0 8px 22px rgba(8,76,83,.05)}
+
+/* Buying flow prioritisation: finder is optional and catalogue remains beneath it */
+body.theme-v12 .finder-section{background:#f8fcfc}
+body.theme-v12 .vera-launcher{background:#08747c}
+
+@media (max-width:1100px){
+  body.theme-v12 .header-inner--v11{gap:24px}
+  body.theme-v12 .nav__links--v12{gap:18px}
+  body.theme-v12 .header-search--v11{width:240px}
+  body.theme-v12 .hero-bubbles-v12{right:-14%;width:86%}
+  body.theme-v12 .featured-product-grid--v11{grid-template-columns:repeat(4,minmax(180px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+}
+@media (max-width:780px){
+  body.theme-v12 .shell{width:min(100% - 24px,1260px)}
+  body.theme-v12 .header-inner--v11{min-height:60px}
+  body.theme-v12 .hero--v11{min-height:520px}
+  body.theme-v12 .hero--v11::before{background:linear-gradient(180deg,rgba(246,253,253,.99) 0%,rgba(246,253,253,.96) 53%,rgba(246,253,253,.38) 72%,rgba(246,253,253,.06) 100%)}
+  body.theme-v12 .hero-grid--v11{min-height:520px;align-items:flex-start;padding-top:34px}
+  body.theme-v12 .hero-copy--v11{width:100%;max-width:100%}
+  body.theme-v12 .hero-copy--v11 h1{font-size:39px}
+  body.theme-v12 .hero-copy--v11>p:not(.hero-pill){max-width:340px}
+  body.theme-v12 .hero-actions--v11{display:grid;grid-template-columns:1fr 1fr}
+  body.theme-v12 .hero-actions--v11 .button{min-width:0}
+  body.theme-v12 .hero-proof-grid--v12{width:100%}
+  body.theme-v12 .hero-proof-grid--v12 span{padding:8px;font-size:8px}
+  body.theme-v12 .hero-proof-grid--v12 i{display:none}
+  body.theme-v12 .hero-bubbles-v12{right:-48%;top:78%;width:148%;transform:translate3d(0,-50%,0) scale(1.02)}
+  body.theme-v12 .goal-strip-section{margin-top:-34px}
+  body.theme-v12 .focus-grid--v11{grid-template-columns:repeat(7,minmax(122px,1fr));overflow-x:auto;scroll-snap-type:x mandatory}
+  body.theme-v12 .featured-product-grid--v11{grid-template-columns:repeat(6,minmax(184px,74vw))}
+}
+@media (prefers-reduced-motion:reduce){body.theme-v12 .hero-bubbles-v12{transform:translate3d(0,-50%,0) scale(1.02)!important}}
+
+
+/* v12.1 — official product renders supplied for selected catalogue entries */
+body.theme-v12 .featured-product-grid--v11 .product-photo--official{
+  width:100%;height:100%;object-fit:contain;object-position:center bottom;padding:5px 17px 2px;
+  filter:drop-shadow(0 9px 14px rgba(15,65,70,.15));transform:translateY(1px);
+}
+body.theme-v12 #product-grid .product-photo--official{
+  width:100%;height:100%;object-fit:contain;object-position:center;padding:10px 22px 4px;
+  filter:drop-shadow(0 12px 22px rgba(15,65,70,.13));
+}
+
+/* v12.2 — force supplied official glass-vial renders when mapped */
+body.theme-v12 .product-card__visual:has(.product-photo--official),
+body.theme-v12 .product-visual-card--v10:has(.product-main-image--official) {
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbfc 100%);
+}
+body.theme-v12 .product-photo--official {
+  display: block !important;
+  width: auto !important;
+  height: 91% !important;
+  max-width: 86% !important;
+  max-height: 205px !important;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+  filter: drop-shadow(0 12px 15px rgba(13,67,73,.13));
+  transform: none !important;
+}
+body.theme-v12 .product-main-image--official {
+  display: block !important;
+  width: min(76%, 430px) !important;
+  height: auto !important;
+  max-height: 560px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  margin: 0 auto !important;
+  filter: drop-shadow(0 22px 28px rgba(13,67,73,.14));
+}
+
+/* v12.3 — all catalogue vials use the same latest glass-vial design */
+body.theme-v12 .featured-product-grid--v11 .premium-vial--card {
+  width: 98px;
+  max-height: 142px;
+  margin: 0 auto;
+  filter: drop-shadow(0 9px 14px rgba(15,65,70,.13));
+}
+body.theme-v12 #product-grid .premium-vial--card {
+  width: min(116px, 75%);
+  max-height: 188px;
+  margin: 0 auto;
+}
+
+/* v12.3 final — photorealistic unified bottle sizing on homepage */
+body.theme-v12 .featured-product-grid--v11 .premium-vial-photo--card {
+  width: 96px;
+  max-height: 142px;
+  margin: 0 auto;
+}
+body.theme-v12 #product-grid .premium-vial-photo--card {
+  width: min(116px,75%);
+  max-height: 188px;
+}
+
+/* VERAPEP v12.4 — colour-coded photorealistic vials with database-driven labels */
+body.theme-v12 .premium-vial-photo {
+  position: relative;
+  display: block;
+  flex: none;
+  aspect-ratio: 955 / 1881;
+  overflow: visible;
+  isolation: isolate;
+}
+body.theme-v12 .premium-vial-photo__bottle {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  pointer-events: none;
+}
+body.theme-v12 .premium-vial-photo__cap-tint,
+body.theme-v12 .premium-vial-photo__liquid-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  -webkit-mask: url('/assets/images/vial-bases/premium-glass-vial-neutral.png?v=12.4') center / 100% 100% no-repeat;
+  mask: url('/assets/images/vial-bases/premium-glass-vial-neutral.png?v=12.4') center / 100% 100% no-repeat;
+}
+body.theme-v12 .premium-vial-photo__cap-tint {
+  background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 48%,var(--vial-secondary));
+  clip-path: inset(0 0 88.2% 0);
+  mix-blend-mode: color;
+  opacity: .96;
+}
+body.theme-v12 .premium-vial-photo__liquid-tint {
+  background: linear-gradient(180deg,rgba(255,255,255,0) 0%,var(--vial-liquid) 28%,var(--vial-primary) 100%);
+  clip-path: inset(84.4% 12.5% 1.7% 3% round 0 0 22% 22%);
+  mix-blend-mode: multiply;
+  opacity: .68;
+}
+body.theme-v12 .premium-vial-photo__label {
+  position: absolute;
+  z-index: 4;
+  left: 2.05%;
+  right: 11.75%;
+  top: 33.35%;
+  height: 51.3%;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  border-radius: .3% .3% 1.8% 1.8%;
+  background: linear-gradient(90deg,#f1f3f1 0%,#fff 14%,#fff 83%,#f0f2f0 100%);
+  box-shadow: inset 0 1px 0 rgba(214,222,220,.92), inset 0 -1px 0 rgba(205,214,212,.72);
+  color: #52676d;
+  text-align: center;
+}
+body.theme-v12 .premium-vial-photo__band {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5.2%;
+  background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 50%,var(--vial-secondary));
+  box-shadow: 0 1px 2px rgba(19,73,78,.17);
+}
+body.theme-v12 .premium-vial-photo__brand,
+body.theme-v12 .premium-vial-photo__name,
+body.theme-v12 .premium-vial-photo__dose,
+body.theme-v12 .premium-vial-photo__research {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  width: 90%;
+  margin: 0;
+  transform: translateY(-50%);
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+body.theme-v12 .premium-vial-photo__brand {
+  top: 22%;
+  color: #397985;
+  font-weight: 650;
+  letter-spacing: .31em;
+  white-space: nowrap;
+}
+body.theme-v12 .premium-vial-photo__name {
+  top: 47%;
+  color: #4d6269;
+  font-weight: 800;
+  line-height: 1.01;
+  overflow-wrap: anywhere;
+}
+body.theme-v12 .premium-vial-photo__dose {
+  top: 64%;
+  color: #60757b;
+  font-weight: 550;
+  white-space: nowrap;
+}
+body.theme-v12 .premium-vial-photo__research {
+  top: 80%;
+  color: #78868b;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Product cards: slightly larger vial and more readable label than v12.3. */
+body.theme-v12 .product-card__visual .premium-vial-photo--card {
+  width: min(122px, 78%);
+  margin: 0 auto;
+  filter: drop-shadow(0 10px 15px rgba(15,65,70,.14));
+}
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__brand { font-size: 6.3px; }
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__name { font-size: 8.4px; }
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__name--long { font-size: 7.2px; }
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__name--xlong { font-size: 6.1px; }
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__name--xxlong { font-size: 5.2px; line-height: .98; }
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__dose { font-size: 6.1px; }
+body.theme-v12 .premium-vial-photo--card .premium-vial-photo__research { font-size: 4.8px; }
+
+/* Product page */
+body.theme-v12 .product-visual-card--premium-vial .premium-vial-photo--detail {
+  width: min(340px, 79%);
+  margin: 0 auto;
+  filter: drop-shadow(0 24px 30px rgba(13,67,73,.15));
+}
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__brand { font-size: 17px; }
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__name { font-size: 26px; }
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__name--long { font-size: 21px; }
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__name--xlong { font-size: 17px; }
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__name--xxlong { font-size: 14px; }
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__dose { font-size: 18px; }
+body.theme-v12 .premium-vial-photo--detail .premium-vial-photo__research { font-size: 13px; }
+
+/* Cart */
+body.theme-v12 .cart-line > .premium-vial-photo--cart {
+  width: 56px;
+  min-width: 56px;
+  margin: 0;
+  filter: drop-shadow(0 5px 8px rgba(13,67,73,.11));
+}
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__brand { font-size: 2.7px; }
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__name { font-size: 3.7px; }
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__name--long { font-size: 3.1px; }
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__name--xlong { font-size: 2.7px; }
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__name--xxlong { font-size: 2.3px; }
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__dose { font-size: 2.7px; }
+body.theme-v12 .premium-vial-photo--cart .premium-vial-photo__research { font-size: 2.1px; }
+
+@media (max-width:720px) {
+  body.theme-v12 .product-card__visual .premium-vial-photo--card { width: min(116px, 74%); }
+  body.theme-v12 .product-visual-card--premium-vial .premium-vial-photo--detail { width: min(300px, 82%); }
+}
+
+/* VERAPEP v12.5 — robust glass-vial rendering fix.
+   Legacy .product-card__visual span rules no longer touch the vial because its
+   component layers are div-based. The bottle is a CSS background so it cannot
+   disappear because of image lazy-loading or generic product-image rules. */
+body.theme-v12 .premium-vial-photo {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  aspect-ratio: 955 / 1881;
+  overflow: visible;
+  isolation: isolate;
+  background: transparent !important;
+}
+body.theme-v12 .premium-vial-photo__bottle {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: url('images/vial-bases/premium-glass-vial-neutral.png?v=12.5') center / 100% 100% no-repeat;
+  box-shadow: none;
+  pointer-events: none;
+}
+body.theme-v12 .premium-vial-photo__cap-tint,
+body.theme-v12 .premium-vial-photo__liquid-tint,
+body.theme-v12 .premium-vial-photo__band,
+body.theme-v12 .premium-vial-photo__brand,
+body.theme-v12 .premium-vial-photo__dose {
+  display: block;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+body.theme-v12 .premium-vial-photo__cap-tint,
+body.theme-v12 .premium-vial-photo__liquid-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask: url('images/vial-bases/premium-glass-vial-neutral.png?v=12.5') center / 100% 100% no-repeat;
+  mask: url('images/vial-bases/premium-glass-vial-neutral.png?v=12.5') center / 100% 100% no-repeat;
+}
+body.theme-v12 .premium-vial-photo__cap-tint {
+  background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 48%,var(--vial-secondary));
+  clip-path: inset(0 0 88.2% 0);
+  mix-blend-mode: color;
+  opacity: .98;
+}
+body.theme-v12 .premium-vial-photo__liquid-tint {
+  background: linear-gradient(180deg,rgba(255,255,255,0) 0%,var(--vial-liquid) 30%,var(--vial-primary) 100%);
+  clip-path: inset(84.2% 11.7% 1.6% 3% round 0 0 22% 22%);
+  mix-blend-mode: multiply;
+  opacity: .65;
+}
+body.theme-v12 .premium-vial-photo__label {
+  position: absolute;
+  z-index: 4;
+  left: 2.65%;
+  right: 11.45%;
+  top: 33.45%;
+  height: 51.15%;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: .3% .3% 1.8% 1.8%;
+  background: linear-gradient(90deg,#f2f4f2 0%,#fff 15%,#fff 83%,#f1f3f1 100%);
+  box-shadow: inset 0 1px 0 rgba(214,222,220,.92), inset 0 -1px 0 rgba(205,214,212,.72);
+  color: #52676d;
+  text-align: center;
+}
+body.theme-v12 .premium-vial-photo__band {
+  position: absolute;
+  inset: 0 0 auto 0;
+  width: 100%;
+  height: 5.25%;
+  background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 50%,var(--vial-secondary));
+  box-shadow: 0 1px 2px rgba(19,73,78,.17);
+}
+body.theme-v12 .premium-vial-photo__brand,
+body.theme-v12 .premium-vial-photo__name,
+body.theme-v12 .premium-vial-photo__dose,
+body.theme-v12 .premium-vial-photo__research {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  width: 90%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+}
+body.theme-v12 .premium-vial-photo__brand {
+  top: 21.5%;
+  color: #397985;
+  font-weight: 650;
+  letter-spacing: .31em;
+  white-space: nowrap;
+}
+body.theme-v12 .premium-vial-photo__name {
+  top: 46.5%;
+  display: block;
+  color: #4d6269;
+  font-weight: 800;
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+body.theme-v12 .premium-vial-photo__dose {
+  top: 64%;
+  color: #60757b;
+  font-weight: 550;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+body.theme-v12 .premium-vial-photo__research {
+  top: 80%;
+  display: block;
+  color: #78868b;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+/* Fit the complete bottle inside every product visual instead of clipping it. */
+body.theme-v12 #product-grid .product-card__visual,
+body.theme-v12 .featured-product-grid--v11 .product-card__visual {
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
+body.theme-v12 #product-grid .product-card__visual .premium-vial-photo--card {
+  width: auto;
+  height: min(196px, calc(100% - 12px));
+  max-width: 80%;
+  max-height: calc(100% - 12px);
+  margin: 6px auto;
+}
+body.theme-v12 .featured-product-grid--v11 .product-card__visual .premium-vial-photo--card {
+  width: auto;
+  height: calc(100% - 8px);
+  max-width: 75%;
+  max-height: calc(100% - 8px);
+  margin: 4px auto;
+}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__brand { font-size: 6.3px; }
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name { font-size: 8.4px; }
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name--long { font-size: 7.2px; }
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name--xlong { font-size: 6.1px; }
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name--xxlong { font-size: 5.2px; line-height: .98; }
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__dose { font-size: 6.1px; }
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__research { font-size: 4.8px; }
+
+/* VERAPEP v12.6 — visual QA corrections for homepage imagery and product labels. */
+body.theme-v12 .premium-vial-photo__bottle{
+  background-image:url('images/vial-bases/premium-glass-vial-neutral.png?v=12.6');
+}
+body.theme-v12 .premium-vial-photo__cap-tint,
+body.theme-v12 .premium-vial-photo__liquid-tint{
+  -webkit-mask-image:url('images/vial-bases/premium-glass-vial-neutral.png?v=12.6');
+  mask-image:url('images/vial-bases/premium-glass-vial-neutral.png?v=12.6');
+}
+/* One dominant effect colour per vial. Secondary goals are only a narrow accent in the label band. */
+body.theme-v12 .premium-vial-photo__cap-tint{
+  background:linear-gradient(90deg,color-mix(in srgb,var(--vial-primary) 88%,white),var(--vial-primary) 58%,color-mix(in srgb,var(--vial-primary) 82%,black));
+  mix-blend-mode:color;
+  opacity:.98;
+}
+body.theme-v12 .premium-vial-photo__liquid-tint{
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0%,var(--vial-liquid) 30%,color-mix(in srgb,var(--vial-primary) 78%,white) 100%);
+  mix-blend-mode:multiply;
+  opacity:.72;
+}
+body.theme-v12 .premium-vial-photo__label{
+  background:linear-gradient(90deg,#f2f4f2 0%,#fff 14%,#fff 84%,#f0f2f0 100%);
+}
+body.theme-v12 .premium-vial-photo__band{
+  height:5.6%;
+  background:linear-gradient(90deg,
+    var(--vial-primary) 0%,
+    var(--vial-primary) calc(100% - var(--vial-secondary-size,0%)),
+    var(--vial-secondary) calc(100% - var(--vial-secondary-size,0%)),
+    var(--vial-secondary) 100%);
+}
+body.theme-v12 .premium-vial-photo__brand{top:19.5%;letter-spacing:.30em;color:#397985}
+body.theme-v12 .premium-vial-photo__name{
+  top:47%;
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+  text-wrap:balance;
+}
+body.theme-v12 .premium-vial-photo__name br{display:block;content:''}
+body.theme-v12 .premium-vial-photo__dose{top:68%;font-weight:600}
+body.theme-v12 .premium-vial-photo__research{top:83%;letter-spacing:.01em}
+
+/* Card-label scale is controlled by deterministic line count, not raw character count. */
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name{font-size:8.7px;line-height:1.04}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name--long{font-size:7.5px;line-height:1.05}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name--xlong{font-size:6.25px;line-height:1.04}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__name--xxlong{font-size:5.25px;line-height:1.03}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__brand{font-size:6.4px}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__dose{font-size:6.25px}
+body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-photo__research{font-size:4.7px}
+
+/* Product names outside the vial use natural line breaking and balanced wrapping. */
+body.theme-v12 .product-card h3{
+  overflow-wrap:break-word;
+  word-break:normal;
+  hyphens:none;
+  text-wrap:balance;
+}
+body.theme-v12 #product-grid .product-card h3{
+  min-height:2.55em;
+  line-height:1.25;
+}
+body.theme-v12 .featured-product-grid--v11 .product-card h3{
+  min-height:2.35em;
+  display:flex;
+  align-items:flex-start;
+  font-size:10px;
+  line-height:1.18;
+}
+
+/* The seven goal colours are the same colours used on the vials. */
+body.theme-v12 .focus-option[data-focus="weight-metabolism"]{--goal-color:#078995;--goal-soft:#e9f8f9}
+body.theme-v12 .focus-option[data-focus="skin-appearance"]{--goal-color:#c35d98;--goal-soft:#fbecf4}
+body.theme-v12 .focus-option[data-focus="strength-recovery"]{--goal-color:#238f63;--goal-soft:#eaf7ef}
+body.theme-v12 .focus-option[data-focus="energy-vitality"]{--goal-color:#bd8615;--goal-soft:#fbf5df}
+body.theme-v12 .focus-option[data-focus="sleep-focus"]{--goal-color:#5b63bd;--goal-soft:#f0f1fb}
+body.theme-v12 .focus-option[data-focus="healthy-ageing"]{--goal-color:#318ab7;--goal-soft:#eaf6fb}
+body.theme-v12 .focus-option[data-focus="hormonal-specialist"]{--goal-color:#8253a7;--goal-soft:#f4edf8}
+body.theme-v12 .focus-grid--v11 .focus-option__icon{
+  color:var(--goal-color,#0a7780);
+  background:var(--goal-soft,#edf8f8);
+}
+body.theme-v12 .focus-grid--v11 .focus-option:hover{background:color-mix(in srgb,var(--goal-soft,#f2fbfb) 72%,white)}
+body.theme-v12 .focus-grid--v11 .focus-option.is-selected{
+  background:linear-gradient(180deg,var(--goal-soft,#e8f8f7),#fff);
+  box-shadow:inset 0 -3px 0 var(--goal-color,#0d8289);
+}
+
+/* Subtle product-image field tint reinforces the same effect colour without colouring the card itself. */
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="weight-metabolism"]){background:linear-gradient(180deg,#fff 0%,#f0fafb 100%)}
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="skin-appearance"]){background:linear-gradient(180deg,#fff 0%,#fdf3f8 100%)}
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="strength-recovery"]){background:linear-gradient(180deg,#fff 0%,#f0f9f4 100%)}
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="energy-vitality"]){background:linear-gradient(180deg,#fff 0%,#fcf8e9 100%)}
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="sleep-focus"]){background:linear-gradient(180deg,#fff 0%,#f4f4fc 100%)}
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="healthy-ageing"]){background:linear-gradient(180deg,#fff 0%,#eff8fc 100%)}
+body.theme-v12 .product-card__visual:has(.premium-vial-photo[data-goal="hormonal-specialist"]){background:linear-gradient(180deg,#fff 0%,#f7f2fa 100%)}
+
+/* Keep homepage information illustrations in the same cool, restrained visual system. */
+body.theme-v12 .trust-card--v11>img{filter:saturate(.92) contrast(.99)}
+body.theme-v12 .hero-bubbles-v12{filter:saturate(.84) brightness(1.035) contrast(.98)}
+
+/* v12.6 QA pass 2 — make vial labels genuinely legible at card scale. */
+body.theme-v12 .premium-vial-photo__name{white-space:nowrap}
+body.theme-v12 .featured-product-grid--v11 .product-card__visual{
+  height:158px;
+  min-height:158px;
+}
+body.theme-v12 .featured-product-grid--v11 .product-card__visual .premium-vial-photo--card{
+  width:72px !important;
+  height:142px !important;
+  min-width:72px;
+  max-width:72px;
+  min-height:142px;
+  max-height:142px;
+  margin:8px auto;
+}
+body.theme-v12 #product-grid .product-card__visual .premium-vial-photo--card{
+  width:90px !important;
+  height:177px !important;
+  min-width:90px;
+  max-width:90px;
+  min-height:177px;
+  max-height:177px;
+  margin:10px auto;
+}
+@media (max-width:720px){
+  body.theme-v12 .featured-product-grid--v11 .product-card__visual .premium-vial-photo--card{width:68px !important;height:134px !important;min-width:68px;max-width:68px;min-height:134px;max-height:134px}
+  body.theme-v12 #product-grid .product-card__visual .premium-vial-photo--card{width:82px !important;height:161px !important;min-width:82px;max-width:82px;min-height:161px;max-height:161px}
+}

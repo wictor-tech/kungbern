@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 180" role="img" aria-labelledby="t d">
+  <title id="t">Laboratory quality illustration</title><desc id="d">A peptide vial beside a gloved laboratory hand.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7fcfc"/><stop offset="1" stop-color="#dff3f5"/></linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d8edf0"/><stop offset=".22" stop-color="#fff" stop-opacity=".9"/><stop offset=".72" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#8fb4b9" stop-opacity=".6"/></linearGradient>
+    <linearGradient id="glove" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bdecef"/><stop offset="1" stop-color="#5dbac2"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".4" stop-color="#8d999b"/><stop offset=".55" stop-color="#f7f7f7"/><stop offset="1" stop-color="#8b9698"/></linearGradient>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0a5860" flood-opacity=".18"/></filter>
+  </defs>
+  <rect width="440" height="180" rx="24" fill="url(#bg)"/>
+  <g opacity=".55"><circle cx="370" cy="34" r="28" fill="#fff"/><circle cx="406" cy="80" r="12" fill="#fff"/></g>
+  <g filter="url(#sh)" transform="translate(72 16)">
+    <ellipse cx="64" cy="146" rx="45" ry="8" fill="#1c5960" opacity=".12"/>
+    <rect x="39" y="23" width="50" height="20" rx="4" fill="#dbe6e8"/>
+    <path d="M31 4h66v28H31z" rx="8" fill="url(#metal)" stroke="#879295"/>
+    <path d="M36 40h56c8 0 14 6 14 14v65c0 18-13 29-29 29H51c-16 0-29-11-29-29V54c0-8 6-14 14-14Z" fill="url(#glass)" stroke="#86aeb3"/>
+    <path d="M24 112c22-4 59-4 81 0v33H24Z" fill="#bfe8e7" opacity=".85"/>
+    <rect x="31" y="68" width="66" height="48" rx="3" fill="#fffef9" stroke="#dce3e3"/>
+    <rect x="31" y="68" width="66" height="6" rx="2" fill="#168e96"/>
+    <text x="64" y="88" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" letter-spacing="1.1" fill="#186b73">VERAPEP</text>
+    <text x="64" y="103" text-anchor="middle" font-family="Arial" font-size="7" font-weight="700" fill="#253b3f">QUALITY</text>
+  </g>
+  <g transform="translate(210 22) rotate(-8 100 75)" filter="url(#sh)">
+    <path d="M28 70c8-23 19-42 32-51 8-5 18-2 21 7l9 28 10-34c3-10 15-14 23-7 5 4 6 10 5 16l-5 31 14-26c5-9 17-11 24-3 4 5 4 11 1 17l-14 28 16-16c7-7 19-5 24 4 3 6 1 13-4 18l-43 40c-15 14-35 22-55 22H60c-30 0-50-28-42-57l10-37Z" fill="url(#glove)" stroke="#55aeb7" stroke-width="2"/>
+    <path d="M67 113c22-7 44-5 63 4" fill="none" stroke="#dff8f9" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+    <path d="M70 35c9 11 15 24 18 39M109 27c5 16 6 31 3 46M145 45c-1 13-5 25-13 36" fill="none" stroke="#e8fbfc" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  </g>
+</svg>

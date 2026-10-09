@@ -1,0 +1,13 @@
+VERAPEP V13.0 - MOBIL KONVERTERINGSUPPDATERING
+
+1. Packa upp VERAPEP-v13.0-MOBILE-CONVERSION-UPDATE.zip.
+2. Oppna GitHub Desktop och kontrollera att verapep-friends-test ar valt.
+3. Valj Repository -> Show in Explorer.
+4. Kopiera ALLT fran den uppackade uppdateringsmappen till GitHub-repots mapp.
+5. Valj "Ersatt filerna i malet" om Windows fragar.
+6. I GitHub Desktop: Summary = Mobile conversion v13.0
+7. Klicka Commit to main.
+8. Klicka Push origin.
+9. Render deployar automatiskt till samma lank.
+
+Backend, databaslogik och render.yaml ar inte andrade i denna uppdatering.

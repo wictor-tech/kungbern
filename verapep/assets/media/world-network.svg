@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 190" role="img" aria-labelledby="t d">
+  <title id="t">International network illustration</title><desc id="d">A stylised world map with connected locations.</desc>
+  <defs>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="#83c9ce" opacity=".72"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="520" height="190" rx="24" fill="#f7fcfc"/>
+  <g fill="url(#dots)" stroke="#92cfd3" stroke-width="1" opacity=".92">
+    <path d="M55 72 75 50l34-12 41 8 23 23-14 23-22 6-17 26-29-8-10-27-26-17Z"/>
+    <path d="m164 126 20 4 15 22-8 28-20-15-8-21Z"/>
+    <path d="m217 48 35-13 42 6 22 18 48-9 54 18 23 24-18 18-44-3-22 17-33-11-24 8-23-20-36-3-20-18Z"/>
+    <path d="m283 111 28 8 16 28-16 30-24-8-13-31Z"/>
+    <path d="m418 130 26-8 24 12 5 17-21 9-29-12Z"/>
+  </g>
+  <g stroke="#1b8d95" stroke-width="1.4" fill="none" opacity=".5"><path d="M112 74Q241 9 350 82"/><path d="M112 74Q230 158 444 142"/><path d="M350 82Q394 101 444 142"/></g>
+  <g fill="#0f7e87" filter="url(#glow)"><circle cx="112" cy="74" r="4"/><circle cx="350" cy="82" r="4"/><circle cx="444" cy="142" r="4"/><circle cx="288" cy="120" r="3"/><circle cx="185" cy="141" r="3"/></g>
+</svg>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="View a VERAPEP sandbox order, its payment status and simulated delivery timeline." name="description"/>
+<title>Track Test Order — VERAPEP</title>
+<link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="assets/styles.css?v=12.7" rel="stylesheet"/>
+<link href="assets/v8-1.css" rel="stylesheet"/>
+<link href="assets/v9.css" rel="stylesheet"/>
+<link href="/assets/v11.css" rel="stylesheet"/><link href="/assets/v12.css?v=12.6" rel="stylesheet"/><link href="/assets/v12-7.css?v=12.7" rel="stylesheet"/><link href="/assets/v12-9-mobile.css?v=12.9" rel="stylesheet"/><link href="/assets/v13-mobile-commerce.css?v=13.0" rel="stylesheet"/></head>
+<body class="order-page theme-v8-1 theme-v9 theme-v11 theme-v12 theme-v12-7 theme-v12-mobile theme-v13-mobile">
+<a class="skip-link" href="#main">Skip to order tracking</a>
+<div class="announcement"><div class="shell announcement__inner"><span>Sandbox order tracking</span><span>No real shipment</span><span>Local test data</span></div></div>
+<div aria-label="Store information" class="trust-bar trust-bar--v11"><div class="shell trust-bar__inner" id="trust-signals"><span><i aria-hidden="true">⌁</i> Published lab reports</span><span><i aria-hidden="true">◇</i> Transparent product information</span><span><i aria-hidden="true">◎</i> European delivery settings</span><span><i aria-hidden="true">✓</i> Secure checkout environment</span></div></div><header class="site-header site-header--v11" id="site-header"><div class="shell header-inner header-inner--v11"><a aria-label="VERAPEP home" class="brand brand--v11" href="/index.html"><span>VERAPEP<sup>®</sup></span></a><button aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation" class="menu-button" id="menu-button" type="button">☰</button><nav aria-label="Primary navigation" class="nav nav--v11" id="site-nav"><div class="nav__links nav__links--v11 nav__links--v12"><a aria-current="page" href="/index.html#featured-products">Shop</a><a href="/guide.html">Product guide</a><a href="/support.html">Ask Vera</a><a href="/index.html#quality">Science</a><a href="/my-pages.html">My pages</a></div><div class="nav__actions nav__actions--v11"><label aria-label="Search products" class="header-search header-search--v11"><input autocomplete="off" id="header-product-search" placeholder="Search peptides, products..." type="search"/><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></label><a aria-label="My Pages" class="header-icon-button" href="/my-pages.html"><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg></a><a aria-label="Saved products" class="header-icon-button nav-saved-link" href="/my-pages.html#saved-products"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path></svg><span data-saved-count="">0</span></a></div></nav></div></header>
+<main class="order-main" id="main">
+<div class="shell">
+<header class="order-heading"><div><p class="eyebrow">Order and delivery journey</p><h1>Track a test order</h1><p>Open an order from its confirmation link or enter the order number and matching email address below.</p></div><span class="sandbox-pill">Sandbox only</span></header>
+<section aria-labelledby="lookup-title" class="lookup-card" id="lookup-card">
+<div><p class="eyebrow">Find an order</p><h2 id="lookup-title">Order lookup</h2><p>Use the details created during sandbox checkout.</p></div>
+<form class="lookup-form" id="lookup-form">
+<label class="field"><span>Order number</span><input autocomplete="off" id="lookup-order" placeholder="VP-YYYYMMDD-XXXXXX" required=""/></label>
+<label class="field"><span>Email</span><input autocomplete="email" id="lookup-email" required="" type="email"/></label>
+<button class="button button--primary" type="submit">Find test order</button>
+</form>
+</section>
+<div class="checkout-message" hidden="" id="order-message" role="alert"></div>
+<div class="order-loading" hidden="" id="order-loading">Loading test order…</div>
+<section aria-live="polite" class="order-detail" hidden="" id="order-detail">
+<header class="order-status-card">
+<div><p class="eyebrow">Order <span id="order-id"></span></p><h2 id="order-status-title">Status</h2><p id="order-status-copy"></p></div>
+<div class="order-status-badge" id="order-status-badge"></div>
+</header>
+<div class="tracking-card">
+<div class="section-heading section-heading--split"><div><p class="eyebrow">Progress</p><h2>Order timeline</h2></div><p>Admin updates appear here immediately. The tracking number is synthetic unless a real carrier integration is added later.</p></div>
+<ol class="tracking-timeline" id="tracking-timeline"></ol>
+</div>
+<div class="order-grid">
+<article class="order-panel">
+<header><p class="eyebrow">Products</p><h2>Order contents</h2></header>
+<div id="order-lines"></div>
+<dl class="totals-list order-totals">
+<div><dt>Subtotal</dt><dd id="order-subtotal"></dd></div>
+<div><dt>Delivery</dt><dd id="order-shipping"></dd></div>
+<div><dt>Tax</dt><dd id="order-tax"></dd></div>
+<div class="totals-list__total"><dt>Total</dt><dd id="order-total"></dd></div>
+</dl>
+</article>
+<aside class="order-side">
+<section class="aside-card"><p class="eyebrow">Payment</p><h3 id="payment-status"></h3><p id="payment-reference"></p></section>
+<section class="aside-card"><p class="eyebrow">Delivery</p><h3 id="shipping-method"></h3><p id="shipping-address"></p><p id="tracking-reference"></p></section>
+<section class="aside-card"><p class="eyebrow">Customer</p><h3 id="customer-name"></h3><p id="customer-contact"></p></section>
+<button class="button button--light print-button" id="print-order" type="button">Print order</button>
+</aside>
+</div>
+<section class="return-card" id="return-card">
+<div><p class="eyebrow">Return workflow</p><h2>Request a sandbox return</h2><p>This records a test return request for the order. It does not create a shipping label or move real funds.</p></div>
+<form id="return-form"><label class="field"><span>Reason</span><textarea id="return-reason" maxlength="500" placeholder="Describe the test return request" required="" rows="4"></textarea></label><button class="button button--dark" type="submit">Create return request</button><p id="return-message" role="status"></p></form>
+</section>
+</section>
+</div>
+</main>
+<footer class="site-footer"><div class="shell footer-inner"><span>VERAPEP · Sandbox order tracking</span><nav aria-label="Footer navigation" class="footer-links"><a href="index.html#catalogue">Products</a><a href="checkout.html">Checkout</a><a href="admin.html">Admin</a><a href="#main">Back to top ↑</a></nav></div></footer>
+<script src="assets/site.js"></script>
+<script src="/assets/vial-renderer.js?v=12.6"></script>
+<script src="assets/cart.js?v=12.4"></script>
+<script src="assets/order.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Review the cart and test the VERAPEP checkout journey in preview mode." name="description"/>
+<title>Preview Checkout — VERAPEP</title>
+<link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="assets/styles.css?v=12.7" rel="stylesheet"/>
+<link href="assets/v8-1.css" rel="stylesheet"/>
+<link href="assets/v9.css" rel="stylesheet"/>
+<link href="/assets/v11.css" rel="stylesheet"/><link href="/assets/v12.css?v=12.6" rel="stylesheet"/><link href="/assets/v12-7.css?v=12.7" rel="stylesheet"/><link href="/assets/v12-9-mobile.css?v=12.9" rel="stylesheet"/><link href="/assets/v13-mobile-commerce.css?v=13.0" rel="stylesheet"/></head>
+<body class="checkout-page theme-v8-1 theme-v9 theme-v11 theme-v12 theme-v12-7 theme-v12-mobile theme-v13-mobile">
+<a class="skip-link" href="#main">Skip to checkout</a>
+<!-- ORIGIN: Shared catalogue header with a sandbox-specific status line. -->
+<div class="announcement"><div class="shell announcement__inner"><span>Preview checkout</span><span>No live payment</span></div></div>
+<div aria-label="Store information" class="trust-bar trust-bar--v11"><div class="shell trust-bar__inner" id="trust-signals"><span><i aria-hidden="true">⌁</i> Published lab reports</span><span><i aria-hidden="true">◇</i> Transparent product information</span><span><i aria-hidden="true">◎</i> European delivery settings</span><span><i aria-hidden="true">✓</i> Secure checkout environment</span></div></div><header class="site-header site-header--v11" id="site-header"><div class="shell header-inner header-inner--v11"><a aria-label="VERAPEP home" class="brand brand--v11" href="/index.html"><span>VERAPEP<sup>®</sup></span></a><button aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation" class="menu-button" id="menu-button" type="button">☰</button><nav aria-label="Primary navigation" class="nav nav--v11" id="site-nav"><div class="nav__links nav__links--v11 nav__links--v12"><a aria-current="page" href="/index.html#featured-products">Shop</a><a href="/guide.html">Product guide</a><a href="/support.html">Ask Vera</a><a href="/index.html#quality">Science</a><a href="/my-pages.html">My pages</a></div><div class="nav__actions nav__actions--v11"><label aria-label="Search products" class="header-search header-search--v11"><input autocomplete="off" id="header-product-search" placeholder="Search peptides, products..." type="search"/><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></label><a aria-label="My Pages" class="header-icon-button" href="/my-pages.html"><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg></a><a aria-label="Saved products" class="header-icon-button nav-saved-link" href="/my-pages.html#saved-products"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path></svg><span data-saved-count="">0</span></a></div></nav></div></header>
+<main class="checkout-main" id="main">
+<div class="shell">
+<!-- ORIGIN: New five-step checkout flow requested for the complete test webshop. -->
+<header class="checkout-heading">
+<div><p class="eyebrow">Preview checkout</p><h1>Checkout</h1><p>Review your selection, add delivery details and test the checkout flow. No live payment is processed.</p></div><div class="sandbox-pill">Preview</div>
+</header>
+<ol aria-label="Checkout progress" class="checkout-steps" id="checkout-steps">
+<li class="is-active" data-step-indicator="1"><span>1</span><strong>Cart</strong></li>
+<li data-step-indicator="2"><span>2</span><strong>Details</strong></li>
+<li data-step-indicator="3"><span>3</span><strong>Delivery</strong></li>
+<li data-step-indicator="4"><span>4</span><strong>Payment</strong></li>
+<li data-step-indicator="5"><span>5</span><strong>Complete</strong></li>
+</ol>
+<div class="checkout-layout">
+<div class="checkout-panel">
+<div class="checkout-message" hidden="" id="checkout-message" role="alert"></div>
+<section aria-labelledby="step-1-title" class="checkout-stage is-active" data-step="1">
+<p class="eyebrow">Step 1 of 5</p><h2 id="step-1-title">Review your cart</h2>
+<p>Every line is matched against the server-side Excel catalogue before checkout continues.</p>
+<div class="checkout-cart-items" id="checkout-cart-items"></div>
+<div class="checkout-actions"><a class="button button--light" href="index.html#catalogue">Add another product</a><button class="button button--primary" data-next-step="2" type="button">Continue to details</button></div>
+</section>
+<section aria-labelledby="step-2-title" class="checkout-stage" data-step="2" hidden="">
+<p class="eyebrow">Step 2 of 5</p><h2 id="step-2-title">Customer details</h2>
+<p>These details are used only for this preview checkout.</p>
+<div class="form-grid">
+<label class="field field--full"><span>Full name</span><input autocomplete="name" id="customer-name" maxlength="120" name="name" required=""/></label>
+<label class="field"><span>Email</span><input autocomplete="email" id="customer-email" maxlength="254" name="email" required="" type="email"/></label>
+<label class="field"><span>Phone <small>optional</small></span><input autocomplete="tel" id="customer-phone" maxlength="40" name="phone" type="tel"/></label>
+</div>
+<div class="checkout-actions"><button class="button button--light" data-prev-step="1" type="button">Back</button><button class="button button--primary" data-next-step="3" type="button">Continue to delivery</button></div>
+</section>
+<section aria-labelledby="step-3-title" class="checkout-stage" data-step="3" hidden="">
+<p class="eyebrow">Step 3 of 5</p><h2 id="step-3-title">Test delivery</h2>
+<p>No real shipment is booked. The options below exercise the complete pricing and order-status flow.</p>
+<div class="form-grid">
+<label class="field field--full"><span>Address line 1</span><input autocomplete="address-line1" id="address-line1" maxlength="160" required=""/></label>
+<label class="field field--full"><span>Address line 2 <small>optional</small></span><input autocomplete="address-line2" id="address-line2" maxlength="160"/></label>
+<label class="field"><span>City</span><input autocomplete="address-level2" id="address-city" maxlength="100" required=""/></label>
+<label class="field"><span>Postal code</span><input autocomplete="postal-code" id="address-postal" maxlength="30" required=""/></label>
+<label class="field field--full"><span>Country</span><select autocomplete="country" id="address-country" required=""></select></label>
+</div>
+<fieldset class="delivery-options"><legend>Delivery method</legend><div id="delivery-options"></div></fieldset>
+<div class="checkout-actions"><button class="button button--light" data-prev-step="2" type="button">Back</button><button class="button button--primary" data-next-step="4" type="button">Review payment</button></div>
+</section>
+<section aria-labelledby="step-4-title" class="checkout-stage" data-step="4" hidden="">
+<p class="eyebrow">Step 4 of 5</p><h2 id="step-4-title">Payment and confirmation</h2>
+<div class="sandbox-alert"><strong>Preview payment.</strong><span>No money is moved and no real order is created.</span></div>
+<fieldset class="payment-options"><legend>Payment method</legend>
+<label class="option-card"><input checked="" name="payment-method" type="radio" value="mock"/><span><strong>Mock test payment</strong><small>Instant local confirmation. No payment provider contacted.</small></span></label>
+<label class="option-card option-card--disabled" id="stripe-option"><input disabled="" name="payment-method" type="radio" value="stripe_test"/><span><strong>Stripe test checkout</strong><small id="stripe-option-note">Requires a test key, legal acknowledgement and per-variant allowlist.</small></span></label>
+</fieldset>
+<div class="acceptance-list">
+<label><input id="accept-terms" type="checkbox"/> <span>I understand that this is a demonstration and no real payment, sale or delivery will take place.</span></label>
+<input checked="" hidden="" id="accept-sandbox" type="checkbox"/>
+</div>
+<div class="checkout-actions"><button class="button button--light" data-prev-step="3" type="button">Back</button><button class="button button--primary" id="place-order" type="button">Complete preview order</button></div>
+</section>
+<section aria-labelledby="step-5-title" class="checkout-stage" data-step="5" hidden="">
+<p class="eyebrow">Step 5 of 5</p><h2 id="step-5-title">Order demonstration complete</h2><p id="checkout-complete-copy">Opening the order confirmation and tracking page.</p>
+</section>
+</div>
+<aside aria-labelledby="summary-title" class="checkout-summary"><details class="checkout-summary-details" open><summary><span>Order summary</span><small>Tap to expand or collapse</small></summary><div class="checkout-summary__sticky"><p class="eyebrow">Order summary</p><h2 id="summary-title">Order total</h2><div id="checkout-summary-lines"></div><dl class="totals-list"><div><dt>Subtotal</dt><dd id="summary-subtotal">$0.00</dd></div><div><dt>Delivery</dt><dd id="summary-shipping">—</dd></div><div><dt>Tax</dt><dd id="summary-tax">Not included in preview</dd></div><div class="totals-list__total"><dt>Total</dt><dd id="summary-total">$0.00</dd></div></dl><p class="summary-note" id="summary-note">Reference prices and delivery details are shown for preview purposes only.</p></div></details></aside>
+</div>
+</div>
+</main>
+<footer class="site-footer"><div class="shell footer-inner"><span>VERAPEP · Preview checkout</span><nav aria-label="Footer navigation" class="footer-links"><a href="index.html#catalogue">Products</a><a href="order.html">Track order</a><a href="#main">Back to top ↑</a></nav></div></footer>
+<script src="assets/site.js"></script>
+<script src="/assets/vial-renderer.js?v=12.6"></script>
+<script src="assets/cart.js?v=12.4"></script>
+<script src="assets/checkout.js"></script>
+</body>
+</html>

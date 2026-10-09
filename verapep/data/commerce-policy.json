@@ -1,0 +1,596 @@
+{
+  "version": 1,
+  "mode": "catalogue-only",
+  "defaultStatus": "catalogue_only",
+  "explanation": "All products are information-only until product, pricing, country, legal and commercial approval is completed in administration.",
+  "products": {
+    "5-amino-1mq-049": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "adipotide-026": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "aicar-025": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "aod9604-015": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "cagrilintide-061": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "cagrilintide5mg-semaglutide5mg-068": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "glp-1-5mg-vial-054": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "hgh-fragment-176-191-002": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "insulin-057": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "mazdutide-063": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "mots-c-047": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "nad-064": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "retatrutide-005": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "retatrutide5mg-cagrilintide5mg-069": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "semaglutide-003": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "slupp-332-083": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ss-31-028": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "survodutide-067": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "tesamorelin-041": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "tirzepatide-004": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ace-031-024": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ara-290-060": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bpc-157-009": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bpc10mg-tb10mg-012": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bpc157-10mg-ghk-cu50mg-tb500-10mg-066": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bpc157-10mg-ghk-cu50mg-tb500-10mg-kpv10mg-078": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bpc2mg-tb2mg-010": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bpc5mg-tb5mg-011": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "cjc-1295-whitout-dac-031": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "cjc-1295-with-dac-032": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "cjc-1295without-dac5mg-ipa-5mg-033": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "follistatin-038": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "gdf-8-037": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ghrp-2-acetate-029": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ghrp-6-acetate-030": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "hexarelin-acetate-042": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "hgh-191aa-somatropin-001": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "igf-1lr3-039": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "igf-des-040": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ipamorelin-008": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "mgf-034": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "peg-mgf-035": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "sermorelin-acetate-036": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "tb500-frag-014": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "tb500-thymosin-b4-acetate-013": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "botulinum-toxin-081": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "epithalon-023": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "foxo4-048": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ghk-cu-043": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "glutathione-056": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "hyaluronic-acid-059": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "kpv-071": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "lemon-bottle-084": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "mt-1-006": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "mt-2-melanotan-2-acetate-007": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "n-acetyl-epitalon-amidate-074": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "snap-8-062": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "testagen-079": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "thymalin-045": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "vilon-075": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "adamax-072": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "alprostadil-065": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "bac-water-058": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "cerebrolysin-051": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "dermorphin-053": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "dsip-019": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "epo-082": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "gonadorelin-acetate-018": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "hcg-016": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "hmg-055": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "kisspeptin-10-044": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "ll37-050": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "melatonin-052": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "oxytocin-acetate-022": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "p21-080": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "pe-22-28-073": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "pinealon-076": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "pnc27-077": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "pt-141-017": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "selank-021": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "semax-027": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "thymosin-alpha-1-046": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "triptorelin-acetate-gnrh-triptorelin-020": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    },
+    "vip-070": {
+      "status": "information_only",
+      "sandboxEnabled": false,
+      "liveEnabled": false,
+      "reviewReference": null,
+      "note": "Information-only. Enablement requires explicit approval in the administration workflow."
+    }
+  }
+}

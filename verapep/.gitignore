@@ -1,0 +1,16 @@
+.env
+node_modules/
+data/orders.json
+data/returns.json
+data/outbox/
+*.log
+.DS_Store
+data/verapep.sqlite
+data/verapep.sqlite-shm
+data/verapep.sqlite-wal
+
+# Render/local runtime database
+data/verapep.sqlite
+data/verapep.sqlite-shm
+data/verapep.sqlite-wal
+__pycache__/

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 520" role="img" aria-labelledby="title desc">
+  <title id="title">VERA support guide</title>
+  <desc id="desc">Stylised medical support guide in a white coat.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6fdfd"/>
+      <stop offset="1" stop-color="#eaf7f8"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e8f4f5"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34221f"/>
+      <stop offset="1" stop-color="#151010"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a8ecf0"/>
+      <stop offset="1" stop-color="#4bbfc8"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#0b636c" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="420" height="520" rx="40" fill="url(#bg)"/>
+  <g opacity="0.7">
+    <circle cx="76" cy="86" r="32" fill="#dff4f5"/>
+    <circle cx="338" cy="126" r="22" fill="#d8f1f2"/>
+    <circle cx="316" cy="68" r="14" fill="#edf9fa"/>
+  </g>
+  <g filter="url(#shadow)" transform="translate(58 52)">
+    <ellipse cx="152" cy="392" rx="98" ry="20" fill="#0f6e79" opacity="0.10"/>
+    <path d="M86 228c10-22 33-37 66-37s56 15 66 37l32 116c7 26-11 52-38 52H92c-27 0-45-26-38-52l32-116Z" fill="url(#coat)"/>
+    <path d="M116 236c16 12 26 16 36 16s20-4 36-16v120c0 12-10 22-22 22h-28c-12 0-22-10-22-22V236Z" fill="#f7fbfc"/>
+    <path d="M121 244h62l-8 154h-46l-8-154Z" fill="#133d46" opacity="0.08"/>
+    <path d="M110 141c0-55 35-92 94-92s94 37 94 92c0 22-9 42-25 58l-22 22c-10 10-23 15-37 15h-20c-14 0-27-5-37-15l-22-22c-16-16-25-36-25-58Z" fill="url(#hair)"/>
+    <path d="M133 160c0-49 30-80 71-80 43 0 72 31 72 80v35c0 44-28 77-72 77-43 0-71-33-71-77v-35Z" fill="#f2c5ac"/>
+    <path d="M156 146c16-22 43-36 76-36 11 0 24 2 37 6 8 20 11 35 11 48 0 18-4 29-11 41-8-25-29-47-56-58-16 12-38 22-62 26-6 14-9 28-9 43-8-12-12-25-12-43 0-9 1-18 4-27 6 0 14 0 22 0Z" fill="#2b1d1a" opacity="0.95"/>
+    <ellipse cx="177" cy="184" rx="6.5" ry="5" fill="#2f2320"/>
+    <ellipse cx="229" cy="184" rx="6.5" ry="5" fill="#2f2320"/>
+    <path d="M190 220c8 7 18 10 29 10s21-3 29-10" fill="none" stroke="#8c5b4e" stroke-width="5" stroke-linecap="round"/>
+    <path d="M201 196c1 6 1 12-1 17" fill="none" stroke="#d2a18f" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="145" cy="352" r="11" fill="#dceff1" stroke="#75bfc3" stroke-width="4"/>
+    <circle cx="260" cy="352" r="11" fill="#dceff1" stroke="#75bfc3" stroke-width="4"/>
+    <path d="M152 352h97" stroke="#9dcfd3" stroke-width="6" stroke-linecap="round"/>
+    <path d="M183 260h40v56c0 15-9 24-20 24s-20-9-20-24v-56Z" fill="#f0f8f9" stroke="#bfe3e7" stroke-width="3"/>
+    <path d="M203 263v50" stroke="#48b3bf" stroke-width="6" stroke-linecap="round"/>
+    <path d="M184 289h38" stroke="#48b3bf" stroke-width="6" stroke-linecap="round"/>
+    <path d="M120 124c14-56 56-90 114-90 24 0 45 6 63 17 8 16 12 31 12 48-19-17-43-29-75-31-27-2-56 5-82 18-13 10-23 22-32 38Z" fill="#34221f"/>
+    <path d="M108 239c10 11 22 18 37 23M297 239c-10 11-22 18-37 23" fill="none" stroke="#d6eaee" stroke-width="9" stroke-linecap="round"/>
+    <rect x="161" y="316" width="84" height="27" rx="13.5" fill="#ffffff" stroke="#c5e5e7"/>
+    <text x="203" y="334" text-anchor="middle" font-size="14" font-family="Arial, Helvetica, sans-serif" font-weight="700" fill="#0c6d75">VERA</text>
+  </g>
+  <g transform="translate(26 32)">
+    <rect x="0" y="0" width="104" height="36" rx="18" fill="#ffffff" fill-opacity="0.76" stroke="#d7edef"/>
+    <text x="52" y="23" text-anchor="middle" font-size="14" font-family="Arial, Helvetica, sans-serif" font-weight="700" fill="#0b6e75">ASK VERA</text>
+  </g>
+</svg>

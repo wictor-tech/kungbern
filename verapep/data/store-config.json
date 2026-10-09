@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "storeName": "VERAPEP",
+  "currency": "EUR",
+  "priceSource": "priceUsd1",
+  "priceSourceLabel": "Retail price (EUR)",
+  "checkoutMode": "sandbox",
+  "tax": {
+    "configured": false,
+    "rate": 0,
+    "label": "VAT configuration pending"
+  },
+  "shippingMethods": [
+    {
+      "id": "europe-standard",
+      "name": "European standard delivery",
+      "description": "Delivery setup is pending final carrier configuration.",
+      "price": 0,
+      "freeThreshold": null,
+      "estimatedDays": "7–10 days"
+    }
+  ],
+  "allowedCountries": [
+    {
+      "code": "AT",
+      "name": "Austria"
+    },
+    {
+      "code": "BE",
+      "name": "Belgium"
+    },
+    {
+      "code": "BG",
+      "name": "Bulgaria"
+    },
+    {
+      "code": "HR",
+      "name": "Croatia"
+    },
+    {
+      "code": "CY",
+      "name": "Cyprus"
+    },
+    {
+      "code": "CZ",
+      "name": "Czechia"
+    },
+    {
+      "code": "DK",
+      "name": "Denmark"
+    },
+    {
+      "code": "EE",
+      "name": "Estonia"
+    },
+    {
+      "code": "FI",
+      "name": "Finland"
+    },
+    {
+      "code": "FR",
+      "name": "France"
+    },
+    {
+      "code": "DE",
+      "name": "Germany"
+    },
+    {
+      "code": "GR",
+      "name": "Greece"
+    },
+    {
+      "code": "HU",
+      "name": "Hungary"
+    },
+    {
+      "code": "IE",
+      "name": "Ireland"
+    },
+    {
+      "code": "IT",
+      "name": "Italy"
+    },
+    {
+      "code": "LV",
+      "name": "Latvia"
+    },
+    {
+      "code": "LT",
+      "name": "Lithuania"
+    },
+    {
+      "code": "LU",
+      "name": "Luxembourg"
+    },
+    {
+      "code": "MT",
+      "name": "Malta"
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands"
+    },
+    {
+      "code": "PL",
+      "name": "Poland"
+    },
+    {
+      "code": "PT",
+      "name": "Portugal"
+    },
+    {
+      "code": "RO",
+      "name": "Romania"
+    },
+    {
+      "code": "SK",
+      "name": "Slovakia"
+    },
+    {
+      "code": "SI",
+      "name": "Slovenia"
+    },
+    {
+      "code": "ES",
+      "name": "Spain"
+    },
+    {
+      "code": "SE",
+      "name": "Sweden"
+    }
+  ],
+  "trustSignals": [
+    "Secure test checkout",
+    "Lab reports where available",
+    "European delivery settings",
+    "Customer support"
+  ],
+  "assistantName": "Ask Vera"
+}

@@ -1,0 +1,12 @@
+services:
+  verapep-sandbox:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      TEST_COMMERCE_MODE: "true"
+      ADMIN_EMAIL: admin@verapep.local
+      ADMIN_PASSWORD: ChangeMe-123!
+    volumes:
+      - ./data:/app/data

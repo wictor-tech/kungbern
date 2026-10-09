@@ -1,0 +1,428 @@
+{
+  "version": 2,
+  "enabled": true,
+  "disclaimer": "Results show related catalogue information based on selected interests. They are not medical recommendations and do not confirm eligibility for purchase.",
+  "focusAreas": [
+    {
+      "id": "weight-metabolism",
+      "label": "Weight & metabolism",
+      "description": "Explore appetite, body composition, glucose-related and metabolic catalogue information.",
+      "categories": [
+        "metabolism"
+      ],
+      "needs": [
+        {
+          "id": "appetite-satiety",
+          "label": "Appetite & satiety"
+        },
+        {
+          "id": "weight-management",
+          "label": "Weight management"
+        },
+        {
+          "id": "metabolic-health",
+          "label": "Metabolic health"
+        },
+        {
+          "id": "cellular-energy",
+          "label": "Cellular energy"
+        },
+        {
+          "id": "body-composition",
+          "label": "Body composition"
+        }
+      ]
+    },
+    {
+      "id": "skin-appearance",
+      "label": "Skin appearance",
+      "description": "Explore hydration, elasticity, tone, fine-line and skin-support catalogue information.",
+      "categories": [
+        "skin"
+      ],
+      "needs": [
+        {
+          "id": "dryness-hydration",
+          "label": "Dryness & hydration"
+        },
+        {
+          "id": "uneven-appearance",
+          "label": "Uneven appearance"
+        },
+        {
+          "id": "fine-lines",
+          "label": "Fine lines"
+        },
+        {
+          "id": "skin-elasticity",
+          "label": "Skin elasticity"
+        },
+        {
+          "id": "skin-barrier",
+          "label": "Skin barrier & irritation"
+        }
+      ]
+    },
+    {
+      "id": "strength-recovery",
+      "label": "Strength & recovery",
+      "description": "Explore physical performance, connective tissue and recovery-related catalogue information.",
+      "categories": [
+        "strength"
+      ],
+      "needs": [
+        {
+          "id": "activity-recovery",
+          "label": "Recovery after activity"
+        },
+        {
+          "id": "muscle-signalling",
+          "label": "Muscle-related signalling"
+        },
+        {
+          "id": "endurance-energy",
+          "label": "Energy & endurance"
+        },
+        {
+          "id": "connective-tissue",
+          "label": "Connective tissue"
+        },
+        {
+          "id": "growth-signalling",
+          "label": "Growth signalling"
+        }
+      ]
+    },
+    {
+      "id": "energy-vitality",
+      "label": "Energy",
+      "description": "Explore cellular energy, endurance and vitality-related catalogue information.",
+      "categories": [
+        "metabolism",
+        "specialist"
+      ],
+      "needs": [
+        {
+          "id": "cellular-energy",
+          "label": "Cellular energy"
+        },
+        {
+          "id": "endurance-energy",
+          "label": "Endurance-related information"
+        },
+        {
+          "id": "metabolic-health",
+          "label": "Metabolic health"
+        },
+        {
+          "id": "recovery-energy",
+          "label": "Recovery & energy"
+        }
+      ]
+    },
+    {
+      "id": "sleep-focus",
+      "label": "Sleep & focus",
+      "description": "Explore sleep, stress, focus and neurological research catalogue information.",
+      "categories": [
+        "specialist"
+      ],
+      "needs": [
+        {
+          "id": "falling-asleep",
+          "label": "Falling asleep"
+        },
+        {
+          "id": "sleep-quality",
+          "label": "Sleep quality"
+        },
+        {
+          "id": "stress-relaxation",
+          "label": "Stress & relaxation"
+        },
+        {
+          "id": "focus-clarity",
+          "label": "Focus & clarity"
+        },
+        {
+          "id": "circadian-rhythm",
+          "label": "Circadian rhythm"
+        }
+      ]
+    },
+    {
+      "id": "healthy-ageing",
+      "label": "Healthy ageing",
+      "description": "Explore cellular, skin and tissue-related healthy-ageing catalogue information.",
+      "categories": [
+        "skin",
+        "metabolism"
+      ],
+      "needs": [
+        {
+          "id": "healthy-cellular",
+          "label": "Cellular ageing research"
+        },
+        {
+          "id": "skin-elasticity",
+          "label": "Skin elasticity"
+        },
+        {
+          "id": "antioxidant-information",
+          "label": "Antioxidant information"
+        },
+        {
+          "id": "tissue-support",
+          "label": "Tissue support"
+        }
+      ]
+    },
+    {
+      "id": "hormonal-specialist",
+      "label": "Hormonal & specialist",
+      "description": "Explore hormonal, reproductive, immune and other specialist catalogue information.",
+      "categories": [
+        "specialist"
+      ],
+      "needs": [
+        {
+          "id": "hormonal-signalling",
+          "label": "Hormonal signalling"
+        },
+        {
+          "id": "fertility-information",
+          "label": "Fertility information"
+        },
+        {
+          "id": "sexual-health",
+          "label": "Sexual health"
+        },
+        {
+          "id": "immune-specialist",
+          "label": "Immune-related specialist"
+        },
+        {
+          "id": "specialist-materials",
+          "label": "Specialist materials"
+        }
+      ]
+    }
+  ],
+  "priorities": [
+    {
+      "id": "lab-report",
+      "label": "Lab report available"
+    },
+    {
+      "id": "highest-rated",
+      "label": "Highest rated"
+    },
+    {
+      "id": "most-reviewed",
+      "label": "Most reviewed"
+    },
+    {
+      "id": "complete-information",
+      "label": "Most complete information"
+    },
+    {
+      "id": "non-specialist",
+      "label": "Hide specialist-only entries"
+    }
+  ],
+  "questions": [
+    {
+      "id": "focus",
+      "label": "What would you like to explore?",
+      "options": [
+        {
+          "value": "weight-metabolism",
+          "label": "Weight & metabolism"
+        },
+        {
+          "value": "skin-appearance",
+          "label": "Skin appearance"
+        },
+        {
+          "value": "strength-recovery",
+          "label": "Strength & recovery"
+        },
+        {
+          "value": "energy-vitality",
+          "label": "Energy"
+        },
+        {
+          "value": "sleep-focus",
+          "label": "Sleep & focus"
+        },
+        {
+          "value": "healthy-ageing",
+          "label": "Healthy ageing"
+        },
+        {
+          "value": "hormonal-specialist",
+          "label": "Hormonal & specialist"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "focus": "weight-metabolism",
+      "productIds": [
+        "5-amino-1mq-049",
+        "adipotide-026",
+        "aicar-025",
+        "aod9604-015",
+        "cagrilintide-061",
+        "cagrilintide5mg-semaglutide5mg-068",
+        "glp-1-5mg-vial-054",
+        "hgh-fragment-176-191-002",
+        "insulin-057",
+        "mazdutide-063",
+        "mots-c-047",
+        "retatrutide-005",
+        "retatrutide5mg-cagrilintide5mg-069",
+        "semaglutide-003",
+        "slupp-332-083",
+        "survodutide-067",
+        "tesamorelin-041",
+        "tirzepatide-004"
+      ]
+    },
+    {
+      "focus": "skin-appearance",
+      "productIds": [
+        "bpc157-10mg-ghk-cu50mg-tb500-10mg-066",
+        "bpc157-10mg-ghk-cu50mg-tb500-10mg-kpv10mg-078",
+        "botulinum-toxin-081",
+        "ghk-cu-043",
+        "glutathione-056",
+        "hyaluronic-acid-059",
+        "kpv-071",
+        "lemon-bottle-084",
+        "mt-1-006",
+        "mt-2-melanotan-2-acetate-007",
+        "snap-8-062"
+      ]
+    },
+    {
+      "focus": "strength-recovery",
+      "productIds": [
+        "ss-31-028",
+        "ace-031-024",
+        "ara-290-060",
+        "bpc-157-009",
+        "bpc10mg-tb10mg-012",
+        "bpc157-10mg-ghk-cu50mg-tb500-10mg-066",
+        "bpc157-10mg-ghk-cu50mg-tb500-10mg-kpv10mg-078",
+        "bpc2mg-tb2mg-010",
+        "bpc5mg-tb5mg-011",
+        "cjc-1295-whitout-dac-031",
+        "cjc-1295-with-dac-032",
+        "cjc-1295without-dac5mg-ipa-5mg-033",
+        "follistatin-038",
+        "gdf-8-037",
+        "ghrp-2-acetate-029",
+        "ghrp-6-acetate-030",
+        "hexarelin-acetate-042",
+        "hgh-191aa-somatropin-001",
+        "igf-1lr3-039",
+        "igf-des-040",
+        "ipamorelin-008",
+        "mgf-034",
+        "peg-mgf-035",
+        "sermorelin-acetate-036",
+        "tb500-frag-014",
+        "tb500-thymosin-b4-acetate-013"
+      ]
+    },
+    {
+      "focus": "energy-vitality",
+      "productIds": [
+        "aicar-025",
+        "mots-c-047",
+        "nad-064",
+        "slupp-332-083",
+        "ss-31-028",
+        "epo-082"
+      ]
+    },
+    {
+      "focus": "sleep-focus",
+      "productIds": [
+        "adamax-072",
+        "cerebrolysin-051",
+        "dsip-019",
+        "melatonin-052",
+        "p21-080",
+        "pe-22-28-073",
+        "pinealon-076",
+        "selank-021",
+        "semax-027"
+      ]
+    },
+    {
+      "focus": "healthy-ageing",
+      "productIds": [
+        "mots-c-047",
+        "nad-064",
+        "ss-31-028",
+        "ara-290-060",
+        "epithalon-023",
+        "foxo4-048",
+        "ghk-cu-043",
+        "glutathione-056",
+        "n-acetyl-epitalon-amidate-074",
+        "testagen-079",
+        "thymalin-045",
+        "vilon-075",
+        "pinealon-076",
+        "thymosin-alpha-1-046"
+      ]
+    },
+    {
+      "focus": "hormonal-specialist",
+      "productIds": [
+        "insulin-057",
+        "tesamorelin-041",
+        "cjc-1295-whitout-dac-031",
+        "cjc-1295-with-dac-032",
+        "cjc-1295without-dac5mg-ipa-5mg-033",
+        "ghrp-2-acetate-029",
+        "ghrp-6-acetate-030",
+        "hexarelin-acetate-042",
+        "hgh-191aa-somatropin-001",
+        "ipamorelin-008",
+        "sermorelin-acetate-036",
+        "botulinum-toxin-081",
+        "foxo4-048",
+        "lemon-bottle-084",
+        "mt-1-006",
+        "mt-2-melanotan-2-acetate-007",
+        "testagen-079",
+        "thymalin-045",
+        "vilon-075",
+        "adamax-072",
+        "alprostadil-065",
+        "bac-water-058",
+        "cerebrolysin-051",
+        "dermorphin-053",
+        "epo-082",
+        "gonadorelin-acetate-018",
+        "hcg-016",
+        "hmg-055",
+        "kisspeptin-10-044",
+        "ll37-050",
+        "oxytocin-acetate-022",
+        "p21-080",
+        "pe-22-28-073",
+        "pnc27-077",
+        "pt-141-017",
+        "thymosin-alpha-1-046",
+        "triptorelin-acetate-gnrh-triptorelin-020",
+        "vip-070"
+      ]
+    }
+  ]
+}

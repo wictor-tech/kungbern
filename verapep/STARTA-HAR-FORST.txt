@@ -1,0 +1,10 @@
+VERAPEP v12.2 - ENKEL START
+
+1. Packa upp ZIP-filen helt. Kor INTE filen inuti ZIP-fonstret.
+2. Oppna den uppackade mappen.
+3. Dubbelklicka pa STARTA-SIDAN.cmd.
+4. Lat serverfonstret vara oppet medan du anvander sidan.
+
+Om port 3000 redan anvands av en gammal VERAPEP-version startar denna automatiskt pa port 3122.
+
+Om Node.js saknas far du ett tydligt val att installera det.

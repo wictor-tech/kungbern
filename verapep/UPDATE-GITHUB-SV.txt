@@ -1,0 +1,17 @@
+VERAPEP V12.9 - MOBILUPPDATERING
+
+Detta paket ar gjort for ditt befintliga GitHub-repo verapep-friends-test.
+
+1. Packa upp ZIP-filen.
+2. Oppna din lokala mapp: verapep-friends-test.
+3. Kopiera ALLT fran denna uppackade mapp till verapep-friends-test.
+4. Valj Ersatt filer nar Windows fragar.
+5. Oppna GitHub Desktop.
+6. Kontrollera att assets/v12-9-mobile.css och de uppdaterade HTML-filerna syns som Changes.
+7. Summary: Mobile-first v12.9
+8. Klicka Commit to main.
+9. Klicka Push origin.
+10. Render deployar automatiskt till samma lank:
+    https://verapep-friends-test.onrender.com
+
+Ingen backend, databaslogik, Render-konfiguration, produktdata, lager eller priser har andrats.

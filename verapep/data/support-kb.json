@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "entries": [
+    {
+      "id": "delivery",
+      "question": "delivery shipping time",
+      "answer": "The standard estimated delivery time shown by the catalogue is 7–10 days. Availability and final delivery terms must be confirmed before live sales are enabled.",
+      "url": "index.html#catalogue"
+    },
+    {
+      "id": "europe",
+      "question": "countries europe delivery",
+      "answer": "VERAPEP is configured for European markets only. Individual product and country availability is managed in the administration portal.",
+      "url": "index.html#catalogue"
+    },
+    {
+      "id": "pricing",
+      "question": "price pricing vat shipping",
+      "answer": "Customer-facing EUR pricing is still under review. Product pages may show source-workbook USD reference data, but live checkout and purchasing remain disabled.",
+      "url": "index.html#catalogue"
+    },
+    {
+      "id": "reports",
+      "question": "lab report certificate coa",
+      "answer": "Lab reports can be linked to individual products from the administration portal. Only approved reports should be published.",
+      "url": "index.html?reports=yes#catalogue"
+    },
+    {
+      "id": "account",
+      "question": "account login password my pages",
+      "answer": "The customer account area is available as a demonstration. Production identity, email verification and privacy configuration are required before launch.",
+      "url": "my-pages.html"
+    },
+    {
+      "id": "saved",
+      "question": "saved favourites favorite heart shortlist cart",
+      "answer": "Use the heart on a product card or product page to save it. Saved products are kept separately from the future shopping cart and appear under My Pages.",
+      "url": "my-pages.html#saved-products"
+    },
+    {
+      "id": "finder",
+      "question": "find filter goal need skin weight recovery sleep focus product guide",
+      "answer": "Use the guided product finder to choose a broad interest, a more specific information area and optional priorities. The same filters are used by Ask Vera and the visible catalogue.",
+      "url": "index.html#finder"
+    },
+    {
+      "id": "ratings",
+      "question": "rating ratings review reviews stars",
+      "answer": "Only admin-approved reviews appear publicly and affect product averages. Products without approved reviews show “No ratings yet”.",
+      "url": "index.html#catalogue"
+    }
+  ],
+  "fallback": "I could not find an approved answer for that question. Please contact live support."
+}

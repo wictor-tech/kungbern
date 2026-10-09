@@ -1,0 +1,22 @@
+{
+  "name": "verapep-information-platform",
+  "version": "14.1.0",
+  "private": true,
+  "type": "module",
+  "description": "VERAPEP production-readiness storefront with guarded commerce, per-admin MFA enrollment, operational order queues, privacy export tooling, resilient transactional-email retries and mobile-first UX.",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "build:data": "node scripts/build-store-data.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "python3 tests/e2e.py",
+    "test:all": "node --test tests/*.test.mjs && python3 tests/static-validation.py && python3 tests/e2e.py",
+    "test:static": "python3 tests/static-validation.py",
+    "audit:images": "node scripts/audit-product-images.mjs",
+    "import:v8": "node scripts/import-v8-data.mjs",
+    "backup:sqlite": "node scripts/backup-sqlite.mjs",
+    "email:retry": "node scripts/retry-email-outbox.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

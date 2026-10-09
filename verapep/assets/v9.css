@@ -1,0 +1,194 @@
+/* VERAPEP V9 production-hardening layer: accessibility, responsive media, admin audit/team, mobile checkout and performance. */
+:root {
+  --vp-focus: #005f6b;
+  --vp-focus-ring: rgba(0, 113, 123, .28);
+  --vp-success: #087f73;
+  --vp-warning: #8a6516;
+  --vp-danger: #a23838;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--vp-focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--vp-focus-ring);
+}
+
+.product-card,
+.saved-product-card,
+.product-content-card,
+.guide-result,
+.outbox-card,
+.admin-review-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 360px;
+}
+
+.product-card__match-reason {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: .55rem;
+  color: #426b70;
+  font-size: .78rem;
+  line-height: 1.35;
+}
+
+.product-card__match-reason::before {
+  content: '';
+  width: .45rem;
+  height: .45rem;
+  border-radius: 50%;
+  background: #5cc9c1;
+  box-shadow: 0 0 0 4px rgba(92, 201, 193, .15);
+  flex: 0 0 auto;
+}
+
+.responsive-table {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border-radius: 18px;
+}
+
+.product-main-image {
+  aspect-ratio: 1;
+  object-fit: contain;
+  width: 100%;
+  max-height: 560px;
+}
+
+.admin-current-user {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 .85rem;
+  border: 1px solid rgba(25, 111, 119, .16);
+  border-radius: 999px;
+  background: rgba(235, 250, 249, .72);
+  color: #275d63;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.audit-list,
+.admin-users-list {
+  display: grid;
+  gap: .75rem;
+}
+
+.audit-card,
+.admin-user-card {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(28, 101, 109, .14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 10px 28px rgba(24, 79, 86, .06);
+}
+
+.audit-card > div,
+.admin-user-card > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.audit-card p,
+.admin-user-card p {
+  margin: .45rem 0 .2rem;
+}
+
+.admin-team-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .75fr) minmax(320px, 1.25fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.admin-webshop-readiness ul li:not(.is-ready)::before {
+  content: '–';
+  color: var(--vp-warning);
+}
+
+.admin-webshop-readiness ul li.is-ready::before {
+  content: '✓';
+  color: var(--vp-success);
+}
+
+.checkout-step[hidden] { display: none !important; }
+
+.checkout-summary {
+  position: sticky;
+  top: 92px;
+}
+
+.checkout-line__details small {
+  color: #52757a;
+}
+
+.checkout-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 8;
+  padding: .8rem;
+  margin: 1.5rem -.8rem -.8rem;
+  border-top: 1px solid rgba(20, 92, 99, .12);
+  background: rgba(248, 253, 253, .94);
+  backdrop-filter: blur(14px);
+}
+
+@media (max-width: 900px) {
+  .admin-team-grid { grid-template-columns: 1fr; }
+  .admin-current-user { display: none; }
+  .checkout-summary { position: static; }
+}
+
+@media (max-width: 720px) {
+  .variant-table thead { display: none; }
+  .variant-table,
+  .variant-table tbody,
+  .variant-table tr,
+  .variant-table td { display: block; width: 100%; }
+  .variant-table tr {
+    padding: .8rem;
+    margin-bottom: .8rem;
+    border: 1px solid rgba(24, 100, 108, .14);
+    border-radius: 16px;
+    background: #fff;
+  }
+  .variant-table td {
+    display: grid;
+    grid-template-columns: minmax(96px, .8fr) 1.2fr;
+    gap: .7rem;
+    padding: .55rem .2rem;
+    border: 0;
+  }
+  .variant-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #285f66;
+  }
+  .variant-add-button { width: 100%; }
+  .checkout-actions { display: grid; grid-template-columns: 1fr 1.4fr; }
+  .checkout-actions .button:only-child { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}

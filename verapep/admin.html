@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Manage demonstration orders, inventory, product access, returns and messages." name="description"/>
+<title>Operations Dashboard — VERAPEP</title>
+<link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="assets/styles.css?v=12.7" rel="stylesheet"/>
+<link href="assets/v8.css" rel="stylesheet"/>
+<link href="assets/v8-1.css" rel="stylesheet"/>
+<link href="assets/v9.css" rel="stylesheet"/>
+<link href="/assets/v11.css" rel="stylesheet"/><link href="/assets/v12.css?v=12.6" rel="stylesheet"/><link href="/assets/v12-7.css?v=12.7" rel="stylesheet"/><link href="/assets/v12-9-mobile.css?v=12.9" rel="stylesheet"/><link href="/assets/v13-mobile-commerce.css?v=13.0" rel="stylesheet"/><link href="/assets/v14-production-readiness.css?v=14.0" rel="stylesheet"/></head>
+<body class="admin-page theme-v8-1 theme-v9 theme-v11 theme-v12 theme-v12-7 theme-v12-mobile theme-v13-mobile">
+<a class="skip-link" href="#main">Skip to admin</a>
+<div class="announcement"><div class="shell announcement__inner"><span>VERAPEP operations</span><span>Demo environment</span><span>SQLite-backed administration</span></div></div>
+<div aria-label="Store information" class="trust-bar trust-bar--v11"><div class="shell trust-bar__inner" id="trust-signals"><span><i aria-hidden="true">⌁</i> Published lab reports</span><span><i aria-hidden="true">◇</i> Transparent product information</span><span><i aria-hidden="true">◎</i> European delivery settings</span><span><i aria-hidden="true">✓</i> Secure checkout environment</span></div></div><header class="site-header site-header--v11" id="site-header"><div class="shell header-inner header-inner--v11"><a aria-label="VERAPEP home" class="brand brand--v11" href="/index.html"><span>VERAPEP<sup>®</sup></span></a><button aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation" class="menu-button" id="menu-button" type="button">☰</button><nav aria-label="Primary navigation" class="nav nav--v11" id="site-nav"><div class="nav__links nav__links--v11 nav__links--v12"><a href="/index.html#featured-products">Shop</a><a href="/guide.html">Product guide</a><a href="/support.html">Ask Vera</a><a href="/index.html#quality">Science</a><a href="/my-pages.html">My pages</a></div><div class="nav__actions nav__actions--v11"><label aria-label="Search products" class="header-search header-search--v11"><input autocomplete="off" id="header-product-search" placeholder="Search peptides, products..." type="search"/><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></label><a aria-label="My Pages" class="header-icon-button" href="/my-pages.html"><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg></a><a aria-label="Saved products" class="header-icon-button nav-saved-link" href="/my-pages.html#saved-products"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path></svg><span data-saved-count="">0</span></a></div></nav></div></header>
+<main class="admin-main" id="main">
+<div class="shell">
+<header class="admin-heading"><div><p class="eyebrow">Operations dashboard</p><h1>Store administration</h1><p>Review orders, inventory, product access, return requests and customer messages from one clear workspace.</p></div><span class="sandbox-pill">Demo environment</span></header>
+<div class="checkout-message" hidden="" id="admin-message" role="alert"></div>
+<section aria-labelledby="admin-login-title" class="admin-login" id="admin-login">
+<div><p class="eyebrow">Protected area</p><h2 id="admin-login-title">Sign in to administration</h2><p>Use the administrator credentials configured for this environment. Production mode additionally requires an authenticator code.</p></div>
+<form id="admin-login-form">
+<label class="field"><span>Email</span><input autocomplete="username" id="admin-email" required="" type="email" value="admin@verapep.local"/></label>
+<label class="field"><span>Password</span><input autocomplete="current-password" id="admin-password" required="" type="password"/></label><label class="field" id="admin-mfa-field"><span>Authenticator / recovery code <small>(if enabled)</small></span><input autocomplete="one-time-code" id="admin-mfa-code" placeholder="6-digit code or recovery code"/></label>
+<button class="button button--primary" type="submit">Sign in</button>
+</form>
+</section>
+<section class="admin-dashboard" hidden="" id="admin-dashboard">
+<div class="admin-toolbar"><div><p class="eyebrow">Overview</p><h2>Store operations</h2></div><div><span class="admin-current-user" id="admin-current-user"></span><a class="button button--light" href="/api/admin/export" rel="noopener" target="_blank">Export data</a><button class="button button--light" id="admin-refresh" type="button">Refresh</button><button class="button button--dark" id="admin-logout" type="button">Sign out</button></div></div>
+<div class="admin-stats" id="admin-stats"></div>
+<nav aria-label="Admin sections" class="admin-tabs">
+<button class="is-active" data-admin-tab="orders" type="button">Orders</button>
+<button data-admin-tab="inventory" type="button">Inventory</button>
+<button data-admin-tab="products" type="button">Products</button>
+<button data-admin-tab="settings" type="button">Store settings</button>
+<button data-admin-tab="reviews" type="button">Reviews</button>
+<button data-admin-tab="guide" type="button">Guide &amp; AI</button>
+<button data-admin-tab="returns" type="button">Returns</button>
+<button data-admin-tab="outbox" type="button">Email outbox</button>
+<button data-admin-tab="audit" type="button">Audit log</button>
+<button data-admin-tab="security" type="button">Security</button>
+<button data-admin-tab="team" type="button">Admin team</button>
+<button data-admin-tab="privacy" type="button">Privacy tools</button>
+</nav>
+<section class="admin-section is-active" data-admin-panel="orders">
+<div class="admin-section__heading"><div><h3>Orders</h3><p>Work from operational queues, update fulfilment and manage refunds.</p></div><div class="admin-heading-actions"><label class="field admin-search"><span>Queue</span><select id="order-queue-filter"><option value="all">All orders</option><option value="awaitingPayment">Awaiting payment</option><option value="toPack">To pack</option><option value="readyToShip">Ready to ship</option><option value="inTransit">In transit</option><option value="completed">Completed</option><option value="attention">Needs attention</option></select></label><label class="field admin-search"><span>Search orders</span><input id="order-search" placeholder="Order, customer or email" type="search"/></label></div></div>
+<div class="admin-order-queues" id="admin-order-queues"></div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Fulfilment</th><th>Actions</th></tr></thead><tbody id="admin-orders"></tbody></table></div>
+</section>
+<section class="admin-section" data-admin-panel="inventory" hidden="">
+<div class="admin-section__heading"><div><h3>Inventory</h3><p>Review available quantities and low-stock thresholds for the demonstration store.</p></div><label class="field admin-search"><span>Search inventory</span><input id="inventory-search" placeholder="Product, catalogue number or specification" type="search"/></label></div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Product</th><th>Catalogue</th><th>Specification</th><th>On hand</th><th>Retail price (EUR)</th><th>Variant sale</th><th>Save</th></tr></thead><tbody id="admin-inventory"></tbody></table></div>
+</section>
+<section class="admin-section" data-admin-panel="products" hidden="">
+<div class="admin-section__heading"><div><h3>Product information</h3><p>Edit discovery tags, ingredients, publication status, descriptions, images, delivery information, storage, usage, country access and lab-report links. All products remain information-only until separately approved.</p></div><label class="field admin-search"><span>Search products</span><input id="product-search" placeholder="Product name or category" type="search"/></label></div>
+<div class="admin-product-workspace">
+<div class="admin-product-list" id="admin-products"></div>
+<form class="admin-product-editor" hidden="" id="product-editor">
+<input id="editor-product-id" type="hidden"/>
+<div class="admin-editor-heading"><div><p class="eyebrow">Selected product</p><h3 id="editor-product-name">Product</h3></div><a href="#" id="editor-product-link" rel="noopener" target="_blank">Open page ↗</a></div>
+<div class="admin-form-grid">
+<label class="field field--wide"><span>Display name</span><input id="editor-display-name"/></label>
+<label class="field field--wide"><span>Short description</span><textarea id="editor-short-description" rows="2"></textarea></label>
+<label class="field field--wide"><span>Full description</span><textarea id="editor-full-description" rows="5"></textarea></label>
+<label class="field"><span>Delivery estimate</span><input id="editor-delivery" value="7–10 days"/></label>
+<label class="field"><span>Public status</span><select id="editor-public-status"><option value="draft">Draft</option><option value="information_only">Information only</option><option value="available_for_sale">Available for sale</option><option value="archived">Archived</option></select></label>
+<label class="field"><span>Stock status</span><select id="editor-stock-status"><option value="information_only">Information only</option><option value="available">Available</option><option value="sold_out">Sold out</option><option value="temporarily_unavailable">Temporarily unavailable</option><option value="archived">Archived</option></select></label>
+<label class="field field--wide"><span>Ingredients / contents</span><textarea id="editor-ingredients" rows="3"></textarea></label><label class="field field--wide"><span>Storage information</span><textarea id="editor-storage" rows="3"></textarea></label>
+<label class="field field--wide"><span>Usage / dosage information</span><textarea id="editor-usage" rows="3"></textarea></label>
+<label class="field field--wide"><span>Warnings and limitations</span><textarea id="editor-warnings" rows="3"></textarea></label>
+<label class="field field--wide"><span>Image URL</span><input id="editor-image-url" placeholder="https://..."/></label>
+<label class="field field--wide"><span>Image alternative text</span><input id="editor-image-alt"/></label>
+<label class="field field--wide"><span>Responsive image srcset</span><input id="editor-image-srcset" placeholder="image-400.webp 400w, image-800.webp 800w"/></label>
+<label class="field"><span>Image sizes</span><input id="editor-image-sizes" placeholder="(max-width: 700px) 80vw, 260px"/></label>
+<label class="field"><span>Image focal point</span><input id="editor-image-focal" placeholder="50% 50%"/></label>
+<label class="field field--wide"><span>Search aliases and alternative spellings</span><input id="editor-search-aliases" placeholder="alternative name, Swedish term, common spelling"/></label>
+<label class="field field--wide"><span>Customer focus tags</span><input id="editor-goals" placeholder="weight-metabolism, skin-appearance, strength-recovery"/></label><label class="field field--wide"><span>Specific information-area tags</span><input id="editor-needs" placeholder="dryness-hydration, skin-elasticity"/></label><label class="field"><span>Information completeness</span><select id="editor-completeness"><option value="basic">Basic</option><option value="complete">More complete</option></select></label><label class="field field--wide"><span>Allowed European country codes</span><input id="editor-countries" placeholder="SE, DE, FR — leave empty until approved"/></label>
+<label class="field field--wide"><span>Lab reports (one per line: Title | URL | Date | Batch)</span><textarea id="editor-lab-reports" rows="4"></textarea></label>
+</div>
+<div aria-hidden="true" class="admin-check-grid" hidden="">
+<label><input id="editor-published" type="checkbox"/> Visible in catalogue</label>
+<label><input checked="" id="editor-info-only" type="checkbox"/> Information only</label>
+<label><input id="editor-specialist" type="checkbox"/> Specialist information area</label>
+<label><input id="editor-sale" type="checkbox"/> Available for sandbox webshop</label>
+<label><input id="editor-archived" type="checkbox"/> Archived</label>
+</div>
+<section aria-live="polite" class="admin-webshop-readiness" id="product-webshop-readiness"></section>
+<div class="admin-actions">
+<button class="button button--primary" type="submit">Save product information</button>
+<button class="button button--webshop" id="enable-webshop-product" type="button">Enable for local webshop</button>
+<button class="button button--disable" id="disable-webshop-product" type="button">Disable webshop</button>
+<button class="danger-button" id="archive-product" type="button">Remove from storefront</button>
+</div>
+</form>
+</div>
+</section>
+<section class="admin-section" data-admin-panel="settings" hidden="">
+<div class="admin-section__heading"><div><h3>Store settings</h3><p>Manage the brand, currency, pricing label, trust signals, assistant name and default European delivery estimate from one place.</p></div></div>
+<form class="admin-settings-form" id="settings-form">
+<label class="field"><span>Brand name</span><input id="setting-store-name" value="VERAPEP"/></label>
+<label class="field"><span>Currency</span><select id="setting-currency"><option value="EUR">EUR</option></select></label>
+<label class="field"><span>Pricing source</span><select id="setting-price-source"><option value="priceUsd1">Excel price column D</option><option value="priceUsd2">Excel price column E</option></select></label>
+<label class="field"><span>Customer-facing pricing label</span><input id="setting-price-label" value="Pricing under review"/></label>
+<label class="field"><span>Default delivery time</span><input id="setting-delivery" value="7–10 days"/></label>
+<label class="field"><span>Assistant name</span><input id="setting-assistant-name" value="Ask Vera"/></label>
+<label class="field"><span>Checkout mode</span><select id="setting-checkout-mode"><option value="catalogue_only">Catalogue only</option><option value="sandbox">Sandbox checkout</option></select></label>
+<label class="field field--wide"><span>Trust signals (one per line)</span><textarea id="setting-trust-signals" rows="5"></textarea></label>
+<button class="button button--primary" type="submit">Save store settings</button>
+</form>
+<div class="admin-note"><strong>Brand decision:</strong> VERAPEP is retained for now. The name is concise and ownable; a rename should only follow trademark, domain and customer research.</div>
+</section>
+<section class="admin-section" data-admin-panel="reviews" hidden="">
+<div class="admin-section__heading"><div><h3>Ratings and reviews</h3><p>Approve, reject or hide customer reviews. Only approved reviews appear publicly and affect rating filters.</p></div><label class="field admin-search"><span>Review status</span><select id="review-status-filter"><option value="all">All reviews</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="hidden">Hidden</option></select></label></div>
+<div class="review-summary" id="review-summary"></div><div class="review-admin-list" id="admin-reviews"></div>
+</section>
+<section class="admin-section" data-admin-panel="guide" hidden="">
+<div class="admin-section__heading"><div><h3>Product guide and AI support</h3><p>Control the category-based guide and the approved information used by the support assistant.</p></div></div>
+<div class="admin-guide-grid">
+<form class="admin-card" id="guide-form"><h3>Interactive guide</h3><label class="switch"><input id="guide-enabled" type="checkbox"/><span></span><em>Enabled</em></label><p>The guide uses focus and specific information-area tags attached to each existing product.</p><div class="admin-taxonomy-preview" id="guide-taxonomy-preview"></div><button class="button button--primary" type="submit">Save guide</button></form>
+<form class="admin-card" id="support-form"><h3>Approved AI knowledge</h3><label class="field"><span>Fallback response</span><textarea id="support-fallback" rows="3"></textarea></label><label class="field"><span>Knowledge entries (Question keywords | Approved answer | Link)</span><textarea id="support-entries" rows="10"></textarea></label><button class="button button--primary" type="submit">Save AI knowledge</button></form>
+</div>
+</section>
+<section class="admin-section" data-admin-panel="returns" hidden="">
+<div class="admin-section__heading"><div><h3>Return requests</h3><p>Review and update test return requests created from the customer tracking page.</p></div></div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Return</th><th>Order</th><th>Reason</th><th>Status</th><th>Save</th></tr></thead><tbody id="admin-returns"></tbody></table></div>
+</section>
+<section class="admin-section" data-admin-panel="outbox" hidden="">
+<div class="admin-section__heading"><div><h3>Email outbox</h3><p>Preview locally generated order confirmations and status messages.</p></div></div>
+<div class="outbox-list" id="admin-outbox"></div>
+</section>
+<section class="admin-section" data-admin-panel="audit" hidden="">
+<div class="admin-section__heading"><div><h3>Audit log</h3><p>See who changed products, inventory, orders, reviews and store settings.</p></div></div>
+<div class="audit-list" id="admin-audit"></div>
+</section>
+<section class="admin-section" data-admin-panel="team" hidden="">
+<div class="admin-section__heading"><div><h3>Admin team</h3><p>Create individual accounts and assign only the permissions each person needs.</p></div></div>
+<div class="admin-team-grid">
+<form class="admin-card" id="admin-user-form">
+<h3>Add or update account</h3>
+<label class="field"><span>Email</span><input id="admin-user-email" required="" type="email"/></label>
+<label class="field"><span>Display name</span><input id="admin-user-name" required=""/></label>
+<label class="field"><span>Role</span><select id="admin-user-role"><option value="admin">Admin</option><option value="editor">Editor</option><option value="support">Support</option><option value="owner">Owner</option></select></label>
+<label class="field"><span>Password</span><input id="admin-user-password" minlength="12" placeholder="Required for a new account" type="password"/></label>
+<label class="admin-inline-check"><input checked="" id="admin-user-enabled" type="checkbox"/> Enabled</label>
+<button class="button button--primary" type="submit">Save account</button>
+</form>
+<div class="admin-card"><h3>Current accounts</h3><div class="admin-users-list" id="admin-users"></div></div>
+</div>
+</section>
+<section class="admin-section" data-admin-panel="security" hidden="">
+<div class="admin-section__heading"><div><h3>Account security</h3><p>Enroll a personal authenticator for this admin account. Production requires per-user MFA for enabled owner/admin accounts.</p></div></div>
+<div class="admin-card admin-mfa-card">
+<h3>Your MFA security</h3>
+<p id="admin-mfa-status">Checking MFA status…</p>
+<button class="button button--primary" id="admin-mfa-setup" type="button">Set up authenticator</button>
+<div class="admin-mfa-setup-box" hidden id="admin-mfa-setup-box">
+<p><strong>1.</strong> Add this secret to your authenticator app:</p><code id="admin-mfa-secret"></code>
+<p class="admin-breakable" id="admin-mfa-uri"></p>
+<label class="field"><span><strong>2.</strong> Enter the 6-digit code</span><input id="admin-mfa-confirm-code" inputmode="numeric" maxlength="6" placeholder="000000"/></label>
+<button class="button button--dark" id="admin-mfa-confirm" type="button">Confirm MFA</button>
+</div>
+<div class="admin-recovery-codes" hidden id="admin-recovery-codes"><h4>Save these recovery codes now</h4><p>Each code works once. Store them outside this browser.</p><pre id="admin-recovery-code-list"></pre></div>
+</div>
+</section>
+<section class="admin-section" data-admin-panel="privacy" hidden="">
+<div class="admin-section__heading"><div><h3>Privacy request tools</h3><p>Generate a read-only export of customer data stored by VERAPEP. This does not automatically delete legally required accounting/order records.</p></div></div>
+<form class="admin-card admin-privacy-form" id="privacy-export-form">
+<label class="field"><span>Customer email</span><input id="privacy-export-email" type="email" required placeholder="customer@example.com"/></label>
+<button class="button button--primary" type="submit">Generate customer export</button>
+</form>
+<pre class="admin-privacy-result" hidden id="privacy-export-result"></pre>
+</section>
+</section>
+</div>
+</main>
+<footer class="site-footer"><div class="shell footer-inner"><span>VERAPEP · Store administration</span><nav aria-label="Footer navigation" class="footer-links"><a href="index.html">Homepage</a><a href="guide.html">Product guide</a><a href="support.html">AI support</a><a href="my-pages.html">My Pages</a><a href="#main">Back to top ↑</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/shipping-returns.html">Shipping & returns</a></nav></div></footer>
+<script src="assets/site.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>
