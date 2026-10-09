@@ -285,3 +285,36 @@ test('v20 H1: public deployments never accept the built-in admin password; Verce
     for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }
   }
 });
+
+test('v20 H2: private demo mode — unreviewed products only behind a site-wide password on public hosts', async () => {
+  const keys = ['RENDER', 'PUBLICATION_GATE', 'SITE_ACCESS_PASSWORD', 'ADMIN_PASSWORD'];
+  const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  const restore = () => { for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; } };
+  try {
+    Object.assign(process.env, { RENDER: 'true', PUBLICATION_GATE: 'preview' });
+    delete process.env.SITE_ACCESS_PASSWORD;
+    let { server, baseUrl } = await start(await tempData());
+    try {
+      assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'strict', 'without the lock a public host stays strict');
+      assert.equal((await (await fetch(`${baseUrl}/api/storefront`)).json()).products.length, 0);
+    } finally { await stop(server); }
+
+    process.env.SITE_ACCESS_PASSWORD = 'Demo-lock-password-1';
+    ({ server, baseUrl } = await start(await tempData()));
+    try {
+      assert.equal((await fetch(`${baseUrl}/api/health`)).status, 200, 'the platform health check stays open');
+      for (const pathname of ['/', '/admin.html', '/api/storefront', '/product/aicar-025']) {
+        const response = await fetch(`${baseUrl}${pathname}`);
+        assert.equal(response.status, 401, pathname);
+        assert.match(response.headers.get('www-authenticate'), /Basic/);
+      }
+      const wrong = { Authorization: `Basic ${Buffer.from('x:wrong').toString('base64')}` };
+      assert.equal((await fetch(`${baseUrl}/`, { headers: wrong })).status, 401);
+      const auth = { Authorization: `Basic ${Buffer.from('colleague:Demo-lock-password-1').toString('base64')}` };
+      const storefront = await (await fetch(`${baseUrl}/api/storefront`, { headers: auth })).json();
+      assert.equal(storefront.products.length, 40, 'behind the lock the preview gate lists the non-high-risk products');
+      assert.ok(!storefront.products.some(product => product.commerce?.checkoutEnabled), 'nothing becomes purchasable');
+      assert.equal((await fetch(`${baseUrl}/`, { headers: auth })).status, 200);
+    } finally { await stop(server); }
+  } finally { restore(); }
+});

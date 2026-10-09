@@ -526,7 +526,11 @@ export function createVerapepServer(options = {}) {
   let compliance = database.readDocument('productCompliance', { version: 1, products: {} });
   let veraTranslations = database.readDocument('veraTranslations', { version: 1, languages: {} });
   if (!compliance.products) compliance.products = {};
-  const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: process.env.PUBLICATION_GATE, hosted: isHostedEnvironment() });
+  // Private demo mode: on a hosted (public) address the preview gate, which lists unreviewed products,
+  // is only honoured while the whole site is locked with SITE_ACCESS_PASSWORD.
+  const siteAccessPassword = String(process.env.SITE_ACCESS_PASSWORD || '');
+  const requestedGate = isHostedEnvironment() && !siteAccessPassword && String(process.env.PUBLICATION_GATE || '').trim().toLowerCase() === 'preview' ? 'strict' : process.env.PUBLICATION_GATE;
+  const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: requestedGate, hosted: isHostedEnvironment() });
   // v17: shipped knowledge base (for migration status) and privacy-preserving Vera counters (no question text).
   let shippedKb = null;
   try { shippedKb = loadShipped(rootDir); } catch { shippedKb = null; }
@@ -2842,6 +2846,16 @@ export function createVerapepServer(options = {}) {
     res.vpAcceptEncoding = req.headers['accept-encoding'] || '';
     try {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+      // Private demo lock: the whole site (pages, API, admin) asks for a shared password. The health
+      // check stays open for the hosting platform. Not used for production (it is not a login).
+      if (siteAccessPassword && url.pathname !== '/api/health') {
+        const [scheme, encoded] = String(req.headers.authorization || '').split(' ');
+        const supplied = scheme === 'Basic' && encoded ? Buffer.from(encoded, 'base64').toString('utf8').split(':').slice(1).join(':') : '';
+        if (!safeEqual(supplied, siteAccessPassword)) {
+          res.writeHead(401, { ...securityHeaders('text/plain; charset=utf-8'), 'WWW-Authenticate': 'Basic realm="VERAPEP demo", charset="UTF-8"', 'Cache-Control': 'no-store' });
+          return res.end('This VERAPEP demo is private. Enter the demo password (any user name).');
+        }
+      }
       if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
       else if (['GET', 'HEAD'].includes(req.method || 'GET')) await serveStatic(req, res, url);
       else sendJson(res, 405, { error: 'method_not_allowed', message: 'Method not allowed.' }, { Allow: 'GET, HEAD' });
