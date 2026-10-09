@@ -1,6 +1,6 @@
 # VERAPEP v16 – Premium experience, trust & production readiness
 
-Bygger på v15 (`verapep-v15`-taggen). Återställningspunkter: taggarna `verapep-v14.1` och `verapep-v15`, grenen `claude/fervent-babbage-1a97st` (v15) och arbetsgrenen `claude/verapep-v16`.
+Bygger på v15. Återställningspunkter: commit `25b3c42` (v14.1-import) och `f7b9b10` (v15), båda på grenen `claude/fervent-babbage-1a97st`, samt arbetsgrenen `claude/verapep-v16`. Taggarna `verapep-v14.1`/`verapep-v15` finns lokalt men kunde inte pushas via sessionens git-proxy – skapa dem vid behov med `git tag verapep-v15 f7b9b10`.
 
 **Oförändrat med avsikt:** inga produkter har låsts upp, ingen betalning eller beställning har aktiverats, inga behörigheter eller API-kontrakt har ändrats och inga produktfakta, lab-resultat, certifieringar eller recensioner har skapats. `/api/ready` rapporterar fortfarande `ready: false`, och det finns 0 beställningsbara produkter (verifieras av testerna).
 
