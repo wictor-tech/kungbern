@@ -529,7 +529,9 @@ export function createVerapepServer(options = {}) {
   // Private demo mode: on a hosted (public) address the preview gate, which lists unreviewed products,
   // is only honoured while the whole site is locked with SITE_ACCESS_PASSWORD.
   const siteAccessPassword = String(process.env.SITE_ACCESS_PASSWORD || '');
-  const requestedGate = isHostedEnvironment() && !siteAccessPassword && String(process.env.PUBLICATION_GATE || '').trim().toLowerCase() === 'preview' ? 'strict' : process.env.PUBLICATION_GATE;
+  const configuredGate = String(process.env.PUBLICATION_GATE || '').trim().toLowerCase();
+  // demo-all (every product, information only) always needs the site lock; preview needs it on public hosts.
+  const requestedGate = !siteAccessPassword && (configuredGate === 'demo-all' || (configuredGate === 'preview' && isHostedEnvironment())) ? 'strict' : configuredGate;
   const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: requestedGate, hosted: isHostedEnvironment() });
   // v17: shipped knowledge base (for migration status) and privacy-preserving Vera counters (no question text).
   let shippedKb = null;
@@ -864,7 +866,8 @@ export function createVerapepServer(options = {}) {
     if (undecided > 0) warnings.push(`${undecided} of ${catalogue.products.length} products have no final compliance decision; they stay hidden in production.`);
     const changedAfterApproval = complianceRecords.filter(record => record.status === 'approved_for_publication' && record.contentChangedAfterApproval).length;
     if (changedAfterApproval > 0) blockers.push(`${changedAfterApproval} approved product(s) changed after approval and need re-review.`);
-    if (gateMode !== 'strict') warnings.push('Publication gate is in preview mode: unreviewed lower-risk products are visible. Production always uses the strict gate.');
+    if (gateMode === 'demo-all') warnings.push('Private demo mode: every product is shown as information behind the site password. Never use this for a public launch.');
+    else if (gateMode !== 'strict') warnings.push('Publication gate is in preview mode: unreviewed lower-risk products are visible. Production always uses the strict gate.');
     if (!process.env.COMPANY_LEGAL_NAME || !process.env.COMPANY_REGISTRATION_NUMBER || !process.env.COMPANY_ADDRESS) blockers.push('Required company identity details are incomplete.');
     if (String(process.env.PRIVACY_REVIEW_ACK || '').toLowerCase() !== 'true') blockers.push('Privacy/GDPR review acknowledgement is missing.');
     if (String(process.env.LEGAL_TERMS_REVIEW_ACK || '').toLowerCase() !== 'true') blockers.push('Terms/consumer-law review acknowledgement is missing.');

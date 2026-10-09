@@ -197,8 +197,8 @@ docs/v17/PRODUCT-COMPLIANCE-INVENTORY.md | 14048 | bc803c5448d00164
 guide.html | 6543 | 0446a72905f4b7ec
 homepage-image-audit-v12.6.csv | 11294 | 56e8032b839ae31e
 index.html | 19983 | 82bd3eb09faa45aa
-lib/admin-v19.mjs | 50783 | af82513c30f64cf9
-lib/compliance.mjs | 10277 | 4d3e31205d63bf5f
+lib/admin-v19.mjs | 50898 | 4f7bd1cbf1811321
+lib/compliance.mjs | 10581 | e7f56aa8aa27d833
 lib/content-workflow.mjs | 8135 | 65f675d008156993
 lib/documents.mjs | 4142 | 86b5cbf978e8f6a8
 lib/readiness.mjs | 3575 | a3ad765584956813
@@ -232,7 +232,7 @@ scripts/secret-scan.mjs | 5364 | 85d266d881c0ca90
 scripts/source/catalogue-data.js | 27296 | 7a1536b945504f11
 scripts/verify-release.mjs | 5610 | c87d38b55ab359ed
 scripts/write-manifest.mjs | 1817 | 8b3f3b43e8889bc1
-server.mjs | 178449 | 5e53dd944b866945
+server.mjs | 178798 | 98dd9aa033c1a796
 shipping-returns.html | 7151 | 4343b45751045fd1
 sql/postgres-schema.sql | 8461 | 4adb726f2d822500
 start-webshop.cmd | 2638 | 32e49d091ab17e06
@@ -253,7 +253,7 @@ tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
 tests/v17.test.mjs | 34305 | 74ca53f9578c3632
 tests/v18.test.mjs | 20939 | 594d6ad9f9b016a6
 tests/v19.test.mjs | 27587 | 2bab3c7fcc9466a6
-tests/v20.test.mjs | 23936 | b386d24411e4fa0b
+tests/v20.test.mjs | 26179 | 8253c90411ffc50c
 tests/v9.test.mjs | 7478 | f3346083784e4d67
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
 tests/vendor/axe.min.js | 553290 | b511cd9dec01c76f

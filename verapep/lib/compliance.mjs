@@ -110,6 +110,9 @@ export function resolveGateMode({ isProduction, configured, hosted = false }) {
   const value = String(configured || '').trim().toLowerCase();
   if (value === 'strict') return 'strict';
   if (value === 'preview') return 'preview';
+  // Private demo: every product as information only. The server only passes this value through
+  // while the whole site is locked with SITE_ACCESS_PASSWORD (see server.mjs).
+  if (value === 'demo-all') return 'demo-all';
   return hosted ? 'strict' : 'preview';
 }
 
@@ -117,6 +120,7 @@ export function publicVisibility(product, content, record, gateMode) {
   if (record.status === 'do_not_publish') return { visible: false, reason: 'do_not_publish' };
   if (record.status === 'approved_for_publication') return { visible: true, reason: 'approved' };
   if (gateMode === 'strict') return { visible: false, reason: 'not_approved' };
+  if (gateMode === 'demo-all') return { visible: true, reason: 'private_demo' };
   const risk = suggestRisk(product, content);
   if (risk.level === 'high') return { visible: false, reason: 'high_risk_not_reviewed' };
   return { visible: true, reason: 'preview_unreviewed' };

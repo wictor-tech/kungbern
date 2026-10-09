@@ -318,3 +318,32 @@ test('v20 H2: private demo mode — unreviewed products only behind a site-wide 
     } finally { await stop(server); }
   } finally { restore(); }
 });
+
+test('v20 H3: demo-all shows every product as information only, and only behind the site password', async () => {
+  const keys = ['RENDER', 'PUBLICATION_GATE', 'SITE_ACCESS_PASSWORD'];
+  const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  const restore = () => { for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; } };
+  try {
+    Object.assign(process.env, { RENDER: 'true', PUBLICATION_GATE: 'demo-all' });
+    delete process.env.SITE_ACCESS_PASSWORD;
+    let { server, baseUrl } = await start(await tempData());
+    try {
+      assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'strict', 'demo-all without the lock falls back to strict');
+    } finally { await stop(server); }
+
+    process.env.SITE_ACCESS_PASSWORD = 'Demo-lock-password-1';
+    const dataDir = await tempData();
+    ({ server, baseUrl } = await start(dataDir));
+    try {
+      const auth = { Authorization: `Basic ${Buffer.from('demo:Demo-lock-password-1').toString('base64')}` };
+      assert.equal((await fetch(`${baseUrl}/api/storefront`)).status, 401);
+      const storefront = await (await fetch(`${baseUrl}/api/storefront`, { headers: auth })).json();
+      assert.equal(storefront.products.length, 84, 'all products are listed in the private demo');
+      assert.equal((await fetch(`${baseUrl}/product/semaglutide-003`, { headers: auth })).status, 200);
+      const variant = storefront.products.flatMap(product => product.variants).find(item => item.variantId);
+      assert.ok(storefront.products.every(product => product.variants.every(item => !item.checkoutEnabled)), 'nothing can be ordered');
+      const order = await fetch(`${baseUrl}/api/orders`, { method: 'POST', headers: { ...auth, 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ variantId: variant.variantId, quantity: 1 }], customer: { name: 'Demo', email: 'demo@example.com' }, shippingAddress: { line1: 'x', city: 'x', postalCode: '1', country: 'SE' }, acceptTerms: true, acceptSandboxNotice: true }) });
+      assert.notEqual(order.status, 201, 'ordering is refused');
+    } finally { await stop(server); }
+  } finally { restore(); }
+});
