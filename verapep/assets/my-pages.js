@@ -22,7 +22,7 @@
     const remove=event.target.closest('[data-remove-saved]');
     if(remove){saved.delete(remove.dataset.removeSaved);persist();renderSaved();}
     const compare=event.target.closest('[data-compare]');
-    if(compare){const id=compare.dataset.compare;if(compared.has(id))compared.delete(id);else if(compared.size<3)compared.add(id);else alert('You can compare up to three products.');persist();renderSaved();}
+    if(compare){const id=compare.dataset.compare;if(compared.has(id))compared.delete(id);else if(compared.size<3)compared.add(id);else{const note=document.getElementById('saved-compare-note');if(note){note.textContent='You can compare up to three products. Remove one first.';note.hidden=false;setTimeout(()=>{note.hidden=true;},3500);}return;}persist();renderSaved();}
   });
   document.getElementById('clear-account-saved').addEventListener('click',()=>{saved.clear();persist();renderSaved();});
 

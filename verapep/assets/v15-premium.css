@@ -755,3 +755,11 @@ body.theme-v15 .compare-dialog::backdrop { background: rgba(7, 30, 35, .4); back
 body.theme-v15 .product-toast--action { display: flex; align-items: center; gap: 14px; pointer-events: auto; }
 body.theme-v15 .product-toast--action button { padding: 6px 12px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 8px; background: transparent; color: #fff; font-weight: 600; cursor: pointer; }
 body.theme-v15 #compare-bar.is-limit span { color: #f3d48a !important; font-weight: 600; }
+body.theme-v15 .saved-compare-note { margin: 8px 0 0; padding: 8px 12px; border-radius: 8px; background: #fbf6e9; color: #5a4a1c; font-size: 13.5px; font-weight: 600; }
+/* Checkout stepper on phones and tablets: evenly spaced, steps labelled */
+@media (max-width: 900px) {
+  body.theme-v15 .checkout-steps { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)) !important; gap: 0 !important; padding: 10px 8px !important; }
+  body.theme-v15 .checkout-steps li { display: grid !important; justify-items: center; gap: 4px; min-width: 0; padding: 0 !important; border: 0 !important; background: none !important; }
+  body.theme-v15 .checkout-steps li strong { display: block !important; position: static !important; width: auto !important; height: auto !important; clip: auto !important; overflow: visible !important; white-space: nowrap; font-size: 11px !important; color: var(--vp-muted) !important; }
+  body.theme-v15 .checkout-steps li.is-active strong { color: var(--vp-ink) !important; font-weight: 700; }
+}
