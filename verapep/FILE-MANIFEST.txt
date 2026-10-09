@@ -2,11 +2,11 @@
 
 Generated: 2026-10-09
 
-Files listed: 234 (manifest excludes itself and runtime database/outbox/backup files)
+Files listed: 250 (manifest excludes itself and runtime database/outbox/backup files)
 
 Path | Bytes | SHA-256 (first 16)
 .env.example | 2889 | 3cb7a2922ef163b7
-.gitignore | 428 | d6f3dbe3e30a06f9
+.gitignore | 549 | e0f0ec3a9efef7ba
 404.html | 5837 | 5b5253c062e05b0a
 DEPLOYMENT.md | 1385 | dd7e4f6f3606f404
 DESIGN-QA-V12.6.md | 3637 | 56fb46e8130aaff9
@@ -16,7 +16,7 @@ IMPLEMENTATION-DECISIONS.md | 1275 | da1fb51d227503a3
 PRIVACY-DATA-REGISTER-V14.1.md | 4213 | cd21888b33a1e366
 PRODUCT-IMAGES.md | 1060 | 6cb0e21a62e92fba
 PRODUCTION-CHECKLIST-V14.md | 4149 | 00ac2b5be49a88f2
-README.md | 6738 | ddbc1a4ac942104f
+README.md | 8330 | 6ad791abaea02dea
 RENDER-DEPLOY-SV.md | 1665 | 3500ab1e851ae16b
 RENDER-README-FIRST.txt | 339 | da175a28d425d337
 RETENTION.md | 2954 | cbebdf99079bf324
@@ -66,6 +66,11 @@ V18-LAUNCH-BLOCKERS.md | 5033 | a21c078a46912a79
 V18-REPORT.md | 4768 | 93f81071b80a1cf7
 V18-REPOSITORY-AND-DEPLOYMENT.md | 3999 | a72e30ee87fcdb12
 V18-SECURITY-REPORT.md | 10088 | 1630ce701712a1ec
+V19-EXTERNAL-DECISIONS.md | 2994 | 2e2e150bc7fa7782
+V19-OWNER-GUIDE.md | 10137 | c868e12805bed285
+V19-OWNER-INPUT-NEEDED.md | 3591 | edb206734c83a75e
+V19-REPORT.md | 15237 | 09160d46ba681c45
+V19-VERA-GENERATIVE-AI.md | 3271 | c87052ffb875fa7d
 V3-CHANGES.md | 1279 | 32459b11fdd55dd2
 V4-CHANGES.md | 2851 | fb95572778fa983a
 V5-CHANGES.md | 1109 | de2d6eaeb69d1d07
@@ -75,10 +80,11 @@ V7-CHANGES.md | 1352 | 3caae789f168b05d
 V8-CHANGES.md | 1342 | f12843aa36f7b3a9
 V8.1-CHANGES.md | 566 | 0a9da45f23da7e02
 V9-CHANGES.md | 1818 | 2bbcd9a24eeff30e
-admin.html | 25067 | d7a9409ee489bafe
-assets/admin.js | 63144 | cdb153cbd1a955f8
-assets/app.js | 53667 | 3e141647ecba9ce0
-assets/bundle-admin.css | 297692 | 678b21198a2adb08
+admin.html | 29920 | 81e0d1f671456015
+assets/admin-v19.js | 52096 | 484ef13483692ae9
+assets/admin.js | 64105 | 57e65feaf8bc25cc
+assets/app.js | 54203 | 03dfb6a05a0cb026
+assets/bundle-admin.css | 307525 | 140fbdac4db49dda
 assets/bundle-pages.css | 287896 | b74b8ef8958be6e2
 assets/bundle-storefront.css | 351109 | 8e3c4a560a574a0b
 assets/cart.js | 14560 | a508bba5ade05d99
@@ -120,7 +126,7 @@ assets/media/vera-guide.svg | 4055 | 746173fb1b3c91ac
 assets/media/world-network.svg | 1405 | 07450ead3f566315
 assets/my-pages.js | 7561 | c4a030d0aee5c7a6
 assets/order.js | 10219 | 2be91b0b4601d044
-assets/product-commerce.js | 26482 | 0083b896e44bc405
+assets/product-commerce.js | 26683 | 120cad278d299090
 assets/site.js | 2791 | 245e9018a8d5845e
 assets/styles.css | 122372 | 155762c45360c43b
 assets/support.js | 1729 | 421bd1caf320ed6c
@@ -136,13 +142,14 @@ assets/v14-production-readiness.css | 3079 | b8ca4c6d91753833
 assets/v15-premium.css | 75246 | 37558de87dd3e6d8
 assets/v15-ui.js | 9007 | 27fab6f6f1523789
 assets/v17.css | 10445 | cd1ce8d0f3ebc5b7
+assets/v19.css | 11247 | fac9ec057c1bdab1
 assets/v7-ui.js | 1909 | df7c7d6247b2fe62
 assets/v7.css | 17343 | 6e8f7e2aa345e502
 assets/v8-1.css | 11158 | d0d1341abe6fccc8
 assets/v8-ui.js | 2421 | 48512a57a53cf698
 assets/v8.css | 7694 | cb07a4aa8651181a
 assets/v9.css | 4201 | 725b561739d4a909
-assets/vera-client.js | 5366 | bb709b1c632b14e6
+assets/vera-client.js | 5537 | b9257302910abfd6
 assets/vial-renderer.js | 9402 | cb405dd179c9b7b8
 catalogue-audit.csv | 18834 | 4d9eba5ea7993570
 checkout.html | 11516 | 7df61d80dadec529
@@ -150,6 +157,7 @@ data/catalogue.json | 53959 | 95116f9acda605f7
 data/commerce-policy.json | 22312 | c889a2a7a4d7a632
 data/customers.json | 38 | e4d58a97c6c92bfc
 data/guide-config.json | 10470 | 17da98ab582fb558
+data/image-audit.json | 9793 | b1cb846db7817473
 data/inventory.json | 57138 | ec62c25ea120a1ef
 data/orders.json | 3 | 37517e5f3dc66819
 data/product-compliance.json | 279 | 05410557415b5b6d
@@ -161,8 +169,9 @@ data/reviews.json | 36 | 553a4f749e67f0d2
 data/store-config.json | 2288 | dd29a4b0a868f019
 data/support-kb-history.json | 9725 | d32665c54d98f925
 data/support-kb.json | 11805 | c9a29421736fa67b
+data/vera-translations.json | 14392 | 356d14fb8c07f447
 data/withdrawals.json | 3 | 37517e5f3dc66819
-database.mjs | 10007 | 78ce8954eb44c8f1
+database.mjs | 11148 | 6afb2edf4cd21fa9
 docker-compose.yml | 253 | af38f2f827778d41
 docs/v15-before-after/catalogue.jpg | 268902 | dd7ab95d90e37262
 docs/v15-before-after/checkout.jpg | 251871 | 318db3a9b1128be6
@@ -190,21 +199,26 @@ docs/v17/PRODUCT-COMPLIANCE-INVENTORY.md | 14048 | bc803c5448d00164
 guide.html | 6519 | f381ac1ee145799c
 homepage-image-audit-v12.6.csv | 11294 | 56e8032b839ae31e
 index.html | 19941 | c2bbe1b1ffff296c
+lib/admin-v19.mjs | 44859 | 18efdd0b379f4b82
 lib/compliance.mjs | 10277 | 4d3e31205d63bf5f
+lib/content-workflow.mjs | 8135 | 65f675d008156993
+lib/documents.mjs | 3708 | 705bdd4a8111951c
 lib/readiness.mjs | 3575 | a3ad765584956813
 lib/support-kb-migration.mjs | 10751 | 311f72070c0008cf
-lib/vera.mjs | 20652 | c6c3cb7f112b5cf5
+lib/vera-language.mjs | 7125 | 8c65954b271931d0
+lib/vera.mjs | 21083 | baf7b6b7eb9f66d9
 my-pages.html | 8343 | 8217e8331df3ad44
 order.html | 8499 | 90cb71f659b40cd3
-package.json | 1475 | 678d908cb79448fe
+package.json | 1600 | 31dead234840c9ed
 privacy.html | 8475 | 09c1dceee0147ad5
 product-image-audit.csv | 5944 | 3d2df53340c8473d
 product.html | 6991 | b1bcf316e468248f
 render.yaml | 563 | 9e470541e8515d4c
 robots.txt | 26 | 331ea9090db0c9f6
 scripts/audit-product-images.mjs | 1261 | 0e0296ede4d09e11
-scripts/backup-sqlite.mjs | 1934 | 372f14449752f8d5
-scripts/build-css.mjs | 3694 | 0d15ee2e1cb5a7b3
+scripts/audit-site-images.mjs | 6343 | c297bb3c27b42abb
+scripts/backup-sqlite.mjs | 2391 | c813d06683ee2666
+scripts/build-css.mjs | 3705 | 26fc0e6ba9fb4e01
 scripts/build-store-data.mjs | 3963 | 9f09499922ec5643
 scripts/compliance-inventory.mjs | 8028 | bc15eaf0744fb6ba
 scripts/import-v8-data.mjs | 1967 | 369baf6b0113552f
@@ -218,24 +232,26 @@ scripts/secret-scan.mjs | 5364 | 85d266d881c0ca90
 scripts/source/catalogue-data.js | 27296 | 7a1536b945504f11
 scripts/verify-release.mjs | 5610 | c87d38b55ab359ed
 scripts/write-manifest.mjs | 1817 | 8b3f3b43e8889bc1
-server.mjs | 163029 | ebea24ab6b516656
+server.mjs | 169028 | e10be29e07fd4f92
 shipping-returns.html | 7121 | db3df9c949e7987e
 sql/postgres-schema.sql | 8461 | 4adb726f2d822500
 start-webshop.cmd | 2638 | 32e49d091ab17e06
 start-webshop.sh | 158 | 0d03f5a98187672c
 support.html | 7680 | 8d47f34c9813d357
 terms.html | 7301 | 5f08bda448637023
+tests/admin-personas.py | 11979 | 7ca38fe3bf45d8ad
 tests/api.test.mjs | 9975 | 1eb82f8cde4d2d4b
-tests/e2e.py | 27629 | ce2b663895da5242
+tests/e2e.py | 32704 | 79c34ef0b27baa1b
 tests/personas.py | 17480 | 8134e960b8199522
 tests/static-validation.py | 4741 | 1935bcfc52a549b9
 tests/support/compliance.mjs | 1116 | 10c08360786e36a6
 tests/v11.test.mjs | 7384 | eb35746448d15010
-tests/v14.test.mjs | 5776 | ceb87febd393cdbc
+tests/v14.test.mjs | 5776 | ff863c278cd64e67
 tests/v141.test.mjs | 7449 | 556973b582ab1c9e
 tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
 tests/v17.test.mjs | 34219 | 8e647c8cbe3b7e8d
-tests/v18.test.mjs | 20939 | 5cf8d21a6a358c1d
-tests/v9.test.mjs | 7478 | 6eb6faa257dab498
+tests/v18.test.mjs | 20939 | d20eb4938e44da28
+tests/v19.test.mjs | 27119 | 35aeddd160197232
+tests/v9.test.mjs | 7478 | db64f84de0047497
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
 tests/vendor/axe.min.js | 553290 | b511cd9dec01c76f
