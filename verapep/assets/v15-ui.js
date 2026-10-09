@@ -14,10 +14,12 @@
     if (!header) return;
     const bottom = Math.max(0, Math.round(header.getBoundingClientRect().bottom));
     document.documentElement.style.setProperty('--vp-header-bottom', `${bottom}px`);
+    document.documentElement.style.setProperty('--vp-sticky-top', `${Math.round(header.getBoundingClientRect().height)}px`);
   };
   syncHeaderOffset();
   addEventListener('resize', syncHeaderOffset, { passive: true });
-  addEventListener('scroll', () => { if (nav?.classList.contains('is-open')) syncHeaderOffset(); }, { passive: true });
+  let headerFrame = 0;
+  addEventListener('scroll', () => { cancelAnimationFrame(headerFrame); headerFrame = requestAnimationFrame(syncHeaderOffset); }, { passive: true });
 
   const isMenuOpen = () => menuButton?.getAttribute('aria-expanded') === 'true';
   const closeMenu = ({ restoreFocus = false } = {}) => {
