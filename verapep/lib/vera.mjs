@@ -13,6 +13,15 @@ const SAFETY_ANSWER = 'I can\'t help with dosing, administration, medical effect
 const PRIVACY_NOTICE = 'Please don\'t share personal details such as email addresses, phone numbers or health information here. I don\'t need them, and questions are not stored.';
 const GREETING = 'Hello! I can help with delivery, returns, payment, lab reports, product information, privacy, contact details and finding your way around the site. What would you like to know?';
 
+const THANKS = 'You\'re welcome. Is there anything else I can help you find?';
+const UNKNOWN_PRODUCT = 'I don\'t have published information about that product. I can only answer about products that are listed in the catalogue.';
+const EMPTY = 'Type a question, for example "How long does delivery take?"';
+// A short question naming one thing: "tell me about X", "what is X", "X price", "vad kostar X".
+const PRODUCT_QUESTION = /^(?:(?:tell me about|what is|whats|info about|information about|do you (?:sell|have|stock)|price of|berätta om|beratta om|vad ar|vad kostar|saljer ni|har ni) [\w-]+(?: [\w-]+)?|[\w-]+(?: [\w-]+)? (?:price|pris))$/;
+const DEFAULT_FALLBACK = 'I don\'t have a published answer to that question. You can contact support at {supportEmail}.';
+/* v19: fixed engine texts, exported so reviewed translations can be checked against them. */
+export const ENGINE_STRINGS = Object.freeze({ safety: SAFETY_ANSWER, privacy: PRIVACY_NOTICE, greeting: GREETING, thanks: THANKS, unknownProduct: UNKNOWN_PRODUCT, empty: EMPTY, fallback: DEFAULT_FALLBACK });
+
 // Swedish (and a few colloquial English) words → the English vocabulary used by the knowledge base.
 const SYNONYMS = [
   [/\b(kontakt\w*|mejl\w*|e-?post|maila)\b/g, 'contact email'],
@@ -62,6 +71,13 @@ const SAFETY_PATTERNS = [
   /\b(help|helps|work|works|effective|good|benefit\w*|improve\w*|reduce\w*|boost\w*|increase\w*)\b.*\b(wrinkle\w*|skin|acne|hair|sleep|anxiety|stress|recover\w*|fat|weight|muscle\w*|libido|energy|memory|focus|immun\w*|inflamm\w*|joint\w*|tendon\w*|ageing|aging|longevity|testosterone|hormone\w*)\b/,
   /\b(used for|effect|effects|benefit|benefits|results|how (does|do) it work|mechanism)\b/,
   /\b(which|what) (peptide|product|one)\b.*\b(should i|for (me|my)|to (take|use|lose|gain|improve))\b/,
+  // v20: dosing, mixing and recommendation questions found missing in the independent audit.
+  /\b(doser\w*|dosier\w*|dosis|hur ofta ska (jag|man|du) ta|hur mycket ska (jag|man|du) ta|mg per kg|mcg per kg|per kilo)\b/,
+  /\b(blanda\w*|rekonstitu\w*|bakteriostat\w*|bacteriostatic|mix\w*)\b.*\b(vatten|water|pulver|powder|peptid\w*|vial\w*|flask\w*)\b/,
+  /\b(bakteriostat\w*|bacteriostatic)\b/,
+  /\b(basta|bast)\b.*\b(peptid\w*|produkt\w*|for|mot)\b/,
+  /\b(recommend|suggest)\w*\b.*\b(for|against)\b/,
+  /\b(barn|nebenwirkung\w*|spritze\w*|injizier\w*|efectos secundarios|inyect\w*|muskl\w*|muskelmassa|somn|sova battre)\b/,
   // Swedish
   /\b(dos|doser|dosering\w*|spruta|sprutor|injicera\w*|injektion\w*|biverkning\w*|behandl\w*|bota|botar|gravid|amma\w*|ammar|recept\w*|lakare|sjukdom\w*|symtom\w*|ont i|smarta|diabetes|cancer|ga ner i vikt|gar ner i vikt|banta\w*|forbranna fett|bygga muskler|muskelmassa|hur mycket ska jag|hur ofta ska jag|ar det farligt|ar det sakert|hjalper\b.*\b(mot|for|med)|effekt\w*|anvands\b.*\b(till|for)|rynk\w*|somnen|angest)\b/
 ];
@@ -88,8 +104,21 @@ export function normalise(value) {
     .trim();
 }
 
+/* v20: Swedish words the synonym list understands, so a misspelling ("leverns", "retrur") is
+   recognised the same way English keywords already are. Only words of 6+ letters are corrected. */
+const SWEDISH_VOCABULARY = ['leverans', 'leveranstid', 'leverera', 'frakten', 'returnera', 'returer', 'betalning', 'betala', 'integritet', 'personuppgifter', 'villkor', 'kopvillkor', 'bestallning', 'ordernummer', 'kontakt', 'kontakta', 'kundtjanst', 'kundservice', 'reklamation', 'labbrapport', 'analysintyg', 'certifikat', 'recension', 'foretag', 'organisationsnummer', 'tillganglig', 'jamfora', 'favoriter', 'inloggning', 'losenord', 'dokumentation'];
+
+function correctSwedish(text) {
+  return text.split(' ').map(word => {
+    if (word.length < 6 || SWEDISH_VOCABULARY.includes(word)) return word;
+    const limit = word.length >= 8 ? 2 : 1;
+    const match = SWEDISH_VOCABULARY.find(candidate => candidate[0] === word[0] && editDistance(word, candidate, limit) <= limit);
+    return match ? `${word} ${match}` : word;
+  }).join(' ');
+}
+
 function expand(text) {
-  let expanded = ` ${text} `;
+  let expanded = ` ${correctSwedish(text)} `;
   for (const [pattern, replacement] of SYNONYMS) expanded = expanded.replace(pattern, match => `${match} ${replacement}`);
   return expanded.replace(/\s+/g, ' ').trim();
 }
@@ -103,7 +132,9 @@ function stem(word) {
 }
 
 export function isSafetyQuestion(normalised) {
-  return SAFETY_PATTERNS.some(pattern => pattern.test(normalised));
+  // v20: also check a de-obfuscated copy ("d0sage", "inj3ct", "b p c" stays as is).
+  const plain = normalised.replace(/0/g, 'o').replace(/[1!]/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't');
+  return SAFETY_PATTERNS.some(pattern => pattern.test(normalised) || pattern.test(plain));
 }
 
 export function containsPersonalData(raw) {
@@ -252,7 +283,7 @@ export function answerQuestion(rawQuestion, ctx) {
   const notice = containsPersonalData(raw) ? PRIVACY_NOTICE : null;
   const base = { notice, links: [], suggestions: [] };
 
-  if (text.length < 2) return { ...base, answered: false, kind: 'empty', answer: 'Type a question, for example "How long does delivery take?"', suggestions: defaultSuggestions(ctx.kb) };
+  if (text.length < 2) return { ...base, answered: false, kind: 'empty', answer: EMPTY, suggestions: defaultSuggestions(ctx.kb) };
 
   // 1. Safety first — before any product or knowledge match.
   if (isSafetyQuestion(text)) {
@@ -267,7 +298,7 @@ export function answerQuestion(rawQuestion, ctx) {
     return { ...base, answered: true, kind: 'greeting', source: 'greeting', answer: GREETING, suggestions: defaultSuggestions(ctx.kb) };
   }
   if (words.has('thanks') || words.has('thank')) {
-    return { ...base, answered: true, kind: 'greeting', source: 'thanks', answer: 'You\'re welcome. Is there anything else I can help you find?', suggestions: defaultSuggestions(ctx.kb) };
+    return { ...base, answered: true, kind: 'greeting', source: 'thanks', answer: THANKS, suggestions: defaultSuggestions(ctx.kb) };
   }
 
   // 2. Named products (only publicly visible ones are known to Vera).
@@ -291,7 +322,7 @@ export function answerQuestion(rawQuestion, ctx) {
       };
     }
   } else if (hiddenMentioned) {
-    return { ...base, answered: false, kind: 'unknown_product', source: 'unknown_product', answer: 'I don\'t have published information about that product. I can only answer about products that are listed in the catalogue.', links: [{ label: 'Browse the catalogue', url: '/index.html#catalogue' }] };
+    return { ...base, answered: false, kind: 'unknown_product', source: 'unknown_product', answer: UNKNOWN_PRODUCT, links: [{ label: 'Browse the catalogue', url: '/index.html#catalogue' }] };
   }
 
   // 3. Approved knowledge-base answers.
@@ -312,10 +343,16 @@ export function answerQuestion(rawQuestion, ctx) {
     };
   }
 
-  // 4. Honest fallback.
+  // 4. v20: a product-style question about a name Vera does not know gets the same answer as a
+  // question about a hidden product, so the two cannot be told apart (hidden names were enumerable).
+  if (PRODUCT_QUESTION.test(text)) {
+    return { ...base, answered: false, kind: 'unknown_product', source: 'unknown_product', answer: UNKNOWN_PRODUCT, links: [{ label: 'Browse the catalogue', url: '/index.html#catalogue' }] };
+  }
+
+  // 5. Honest fallback.
   return {
     ...base, answered: false, kind: 'fallback', source: 'fallback',
-    answer: fillTemplate(ctx.kb?.fallback || 'I don\'t have a published answer to that question. You can contact support at {supportEmail}.', vars),
+    answer: fillTemplate(ctx.kb?.fallback || DEFAULT_FALLBACK, vars),
     links: contact,
     suggestions: defaultSuggestions(ctx.kb)
   };

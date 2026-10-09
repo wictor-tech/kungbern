@@ -202,7 +202,7 @@ test('v17 Ask Vera answers safely, honestly and without storing questions', asyn
     for (const question of ['How much semaglutide should I inject to lose weight?', 'what is the dosage of BPC 157', 'Which peptide should I take for my diabetes?', 'Hur mycket ska jag ta för att gå ner i vikt?', 'side effects of GHK-Cu', 'best product to build muscle for me']) {
       const answer = await ask(question);
       assert.equal(answer.kind, 'safety', question);
-      assert.match(answer.answer, /does not give medical advice/);
+      assert.match(answer.answer, /does not give medical advice|ger inte medicinsk rådgivning/); // v20: approved Swedish wording for Swedish questions
       assert.ok(!answer.links.some(link => /product|catalogue|focus/.test(link.url)), `no product links for: ${question}`);
     }
   });

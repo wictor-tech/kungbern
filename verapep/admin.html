@@ -8,7 +8,7 @@
 <meta content="Manage demonstration orders, inventory, product access, returns and messages." name="description"/>
 <title>Operations Dashboard — VERAPEP</title>
 <link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
-<link href="/assets/bundle-admin.css?v=17.0" rel="stylesheet"/>
+<link href="/assets/bundle-admin.css?v=140fbdac4d" rel="stylesheet"/>
 
 
 
@@ -19,7 +19,7 @@
 <div aria-label="Store information" class="trust-bar trust-bar--v11"><div class="shell trust-bar__inner" id="trust-signals"><span><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Secure test checkout</span><span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg> Lab reports where available</span><span><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg> European delivery settings</span><span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4z"/></svg> Customer support</span></div></div><header class="site-header site-header--v11" id="site-header"><div class="shell header-inner header-inner--v11"><a aria-label="VERAPEP home" class="brand brand--v11" href="/index.html"><span>VERAPEP</span></a><button aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation" class="menu-button" id="menu-button" type="button">☰</button><nav aria-label="Primary navigation" class="nav nav--v11" id="site-nav"><div class="nav__links nav__links--v11 nav__links--v12"><a href="/index.html#catalogue">Shop</a><a href="/guide.html">Product guide</a><a href="/support.html">Ask Vera</a><a href="/index.html#quality">Quality</a><a href="/my-pages.html">My pages</a></div><div class="nav__actions nav__actions--v11"><label aria-label="Search products" class="header-search header-search--v11"><input autocomplete="off" id="header-product-search" placeholder="Search peptides, products..." type="search"/><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></label><a aria-label="My Pages" class="header-icon-button" href="/my-pages.html"><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg></a><a aria-label="Saved products" class="header-icon-button nav-saved-link" href="/my-pages.html#saved-products"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path></svg><span data-saved-count="">0</span></a></div></nav></div></header>
 <main class="admin-main" id="main">
 <div class="shell">
-<header class="admin-heading"><div><p class="eyebrow">Operations dashboard</p><h1>Store administration</h1><p>Review orders, inventory, product access, return requests and customer messages from one clear workspace.</p></div><span class="sandbox-pill">Demo environment</span></header>
+<header class="admin-heading"><div><p class="eyebrow">Operations dashboard</p><h1>Store administration</h1><p>Start with the Overview: what is finished, what is missing and what to do next. Product text, documents and reviews are under Products and Changes to review.</p></div><span class="sandbox-pill">Demo environment</span></header>
 <div class="checkout-message" hidden="" id="admin-message" role="alert"></div>
 <section aria-labelledby="admin-login-title" class="admin-login" id="admin-login">
 <div><p class="eyebrow">Protected area</p><h2 id="admin-login-title">Sign in to administration</h2><p>Use the administrator credentials configured for this environment. Production mode additionally requires an authenticator code.</p></div>
@@ -30,14 +30,17 @@
 </form>
 </section>
 <section class="admin-dashboard" hidden="" id="admin-dashboard">
-<div class="admin-toolbar"><div><p class="eyebrow">Overview</p><h2>Store operations</h2></div><div><span class="admin-current-user" id="admin-current-user"></span><a class="button button--light" href="/api/admin/export" rel="noopener" target="_blank">Export data</a><button class="button button--light" id="admin-refresh" type="button">Refresh</button><button class="button button--dark" id="admin-logout" type="button">Sign out</button></div></div>
-<div class="admin-stats" id="admin-stats"></div>
+<div class="admin-toolbar"><div><p class="eyebrow">Signed in</p><h2>Store operations</h2></div><div><span class="admin-current-user" id="admin-current-user"></span><a class="button button--light" href="/api/admin/export" rel="noopener" target="_blank">Export data</a><button class="button button--light" id="admin-refresh" type="button">Refresh</button><button class="button button--dark" id="admin-logout" type="button">Sign out</button></div></div>
 <nav aria-label="Admin sections" class="admin-tabs">
-<button class="is-active" data-admin-tab="orders" type="button">Orders</button>
+<button class="is-active" data-admin-tab="overview" type="button">Overview</button>
+<button data-admin-tab="products" type="button">Products</button>
+<button data-admin-tab="review-queue" type="button">Changes to review <span class="admin-tab-count" id="review-queue-count" hidden></span></button>
+<button data-admin-tab="compliance" type="button">Compliance review</button>
+<button data-admin-tab="orders" type="button">Orders</button>
 <button data-admin-tab="inventory" type="button">Inventory</button>
-<button data-admin-tab="status" type="button">System status</button><button data-admin-tab="compliance" type="button">Compliance review</button><button data-admin-tab="products" type="button">Products</button>
+<button data-admin-tab="status" type="button">System status</button>
 <button data-admin-tab="settings" type="button">Store settings</button>
-<button data-admin-tab="reviews" type="button">Reviews</button>
+<button data-admin-tab="reviews" type="button">Customer reviews</button>
 <button data-admin-tab="guide" type="button">Guide &amp; Ask Vera</button>
 <button data-admin-tab="returns" type="button">Returns</button>
 <button data-admin-tab="outbox" type="button">Email outbox</button>
@@ -46,7 +49,16 @@
 <button data-admin-tab="team" type="button">Admin team</button>
 <button data-admin-tab="privacy" type="button">Privacy tools</button>
 </nav>
-<section class="admin-section is-active" data-admin-panel="orders">
+<section class="admin-section is-active" data-admin-panel="overview">
+<div class="admin-section__heading"><div><h3>Owner overview</h3><p>What is finished, what is missing and what to do next. Technical status and legal launch readiness are shown separately — nothing on this page approves a launch.</p></div><button class="button button--light" id="overview-refresh" type="button">Refresh</button></div>
+<div id="owner-overview" class="owner-overview" aria-live="polite"><p class="muted">Loading overview…</p></div>
+</section>
+<section class="admin-section" data-admin-panel="review-queue" hidden="">
+<div class="admin-section__heading"><div><h3>Changes to review</h3><p>Proposed changes to product text and images. Open a proposal to see exactly what changes, then approve it or ask for changes. Approving text is an editorial decision: it never publishes a product or changes its legal status.</p></div></div>
+<div id="review-queue" class="review-queue"></div>
+</section>
+<section class="admin-section" data-admin-panel="orders" hidden="">
+<div class="admin-stats" id="admin-stats"></div>
 <div class="admin-section__heading"><div><h3>Orders</h3><p>Work from operational queues, update fulfilment and manage refunds.</p></div><div class="admin-heading-actions"><label class="field admin-search"><span>Queue</span><select id="order-queue-filter"><option value="all">All orders</option><option value="awaitingPayment">Awaiting payment</option><option value="toPack">To pack</option><option value="readyToShip">Ready to ship</option><option value="inTransit">In transit</option><option value="completed">Completed</option><option value="attention">Needs attention</option></select></label><label class="field admin-search"><span>Search orders</span><input id="order-search" placeholder="Order, customer or email" type="search"/></label></div></div>
 <div class="admin-order-queues" id="admin-order-queues"></div>
 <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Fulfilment</th><th>Actions</th></tr></thead><tbody id="admin-orders"></tbody></table></div>
@@ -69,9 +81,28 @@
 <div class="admin-guide-grid"><div class="admin-card"><h3>Launch blockers</h3><ul class="status-list status-list--blockers" id="status-blockers"></ul><h3>Warnings</h3><ul class="status-list" id="status-warnings"></ul></div><div class="admin-card"><h3>Recent server errors</h3><p class="muted">Since the last restart. Only method, path and error code are kept.</p><ul class="status-list" id="status-errors"></ul></div></div>
 </section>
 <section class="admin-section" data-admin-panel="products" hidden="">
-<div class="admin-section__heading"><div><h3>Product information</h3><p>Edit discovery tags, ingredients, publication status, descriptions, images, delivery information, storage, usage, country access and lab-report links. All products remain information-only until separately approved.</p></div><label class="field admin-search"><span>Search products</span><input id="product-search" placeholder="Product name or category" type="search"/></label></div>
+<div class="admin-section__heading"><div><h3>Products</h3><p>Choose a product to see its checklist, documents, proposed text and history. Text changes go through a draft and a review; publication and sale are decided separately under Compliance review.</p></div><div class="admin-heading-actions"><button class="button button--light" id="open-import" type="button">Import product text</button></div></div>
+<div class="product-filters" role="search">
+<label class="field admin-search"><span>Search products</span><input id="product-search" placeholder="Name, id or category" type="search"/></label>
+<label class="field"><span>Missing</span><select id="product-filter-missing"><option value="">Anything</option><option value="text">Product text</option><option value="contents">Contents</option><option value="storage">Storage</option><option value="warnings">Warnings</option><option value="lab">Verified lab report</option><option value="supplier">Supplier document</option><option value="legal">Legal approval</option></select></label>
+<label class="field"><span>Review status</span><select id="product-filter-review"><option value="">All</option></select></label>
+<label class="field"><span>Public</span><select id="product-filter-visible"><option value="">All</option><option value="yes">Visible</option><option value="no">Hidden</option></select></label>
+<label class="field"><span>Work in progress</span><select id="product-filter-work"><option value="">All</option><option value="drafts">Has open drafts</option><option value="rereview">Needs re-review</option><option value="direct">Changed without review</option></select></label>
+</div>
+<p class="product-filter-count muted" id="product-filter-count" aria-live="polite"></p>
+<section class="admin-card import-panel" id="import-panel" hidden>
+<h3>Import product text</h3>
+<p class="help-text">Paste CSV or JSON with a <code>productId</code> column and any of: displayName, shortDescription, fullDescription, ingredients, storage, usage, warnings, imageAlt, source. Every row becomes a <strong>draft</strong> — nothing goes live and nothing is approved. Only use text taken from verified documents.</p>
+<div class="admin-form-grid"><label class="field"><span>Format</span><select id="import-format"><option value="csv">CSV</option><option value="json">JSON</option></select></label><label class="field"><span>Source / file name</span><input id="import-filename" placeholder="e.g. Supplier sheet March 2026"/></label><label class="field"><span>Or choose a file</span><input id="import-file" type="file" accept=".csv,.json,text/csv,application/json"/></label><label class="field field--wide"><span>Content</span><textarea id="import-content" rows="6" placeholder="productId,shortDescription,storage&#10;kpv-071,&quot;…&quot;,&quot;…&quot;"></textarea></label></div>
+<div class="admin-actions"><button class="button button--light" id="import-preview" type="button">Check and preview</button><button class="button button--primary" id="import-apply" type="button" hidden>Create drafts</button><button class="button button--light" id="import-close" type="button">Close</button></div>
+<div id="import-result" aria-live="polite"></div>
+</section>
 <div class="admin-product-workspace">
 <div class="admin-product-list" id="admin-products"></div>
+<div class="product-workspace-detail">
+<section class="product-workspace" id="product-workspace" hidden aria-live="polite"></section>
+<details class="product-advanced" id="product-advanced">
+<summary>Publication settings, links and tags (advanced)</summary>
 <form class="admin-product-editor" hidden="" id="product-editor">
 <input id="editor-product-id" type="hidden"/>
 <div class="admin-editor-heading"><div><p class="eyebrow">Selected product</p><h3 id="editor-product-name">Product</h3></div><a href="#" id="editor-product-link" rel="noopener" target="_blank">Open page ↗</a></div>
@@ -83,7 +114,7 @@
 <label class="field"><span>Public status</span><select id="editor-public-status"><option value="draft">Draft</option><option value="information_only">Information only</option><option value="available_for_sale">Available for sale</option><option value="archived">Archived</option></select></label>
 <label class="field"><span>Stock status</span><select id="editor-stock-status"><option value="information_only">Information only</option><option value="available">Available</option><option value="sold_out">Sold out</option><option value="temporarily_unavailable">Temporarily unavailable</option><option value="archived">Archived</option></select></label>
 <label class="field field--wide"><span>Ingredients / contents</span><textarea id="editor-ingredients" rows="3"></textarea></label><label class="field field--wide"><span>Storage information</span><textarea id="editor-storage" rows="3"></textarea></label>
-<label class="field field--wide"><span>Usage / dosage information</span><textarea id="editor-usage" rows="3"></textarea></label>
+<label class="field field--wide"><span>Intended use (only as stated in verified documents)</span><textarea id="editor-usage" rows="3"></textarea></label>
 <label class="field field--wide"><span>Warnings and limitations</span><textarea id="editor-warnings" rows="3"></textarea></label>
 <label class="field field--wide"><span>Image URL</span><input id="editor-image-url" placeholder="https://..."/></label>
 <label class="field field--wide"><span>Image alternative text</span><input id="editor-image-alt"/></label>
@@ -109,6 +140,8 @@
 <button class="danger-button" id="archive-product" type="button">Remove from storefront</button>
 </div>
 </form>
+</details>
+</div>
 </div>
 </section>
 <section class="admin-section" data-admin-panel="settings" hidden="">
@@ -138,6 +171,7 @@
 </div>
 <div class="admin-guide-grid"><div class="admin-card" id="kb-migration"><h3>Knowledge updates</h3><p class="muted">Checking…</p></div><div class="admin-card" id="vera-stats"><h3>Ask Vera usage</h3><p class="muted">No data yet.</p></div>
 </div>
+<section class="admin-card vera-translations" id="vera-translations" aria-live="polite"><h3>Swedish answers (translations)</h3><p class="help-text">Vera answers Swedish questions in Swedish only when you have approved the translation here. Until then she answers in English and says that no reviewed translation exists. If the English answer changes later, its translation is set aside until it is updated and approved again.</p><div id="vera-translation-list"><p class="muted">Loading…</p></div></section>
 </section>
 <section class="admin-section" data-admin-panel="returns" hidden="">
 <div class="admin-section__heading"><div><h3>Return requests</h3><p>Review and update test return requests created from the customer tracking page.</p></div></div>
@@ -195,5 +229,6 @@
 <footer class="site-footer"><div class="shell footer-inner"><span>VERAPEP · Store administration</span><nav aria-label="Footer navigation" class="footer-links"><a href="index.html">Homepage</a><a href="guide.html">Product guide</a><a href="support.html">Ask Vera</a><a href="my-pages.html">My Pages</a><a href="#main">Back to top ↑</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/shipping-returns.html">Shipping & returns</a></nav></div></footer>
 <script src="assets/site.js"></script>
 <script src="assets/admin.js"></script>
+<script src="assets/admin-v19.js"></script>
 </body>
 </html>
