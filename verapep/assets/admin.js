@@ -397,7 +397,10 @@
       <article><span>Public products</span><strong>${escapeHtml(dash.publication?.visibleProducts)} / ${escapeHtml(dash.publication?.totalProducts)}</strong></article>
       <article><span>Ask Vera knowledge</span><strong>${dash.supportKbStatus ? (dash.supportKbStatus.upToDate ? 'Up to date' : `${dash.supportKbStatus.pendingWrites} update(s) available`) : '—'}</strong></article>
       <article><span>Server started</span><strong>${escapeHtml(formatDate(dash.startedAt))}</strong></article>`;
-    document.getElementById('status-blockers').innerHTML = (readiness.blockers || []).map(item => `<li>${escapeHtml(item)}</li>`).join('') || '<li>None</li>';
+    // v18: grouped by who can resolve each blocker; the list itself is unchanged.
+    const groups = {};
+    for (const item of readiness.blockerDetails || (readiness.blockers || []).map(text => ({ text, categoryLabel: 'Blockers', action: '' }))) (groups[item.categoryLabel] ||= []).push(item);
+    document.getElementById('status-blockers').innerHTML = Object.entries(groups).map(([group, items]) => `<li class="status-group"><strong>${escapeHtml(group)} (${items.length})</strong><ul>${items.map(item => `<li>${escapeHtml(item.text)}${item.action ? `<br/><small>${escapeHtml(item.action)}</small>` : ''}</li>`).join('')}</ul></li>`).join('') || '<li>None</li>';
     document.getElementById('status-warnings').innerHTML = (readiness.warnings || []).map(item => `<li>${escapeHtml(item)}</li>`).join('') || '<li>None</li>';
     document.getElementById('status-errors').innerHTML = (dash.recentErrors || []).map(item => `<li>${escapeHtml(formatDate(item.at))} · ${escapeHtml(item.method)} ${escapeHtml(item.path)} · ${escapeHtml(item.status)} ${escapeHtml(item.code)}</li>`).join('') || '<li>No server errors since the last restart.</li>';
   }

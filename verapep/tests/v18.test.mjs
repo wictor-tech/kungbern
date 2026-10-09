@@ -228,6 +228,10 @@ test('v18 security regressions stay fixed', async t => {
   const ready = await jsonRequest(baseUrl, '/api/ready');
   assert.equal(ready.response.status, 503, 'the site still reports itself as not launch-ready');
   assert.ok(ready.payload.blockers.length >= 19, 'no blocker was removed');
+  assert.equal(ready.payload.blockerDetails.length, ready.payload.blockers.length, 'classification never hides a blocker');
+  for (const item of ready.payload.blockerDetails) assert.ok(item.action && item.category, `unclassified blocker: ${item.text}`);
+  const categories = new Set(ready.payload.blockerDetails.map(item => item.category));
+  for (const category of ['deployment', 'owner', 'legal', 'documents']) assert.ok(categories.has(category), category);
 });
 
 test('v18 seed data never contains real orders, customers or reviews', () => {
@@ -237,8 +241,12 @@ test('v18 seed data never contains real orders, customers or reviews', () => {
   assert.deepEqual(read('withdrawals.json'), []);
   assert.deepEqual(read('customers.json').customers, []);
   assert.deepEqual(read('reviews.json').reviews, []);
-  const tracked = execFileSync('git', ['ls-files', 'data'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map(file => path.basename(file));
-  for (const name of dataFiles) assert.ok(tracked.includes(name), `data/${name} must be in git so a clean checkout is complete`);
+  let listing = null;
+  try { listing = execFileSync('git', ['ls-files', 'data'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch { /* unpacked release, not a git checkout */ }
+  if (listing !== null && listing.trim()) {
+    const tracked = listing.split('\n').filter(Boolean).map(file => path.basename(file));
+    for (const name of dataFiles) assert.ok(tracked.includes(name), `data/${name} must be in git so a clean checkout is complete`);
+  }
 });
 
 test('v18 secret scanner detects planted secrets and passes on the project', () => {

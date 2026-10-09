@@ -8,6 +8,7 @@ import net from 'node:net';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { VerapepDatabase, verifyPassword } from './database.mjs';
 import { answerQuestion } from './lib/vera.mjs';
+import { classifyBlocker } from './lib/readiness.mjs';
 import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
 import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
@@ -815,6 +816,7 @@ export function createVerapepServer(options = {}) {
       ready: blockers.length === 0,
       environment: APP_ENV,
       blockers,
+      blockerDetails: blockers.map(classifyBlocker),
       warnings,
       liveApprovedProducts: liveApprovedProducts.length,
       publicationGate: gateMode,

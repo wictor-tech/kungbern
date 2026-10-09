@@ -2,7 +2,7 @@
 
 Generated: 2026-10-09
 
-Files listed: 226 (manifest excludes itself and runtime database/outbox/backup files)
+Files listed: 227 (manifest excludes itself and runtime database/outbox/backup files)
 
 Path | Bytes | SHA-256 (first 16)
 .env.example | 2803 | b6d46a13706f32bb
@@ -69,11 +69,11 @@ V8-CHANGES.md | 1342 | f12843aa36f7b3a9
 V8.1-CHANGES.md | 566 | 0a9da45f23da7e02
 V9-CHANGES.md | 1818 | 2bbcd9a24eeff30e
 admin.html | 25067 | d7a9409ee489bafe
-assets/admin.js | 62638 | 742d8895314d70be
+assets/admin.js | 63144 | cdb153cbd1a955f8
 assets/app.js | 53667 | 3e141647ecba9ce0
-assets/bundle-admin.css | 297431 | 656808449bb9153a
-assets/bundle-pages.css | 287635 | 1f532d5d8bdfccdf
-assets/bundle-storefront.css | 350848 | bf6e2f4caace86fc
+assets/bundle-admin.css | 297692 | 678b21198a2adb08
+assets/bundle-pages.css | 287896 | b74b8ef8958be6e2
+assets/bundle-storefront.css | 351109 | 8e3c4a560a574a0b
 assets/cart.js | 14560 | a508bba5ade05d99
 assets/catalogue-data.js | 1044 | 82f54f9dd6142f73
 assets/checkout.js | 13377 | f0cea26bb42e639b
@@ -128,7 +128,7 @@ assets/v13-mobile-commerce.css | 12921 | 9f43c04e494b12a4
 assets/v14-production-readiness.css | 3079 | b8ca4c6d91753833
 assets/v15-premium.css | 75246 | 37558de87dd3e6d8
 assets/v15-ui.js | 9007 | 27fab6f6f1523789
-assets/v17.css | 10127 | 9a3852687cbfff11
+assets/v17.css | 10445 | cd1ce8d0f3ebc5b7
 assets/v7-ui.js | 1909 | df7c7d6247b2fe62
 assets/v7.css | 17343 | 6e8f7e2aa345e502
 assets/v8-1.css | 11158 | d0d1341abe6fccc8
@@ -184,6 +184,7 @@ guide.html | 6519 | f381ac1ee145799c
 homepage-image-audit-v12.6.csv | 11294 | 56e8032b839ae31e
 index.html | 19941 | c2bbe1b1ffff296c
 lib/compliance.mjs | 10277 | 4d3e31205d63bf5f
+lib/readiness.mjs | 3575 | a3ad765584956813
 lib/support-kb-migration.mjs | 10751 | 311f72070c0008cf
 lib/vera.mjs | 20652 | c6c3cb7f112b5cf5
 my-pages.html | 8343 | 8217e8331df3ad44
@@ -210,7 +211,7 @@ scripts/secret-scan.mjs | 5364 | 85d266d881c0ca90
 scripts/source/catalogue-data.js | 27296 | 7a1536b945504f11
 scripts/verify-release.mjs | 5610 | c87d38b55ab359ed
 scripts/write-manifest.mjs | 1817 | 8b3f3b43e8889bc1
-server.mjs | 162921 | 08933e113af9bf58
+server.mjs | 163029 | ebea24ab6b516656
 shipping-returns.html | 7121 | db3df9c949e7987e
 sql/postgres-schema.sql | 8461 | 4adb726f2d822500
 start-webshop.cmd | 2638 | 32e49d091ab17e06
@@ -227,7 +228,7 @@ tests/v14.test.mjs | 5776 | ceb87febd393cdbc
 tests/v141.test.mjs | 7449 | 556973b582ab1c9e
 tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
 tests/v17.test.mjs | 34219 | 8e647c8cbe3b7e8d
-tests/v18.test.mjs | 20286 | b5366bdc087ef77d
+tests/v18.test.mjs | 20939 | 5cf8d21a6a358c1d
 tests/v9.test.mjs | 7478 | 6eb6faa257dab498
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
 tests/vendor/axe.min.js | 553290 | b511cd9dec01c76f
