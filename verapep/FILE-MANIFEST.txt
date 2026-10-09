@@ -2,7 +2,7 @@
 
 Generated: 2026-10-09
 
-Files listed: 258 (manifest excludes itself and runtime database/outbox/backup files)
+Files listed: 251 (manifest excludes itself and runtime database/outbox/backup files)
 
 Path | Bytes | SHA-256 (first 16)
 .env.example | 2889 | 3cb7a2922ef163b7
@@ -103,10 +103,7 @@ assets/fonts/newsreader-latin-ext-opsz-normal.woff2 | 86608 | 45683de03de37187
 assets/fonts/newsreader-latin-opsz-normal.woff2 | 132000 | 6e4f2958c3a7c4a8
 assets/guide-fallback.js | 3665 | d262f991e531c574
 assets/guide.js | 5739 | 1f2f3284928f03d6
-assets/images/vial-bases/premium-glass-vial-cropped.png | 1134303 | be6b0127b115fc00
 assets/images/vial-bases/premium-glass-vial-neutral-720.webp | 37132 | e598400280f2630d
-assets/images/vial-bases/premium-glass-vial-neutral.png | 568910 | e40e9afba59490f2
-assets/images/vial-bases/premium-glass-vial.png | 1760496 | 3835b463e8ca16aa
 assets/legal.js | 3807 | 78456d420fb3cdc8
 assets/media/bubbles-hero-v12.png | 1886020 | 73a53c43b1336908
 assets/media/bubbles-hero-v13-mobile.webp | 37490 | 9b527519a95b6717
@@ -116,10 +113,6 @@ assets/media/bubbles-hero-v15-2048.webp | 86554 | b09e8423a2942277
 assets/media/bubbles-hero-v16-1280.avif | 27982 | 828f244bec226ad0
 assets/media/bubbles-hero-v16-1600.avif | 34254 | c9fa3a19c6039d4f
 assets/media/bubbles-hero-v16-1600.webp | 66512 | 03f022dc7d126017
-assets/media/liquid-hero-mobile.webp | 83836 | 58f7c284f733460f
-assets/media/liquid-hero-poster.webp | 123510 | c3012ea046a1cacc
-assets/media/liquid-hero.mp4 | 183247 | 36a59393a6a208bf
-assets/media/liquid-hero.webm | 115321 | 079c124de4524bfe
 assets/media/product-vials/bpc-157.png | 1760496 | 3835b463e8ca16aa
 assets/media/product-vials/cjc-1295-with-dac.png | 1723125 | ca27af24dbae3d61
 assets/media/product-vials/melanotan-2-acetate.png | 1841239 | b4c2c6f45073e2ba
@@ -161,7 +154,7 @@ data/catalogue.json | 53959 | 95116f9acda605f7
 data/commerce-policy.json | 22312 | c889a2a7a4d7a632
 data/customers.json | 38 | e4d58a97c6c92bfc
 data/guide-config.json | 10470 | 17da98ab582fb558
-data/image-audit.json | 9793 | b1cb846db7817473
+data/image-audit.json | 7688 | f2e270321998eb67
 data/inventory.json | 57138 | ec62c25ea120a1ef
 data/orders.json | 3 | 37517e5f3dc66819
 data/product-compliance.json | 279 | 05410557415b5b6d
@@ -173,7 +166,7 @@ data/reviews.json | 36 | 553a4f749e67f0d2
 data/store-config.json | 2288 | dd29a4b0a868f019
 data/support-kb-history.json | 9725 | d32665c54d98f925
 data/support-kb.json | 11805 | c9a29421736fa67b
-data/vera-translations.json | 14392 | 356d14fb8c07f447
+data/vera-translations.json | 17531 | e04f02b196eb64fd
 data/withdrawals.json | 3 | 37517e5f3dc66819
 database.mjs | 11262 | 1e9f498bbbc2585a
 docker-compose.yml | 253 | af38f2f827778d41
@@ -252,13 +245,13 @@ tests/load/load-test.mjs | 8606 | 28749419624077e0
 tests/personas.py | 17480 | 8134e960b8199522
 tests/static-validation.py | 4741 | 1935bcfc52a549b9
 tests/support/compliance.mjs | 1116 | 10c08360786e36a6
-tests/v11.test.mjs | 7384 | eb35746448d15010
+tests/v11.test.mjs | 7387 | 88305f911f965c09
 tests/v14.test.mjs | 5776 | 62d8bc726f82cd28
 tests/v141.test.mjs | 7984 | 09bf6137cb33d65c
 tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
-tests/v17.test.mjs | 34219 | 8e647c8cbe3b7e8d
+tests/v17.test.mjs | 34305 | 74ca53f9578c3632
 tests/v18.test.mjs | 20939 | 594d6ad9f9b016a6
-tests/v19.test.mjs | 27119 | 35aeddd160197232
+tests/v19.test.mjs | 27587 | 2bab3c7fcc9466a6
 tests/v20.test.mjs | 20628 | 668286708acfd429
 tests/v9.test.mjs | 7478 | f3346083784e4d67
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
