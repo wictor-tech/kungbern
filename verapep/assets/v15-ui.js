@@ -123,6 +123,14 @@
     });
   }
 
+  /* Empty catalogue state: one click back to the full catalogue. */
+  document.querySelector('[data-empty-reset]')?.addEventListener('click', () => {
+    const headerSearch = document.getElementById('header-product-search');
+    if (headerSearch) headerSearch.value = '';
+    document.getElementById('reset-filters')?.click();
+    document.getElementById('catalogue')?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+  });
+
   /* Back to top: smooth (unless reduced motion) and moves focus to the page start. */
   document.querySelectorAll('[data-back-to-top]').forEach(link => {
     link.addEventListener('click', event => {

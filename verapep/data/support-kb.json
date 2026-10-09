@@ -4,37 +4,37 @@
     {
       "id": "delivery",
       "question": "delivery shipping time",
-      "answer": "The standard estimated delivery time shown by the catalogue is 7–10 days. Availability and final delivery terms must be confirmed before live sales are enabled.",
-      "url": "index.html#catalogue"
+      "answer": "The estimated delivery time is 7–10 days to the configured European countries. Final delivery terms are published on the Shipping & returns page before sales open.",
+      "url": "shipping-returns.html"
     },
     {
       "id": "europe",
       "question": "countries europe delivery",
-      "answer": "VERAPEP is configured for European markets only. Individual product and country availability is managed in the administration portal.",
-      "url": "index.html#catalogue"
+      "answer": "Delivery is configured for 27 EU countries. Whether a specific product can be delivered to your country is confirmed on the product page before checkout.",
+      "url": "shipping-returns.html"
     },
     {
       "id": "pricing",
       "question": "price pricing vat shipping",
-      "answer": "Customer-facing EUR pricing is still under review. Product pages may show source-workbook USD reference data, but live checkout and purchasing remain disabled.",
+      "answer": "Prices on product pages are reference prices in EUR. They apply only once a product is available to order; VAT and delivery costs are confirmed at checkout.",
       "url": "index.html#catalogue"
     },
     {
       "id": "reports",
       "question": "lab report certificate coa",
-      "answer": "Lab reports can be linked to individual products from the administration portal. Only approved reports should be published.",
-      "url": "index.html?reports=yes#catalogue"
+      "answer": "Lab reports are published on the product page once they have been verified and approved for that specific product. If a product page shows no report, none has been published yet.",
+      "url": "index.html#catalogue"
     },
     {
       "id": "account",
       "question": "account login password my pages",
-      "answer": "The customer account area is available as a demonstration. Production identity, email verification and privacy configuration are required before launch.",
+      "answer": "My pages keeps your saved products and finder choices in this browser. Customer accounts with sign-in are not available yet.",
       "url": "my-pages.html"
     },
     {
       "id": "saved",
       "question": "saved favourites favorite heart shortlist cart",
-      "answer": "Use the heart on a product card or product page to save it. Saved products are kept separately from the future shopping cart and appear under My Pages.",
+      "answer": "Use the heart on a product card or product page to save it. Saved products are kept separately from the cart and appear under My pages.",
       "url": "my-pages.html#saved-products"
     },
     {
@@ -46,9 +46,9 @@
     {
       "id": "ratings",
       "question": "rating ratings review reviews stars",
-      "answer": "Only admin-approved reviews appear publicly and affect product averages. Products without approved reviews show “No ratings yet”.",
+      "answer": "Reviews are checked before they are published. Products without published reviews show “No ratings yet”.",
       "url": "index.html#catalogue"
     }
   ],
-  "fallback": "I could not find an approved answer for that question. Please contact live support."
+  "fallback": "I could not find a published answer to that question. Please contact support at hello@verapep.eu."
 }

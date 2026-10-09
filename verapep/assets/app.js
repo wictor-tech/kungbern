@@ -680,7 +680,10 @@
       node.textContent = `${categoryProducts.length} product${categoryProducts.length === 1 ? '' : 's'} · ${categoryVariants} variant${categoryVariants === 1 ? '' : 's'}`;
     });
     const signals = storefront.config?.trustSignals || [];
-    if (signals.length) { const trustMarkup = signals.map(signal => `<span><i aria-hidden="true">✓</i> ${escapeHtml(signal)}</span>`).join(''); els.trustSignals.innerHTML = trustMarkup; }
+    const currentSignals = [...els.trustSignals.querySelectorAll('span')].map(node => node.textContent.trim());
+    if (signals.length && signals.join('|') !== currentSignals.join('|')) { const trustMarkup = signals.map(signal => `<span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></svg> ${escapeHtml(signal)}</span>`).join(''); els.trustSignals.innerHTML = trustMarkup; }
+    const stat = (key, value) => document.querySelectorAll(`[data-stat="${key}"]`).forEach(node => { node.textContent = String(value); });
+    stat('products', products.length); stat('variants', publicVariantCount); stat('countries', (storefront.config?.allowedCountries || []).length);
     document.querySelectorAll('.brand > span:last-child').forEach(node => { node.textContent = storefront.config?.storeName || 'VERAPEP'; });
     const assistantName = storefront.config?.assistantName || 'Ask Vera';
     if (els.veraLauncher) els.veraLauncher.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4z"/></svg> ${escapeHtml(assistantName)}`;

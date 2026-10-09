@@ -2122,6 +2122,18 @@ export function createVerapepServer(options = {}) {
     return sendJson(res, 404, { error: 'not_found', message: 'API route not found.' });
   }
 
+  async function sendNotFound(req, res, pathname, message = 'Not found') {
+    // Page requests get the branded 404 page; assets and data keep a plain-text 404.
+    const extension = path.extname(pathname).toLowerCase();
+    if (req.method === 'GET' && (!extension || extension === '.html')) {
+      try {
+        const body = await fsp.readFile(path.join(rootDir, '404.html'));
+        return sendText(res, 404, body.toString('utf8'), 'text/html; charset=utf-8');
+      } catch { /* fall through to plain text */ }
+    }
+    return sendText(res, 404, message);
+  }
+
   async function serveStatic(req, res, url) {
     let pathname = decodeURIComponent(url.pathname);
     const searchIndexingEnabled = IS_PRODUCTION && String(process.env.PRODUCTION_SEO_INDEXING || '').toLowerCase() === 'true';
@@ -2154,15 +2166,16 @@ export function createVerapepServer(options = {}) {
     if (!resolved.startsWith(`${rootDir}${path.sep}`) && resolved !== rootDir) return sendText(res, 403, 'Forbidden');
     const extension = path.extname(resolved).toLowerCase();
     const firstSegment = relative.split(/[\\/]/)[0];
+    if (!MIME_TYPES[extension] && !extension) return sendNotFound(req, res, pathname);
     if (!MIME_TYPES[extension] || firstSegment === 'data' || firstSegment === 'outbox' || path.basename(resolved).startsWith('.')) return sendText(res, 404, 'Not found');
     try {
       const stat = await fsp.stat(resolved);
-      if (!stat.isFile()) return sendText(res, 404, 'Not found');
+      if (!stat.isFile()) return sendNotFound(req, res, pathname);
       let body = await fsp.readFile(resolved);
       if (dynamicProductId && path.basename(resolved) === 'product.html') {
         const product = productsById.get(dynamicProductId);
         const publicProduct = product ? productPublic(product) : null;
-        if (!publicProduct || publicProduct.content?.published === false || publicProduct.content?.stockStatus === 'archived') return sendText(res, 404, 'Product not found');
+        if (!publicProduct || publicProduct.content?.published === false || publicProduct.content?.stockStatus === 'archived') return sendNotFound(req, res, '/product.html', 'Product not found');
         const name = publicProduct.content?.displayName || publicProduct.name;
         const description = publicProduct.content?.shortDescription || `View ${name} variants and published product information.`;
         const canonicalPath = `/product/${encodeURIComponent(publicProduct.id)}`;
@@ -2212,7 +2225,7 @@ export function createVerapepServer(options = {}) {
       });
       if (req.method === 'HEAD') res.end(); else res.end(responseBody);
     } catch (error) {
-      if (error.code === 'ENOENT') return sendText(res, 404, 'Not found');
+      if (error.code === 'ENOENT') return sendNotFound(req, res, pathname);
       throw error;
     }
   }
