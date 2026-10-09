@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VERAPEP end-to-end suite (v16).
+"""VERAPEP end-to-end suite (v16, extended in v17).
 
 Runs the real server against a temporary copy of data/ and drives Chromium.
 
@@ -10,6 +10,10 @@ page has rendered (product cards, aria-busy="false", filled legal facts, ...).
 
 No real purchase or payment is possible: the server runs in sandbox mode and
 no product is enabled for checkout. The suite asserts that this stays true.
+
+v17: the publication gate lists 40 of the 84 catalogue products (44 products
+whose names indicate prescription medicines, hormones or toxins stay hidden
+until a reviewed approval is recorded). Counts below reflect that on purpose.
 
 Usage:  npm run test:e2e        (python3 tests/e2e.py)
         E2E_ONLY=search,legal   run selected tests
@@ -36,7 +40,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PREVIEW_DIR = ROOT / 'previews' / 'information-platform'
 AXE = ROOT / 'tests' / 'vendor' / 'axe.min.js'
 DATA_FILES = ('catalogue.json', 'commerce-policy.json', 'inventory.json', 'store-config.json', 'orders.json', 'returns.json',
-              'withdrawals.json', 'product-content.json', 'reviews.json', 'guide-config.json', 'support-kb.json', 'customers.json')
+              'withdrawals.json', 'product-content.json', 'reviews.json', 'guide-config.json', 'support-kb.json', 'customers.json', 'product-compliance.json')
+VISIBLE_PRODUCTS = 40  # v17 preview publication gate (84 in the catalogue)
 PUBLIC_PAGES = ['/', '/guide.html', '/support.html', '/my-pages.html', '/checkout.html', '/order.html',
                 '/privacy.html', '/terms.html', '/shipping-returns.html', '/product/aicar-025']
 TIMEOUT = 10_000
@@ -131,7 +136,12 @@ class Suite:
         search.press('Enter')
         expect(page.locator('#empty-state')).to_be_visible()
         page.locator('[data-empty-reset]').click()
-        expect(page.locator('#result-count')).to_contain_text('84 products found')
+        expect(page.locator('#result-count')).to_contain_text(f'{VISIBLE_PRODUCTS} products found')
+        # A hidden (unreviewed high-risk) product cannot be found by search.
+        search.fill('semaglutide')
+        search.press('Enter')
+        expect(page.locator('#empty-state')).to_be_visible()
+        page.locator('[data-empty-reset]').click()
         # Searching from another page lands on the filtered catalogue.
         page.goto(self.base + '/support.html', wait_until='domcontentloaded')
         page.locator('#header-product-search').fill('aicar')
@@ -143,13 +153,13 @@ class Suite:
     def test_catalogue(self):
         page = self.page()
         self.home(page)
-        expect(page.locator('#result-count')).to_contain_text('84 products found · 12 shown')
+        expect(page.locator('#result-count')).to_contain_text(f'{VISIBLE_PRODUCTS} products found · 12 shown')
         expect(page.locator('#product-grid .product-card')).to_have_count(12)
         page.locator('#load-more').click()
         expect(page.locator('#product-grid .product-card')).to_have_count(24)
-        expect(page.locator('[data-stat="products"]')).to_have_text('84')
+        expect(page.locator('[data-stat="products"]')).to_have_text(str(VISIBLE_PRODUCTS))
         page.goto(self.base + '/index.html?category=skin#catalogue', wait_until='domcontentloaded')
-        expect(page.locator('#result-count')).to_contain_text('15 products found')
+        expect(page.locator('#result-count')).to_contain_text('12 products found')
         # Compare up to three products.
         self.home(page)
         for index in range(3):
@@ -335,6 +345,105 @@ class Suite:
         page.locator('#editor-short-description').fill('Approved catalogue summary.')
         page.locator('#product-editor button[type="submit"]').click()
         expect(page.locator('#admin-message')).to_contain_text('saved')
+        page.context.close()
+
+    # ------------------------------------------------------------------ v17
+
+    def test_publication_gate(self):
+        page = self.page()
+        # A hidden product has no page, and the storefront never contains it.
+        page.goto(self.base + '/product/semaglutide-003', wait_until='domcontentloaded')
+        expect(page.locator('h1')).to_have_text('This page could not be found.')
+        storefront = json.loads(urllib.request.urlopen(self.base + '/api/storefront').read())
+        assert storefront['productCount'] == VISIBLE_PRODUCTS
+        assert not any(p['id'] == 'semaglutide-003' for p in storefront['products'])
+        # Internal files are not web content.
+        for path in ('/server.mjs', '/package.json', '/README.md', '/scripts/source/catalogue-data.js', '/tests/e2e.py'):
+            assert http_status(self.base + path) == 404, path
+        page.context.close()
+
+    def test_vera(self):
+        page = self.page(430, 900, is_mobile=True, has_touch=True)
+        page.goto(self.base + '/support.html', wait_until='domcontentloaded')
+        log = page.locator('#assistant-log')
+        expect(log).to_have_attribute('aria-live', 'polite')
+        # Dosing question: refused, labelled, no product links.
+        page.locator('#assistant-question').fill('How much semaglutide should I inject?')
+        page.locator('#assistant-question').press('Enter')
+        answer = page.locator('.vera-answer').last
+        expect(answer).to_contain_text('does not give medical advice')
+        expect(answer.locator('.vera-answer__badge')).to_have_text('Not medical advice')
+        assert answer.locator('a[href*="/product/"]').count() == 0
+        # Swedish question, configured email in the answer.
+        page.locator('#assistant-question').fill('hur kontaktar jag er?')
+        page.locator('#assistant-form button[type="submit"]').click()
+        expect(page.locator('.vera-answer').last).to_contain_text('hello@verapep.eu')
+        # Shortcut + follow-up suggestion chips.
+        page.locator('.assistant-shortcuts [data-vera-ask]', has_text='Returns').click()
+        expect(page.locator('.vera-answer').last).to_contain_text('return')
+        page.locator('#assistant-question').fill('qwerty asdf')
+        page.locator('#assistant-question').press('Enter')
+        expect(page.locator('.vera-answer--fallback').last).to_be_visible()
+        page.locator('.vera-answer--fallback [data-vera-suggestion]').first.click()
+        expect(page.locator('.vera-answer').last).not_to_have_class(re.compile('vera-answer--fallback'))
+        # Visible contact details for people who prefer email.
+        expect(page.locator('#contact [data-legal-mail="supportEmail"]')).to_have_text('hello@verapep.eu')
+        overflow = page.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth')
+        assert overflow <= 0, f'horizontal overflow {overflow}px'
+        self.shot(page, 'ask-vera-mobile')
+        # Floating panel on the home page.
+        desk = self.page()
+        self.home(desk)
+        desk.mouse.wheel(0, 1600)
+        desk.locator('#vera-launcher').click()
+        desk.locator('#vera-quick [data-vera-ask]', has_text='Delivery').click()
+        expect(desk.locator('#vera-log .vera-answer').last).to_contain_text('7–10 days')
+        desk.keyboard.press('Escape')
+        expect(desk.locator('#vera-panel')).to_be_hidden()
+        desk.context.close()
+        page.context.close()
+
+    def test_mobile_search(self):
+        page = self.page(375, 800, is_mobile=True, has_touch=True)
+        self.home(page)
+        page.locator('#menu-button').click()
+        search = page.locator('#header-product-search')
+        search.fill('GHK')
+        search.press('Enter')
+        # v17 fix: the menu closes so the filtered results are visible.
+        expect(page.locator('#menu-button')).to_have_attribute('aria-expanded', 'false')
+        expect(page.locator('#site-nav')).to_be_hidden()
+        expect(page.locator('#product-grid .product-card').first).to_contain_text('GHK')
+        page.context.close()
+
+    def test_admin_compliance(self):
+        page = self.page()
+        page.goto(self.base + '/admin.html', wait_until='domcontentloaded')
+        page.locator('#admin-email').fill('admin@verapep.local')
+        page.locator('#admin-password').fill('ChangeMe-123!')
+        page.locator('#admin-login-form button').click()
+        expect(page.locator('#admin-dashboard')).to_be_visible()
+        page.locator('[data-admin-tab="status"]').click()
+        expect(page.locator('#status-overview')).to_contain_text('Not approved for launch')
+        expect(page.locator('#status-blockers')).to_contain_text('compliance approval')
+        page.locator('[data-admin-tab="compliance"]').click()
+        expect(page.locator('#compliance-rows tr')).to_have_count(84)
+        page.locator('#compliance-risk-filter').select_option('high')
+        expect(page.locator('#compliance-rows tr')).to_have_count(84 - VISIBLE_PRODUCTS)
+        page.locator('#compliance-risk-filter').select_option('')
+        page.locator('[data-compliance-id="kpv-071"] [data-compliance-open]').click()
+        detail = page.locator('#compliance-detail')
+        expect(detail).to_contain_text('Automated suggestion — not a decision')
+        detail.locator('select[name="status"]').select_option('needs_evidence')
+        detail.locator('input[name="note"]').fill('Waiting for supplier documentation.')
+        detail.locator('button[type="submit"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('Decision saved')
+        expect(page.locator('[data-compliance-id="kpv-071"] .status-pill')).to_have_text('Needs evidence')
+        # Knowledge updates are visible and up to date on a fresh install.
+        page.locator('[data-admin-tab="guide"]').click()
+        expect(page.locator('#kb-migration')).to_contain_text('Up to date')
+        expect(page.locator('#kb-entries .kb-entry')).to_have_count(21)
+        self.shot(page, 'admin-compliance')
         page.context.close()
 
 

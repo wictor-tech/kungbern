@@ -164,3 +164,4 @@ form[aria-busy="true"] button[type="submit"] { opacity: .6; cursor: progress; }
 .kb-entry > summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; list-style-position: inside; }
 .kb-entry > summary small { color: var(--vp-muted); flex-basis: 100%; }
 .kb-entry[open] > summary { margin-bottom: 12px; }
+.assistant-contact__facts a { text-decoration: underline; text-underline-offset: 3px; }
