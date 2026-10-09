@@ -4,6 +4,7 @@ import fsp from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { approveForSale } from './support/compliance.mjs';
 import { createVerapepServer } from '../server.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,8 +26,8 @@ test('VERAPEP V14 production-readiness protections', async t => {
   await t.test('preview is healthy but correctly fails production readiness', async () => {
     const health = await jsonRequest(baseUrl,'/api/health');
     assert.equal(health.response.status,200);
-    assert.equal(health.payload.version,'16.0.0');
-    assert.equal(health.payload.products,84);
+    assert.equal(health.payload.version,'20.0.0');
+    assert.equal(health.payload.products,40); // v17 preview gate: 84 in catalogue, 44 high-risk hidden
     const ready = await jsonRequest(baseUrl,'/api/ready');
     assert.equal(ready.response.status,503);
     assert.equal(ready.payload.ready,false);
@@ -52,6 +53,7 @@ test('VERAPEP V14 production-readiness protections', async t => {
   const authHeaders = { Cookie:cookie, 'X-CSRF-Token':login.payload.csrf };
 
   await t.test('order stores legal-version snapshot and withdrawal notice is duplicate-safe', async () => {
+    await approveForSale(baseUrl,authHeaders,product.id);
     const enabled = await jsonRequest(baseUrl,`/api/admin/products/${encodeURIComponent(product.id)}/webshop`,{method:'POST',headers:authHeaders,body:JSON.stringify({enabled:true})});
     assert.equal(enabled.response.status,200);
     const chosenVariant = enabled.payload.product.variants.find(item=>item.checkoutEnabled) || variant;

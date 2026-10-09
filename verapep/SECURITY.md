@@ -59,3 +59,15 @@ Before public commerce:
 - commission an independent security review
 
 See `PRODUCTION-READINESS-AUDIT-V14.md`, `V14.1-OPERATIONAL-HARDENING.md` and `PRODUCTION-CHECKLIST-V14.md`.
+
+## v17 additions
+
+See `V17-SECURITY-REPORT.md` for the full review. In short:
+
+- Static files are served from an allowlist (top-level pages and `/assets` only); server code, scripts, tests and internal documents return 404.
+- Products come only from `/api/storefront`; the full source catalogue is no longer shipped to browsers.
+- Publication and any sale require an owner-recorded compliance approval (`lib/compliance.mjs`); unreviewed high-risk products are hidden, and production shows only approved products.
+- Admin user responses and audit entries never include password hashes or MFA secrets.
+- Rate limits for Ask Vera, reviews, the guide and email-based order access; set `TRUST_PROXY=true` behind a reverse proxy.
+- Admin-entered links are restricted to site paths, `https:` and (knowledge base) `mailto:`.
+- Ask Vera questions are processed in memory only and never stored.

@@ -17,11 +17,11 @@ const assets = path.join(root, 'assets');
 
 export const BUNDLES = {
   // index, product and my-pages (storefront pages using the v6–v10 catalogue layers)
-  'bundle-storefront.css': ['styles.css', 'v7.css', 'v8.css', 'v8-1.css', 'v9.css', 'v10.css', 'v11.css', 'v12.css', 'v12-7.css', 'v12-9-mobile.css', 'v13-mobile-commerce.css', 'v15-premium.css'],
+  'bundle-storefront.css': ['styles.css', 'v7.css', 'v8.css', 'v8-1.css', 'v9.css', 'v10.css', 'v11.css', 'v12.css', 'v12-7.css', 'v12-9-mobile.css', 'v13-mobile-commerce.css', 'v15-premium.css', 'v17.css'],
   // guide, Ask Vera, checkout, order tracking, legal pages and 404
-  'bundle-pages.css': ['styles.css', 'v8-1.css', 'v9.css', 'v11.css', 'v12.css', 'v12-7.css', 'v12-9-mobile.css', 'v13-mobile-commerce.css', 'v15-premium.css'],
+  'bundle-pages.css': ['styles.css', 'v8-1.css', 'v9.css', 'v11.css', 'v12.css', 'v12-7.css', 'v12-9-mobile.css', 'v13-mobile-commerce.css', 'v15-premium.css', 'v17.css'],
   // administration
-  'bundle-admin.css': ['styles.css', 'v8.css', 'v8-1.css', 'v9.css', 'v11.css', 'v12.css', 'v12-7.css', 'v12-9-mobile.css', 'v13-mobile-commerce.css', 'v14-production-readiness.css', 'v15-premium.css']
+  'bundle-admin.css': ['styles.css', 'v8.css', 'v8-1.css', 'v9.css', 'v11.css', 'v12.css', 'v12-7.css', 'v12-9-mobile.css', 'v13-mobile-commerce.css', 'v14-production-readiness.css', 'v15-premium.css', 'v17.css', 'v19.css']
 };
 
 /* Removes comments and collapses whitespace outside of strings and url(). */

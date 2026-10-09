@@ -91,10 +91,12 @@
       .map(item => item.other);
   }
 
+  let renderedFingerprint = null;
   async function renderPage() {
     const response = await fetch('/api/storefront', { cache: 'no-store' });
     const storefront = await response.json();
     const product = storefront.products.find(item => item.id === productId);
+    renderedFingerprint = product ? JSON.stringify(product) : null;
     if (!product) { renderUnavailable(); return; }
 
     const content = product.content || {};
@@ -157,10 +159,11 @@
     if (summary) {
       const unifiedVial = renderer?.render(product, { instance: 'product-detail', mode: 'detail' });
       summary.className = 'product-summary product-visual-card product-visual-card--v10 product-visual-card--premium-vial';
-      if (unifiedVial) summary.innerHTML = unifiedVial;
-      else if (content.imageUrl) summary.innerHTML = `<img class="product-main-image" src="${escapeHtml(content.imageUrl)}" ${content.imageSrcset ? `srcset="${escapeHtml(content.imageSrcset)}"` : ''} sizes="${escapeHtml(content.imageSizes || '(max-width: 720px) 92vw, 520px')}" alt="${escapeHtml(content.imageAlt || name)}" loading="eager" decoding="async">`;
+      // v19: an approved photograph (content workflow) is shown before the generated illustration.
+      if (content.imageUrl) summary.innerHTML = `<img class="product-main-image" src="${escapeHtml(content.imageUrl)}" ${content.imageSrcset ? `srcset="${escapeHtml(content.imageSrcset)}"` : ''} sizes="${escapeHtml(content.imageSizes || '(max-width: 720px) 92vw, 520px')}" alt="${escapeHtml(content.imageAlt || name)}" loading="eager" decoding="async">`;
+      else if (unifiedVial) summary.innerHTML = unifiedVial;
       else summary.innerHTML = `<div class="product-visual-card__symbol">${escapeHtml(name.slice(0, 2).toUpperCase())}</div>`;
-      summary.insertAdjacentHTML('beforeend', '<p class="product-visual-caption">Illustration of the VERAPEP vial label. Not a photograph of a specific batch.</p>');
+      summary.insertAdjacentHTML('beforeend', content.imageUrl ? '<p class="product-visual-caption">Product photograph approved by VERAPEP.</p>' : '<p class="product-visual-caption">Illustration of the VERAPEP vial label. Not a photograph of a specific batch.</p>');
     }
 
     /* In-page section navigation */
@@ -345,12 +348,26 @@
   if ('EventSource' in window) {
     const events = new EventSource('/api/storefront/events');
     let connected = false;
+    /* v20: the stream reports every change in the whole store (including other customers' orders).
+       The page used to reload on each one, which threw a reading visitor back to the top. Now a burst
+       of events is checked once, and only a change to *this* product offers a refresh. */
+    let pending = null;
     events.addEventListener('storefront', event => {
       const data = JSON.parse(event.data || '{}');
       if (data.reason === 'connected') { connected = true; return; }
       if (!connected) return;
-      if (data.reason === 'reviews' && Date.now() - ownReviewAt < 15000) return;
-      if (formIsDirty()) offerRefresh(); else location.reload();
+      if (data.reason === 'reviews') { if (Date.now() - ownReviewAt > 15000) offerRefresh(); return; }
+      clearTimeout(pending);
+      pending = setTimeout(async () => {
+        try {
+          const latest = await fetch('/api/storefront', { cache: 'no-store' }).then(response => response.json());
+          const product = latest.products.find(item => item.id === productId);
+          const fingerprint = product ? JSON.stringify(product) : null;
+          if (fingerprint === renderedFingerprint) return;
+          if (!product && !formIsDirty()) { location.reload(); return; }
+          offerRefresh();
+        } catch { /* offline: the visitor can refresh manually */ }
+      }, 800);
     });
   }
 })();

@@ -57,6 +57,19 @@
     });
     mobileQuery.addEventListener?.('change', event => { if (!event.matches) closeMenu(); });
     nav.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
+    // v17: searching from the open mobile menu on the home page filters the catalogue
+    // behind the menu — close the sheet so the results are actually visible.
+    const menuSearch = document.getElementById('header-product-search');
+    if (menuSearch && document.getElementById('catalogue-search')) {
+      const closeForResults = () => {
+        if (!isMenuOpen()) return;
+        closeMenu();
+        menuSearch.blur();
+        requestAnimationFrame(() => document.getElementById('catalogue')?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' }));
+      };
+      menuSearch.addEventListener('keydown', event => { if (event.key === 'Enter') closeForResults(); });
+      menuSearch.addEventListener('search', () => { if (menuSearch.value.trim()) closeForResults(); });
+    }
   }
 
   /* Hide "0" count badges; animate when a count changes. */

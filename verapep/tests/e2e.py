@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VERAPEP end-to-end suite (v16).
+"""VERAPEP end-to-end suite (v16, extended in v17).
 
 Runs the real server against a temporary copy of data/ and drives Chromium.
 
@@ -10,6 +10,10 @@ page has rendered (product cards, aria-busy="false", filled legal facts, ...).
 
 No real purchase or payment is possible: the server runs in sandbox mode and
 no product is enabled for checkout. The suite asserts that this stays true.
+
+v17: the publication gate lists 40 of the 84 catalogue products (44 products
+whose names indicate prescription medicines, hormones or toxins stay hidden
+until a reviewed approval is recorded). Counts below reflect that on purpose.
 
 Usage:  npm run test:e2e        (python3 tests/e2e.py)
         E2E_ONLY=search,legal   run selected tests
@@ -36,7 +40,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PREVIEW_DIR = ROOT / 'previews' / 'information-platform'
 AXE = ROOT / 'tests' / 'vendor' / 'axe.min.js'
 DATA_FILES = ('catalogue.json', 'commerce-policy.json', 'inventory.json', 'store-config.json', 'orders.json', 'returns.json',
-              'withdrawals.json', 'product-content.json', 'reviews.json', 'guide-config.json', 'support-kb.json', 'customers.json')
+              'withdrawals.json', 'product-content.json', 'reviews.json', 'guide-config.json', 'support-kb.json', 'customers.json', 'product-compliance.json')
+VISIBLE_PRODUCTS = 40  # v17 preview publication gate (84 in the catalogue)
 PUBLIC_PAGES = ['/', '/guide.html', '/support.html', '/my-pages.html', '/checkout.html', '/order.html',
                 '/privacy.html', '/terms.html', '/shipping-returns.html', '/product/aicar-025']
 TIMEOUT = 10_000
@@ -68,6 +73,23 @@ def http_status(url: str) -> int:
             return response.status
     except urllib.error.HTTPError as error:
         return error.code
+
+
+def api_call(base: str, path: str, body=None, cookie=None, csrf=None, method=None):
+    data = json.dumps(body).encode() if body is not None else None
+    request = urllib.request.Request(base + path, data=data, method=method or ('POST' if data else 'GET'))
+    request.add_header('Content-Type', 'application/json')
+    if cookie:
+        request.add_header('Cookie', cookie)
+    if csrf:
+        request.add_header('X-CSRF-Token', csrf)
+    with urllib.request.urlopen(request, timeout=8) as response:
+        return response.status, json.loads(response.read() or b'{}'), response.headers
+
+
+def api_login(base: str):
+    status, payload, headers = api_call(base, '/api/admin/login', {'email': 'admin@verapep.local', 'password': 'ChangeMe-123!'})
+    return headers.get('Set-Cookie', '').split(';')[0], payload.get('csrf')
 
 
 class Suite:
@@ -131,7 +153,12 @@ class Suite:
         search.press('Enter')
         expect(page.locator('#empty-state')).to_be_visible()
         page.locator('[data-empty-reset]').click()
-        expect(page.locator('#result-count')).to_contain_text('84 products found')
+        expect(page.locator('#result-count')).to_contain_text(f'{VISIBLE_PRODUCTS} products found')
+        # A hidden (unreviewed high-risk) product cannot be found by search.
+        search.fill('semaglutide')
+        search.press('Enter')
+        expect(page.locator('#empty-state')).to_be_visible()
+        page.locator('[data-empty-reset]').click()
         # Searching from another page lands on the filtered catalogue.
         page.goto(self.base + '/support.html', wait_until='domcontentloaded')
         page.locator('#header-product-search').fill('aicar')
@@ -143,13 +170,13 @@ class Suite:
     def test_catalogue(self):
         page = self.page()
         self.home(page)
-        expect(page.locator('#result-count')).to_contain_text('84 products found · 12 shown')
+        expect(page.locator('#result-count')).to_contain_text(f'{VISIBLE_PRODUCTS} products found · 12 shown')
         expect(page.locator('#product-grid .product-card')).to_have_count(12)
         page.locator('#load-more').click()
         expect(page.locator('#product-grid .product-card')).to_have_count(24)
-        expect(page.locator('[data-stat="products"]')).to_have_text('84')
+        expect(page.locator('[data-stat="products"]')).to_have_text(str(VISIBLE_PRODUCTS))
         page.goto(self.base + '/index.html?category=skin#catalogue', wait_until='domcontentloaded')
-        expect(page.locator('#result-count')).to_contain_text('15 products found')
+        expect(page.locator('#result-count')).to_contain_text('12 products found')
         # Compare up to three products.
         self.home(page)
         for index in range(3):
@@ -331,10 +358,239 @@ class Suite:
         expect(page.locator('#admin-dashboard')).to_be_visible()
         page.locator('[data-admin-tab="products"]').click()
         page.locator('[data-edit-product]').first.click()
+        # v19: customer-visible text is changed through a draft that is reviewed before it goes live.
+        expect(page.locator('#product-workspace')).to_be_visible()
+        page.locator('#workspace-new-draft').click()
+        page.locator('[data-draft-field="shortDescription"]').fill('Approved catalogue summary.')
+        page.locator('#draft-form button[data-then="submit"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('sent for review')
+        # The advanced form still saves operational fields; claim text there is read-only.
+        page.locator('#product-advanced summary').click()
         expect(page.locator('#product-editor')).to_be_visible()
-        page.locator('#editor-short-description').fill('Approved catalogue summary.')
+        expect(page.locator('#editor-short-description')).not_to_be_editable()
+        page.locator('#editor-delivery').fill('5–8 days')
         page.locator('#product-editor button[type="submit"]').click()
         expect(page.locator('#admin-message')).to_contain_text('saved')
+        page.context.close()
+
+    # ------------------------------------------------------------------ v17
+
+    def test_publication_gate(self):
+        page = self.page()
+        # A hidden product has no page, and the storefront never contains it.
+        page.goto(self.base + '/product/semaglutide-003', wait_until='domcontentloaded')
+        expect(page.locator('h1')).to_have_text('This page could not be found.')
+        storefront = json.loads(urllib.request.urlopen(self.base + '/api/storefront').read())
+        assert storefront['productCount'] == VISIBLE_PRODUCTS
+        assert not any(p['id'] == 'semaglutide-003' for p in storefront['products'])
+        # Internal files are not web content.
+        for path in ('/server.mjs', '/package.json', '/README.md', '/scripts/source/catalogue-data.js', '/tests/e2e.py'):
+            assert http_status(self.base + path) == 404, path
+        page.context.close()
+
+    def test_vera(self):
+        page = self.page(430, 900, is_mobile=True, has_touch=True)
+        page.goto(self.base + '/support.html', wait_until='domcontentloaded')
+        log = page.locator('#assistant-log')
+        expect(log).to_have_attribute('aria-live', 'polite')
+        # Dosing question: refused, labelled, no product links.
+        page.locator('#assistant-question').fill('How much semaglutide should I inject?')
+        page.locator('#assistant-question').press('Enter')
+        answer = page.locator('.vera-answer').last
+        expect(answer).to_contain_text('does not give medical advice')
+        expect(answer.locator('.vera-answer__badge')).to_have_text('Not medical advice')
+        assert answer.locator('a[href*="/product/"]').count() == 0
+        # Swedish question, configured email in the answer.
+        page.locator('#assistant-question').fill('hur kontaktar jag er?')
+        page.locator('#assistant-form button[type="submit"]').click()
+        expect(page.locator('.vera-answer').last).to_contain_text('hello@verapep.eu')
+        # Shortcut + follow-up suggestion chips.
+        page.locator('.assistant-shortcuts [data-vera-ask]', has_text='Returns').click()
+        expect(page.locator('.vera-answer').last).to_contain_text('return')
+        page.locator('#assistant-question').fill('qwerty asdf')
+        page.locator('#assistant-question').press('Enter')
+        expect(page.locator('.vera-answer--fallback').last).to_be_visible()
+        page.locator('.vera-answer--fallback [data-vera-suggestion]').first.click()
+        expect(page.locator('.vera-answer').last).not_to_have_class(re.compile('vera-answer--fallback'))
+        # Visible contact details for people who prefer email.
+        expect(page.locator('#contact [data-legal-mail="supportEmail"]')).to_have_text('hello@verapep.eu')
+        overflow = page.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth')
+        assert overflow <= 0, f'horizontal overflow {overflow}px'
+        self.shot(page, 'ask-vera-mobile')
+        # Floating panel on the home page.
+        desk = self.page()
+        self.home(desk)
+        desk.mouse.wheel(0, 1600)
+        desk.locator('#vera-launcher').click()
+        desk.locator('#vera-quick [data-vera-ask]', has_text='Delivery').click()
+        expect(desk.locator('#vera-log .vera-answer').last).to_contain_text('7–10 days')
+        desk.keyboard.press('Escape')
+        expect(desk.locator('#vera-panel')).to_be_hidden()
+        desk.context.close()
+        page.context.close()
+
+    def test_order_privacy(self):
+        # v18: an old link with an email address in the URL still works (POST lookup), and the
+        # address is removed from the address bar so it does not stay in history or referrers.
+        page = self.page()
+        page.goto(self.base + '/order.html?order=VP-20260101-UNKNOWN&email=person%40example.com', wait_until='domcontentloaded')
+        expect(page.locator('#order-message')).to_be_visible()
+        assert 'email=' not in page.url and 'person' not in page.url, page.url
+        page.context.close()
+
+    def test_mobile_search(self):
+        page = self.page(375, 800, is_mobile=True, has_touch=True)
+        self.home(page)
+        page.locator('#menu-button').click()
+        search = page.locator('#header-product-search')
+        search.fill('GHK')
+        search.press('Enter')
+        # v17 fix: the menu closes so the filtered results are visible.
+        expect(page.locator('#menu-button')).to_have_attribute('aria-expanded', 'false')
+        expect(page.locator('#site-nav')).to_be_hidden()
+        expect(page.locator('#product-grid .product-card').first).to_contain_text('GHK')
+        page.context.close()
+
+    def test_admin_compliance(self):
+        page = self.page()
+        page.goto(self.base + '/admin.html', wait_until='domcontentloaded')
+        page.locator('#admin-email').fill('admin@verapep.local')
+        page.locator('#admin-password').fill('ChangeMe-123!')
+        page.locator('#admin-login-form button').click()
+        expect(page.locator('#admin-dashboard')).to_be_visible()
+        page.locator('[data-admin-tab="status"]').click()
+        expect(page.locator('#status-overview')).to_contain_text('Not approved for launch')
+        expect(page.locator('#status-blockers')).to_contain_text('compliance approval')
+        page.locator('[data-admin-tab="compliance"]').click()
+        expect(page.locator('#compliance-rows tr')).to_have_count(84)
+        page.locator('#compliance-risk-filter').select_option('high')
+        expect(page.locator('#compliance-rows tr')).to_have_count(84 - VISIBLE_PRODUCTS)
+        page.locator('#compliance-risk-filter').select_option('')
+        page.locator('[data-compliance-id="kpv-071"] [data-compliance-open]').click()
+        detail = page.locator('#compliance-detail')
+        expect(detail).to_contain_text('Automated suggestion — not a decision')
+        detail.locator('select[name="status"]').select_option('needs_evidence')
+        detail.locator('input[name="note"]').fill('Waiting for supplier documentation.')
+        detail.locator('button[type="submit"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('Decision saved')
+        expect(page.locator('[data-compliance-id="kpv-071"] .status-pill')).to_have_text('Needs evidence')
+        # Knowledge updates are visible and up to date on a fresh install.
+        page.locator('[data-admin-tab="guide"]').click()
+        expect(page.locator('#kb-migration')).to_contain_text('Up to date')
+        expect(page.locator('#kb-entries .kb-entry')).to_have_count(21)
+        self.shot(page, 'admin-compliance')
+        page.context.close()
+
+    # ------------------------------------------------------------------ v19
+
+    def login_admin(self, page: Page) -> None:
+        page.goto(self.base + '/admin.html', wait_until='domcontentloaded')
+        page.locator('#admin-email').fill('admin@verapep.local')
+        page.locator('#admin-password').fill('ChangeMe-123!')
+        page.locator('#admin-login-form button').click()
+        expect(page.locator('#admin-dashboard')).to_be_visible()
+
+    def test_admin_overview(self):
+        page = self.page()
+        self.login_admin(page)
+        overview = page.locator('#owner-overview')
+        expect(overview.locator('.overview-headline--technical')).to_contain_text('checks OK')
+        expect(overview.locator('.overview-headline--legal')).to_contain_text('Not approved for launch')
+        expect(overview).to_contain_text('of 84 products are missing documentation')
+        expect(overview).to_contain_text('hidden by the publication gate')
+        assert '%' not in overview.locator('.overview-split').inner_text(), 'no combined percentage'
+        overview.locator('[data-filter-missing="lab"]').click()
+        expect(page.locator('[data-admin-panel="products"]')).to_be_visible()
+        expect(page.locator('#product-filter-count')).to_contain_text('84 of 84')
+        self.shot(page, 'v19-admin-overview')
+        page.context.close()
+
+    def test_admin_workflow(self):
+        page = self.page()
+        self.login_admin(page)
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('#product-filter-visible').select_option('no')
+        expect(page.locator('#product-filter-count')).to_contain_text(f'{84 - VISIBLE_PRODUCTS} of 84')
+        page.locator('#product-filter-visible').select_option('')
+        page.locator('#product-search').fill('kpv')
+        page.locator('[data-edit-product="kpv-071"]').click()
+        workspace = page.locator('#product-workspace')
+        expect(workspace).to_contain_text('Checklist')
+        expect(workspace).to_contain_text('finished content is not a legal approval')
+        page.locator('#workspace-new-draft').click()
+        page.locator('[data-draft-field="storage"]').fill('Store at -20 °C, protected from light.')
+        page.locator('#draft-form button[data-then="submit"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('sent for review')
+        page.locator('[data-admin-tab="review-queue"]').click()
+        item = page.locator('.queue-item', has_text='KPV').filter(has_text='Storage').first
+        item.locator('[data-review-draft]').click()
+        expect(item.locator('.content-diff ins')).to_contain_text('protected from light')
+        page.on('dialog', lambda dialog: dialog.accept(''))  # confirmations and optional notes
+        item.locator('[data-decision="approve"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('approved')
+        # The queue reloads after a decision; the opened proposal stays open and shows the next action.
+        item = page.locator('.queue-item', has_text='KPV').filter(has_text='Storage').first
+        expect(item).to_contain_text('Approved for stated purpose')
+        item.locator('[data-draft-apply]').click()
+        expect(page.locator('#admin-message')).to_contain_text('now live')
+        # Applying text did not publish anything: KPV is still governed by its legal status.
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('[data-edit-product="kpv-071"]').click()
+        expect(workspace).to_contain_text('Version 2')
+        expect(workspace.locator('.workspace-pills')).not_to_contain_text('Approved')
+        self.shot(page, 'v19-product-workspace')
+        page.context.close()
+
+    def test_admin_mobile(self):
+        page = self.page(390, 844, is_mobile=True, has_touch=True)
+        self.login_admin(page)
+        expect(page.locator('#owner-overview .overview-headline--legal')).to_be_visible()
+        assert page.evaluate('document.documentElement.scrollWidth') <= 390, 'no sideways scrolling on a phone'
+        page.locator('[data-admin-tab="compliance"]').click()
+        expect(page.locator('#compliance-rows tr').first).to_be_visible()
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('[data-edit-product]').first.click()
+        expect(page.locator('#product-workspace')).to_be_visible()
+        assert page.evaluate('document.documentElement.scrollWidth') <= 390
+        self.shot(page, 'v19-admin-mobile')
+        page.context.close()
+
+    # ------------------------------------------------------------------ v20
+
+    def test_session_expiry(self):
+        """v20: when the session ends mid-task, signing in again keeps the unsaved draft text."""
+        page = self.page()
+        self.login_admin(page)
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('#product-search').fill('kpv')
+        page.locator('[data-edit-product="kpv-071"]').click()
+        page.locator('#workspace-new-draft').click()
+        page.locator('[data-draft-field="storage"]').fill('Typed before the session ended.')
+        page.context.clear_cookies()
+        page.locator('#draft-form button[data-then="save"]').click()
+        expect(page.locator('#admin-login')).to_be_visible()
+        expect(page.locator('#admin-message')).to_contain_text('Sign in again')
+        page.locator('#admin-password').fill('ChangeMe-123!')
+        page.locator('#admin-login-form button').click()
+        expect(page.locator('#admin-dashboard')).to_be_visible()
+        expect(page.locator('[data-draft-field="storage"]')).to_have_value('Typed before the session ended.')
+        page.locator('#draft-form button[data-then="save"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('Draft saved')
+        page.context.close()
+
+    def test_product_live_updates(self):
+        """v20: a product page is not reloaded by changes to other products; a change to it is offered."""
+        page = self.page()
+        self.product(page, 'aicar-025')
+        page.evaluate('window.__v20Marker = true; window.scrollTo(0, 600)')
+        cookie, csrf = api_login(self.base)
+        api_call(self.base, '/api/admin/product-content/kpv-071', {'searchAliases': ['v20 unrelated change']}, cookie, csrf, 'PATCH')
+        page.wait_for_timeout(2000)
+        assert page.evaluate('window.__v20Marker === true'), 'page reloaded for an unrelated product'
+        expect(page.locator('#product-refresh-notice')).to_have_count(0)
+        api_call(self.base, '/api/admin/product-content/aicar-025', {'searchAliases': ['v20 change to this product']}, cookie, csrf, 'PATCH')
+        expect(page.locator('#product-refresh-notice')).to_be_visible()
+        assert page.evaluate('window.__v20Marker === true'), 'the visitor decides when to refresh'
         page.context.close()
 
 
