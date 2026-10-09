@@ -529,7 +529,9 @@ export function createVerapepServer(options = {}) {
   // Private demo mode: on a hosted (public) address the preview gate, which lists unreviewed products,
   // is only honoured while the whole site is locked with SITE_ACCESS_PASSWORD.
   const siteAccessPassword = String(process.env.SITE_ACCESS_PASSWORD || '');
-  const configuredGate = String(process.env.PUBLICATION_GATE || '').trim().toLowerCase();
+  // DEMO_SHOW_ALL_PRODUCTS=true selects demo-all without touching PUBLICATION_GATE (which a Render
+  // blueprint may pin to "strict"). It still only takes effect behind SITE_ACCESS_PASSWORD.
+  const configuredGate = String(process.env.DEMO_SHOW_ALL_PRODUCTS || '').trim().toLowerCase() === 'true' ? 'demo-all' : String(process.env.PUBLICATION_GATE || '').trim().toLowerCase();
   // demo-all (every product, information only) always needs the site lock; preview needs it on public hosts.
   const requestedGate = !siteAccessPassword && (configuredGate === 'demo-all' || (configuredGate === 'preview' && isHostedEnvironment())) ? 'strict' : configuredGate;
   const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: requestedGate, hosted: isHostedEnvironment() });

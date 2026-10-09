@@ -347,3 +347,17 @@ test('v20 H3: demo-all shows every product as information only, and only behind 
     } finally { await stop(server); }
   } finally { restore(); }
 });
+
+test('v20 H4: DEMO_SHOW_ALL_PRODUCTS selects demo-all even when PUBLICATION_GATE is pinned to strict, still only behind the lock', async () => {
+  const keys = ['RENDER', 'PUBLICATION_GATE', 'SITE_ACCESS_PASSWORD', 'DEMO_SHOW_ALL_PRODUCTS'];
+  const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  try {
+    Object.assign(process.env, { RENDER: 'true', PUBLICATION_GATE: 'strict', DEMO_SHOW_ALL_PRODUCTS: 'true' });
+    delete process.env.SITE_ACCESS_PASSWORD;
+    let { server, baseUrl } = await start(await tempData());
+    try { assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'strict'); } finally { await stop(server); }
+    process.env.SITE_ACCESS_PASSWORD = 'Demo-lock-password-1';
+    ({ server, baseUrl } = await start(await tempData()));
+    try { assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'demo-all'); } finally { await stop(server); }
+  } finally { for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; } }
+});
