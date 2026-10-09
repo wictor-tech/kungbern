@@ -2,10 +2,10 @@
 
 Generated: 2026-10-09
 
-Files listed: 227 (manifest excludes itself and runtime database/outbox/backup files)
+Files listed: 234 (manifest excludes itself and runtime database/outbox/backup files)
 
 Path | Bytes | SHA-256 (first 16)
-.env.example | 2803 | b6d46a13706f32bb
+.env.example | 2889 | 3cb7a2922ef163b7
 .gitignore | 428 | d6f3dbe3e30a06f9
 404.html | 5837 | 5b5253c062e05b0a
 DEPLOYMENT.md | 1385 | dd7e4f6f3606f404
@@ -16,9 +16,10 @@ IMPLEMENTATION-DECISIONS.md | 1275 | da1fb51d227503a3
 PRIVACY-DATA-REGISTER-V14.1.md | 4213 | cd21888b33a1e366
 PRODUCT-IMAGES.md | 1060 | 6cb0e21a62e92fba
 PRODUCTION-CHECKLIST-V14.md | 4149 | 00ac2b5be49a88f2
-README.md | 5992 | dda4f5edd4c2b6e2
+README.md | 6738 | ddbc1a4ac942104f
 RENDER-DEPLOY-SV.md | 1665 | 3500ab1e851ae16b
 RENDER-README-FIRST.txt | 339 | da175a28d425d337
+RETENTION.md | 2954 | cbebdf99079bf324
 SECURITY.md | 3741 | 68ab0b8abf74932a
 SOURCE-MAP.md | 1617 | 852e3e570ffbbe4f
 START-HERE-SV.md | 1926 | 15d52b44edd0f47c
@@ -59,6 +60,12 @@ V17-LAUNCH-READINESS.md | 9988 | 3937c7a13aaa1a11
 V17-REPORT.md | 6029 | 782f35970fae2dfc
 V17-SECURITY-REPORT.md | 12177 | f99eeed505e43409
 V17-USER-TESTING-REPORT.md | 5844 | 75a0ca4403fb0fdd
+V18-CI.md | 3440 | 712359f06afac40b
+V18-EXECUTIVE-SUMMARY.md | 4522 | 6a262bc3e5e34e38
+V18-LAUNCH-BLOCKERS.md | 5033 | a21c078a46912a79
+V18-REPORT.md | 4768 | 93f81071b80a1cf7
+V18-REPOSITORY-AND-DEPLOYMENT.md | 3999 | a72e30ee87fcdb12
+V18-SECURITY-REPORT.md | 10088 | 1630ce701712a1ec
 V3-CHANGES.md | 1279 | 32459b11fdd55dd2
 V4-CHANGES.md | 2851 | fb95572778fa983a
 V5-CHANGES.md | 1109 | de2d6eaeb69d1d07
@@ -189,7 +196,7 @@ lib/support-kb-migration.mjs | 10751 | 311f72070c0008cf
 lib/vera.mjs | 20652 | c6c3cb7f112b5cf5
 my-pages.html | 8343 | 8217e8331df3ad44
 order.html | 8499 | 90cb71f659b40cd3
-package.json | 1250 | 9565102e85ac03ba
+package.json | 1475 | 678d908cb79448fe
 privacy.html | 8475 | 09c1dceee0147ad5
 product-image-audit.csv | 5944 | 3d2df53340c8473d
 product.html | 6991 | b1bcf316e468248f

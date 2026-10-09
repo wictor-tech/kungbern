@@ -1,4 +1,4 @@
-# VERAPEP Information Platform v17
+# VERAPEP Information Platform v18
 
 VERAPEP V14.1 is the production-readiness and operational-hardening release built on top of the V13 mobile-conversion storefront. The friend-test experience remains available, while live commerce is now protected by explicit infrastructure, legal, product, payment and security gates.
 
@@ -11,7 +11,9 @@ VERAPEP V14.1 is the production-readiness and operational-hardening release buil
 
 Read these first:
 
-- `V17-REPORT.md` (v17 overview, test results, links to all reports)
+- `V18-EXECUTIVE-SUMMARY.md` (plain-language status for the owner)
+- `V18-REPORT.md`, `V18-SECURITY-REPORT.md`, `V18-CI.md`, `V18-LAUNCH-BLOCKERS.md`
+- `V17-REPORT.md` (v17 overview)
 - `V17-LAUNCH-READINESS.md` (what blocks launch, grouped by owner)
 - `V16-IMPROVEMENT-REPORT.md`
 - `PRODUCTION-CHECKLIST-V14.md`
@@ -72,6 +74,24 @@ npm run migrate:kb -- --rollback <support-kb-….json>
 ```
 
 Admin edits, locked answers and deliberately removed answers are preserved. See `V17-ASK-VERA.md`.
+
+## CI and release checks (v18)
+
+GitHub Actions (`.github/workflows/verapep-ci.yml`) runs unit/static/CSS checks, a secret scan of the full git history, release-package verification and the browser suite on every VERAPEP change. Locally:
+
+```bash
+npm run scan:secrets
+node scripts/write-manifest.mjs && npm run verify:release -- --zip /tmp/verapep.zip --run-tests
+```
+
+## Audit-log scrub and retention (v18)
+
+```bash
+npm run audit-log:scrub              # dry run; --apply --yes to back up, redact and re-check
+npm run retention                    # report only until data/retention-policy.json is approved
+```
+
+See `RETENTION.md`.
 
 ## Compliance inventory
 

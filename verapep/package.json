@@ -19,7 +19,11 @@
     "test:personas": "python3 tests/personas.py",
     "restore:sqlite": "node scripts/restore-sqlite.mjs",
     "migrate:kb": "node scripts/migrate-support-kb.mjs",
-    "inventory:compliance": "node scripts/compliance-inventory.mjs"
+    "inventory:compliance": "node scripts/compliance-inventory.mjs",
+    "scan:secrets": "node scripts/secret-scan.mjs --history",
+    "verify:release": "node scripts/verify-release.mjs",
+    "audit-log:scrub": "node scripts/scrub-audit-log.mjs",
+    "retention": "node scripts/retention.mjs"
   },
   "engines": {
     "node": ">=22"
