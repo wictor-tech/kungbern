@@ -10,6 +10,7 @@ import { VerapepDatabase, verifyPassword } from './database.mjs';
 import { answerQuestion } from './lib/vera.mjs';
 import { classifyBlocker } from './lib/readiness.mjs';
 import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
+import { createV19 } from './lib/admin-v19.mjs';
 import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
 const APP_ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -56,6 +57,7 @@ const MIME_TYPES = {
 const ORDER_STATUSES = new Set(['awaiting_payment', 'processing', 'packed', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled', 'refunded']);
 const RETURN_STATUSES = new Set(['requested', 'approved', 'rejected', 'received', 'refunded']);
 const MAX_BODY_BYTES = 1_000_000;
+const VERSION = '19.0.0';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const APP_ENV = String(process.env.APP_ENV || process.env.NODE_ENV || 'development').trim().toLowerCase();
 const IS_PRODUCTION = APP_ENV === 'production';
@@ -336,6 +338,11 @@ function sendText(res, status, body, contentType = 'text/plain; charset=utf-8', 
     ...extraHeaders
   });
   res.end(body);
+}
+
+function sendFile(res, buffer, contentType, extraHeaders = {}) {
+  res.writeHead(200, { ...securityHeaders(contentType), 'Content-Length': buffer.length, ...extraHeaders });
+  res.end(buffer);
 }
 
 async function readBodyBuffer(req) {
@@ -1497,13 +1504,22 @@ export function createVerapepServer(options = {}) {
     return messages;
   }
 
+  // v19: Owner Control Center, product workspace, content workflow, private documents and import.
+  const v19 = createV19({
+    rootDir, dataDir, database, catalogue, productsById, sendJson, sendFile, readJsonBody, requireAdmin, requireCsrf, requireRole, audit,
+    getContent: () => productContent, getCompliance: () => compliance, getPolicy: () => policy, getConfig: () => config,
+    persistProductContent: () => persistProductContent(), persistCompliance: () => persistCompliance(), isPubliclyVisible, inventoryRow, gateMode,
+    productionReadiness: () => productionReadiness(), supportKbStatus: () => supportKbStatus(), recentErrors, veraStats, serverStartedAt, legalInfo: () => legalInfo(), nowIso,
+    version: VERSION
+  });
+
   async function handleApi(req, res, url) {
     const method = req.method || 'GET';
     const pathname = url.pathname;
     const ip = clientIp(req);
 
     if (method === 'GET' && pathname === '/api/health') {
-      return sendJson(res, 200, { ok: true, version: '18.0.0', mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
+      return sendJson(res, 200, { ok: true, version: VERSION, mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
     }
 
     if (method === 'GET' && pathname === '/api/ready') {
@@ -2030,6 +2046,8 @@ export function createVerapepServer(options = {}) {
       return sendJson(res, 200, { config });
     }
 
+    if (await v19.handle(req, res, url, method, pathname)) return;
+
     const contentMatch = pathname.match(/^\/api\/admin\/product-content\/([^/]+)$/);
     if (method === 'PATCH' && contentMatch) {
       const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'products');
@@ -2038,6 +2056,7 @@ export function createVerapepServer(options = {}) {
       if (!productsById.has(productId)) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
       const current = productContent.products[productId] || { productId };
       const before = structuredClone(current);
+      const textBefore = v19.beforeDirectEdit(session, productId, body, current);
       if (body.availableForSale === true && !complianceSaleApproved(productId)) throw complianceBlocked('This product has no compliance approval for sale. Sale cannot be switched on.');
       for (const field of ['labReports']) if (Array.isArray(body[field])) body[field] = body[field].filter(item => item && (!item.url || safePublicUrl(item.url)));
       if (body.imageUrl !== undefined && body.imageUrl && !safePublicUrl(body.imageUrl)) return sendJson(res, 400, { error: 'invalid_url', message: 'Image URL must be a site path (/assets/…) or an https:// address.' });
@@ -2068,6 +2087,7 @@ export function createVerapepServer(options = {}) {
       }
       await persistProductContent();
       await persistPolicy();
+      v19.afterDirectEdit(session, productId, textBefore, current);
       audit(session, 'product.updated', 'product', productId, before, current);
       return sendJson(res, 200, { productId, content: { ...current, publicStatus: derivePublicStatus(current), readiness: productReadiness(productId) }, commerce: productPolicy });
     }
@@ -2580,6 +2600,10 @@ export function createVerapepServer(options = {}) {
       const escapeXml = value => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\"','&quot;').replaceAll("'",'&apos;');
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(item => `  <url><loc>${escapeXml(`${baseUrl}${item}`)}</loc></url>`).join('\n')}\n</urlset>\n`;
       return sendText(res, 200, xml, 'application/xml; charset=utf-8');
+    }
+    if (pathname.startsWith('/product-media/')) {
+      if (await v19.handle(req, res, url, req.method || 'GET', pathname)) return;
+      return sendNotFound(req, res, pathname);
     }
     if (pathname === '/assets/product-image-map.js') {
       const visibleImages = Object.fromEntries(Object.entries(productImages).filter(([id]) => isPubliclyVisible(id)));

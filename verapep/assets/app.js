@@ -100,6 +100,9 @@
     return name.length > 18 ? `${name.slice(0, 18)}…` : name;
   };
   function vialMarkup(product, instance = 'card') {
+    // v19: an approved product photograph (applied through the content workflow) takes precedence
+    // over the generated vial illustration.
+    if (product.content?.imageUrl) return `<img class="product-photo" src="${escapeHtml(product.content.imageUrl)}" ${product.content.imageSrcset?`srcset="${escapeHtml(product.content.imageSrcset)}"`:''} sizes="${escapeHtml(product.content.imageSizes||'(max-width:700px) 80vw, 260px')}" alt="${escapeHtml(product.content.imageAlt || productName(product))}" loading="lazy" decoding="async">`;
     const unifiedVial = window.VerapepeVialRenderer?.render(product, { instance, mode: 'card' });
     if (unifiedVial) return unifiedVial;
     const mappedImage = window.VerapepeProductImages?.get(product);

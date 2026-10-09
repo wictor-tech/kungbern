@@ -157,10 +157,11 @@
     if (summary) {
       const unifiedVial = renderer?.render(product, { instance: 'product-detail', mode: 'detail' });
       summary.className = 'product-summary product-visual-card product-visual-card--v10 product-visual-card--premium-vial';
-      if (unifiedVial) summary.innerHTML = unifiedVial;
-      else if (content.imageUrl) summary.innerHTML = `<img class="product-main-image" src="${escapeHtml(content.imageUrl)}" ${content.imageSrcset ? `srcset="${escapeHtml(content.imageSrcset)}"` : ''} sizes="${escapeHtml(content.imageSizes || '(max-width: 720px) 92vw, 520px')}" alt="${escapeHtml(content.imageAlt || name)}" loading="eager" decoding="async">`;
+      // v19: an approved photograph (content workflow) is shown before the generated illustration.
+      if (content.imageUrl) summary.innerHTML = `<img class="product-main-image" src="${escapeHtml(content.imageUrl)}" ${content.imageSrcset ? `srcset="${escapeHtml(content.imageSrcset)}"` : ''} sizes="${escapeHtml(content.imageSizes || '(max-width: 720px) 92vw, 520px')}" alt="${escapeHtml(content.imageAlt || name)}" loading="eager" decoding="async">`;
+      else if (unifiedVial) summary.innerHTML = unifiedVial;
       else summary.innerHTML = `<div class="product-visual-card__symbol">${escapeHtml(name.slice(0, 2).toUpperCase())}</div>`;
-      summary.insertAdjacentHTML('beforeend', '<p class="product-visual-caption">Illustration of the VERAPEP vial label. Not a photograph of a specific batch.</p>');
+      summary.insertAdjacentHTML('beforeend', content.imageUrl ? '<p class="product-visual-caption">Product photograph approved by VERAPEP.</p>' : '<p class="product-visual-caption">Illustration of the VERAPEP vial label. Not a photograph of a specific batch.</p>');
     }
 
     /* In-page section navigation */

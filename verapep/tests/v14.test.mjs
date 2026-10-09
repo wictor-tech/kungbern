@@ -26,7 +26,7 @@ test('VERAPEP V14 production-readiness protections', async t => {
   await t.test('preview is healthy but correctly fails production readiness', async () => {
     const health = await jsonRequest(baseUrl,'/api/health');
     assert.equal(health.response.status,200);
-    assert.equal(health.payload.version,'18.0.0');
+    assert.equal(health.payload.version,'19.0.0');
     assert.equal(health.payload.products,40); // v17 preview gate: 84 in catalogue, 44 high-risk hidden
     const ready = await jsonRequest(baseUrl,'/api/ready');
     assert.equal(ready.response.status,503);

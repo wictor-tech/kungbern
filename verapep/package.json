@@ -1,6 +1,6 @@
 {
   "name": "verapep-information-platform",
-  "version": "18.0.0",
+  "version": "19.0.0",
   "private": true,
   "type": "module",
   "description": "VERAPEP information platform: compliance-gated publication, guarded commerce, Ask Vera with safety rules and versioned knowledge, legal information pages, bundled styles and release test suites.",
@@ -12,6 +12,8 @@
     "test:all": "node --test tests/*.test.mjs && python3 tests/static-validation.py && python3 tests/e2e.py",
     "test:static": "python3 tests/static-validation.py",
     "audit:images": "node scripts/audit-product-images.mjs",
+    "audit:site-images": "node scripts/audit-site-images.mjs",
+    "test:admin-personas": "python3 tests/admin-personas.py",
     "import:v8": "node scripts/import-v8-data.mjs",
     "backup:sqlite": "node scripts/backup-sqlite.mjs",
     "email:retry": "node scripts/retry-email-outbox.mjs",
