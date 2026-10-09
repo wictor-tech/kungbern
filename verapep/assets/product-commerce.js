@@ -91,10 +91,12 @@
       .map(item => item.other);
   }
 
+  let renderedFingerprint = null;
   async function renderPage() {
     const response = await fetch('/api/storefront', { cache: 'no-store' });
     const storefront = await response.json();
     const product = storefront.products.find(item => item.id === productId);
+    renderedFingerprint = product ? JSON.stringify(product) : null;
     if (!product) { renderUnavailable(); return; }
 
     const content = product.content || {};
@@ -346,12 +348,26 @@
   if ('EventSource' in window) {
     const events = new EventSource('/api/storefront/events');
     let connected = false;
+    /* v20: the stream reports every change in the whole store (including other customers' orders).
+       The page used to reload on each one, which threw a reading visitor back to the top. Now a burst
+       of events is checked once, and only a change to *this* product offers a refresh. */
+    let pending = null;
     events.addEventListener('storefront', event => {
       const data = JSON.parse(event.data || '{}');
       if (data.reason === 'connected') { connected = true; return; }
       if (!connected) return;
-      if (data.reason === 'reviews' && Date.now() - ownReviewAt < 15000) return;
-      if (formIsDirty()) offerRefresh(); else location.reload();
+      if (data.reason === 'reviews') { if (Date.now() - ownReviewAt > 15000) offerRefresh(); return; }
+      clearTimeout(pending);
+      pending = setTimeout(async () => {
+        try {
+          const latest = await fetch('/api/storefront', { cache: 'no-store' }).then(response => response.json());
+          const product = latest.products.find(item => item.id === productId);
+          const fingerprint = product ? JSON.stringify(product) : null;
+          if (fingerprint === renderedFingerprint) return;
+          if (!product && !formIsDirty()) { location.reload(); return; }
+          offerRefresh();
+        } catch { /* offline: the visitor can refresh manually */ }
+      }, 800);
     });
   }
 })();

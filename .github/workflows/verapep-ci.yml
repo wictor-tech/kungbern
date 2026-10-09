@@ -62,6 +62,8 @@ jobs:
         run: npm run test:static
       - name: CSS bundles are current
         run: npm run build:css -- --check
+      - name: Cache-busting versions match file contents
+        run: node scripts/asset-versions.mjs --check
       - name: Secret scan (working tree and full git history)
         run: node scripts/secret-scan.mjs --history
       - name: Release manifest, ZIP build and clean-directory verification

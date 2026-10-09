@@ -42,8 +42,20 @@
     if (state.csrf && ['POST', 'PATCH', 'DELETE'].includes(options.method || 'GET') && !url.endsWith('/login') && !url.endsWith('/logout')) headers['X-CSRF-Token'] = state.csrf;
     const response = await fetch(url, { ...options, headers, credentials: 'same-origin' });
     const payload = await response.json().catch(() => ({}));
+    if (response.status === 401 && !/\/(login|session|auth-config)$/.test(url)) sessionExpired();
     if (!response.ok) throw Object.assign(new Error(payload.message || 'The request could not be completed.'), { status: response.status, payload });
     return payload;
+  }
+
+  /* v20: when the session ends mid-task, show the sign-in form in place. The dashboard (and any
+     unsaved text in it) is only hidden, so signing in again returns to exactly where you were. */
+  function sessionExpired() {
+    if (dashboardSection.hidden) return;
+    state.csrf = null;
+    dashboardSection.hidden = true;
+    loginSection.hidden = false;
+    document.getElementById('admin-password').value = '';
+    document.getElementById('admin-password').focus();
   }
 
   function renderStats(stats) {
@@ -450,7 +462,7 @@
 
   function applyPermissions() {
     const permissions = new Set(state.dashboard.permissions || []);
-    const mapping = { settings:'settings', products:'products', 'review-queue':'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
+    const mapping = { overview:'products', settings:'settings', products:'products', 'review-queue':'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
     const tabs = [...document.querySelectorAll('[data-admin-tab]')];
     tabs.forEach(button => {
       const needed = mapping[button.dataset.adminTab];
@@ -869,5 +881,5 @@
 
   checkSession().catch(error => showMessage(error.message));
   // v19: shared helpers for the Owner Control Center and product workspace (assets/admin-v19.js).
-  window.VerapepAdmin = Object.assign(window.VerapepAdmin || {}, { state, requestJson, escapeHtml, formatDate, label, showMessage, showTab, loadDashboard, openProductEditor, renderProducts });
+  window.VerapepAdmin = Object.assign(window.VerapepAdmin || {}, { state, requestJson, sessionExpired, escapeHtml, formatDate, label, showMessage, showTab, loadDashboard, openProductEditor, renderProducts });
 })();

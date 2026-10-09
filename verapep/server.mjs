@@ -6,13 +6,14 @@ import crypto from 'node:crypto';
 import zlib from 'node:zlib';
 import net from 'node:net';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { VerapepDatabase, verifyPassword } from './database.mjs';
+import { VerapepDatabase, verifyPassword, hashPassword } from './database.mjs';
 import { answerQuestion, ENGINE_STRINGS } from './lib/vera.mjs';
 import { classifyBlocker } from './lib/readiness.mjs';
 import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
 import { createV19 } from './lib/admin-v19.mjs';
+import { writeServerLock, removeServerLock } from './lib/server-lock.mjs';
 import { detectLanguage, localise, translationStatus, sourceHash, englishSources } from './lib/vera-language.mjs';
-import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
+import { REVIEW_STATUSES, REVIEW_STATUS_LABELS, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
 const APP_ROOT = path.dirname(fileURLToPath(import.meta.url));
 
@@ -60,6 +61,8 @@ const RETURN_STATUSES = new Set(['requested', 'approved', 'rejected', 'received'
 const MAX_BODY_BYTES = 1_000_000;
 const VERSION = '19.0.0';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const SESSION_ABSOLUTE_MS = 12 * 60 * 60 * 1000;
+const DUMMY_PASSWORD_HASH = hashPassword('verapep-timing-equaliser-not-a-real-password');
 const APP_ENV = String(process.env.APP_ENV || process.env.NODE_ENV || 'development').trim().toLowerCase();
 const IS_PRODUCTION = APP_ENV === 'production';
 const LIVE_COMMERCE_REQUESTED = String(process.env.ENABLE_LIVE_COMMERCE || '').toLowerCase() === 'true';
@@ -278,7 +281,9 @@ function verifyTotp(code, secret, now = Date.now()) {
 function parseCookies(header = '') {
   return Object.fromEntries(header.split(';').map(part => part.trim()).filter(Boolean).map(part => {
     const index = part.indexOf('=');
-    return index === -1 ? [part, ''] : [part.slice(0, index), decodeURIComponent(part.slice(index + 1))];
+    if (index === -1) return [part, ''];
+    // v20: a malformed cookie value is ignored instead of failing every request.
+    try { return [part.slice(0, index), decodeURIComponent(part.slice(index + 1))]; } catch { return [part.slice(0, index), ''];  }
   }));
 }
 
@@ -464,22 +469,25 @@ export function createVerapepServer(options = {}) {
   fs.mkdirSync(dataDir, { recursive: true });
   fs.mkdirSync(outboxDir, { recursive: true });
 
+  // v20: seeds come from DATA_DIR when present, otherwise from the shipped data/ folder, so a
+  // fresh, empty persistent disk can start (it previously crashed on first boot).
+  const seedPath = name => fs.existsSync(path.join(dataDir, name)) ? path.join(dataDir, name) : path.join(rootDir, 'data', name);
   const paths = {
-    catalogue: path.join(dataDir, 'catalogue.json'),
-    policy: path.join(dataDir, 'commerce-policy.json'),
-    inventory: path.join(dataDir, 'inventory.json'),
-    config: path.join(dataDir, 'store-config.json'),
-    orders: path.join(dataDir, 'orders.json'),
-    returns: path.join(dataDir, 'returns.json'),
-    withdrawals: path.join(dataDir, 'withdrawals.json'),
-    productContent: path.join(dataDir, 'product-content.json'),
-    reviews: path.join(dataDir, 'reviews.json'),
-    guide: path.join(dataDir, 'guide-config.json'),
-    supportKb: path.join(dataDir, 'support-kb.json'),
-    customers: path.join(dataDir, 'customers.json'),
-    productCompliance: path.join(dataDir, 'product-compliance.json'),
-    // v19: proposed/approved translations of Ask Vera answers (the shipped copy seeds new installs).
-    veraTranslations: fs.existsSync(path.join(dataDir, 'vera-translations.json')) ? path.join(dataDir, 'vera-translations.json') : path.join(rootDir, 'data', 'vera-translations.json')
+    catalogue: seedPath('catalogue.json'),
+    policy: seedPath('commerce-policy.json'),
+    inventory: seedPath('inventory.json'),
+    config: seedPath('store-config.json'),
+    orders: seedPath('orders.json'),
+    returns: seedPath('returns.json'),
+    withdrawals: seedPath('withdrawals.json'),
+    productContent: seedPath('product-content.json'),
+    reviews: seedPath('reviews.json'),
+    guide: seedPath('guide-config.json'),
+    supportKb: seedPath('support-kb.json'),
+    customers: seedPath('customers.json'),
+    productCompliance: seedPath('product-compliance.json'),
+    // v19: proposed/approved translations of Ask Vera answers.
+    veraTranslations: seedPath('vera-translations.json')
   };
 
   const database = new VerapepDatabase({
@@ -561,6 +569,48 @@ export function createVerapepServer(options = {}) {
   function enqueueWrite(operation) {
     writeChain = writeChain.then(operation, operation);
     return writeChain;
+  }
+
+  /* v20: the server keeps documents in memory and writes whole documents. If a write fails
+     (database locked by a maintenance script, disk full), the in-memory copy is reloaded from the
+     database so the failed change is not silently saved later by an unrelated write. */
+  const MEMORY_DOCUMENTS = {
+    orders: [() => orders, value => { orders = value; }],
+    inventory: [() => inventory, value => { inventory = value; }],
+    policy: [() => policy, value => { policy = value; }],
+    returns: [() => returns, value => { returns = value; }],
+    withdrawals: [() => withdrawals, value => { withdrawals = value; }],
+    productContent: [() => productContent, value => { productContent = value; }],
+    reviews: [() => reviews, value => { reviews = value; }],
+    guide: [() => guide, value => { guide = value; }],
+    supportKb: [() => supportKb, value => { supportKb = value; }],
+    productCompliance: [() => compliance, value => { compliance = value; if (!compliance.products) compliance.products = {}; }],
+    customers: [() => customers, value => { customers = value; }]
+  };
+  function reloadFromDatabase(keys) {
+    for (const key of keys) {
+      const [get, set] = MEMORY_DOCUMENTS[key] || [];
+      if (!get) continue;
+      try { set(database.readDocument(key, get())); } catch (error) { console.error(`Could not reload ${key} after a failed write:`, error.message); }
+    }
+  }
+  async function writeKeys(keys, operation) {
+    try {
+      await enqueueWrite(operation);
+    } catch (error) {
+      reloadFromDatabase(keys);
+      throw Object.assign(error, { status: error.status || 503, code: error.code === 'ERR_SQLITE_ERROR' ? 'storage_unavailable' : error.code, message: /locked|busy/i.test(error.message) ? 'The database is busy (maintenance may be running). Nothing was saved. Try again in a moment.' : error.message });
+    }
+  }
+  /* v20: several documents in one transaction. build() runs inside the write queue, so no other
+     request can interleave; it returns { write: {key: value}, commit() } and commit() updates
+     memory only after the transaction succeeded. */
+  function transact(build) {
+    return writeKeys([], () => {
+      const { write, commit } = build();
+      database.writeDocuments(write);
+      commit?.();
+    });
   }
 
   function liveEnvironmentConfigured() {
@@ -748,7 +798,7 @@ export function createVerapepServer(options = {}) {
 
   async function persistCompliance() {
     compliance.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocument('productCompliance', compliance));
+    await writeKeys(['productCompliance'], () => database.writeDocument('productCompliance', compliance));
     broadcastStorefront('compliance');
   }
 
@@ -1107,52 +1157,52 @@ export function createVerapepServer(options = {}) {
   }
 
   async function persistOrders() {
-    await enqueueWrite(() => database.writeDocument('orders', orders));
+    await writeKeys(['orders'], () => database.writeDocument('orders', orders));
   }
 
   async function persistInventory() {
     inventory.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocument('inventory', inventory));
+    await writeKeys(['inventory'], () => database.writeDocument('inventory', inventory));
     broadcastStorefront('inventory');
   }
 
   async function persistOrdersAndInventory(reason = 'commerce') {
     inventory.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocuments({ orders, inventory }));
+    await writeKeys(['orders', 'inventory'], () => database.writeDocuments({ orders, inventory }));
     broadcastStorefront(reason);
   }
 
   async function persistPolicy() {
-    await enqueueWrite(() => database.writeDocument('policy', policy));
+    await writeKeys(['policy'], () => database.writeDocument('policy', policy));
     broadcastStorefront('commerce');
   }
 
   async function persistReturns() {
-    await enqueueWrite(() => database.writeDocument('returns', returns));
+    await writeKeys(['returns'], () => database.writeDocument('returns', returns));
   }
 
   async function persistWithdrawals() {
-    await enqueueWrite(() => database.writeDocument('withdrawals', withdrawals));
+    await writeKeys(['withdrawals'], () => database.writeDocument('withdrawals', withdrawals));
   }
 
   async function persistProductContent() {
     productContent.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocument('productContent', productContent));
+    await writeKeys(['productContent'], () => database.writeDocument('productContent', productContent));
     broadcastStorefront('product');
   }
 
   async function persistReviews() {
-    await enqueueWrite(() => database.writeDocument('reviews', reviews));
+    await writeKeys(['reviews'], () => database.writeDocument('reviews', reviews));
     broadcastStorefront('reviews');
   }
 
   async function persistGuide() {
-    await enqueueWrite(() => database.writeDocument('guide', guide));
+    await writeKeys(['guide'], () => database.writeDocument('guide', guide));
     broadcastStorefront('guide');
   }
 
   async function persistSupportKb() {
-    await enqueueWrite(() => database.writeDocument('supportKb', supportKb));
+    await writeKeys(['supportKb'], () => database.writeDocument('supportKb', supportKb));
     broadcastStorefront('support');
   }
 
@@ -1466,6 +1516,18 @@ export function createVerapepServer(options = {}) {
     return order;
   }
 
+  /* v20: an authenticator code is accepted once per account; replaying an intercepted code within its
+     30-second window (plus the ±1 step tolerance) is refused. */
+  const usedTotpCodes = new Map();
+  function totpOnce(email, code, secret) {
+    const now = Date.now();
+    for (const [key, expires] of usedTotpCodes) if (expires < now) usedTotpCodes.delete(key);
+    const key = `${email}:${String(code || '').replace(/\s+/g, '')}`;
+    if (usedTotpCodes.has(key) || !verifyTotp(code, secret)) return false;
+    usedTotpCodes.set(key, now + 120_000);
+    return true;
+  }
+
   function adminSession(req) {
     const token = parseCookies(req.headers.cookie).vp_admin;
     if (!token) return null;
@@ -1474,6 +1536,16 @@ export function createVerapepServer(options = {}) {
       if (token) sessions.delete(token);
       return null;
     }
+    // v20: the account is re-read on every request. Disabling a user, changing their role or their
+    // password takes effect immediately (sessions used to keep the role from login for up to 8 h of
+    // activity), and a session never lives longer than 12 h in total.
+    const user = database.findUser(session.email);
+    if (!user || !user.enabled || user.passwordHash !== session.passwordHash || Date.now() - session.createdAt > SESSION_ABSOLUTE_MS) {
+      sessions.delete(token);
+      return null;
+    }
+    session.role = user.role;
+    session.displayName = user.displayName;
     session.expiresAt = Date.now() + SESSION_TTL_MS;
     return session;
   }
@@ -1517,6 +1589,7 @@ export function createVerapepServer(options = {}) {
     getContent: () => productContent, getCompliance: () => compliance, getPolicy: () => policy, getConfig: () => config,
     persistProductContent: () => persistProductContent(), persistCompliance: () => persistCompliance(), isPubliclyVisible, inventoryRow, gateMode,
     productionReadiness: () => productionReadiness(), supportKbStatus: () => supportKbStatus(), recentErrors, veraStats, serverStartedAt, legalInfo: () => legalInfo(), nowIso,
+    transact, broadcast: reason => broadcastStorefront(reason),
     version: VERSION
   });
 
@@ -1819,6 +1892,9 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'POST' && pathname === '/api/admin/login') {
+      // v20: browsers cannot send application/json cross-site without a CORS preflight, so requiring it
+      // stops another website from logging a visitor into an attacker's admin account (login CSRF).
+      if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return sendJson(res, 415, { error: 'json_required', message: 'Send the login as application/json.' });
       const limit = rateLimit(`admin-login:${ip}`, 8, 15 * 60 * 1000);
       if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many login attempts.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
@@ -1827,11 +1903,14 @@ export function createVerapepServer(options = {}) {
       const accountLimit = rateLimit(`admin-login-account:${sha256(email)}`, 10, 15 * 60 * 1000);
       if (!accountLimit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many login attempts for this account. Try again later.' }, { 'Retry-After': String(Math.ceil(accountLimit.retryAfterMs / 1000)) });
       const user = database.findUser(email);
-      if (!user || !user.enabled || !verifyPassword(String(body.password || ''), user.passwordHash)) return sendJson(res, 401, { error: 'invalid_credentials', message: 'Invalid admin credentials.' });
+      // v20: unknown accounts are checked against a dummy hash so the response time does not reveal
+      // which email addresses have an admin account.
+      const passwordOk = verifyPassword(String(body.password || ''), user?.passwordHash || DUMMY_PASSWORD_HASH);
+      if (!user || !user.enabled || !passwordOk) return sendJson(res, 401, { error: 'invalid_credentials', message: 'Invalid admin credentials.' });
       let mfaMethod = 'none';
       if (user.mfaEnabled) {
         const candidate = String(body.mfaCode || '').trim();
-        if (verifyTotp(candidate, decryptMfaSecret(user.mfaSecret))) {
+        if (totpOnce(user.email, candidate, decryptMfaSecret(user.mfaSecret))) {
           mfaMethod = 'totp';
         } else {
           const recoveryCode = normaliseRecoveryCode(candidate);
@@ -1841,11 +1920,11 @@ export function createVerapepServer(options = {}) {
         }
       } else if (IS_PRODUCTION) {
         if (user.role !== 'owner' || !process.env.ADMIN_TOTP_SECRET) return sendJson(res, 503, { error: 'admin_mfa_not_enrolled', message: 'This production admin account must enroll per-user MFA before it can be used.' });
-        if (!verifyTotp(body.mfaCode, process.env.ADMIN_TOTP_SECRET)) return sendJson(res, 401, { error: 'invalid_mfa', message: 'Enter the bootstrap owner authenticator code.' });
+        if (!totpOnce(user.email, body.mfaCode, process.env.ADMIN_TOTP_SECRET)) return sendJson(res, 401, { error: 'invalid_mfa', message: 'Enter the bootstrap owner authenticator code.' });
         mfaMethod = 'bootstrap_totp';
       }
       const token = randomToken(32);
-      const session = { email: user.email, displayName: user.displayName, role: user.role, csrf: randomToken(24), mfaMethod, expiresAt: Date.now() + SESSION_TTL_MS };
+      const session = { email: user.email, displayName: user.displayName, role: user.role, csrf: randomToken(24), mfaMethod, expiresAt: Date.now() + SESSION_TTL_MS, createdAt: Date.now(), passwordHash: user.passwordHash };
       sessions.set(token, session);
       audit(session, 'admin.login', 'admin_user', user.email, null, { role: user.role, mfaMethod });
       const secure = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? '; Secure' : '';
@@ -2010,6 +2089,8 @@ export function createVerapepServer(options = {}) {
       const role = cleanText(body.role, 20);
       if (!validEmail(email) || !['owner','admin','editor','support'].includes(role)) return sendJson(res, 400, { error: 'invalid_admin_user', message: 'Enter a valid email and role.' });
       if (!validAdminPassword(body.password)) return sendJson(res, 400, { error: 'weak_password', message: 'Use an admin password of at least 12 characters.' });
+      // v20: "add user" no longer silently overwrites an existing account (it could demote the owner).
+      if (database.findUser(email)) return sendJson(res, 409, { error: 'admin_user_exists', message: 'An admin account with this email already exists. Edit it in the list instead.' });
       const user = sanitiseAdminUser(database.upsertUser({ email, displayName: cleanText(body.displayName, 100) || email, role, password: String(body.password), enabled: body.enabled !== false }));
       audit(session, 'admin_user.created', 'admin_user', email, null, user);
       return sendJson(res, 201, { user });
@@ -2025,6 +2106,11 @@ export function createVerapepServer(options = {}) {
       const role = body.role === undefined ? before.role : cleanText(body.role, 20);
       if (!['owner','admin','editor','support'].includes(role)) return sendJson(res, 400, { error: 'invalid_role', message: 'Invalid admin role.' });
       if (body.password && !validAdminPassword(body.password)) return sendJson(res, 400, { error: 'weak_password', message: 'Use an admin password of at least 12 characters.' });
+      // v20: never leave the store without an enabled owner (owner-only decisions would become impossible).
+      const staysOwner = role === 'owner' && (body.enabled === undefined ? before.enabled : body.enabled === true);
+      if (before.role === 'owner' && before.enabled && !staysOwner && database.listUsers().filter(item => item.role === 'owner' && item.enabled).length <= 1) {
+        return sendJson(res, 409, { error: 'last_owner', message: 'This is the only active owner. Add another owner before changing or disabling this account.' });
+      }
       const user = sanitiseAdminUser(database.upsertUser({ email, displayName: cleanText(body.displayName, 100) || before.displayName, role, password: body.password ? String(body.password) : undefined, enabled: body.enabled === undefined ? before.enabled : body.enabled === true }));
       audit(session, 'admin_user.updated', 'admin_user', email, { displayName: before.displayName, role: before.role, enabled: before.enabled }, { ...user, passwordChanged: Boolean(body.password) });
       return sendJson(res, 200, { user });
@@ -2288,6 +2374,12 @@ export function createVerapepServer(options = {}) {
         if (evidence.some(item => item.url && !safePublicUrl(item.url))) return sendJson(res, 400, { error: 'invalid_url', message: 'Evidence links must be site paths or https:// addresses.' });
         next.evidence = evidence;
       }
+      // v20: an owner/admin decision to hide a product ("Do not publish") or an owner approval can only
+      // be changed by an owner or admin. Editors could previously undo "Do not publish", which
+      // re-exposes the product in preview mode, or remove an owner's approval.
+      if (['do_not_publish', 'approved_for_publication'].includes(before.status) && status !== before.status && !['owner', 'admin'].includes(session.role)) {
+        return sendJson(res, 403, { error: 'reviewer_role_required', message: `Only an owner or admin can change a product that is "${REVIEW_STATUS_LABELS[before.status]}".` });
+      }
       if (status === 'approved_for_publication') {
         // Final publication approval is a human, owner-level decision backed by an external review.
         if (session.role !== 'owner') return sendJson(res, 403, { error: 'owner_required', message: 'Only the owner can record an approval for publication.' });
@@ -2327,6 +2419,10 @@ export function createVerapepServer(options = {}) {
       if (!productIds.length) return sendJson(res, 400, { error: 'no_products_selected', message: 'Select at least one product.' });
       const note = cleanText(body.note, 1000);
       if (note.length < 3) return sendJson(res, 400, { error: 'note_required', message: 'Add a short note explaining the bulk change.' });
+      if (!['owner', 'admin'].includes(session.role)) {
+        const protectedIds = productIds.filter(id => ['do_not_publish', 'approved_for_publication'].includes(complianceRecord(id).status) && complianceRecord(id).status !== status);
+        if (protectedIds.length) return sendJson(res, 403, { error: 'reviewer_role_required', message: `${protectedIds.length} selected product(s) are "Do not publish" or approved. Only an owner or admin can change those.` });
+      }
       const affectedApproved = productIds.filter(id => complianceRecord(id).status === 'approved_for_publication');
       if (Number(body.confirmCount) !== productIds.length) {
         return sendJson(res, 409, { error: 'bulk_confirmation_required', message: `This changes ${productIds.length} products${affectedApproved.length ? `, including ${affectedApproved.length} approved product(s) that will lose their approval and any sale` : ''}. Confirm the number of products to continue.`, count: productIds.length, affectsApproved: affectedApproved.length });
@@ -2631,7 +2727,11 @@ export function createVerapepServer(options = {}) {
   }
 
   async function serveStatic(req, res, url) {
-    let pathname = decodeURIComponent(url.pathname);
+    // v20: malformed escapes are a client error (was 500), and decoded "..", backslashes or NUL
+    // are refused before any path logic: "/assets%2F..%2Fserver.mjs" used to serve server code.
+    let pathname;
+    try { pathname = decodeURIComponent(url.pathname); } catch { return sendText(res, 400, 'Bad request'); }
+    if (/(^|\/)\.\.(\/|$)|\\|\0/.test(pathname)) return sendNotFound(req, res, url.pathname);
     const searchIndexingEnabled = IS_PRODUCTION && String(process.env.PRODUCTION_SEO_INDEXING || '').toLowerCase() === 'true';
     if (pathname === '/robots.txt') {
       const baseUrl = String(process.env.BASE_URL || '').replace(/\/$/, '');
@@ -2665,9 +2765,10 @@ export function createVerapepServer(options = {}) {
     if (pathname === '/') pathname = '/index.html';
     if (dynamicProductId) pathname = '/product.html';
     if (pathname.endsWith('/')) pathname += 'index.html';
-    const relative = pathname.replace(/^\/+/, '');
-    const resolved = path.resolve(rootDir, relative);
+    const resolved = path.resolve(rootDir, pathname.replace(/^\/+/, ''));
     if (!resolved.startsWith(`${rootDir}${path.sep}`) && resolved !== rootDir) return sendText(res, 403, 'Forbidden');
+    // v20: every check below uses the path relative to the root *after* resolution.
+    const relative = path.relative(rootDir, resolved).split(path.sep).join('/');
     const extension = path.extname(resolved).toLowerCase();
     const firstSegment = relative.split(/[\\/]/)[0];
     if (!MIME_TYPES[extension] && !extension) return sendNotFound(req, res, pathname);
@@ -2747,6 +2848,10 @@ export function createVerapepServer(options = {}) {
       else if (['GET', 'HEAD'].includes(req.method || 'GET')) await serveStatic(req, res, url);
       else sendJson(res, 405, { error: 'method_not_allowed', message: 'Method not allowed.' }, { Allow: 'GET, HEAD' });
     } catch (error) {
+      // v20: malformed %-escapes and requests the client aborted are client-side problems; they no
+      // longer count as server errors (they filled the error log and the owner overview).
+      if (error instanceof URIError) Object.assign(error, { status: 400, code: 'bad_request', message: 'The address or a header contains invalid encoding.' });
+      if (error.code === 'ECONNRESET' || error.code === 'ERR_STREAM_PREMATURE_CLOSE' || error.message === 'aborted') Object.assign(error, { status: 400, code: 'request_aborted' });
       const status = Number(error.status) || 500;
       if (status >= 500) {
         console.error(error);
@@ -2767,7 +2872,8 @@ export function createVerapepServer(options = {}) {
     getMode: () => getMode(),
     resetSessions: () => sessions.clear()
   };
-  server.on('close', () => { try { database.close(); } catch {} });
+  server.on('listening', () => writeServerLock(dataDir));
+  server.on('close', () => { removeServerLock(dataDir); try { database.close(); } catch {} });
   return server;
 }
 

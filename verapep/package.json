@@ -18,6 +18,7 @@
     "backup:sqlite": "node scripts/backup-sqlite.mjs",
     "email:retry": "node scripts/retry-email-outbox.mjs",
     "build:css": "node scripts/build-css.mjs",
+    "assets:versions": "node scripts/asset-versions.mjs",
     "test:personas": "python3 tests/personas.py",
     "restore:sqlite": "node scripts/restore-sqlite.mjs",
     "migrate:kb": "node scripts/migrate-support-kb.mjs",

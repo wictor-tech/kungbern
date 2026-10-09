@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { refuseWhileServerRuns } from '../lib/server-lock.mjs';
 
 const args = process.argv.slice(2);
 const option = name => { const index = args.indexOf(name); return index > -1 ? args[index + 1] : undefined; };
@@ -43,10 +44,16 @@ if (!args.includes('--yes')) {
   process.exit(0);
 }
 
+refuseWhileServerRuns(dataDir, 'restoring');
 fs.mkdirSync(backupDir, { recursive: true });
+const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+// v20: private product documents are restored together with the database (backup-sqlite.mjs copies
+// them to "<backup>-documents"). The current documents folder is kept as pre-restore-<time>-documents.
+const documentsBackup = source.replace(/\.sqlite$/, '-documents');
+const documentsLive = path.join(dataDir, 'documents');
 if (fs.existsSync(target)) {
   const live = new DatabaseSync(target);
-  const safety = path.join(backupDir, `pre-restore-${new Date().toISOString().replace(/[:.]/g, '-')}.sqlite`);
+  const safety = path.join(backupDir, `pre-restore-${stamp}.sqlite`);
   try {
     live.exec('PRAGMA wal_checkpoint(TRUNCATE);');
     live.prepare('VACUUM INTO ?').run(safety);
@@ -58,4 +65,12 @@ if (fs.existsSync(target)) {
 for (const suffix of ['-wal', '-shm']) fs.rmSync(`${target}${suffix}`, { force: true });
 fs.copyFileSync(source, `${target}.restoring`);
 fs.renameSync(`${target}.restoring`, target);
+if (fs.existsSync(documentsBackup)) {
+  if (fs.existsSync(documentsLive)) fs.renameSync(documentsLive, path.join(backupDir, `pre-restore-${stamp}-documents`));
+  fs.cpSync(documentsBackup, documentsLive, { recursive: true, preserveTimestamps: true });
+  fs.chmodSync(documentsLive, 0o700);
+  console.log(`Restored ${fs.readdirSync(documentsLive).length} product document(s) from ${path.basename(documentsBackup)}.`);
+} else {
+  console.log('No product-documents copy next to this backup; the current documents folder was left as it is.');
+}
 console.log(`Restored ${target} from ${path.basename(source)}. Start the server to use it.`);

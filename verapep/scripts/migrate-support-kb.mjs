@@ -15,6 +15,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { fileURLToPath } from 'node:url';
+import { refuseWhileServerRuns } from '../lib/server-lock.mjs';
 import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir, MIGRATION_ID } from '../lib/support-kb-migration.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -22,6 +23,8 @@ const args = process.argv.slice(2);
 const option = name => { const index = args.indexOf(name); return index > -1 ? args[index + 1] : undefined; };
 const dataDir = path.resolve(option('--data-dir') || process.env.DATA_DIR || path.join(root, 'data'));
 const dbFile = path.join(dataDir, 'verapep.sqlite');
+// v20: the running server would overwrite a CLI change to the knowledge base with its own copy.
+if (args.includes('--apply') || args.includes('--rollback')) refuseWhileServerRuns(dataDir, 'changing the knowledge base from the command line (or use Admin → Guide & Ask Vera → Knowledge updates)');
 const asJson = args.includes('--json');
 
 function fail(message) { console.error(message); process.exit(1); }

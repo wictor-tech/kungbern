@@ -28,7 +28,7 @@
   const canReview = () => ['owner', 'admin'].includes(state.dashboard?.currentUser?.role);
 
   function friendlyError(error) {
-    if (error.status === 401) return 'Your session has ended. Sign in again.';
+    if (error.status === 401) return 'Your session has ended. Sign in again below — what you typed on this page is kept until you save it.';
     if (error.status === 403 && error.payload?.error === 'invalid_csrf') return 'This page is out of date. Reload the page and try again.';
     return error.message || 'Something went wrong. Nothing was changed.';
   }
@@ -208,7 +208,7 @@
   }
 
   function draftActions(draft, ws) {
-    const mine = draft.createdBy === state.dashboard?.currentUser?.email;
+    const mine = draft.createdBy === state.dashboard?.currentUser?.email || draft.history?.some(item => ['created', 'edited', 'submitted'].includes(item.action) && item.by === state.dashboard?.currentUser?.email);
     const out = [];
     if (['draft', 'rejected'].includes(draft.status)) out.push(`<button class="button button--light" type="button" data-draft-edit="${draft.id}">Edit</button><button class="button button--primary" type="button" data-draft-submit="${draft.id}">Submit for review</button>`);
     if (draft.status === 'internal_review' && ws.canReview) out.push(`<button class="button button--primary" type="button" data-draft-review="${draft.id}" data-decision="approve">Approve text${mine ? ' (my own)' : ''}</button><button class="button button--light" type="button" data-draft-review="${draft.id}" data-decision="request_changes">Ask for changes</button>`);
@@ -359,7 +359,8 @@
       note = window.prompt('Which changes are needed? (required)') || '';
       if (note.trim().length < 3) return showMessage('Write a short explanation so the author knows what to change.');
     } else {
-      if (draft && draft.createdBy === state.dashboard?.currentUser?.email) {
+      const me = state.dashboard?.currentUser?.email;
+      if (draft && (draft.createdBy === me || draft.history?.some(item => ['created', 'edited', 'submitted'].includes(item.action) && item.by === me))) {
         if (state.dashboard?.currentUser?.role !== 'owner') return showMessage('You wrote this draft. Ask another owner or admin to review it.');
         if (!window.confirm('You wrote this draft yourself. A second person should normally review it. Approve it anyway as the owner? This is recorded as a self-review.')) return;
         selfReviewConfirmed = true;
@@ -429,6 +430,7 @@
         headers: { 'Content-Type': 'application/octet-stream', 'X-CSRF-Token': state.csrf, 'X-Document-Kind': kind, 'X-Document-Title': encodeURIComponent(form.title.value.trim()), ...(form.supersedes.value ? { 'X-Supersedes': form.supersedes.value } : {}) }
       });
       const payload = await response.json().catch(() => ({}));
+      if (response.status === 401) A.sessionExpired();
       if (!response.ok) throw Object.assign(new Error(payload.message || 'Upload failed.'), { status: response.status, payload });
       const parts = ['Document uploaded. It is private and marked “not verified” until you check it.'];
       if (prepared.note) parts.push(prepared.note);
@@ -584,9 +586,9 @@
 
   /* ------------------------------------------------------------ wiring */
   document.addEventListener('verapep:dashboard', () => {
-    loadOverview();
-    if (state.dashboard?.permissions?.includes('products')) { loadProducts(); loadQueue(); }
-    if (v19.current) openWorkspace(v19.current, { scroll: false });
+    if (state.dashboard?.permissions?.includes('products')) { loadOverview(); loadProducts(); loadQueue(); }
+    // Do not redraw the workspace over an unsaved draft form (e.g. after signing in again).
+    if (v19.current && !document.getElementById('draft-form')) openWorkspace(v19.current, { scroll: false });
   });
   $('overview-refresh')?.addEventListener('click', loadOverview);
   document.addEventListener('verapep:tab', event => {
