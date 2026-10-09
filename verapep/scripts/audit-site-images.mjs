@@ -58,7 +58,7 @@ export function audit() {
     return { file, bytes: buffer.length, width: size?.width ?? null, height: size?.height ?? null, role, usedBy, flags };
   });
   // Missing originals: a derivative (webp/avif) in use without a larger master of the same image.
-  const heroMasters = rows.filter(row => row.role === 'hero' && row.width);
+  const heroMasters = rows.filter(row => row.role === 'hero' && row.width && row.usedBy.length);
   const widestHero = Math.max(0, ...heroMasters.map(row => row.width));
   if (widestHero && widestHero < ROLE_MIN_WIDTH.hero) {
     for (const row of rows.filter(item => item.role === 'hero' && item.usedBy.length)) row.flags.push(`No high-resolution original: the widest source is ${widestHero}px, so 1920px screens at 2× are upscaled.`);

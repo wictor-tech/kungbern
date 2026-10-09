@@ -1,4 +1,4 @@
-# VERAPEP Information Platform v18
+# VERAPEP Information Platform v19
 
 VERAPEP V14.1 is the production-readiness and operational-hardening release built on top of the V13 mobile-conversion storefront. The friend-test experience remains available, while live commerce is now protected by explicit infrastructure, legal, product, payment and security gates.
 
@@ -11,6 +11,10 @@ VERAPEP V14.1 is the production-readiness and operational-hardening release buil
 
 Read these first:
 
+- `V19-OWNER-GUIDE.md` (step-by-step owner guide, Swedish)
+- `V19-REPORT.md` (owner control center, product workspace, content workflow, tests)
+- `V19-OWNER-INPUT-NEEDED.md` and `V19-EXTERNAL-DECISIONS.md` (what only the owner can provide or decide)
+- `V19-VERA-GENERATIVE-AI.md` (assessment only; nothing implemented)
 - `V18-EXECUTIVE-SUMMARY.md` (plain-language status for the owner)
 - `V18-REPORT.md`, `V18-SECURITY-REPORT.md`, `V18-CI.md`, `V18-LAUNCH-BLOCKERS.md`
 - `V17-REPORT.md` (v17 overview)
@@ -74,6 +78,15 @@ npm run migrate:kb -- --rollback <support-kb-….json>
 ```
 
 Admin edits, locked answers and deliberately removed answers are preserved. See `V17-ASK-VERA.md`.
+
+## Owner control center and content workflow (v19)
+
+- Admin opens on **Overview** (`GET /api/admin/overview`): technical checks and legal launch readiness shown separately, documentation gaps, compliance approvals, content quality (`data/image-audit.json`, `npm run audit:site-images`), system health and next steps.
+- **Products** is a workspace per product: checklist, drafts with sources and word diffs, private documents, versions and history. Text goes Draft → internal review → external review (required for claims) → approved → applied. Applying text never changes visibility, sale or legal status. There is no bulk approval.
+- **Documents** are stored in `DATA_DIR/documents/` (mode 0600, git-ignored, never served statically; included in `npm run backup:sqlite`). Product photos are served from `/product-media/…` only once verified, reviewed, applied and the product is public.
+- **Import** (`POST /api/admin/import/preview|apply`) turns CSV/JSON into drafts only, after preview and an explicit count confirmation.
+- **Ask Vera** answers Swedish questions in Swedish only with owner-approved translations (`data/vera-translations.json` ships unapproved proposals).
+- Simulated admin personas: `npm run test:admin-personas` (informational, also in CI).
 
 ## CI and release checks (v18)
 
