@@ -44,7 +44,7 @@ MAX_STEPS = 6
 
 def norm(value: str) -> str:
     value = unicodedata.normalize('NFD', value or '').encode('ascii', 'ignore').decode().lower()
-    return re.sub(r'\s+', ' ', value).strip()
+    return re.sub(r'[^a-z0-9@.]+', ' ', value).strip()
 
 
 @dataclass
@@ -91,7 +91,7 @@ def score(candidate: dict, keywords: list[str]) -> int:
         total -= 1
     for keyword in keywords:
         k = norm(keyword)
-        if ' ' in k and k in text:
+        if ' ' in k and f' {k} ' in f' {text} ':
             total += 3
         elif k in words:
             total += 2
@@ -127,7 +127,7 @@ def navigate(page: Page, result: Result, keywords: list[str], success: Callable[
             result.completed = True
             return True
         candidates = page.evaluate(CANDIDATES_JS)
-        ranked = sorted(((score(c, keywords), c) for c in candidates if f"{c['text']}|{c['href']}" not in clicked), key=lambda item: -item[0])
+        ranked = sorted(((score(c, keywords), c) for c in candidates if f"{c['text']}|{c['href']}" not in clicked), key=lambda item: (-item[0], len(item[1]['text'])))  # ties: the more specific (shorter) label
         if not ranked or ranked[0][0] <= 0:
             if not menu_tried and open_menu_if_collapsed(page, result):
                 menu_tried = True
@@ -176,18 +176,18 @@ def ask_vera(page: Page, result: Result, question: str) -> str:
         result.stuck = result.stuck or 'Could not find a place to ask Vera'
         return ''
     log = page.locator('#vera-log:visible, #assistant-log:visible').first
-    before = log.locator('.assistant-message, p, .vera-message').count()
+    before = log.locator(':scope > .assistant-message, :scope > p, :scope > .vera-message').count()
     box.fill(question)
     box.press('Enter') if box.evaluate('el => el.tagName') == 'INPUT' else page.locator('#assistant-form button[type="submit"], #vera-form button[type="submit"]').first.click()
     result.steps += 1
     result.path.append(f'[ask “{question[:30]}”]')
     try:
         page.wait_for_function(
-            '([sel, n]) => { const log = document.querySelector(sel); if (!log) return false; const items = log.querySelectorAll(".assistant-message, p, .vera-message"); const last = items[items.length - 1]; return items.length >= n + 2 && last && !last.matches(".is-pending, [aria-busy=true]"); }',
+            '([sel, n]) => { const log = document.querySelector(sel); if (!log) return false; const items = log.querySelectorAll(":scope > .assistant-message, :scope > p, :scope > .vera-message"); const last = items[items.length - 1]; return items.length >= n + 2 && last && !last.matches(".is-pending, [aria-busy=true]"); }',
             arg=['#vera-log:not([hidden]), #assistant-log', before], timeout=8000)
     except Exception:
         pass
-    messages = log.locator('.assistant-message, p, .vera-message')
+    messages = log.locator(':scope > .assistant-message, :scope > p, :scope > .vera-message')
     return messages.nth(messages.count() - 1).inner_text() if messages.count() else ''
 
 
@@ -246,7 +246,7 @@ def tasks():
 
     def b_product_mobile(page, r):
         if search(page, r, 'GHK'):
-            navigate(page, r, ['ghk', 'ghk cu', 'view', 'details'], lambda p: '/product/ghk-cu' in p.url)
+            navigate(page, r, ['ghk cu', 'ghk', 'view', 'details'], lambda p: '/product/ghk-cu' in p.url)
 
     def b_track_order(page, r):
         navigate(page, r, ['track', 'order', 'my order'], url_has('order.html'))

@@ -357,6 +357,8 @@ function createRateLimiter() {
   const buckets = new Map();
   return function rateLimit(key, max, windowMs) {
     const now = Date.now();
+    // v17: drop expired buckets so many distinct clients cannot grow memory without bound.
+    if (buckets.size > 5000) for (const [bucketKey, item] of buckets) if (item.resetAt <= now) buckets.delete(bucketKey);
     const bucket = buckets.get(key);
     if (!bucket || bucket.resetAt <= now) {
       buckets.set(key, { count: 1, resetAt: now + windowMs });
@@ -1609,6 +1611,11 @@ export function createVerapepServer(options = {}) {
       const token = url.searchParams.get('token') || req.headers['x-order-token'];
       const email = url.searchParams.get('email');
       const isAdmin = Boolean(adminSession(req));
+      // v17: order-number + email access is rate limited like the lookup form (guessing protection).
+      if (!isAdmin && email) {
+        const limit = rateLimit(`order-email:${ip}`, 30, 15 * 60 * 1000);
+        if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many order lookups from this address.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
+      }
       if (!order || (!isAdmin && !verifyOrderAccess(order, token, email))) return sendJson(res, 404, { error: 'order_not_found', message: 'The order could not be found or accessed.' });
       return sendJson(res, 200, { order: publicOrder(order, true) });
     }

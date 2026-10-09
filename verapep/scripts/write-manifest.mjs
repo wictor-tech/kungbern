@@ -29,7 +29,7 @@ if (isMain) {
     const body = fs.readFileSync(path.join(root, file));
     return `${file} | ${body.length} | ${crypto.createHash('sha256').update(body).digest('hex').slice(0, 16)}`;
   });
-  const header = `# VERAPEP v16 file manifest\n\nGenerated: ${new Date().toISOString().slice(0, 10)}\n\nFiles listed: ${files.length} (manifest excludes itself and runtime database/outbox/backup files)\n\nPath | Bytes | SHA-256 (first 16)\n`;
+  const header = `# VERAPEP v17 file manifest\n\nGenerated: ${new Date().toISOString().slice(0, 10)}\n\nFiles listed: ${files.length} (manifest excludes itself and runtime database/outbox/backup files)\n\nPath | Bytes | SHA-256 (first 16)\n`;
   fs.writeFileSync(path.join(root, 'FILE-MANIFEST.txt'), `${header}${lines.join('\n')}\n`);
   console.log(`FILE-MANIFEST.txt: ${files.length} files`);
 }

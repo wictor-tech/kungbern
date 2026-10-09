@@ -1,9 +1,9 @@
 {
   "name": "verapep-information-platform",
-  "version": "16.0.0",
+  "version": "17.0.0",
   "private": true,
   "type": "module",
-  "description": "VERAPEP information platform: guarded commerce, structured product information, legal information pages, bundled styles and a release E2E suite.",
+  "description": "VERAPEP information platform: compliance-gated publication, guarded commerce, Ask Vera with safety rules and versioned knowledge, legal information pages, bundled styles and release test suites.",
   "scripts": {
     "start": "node --env-file-if-exists=.env server.mjs",
     "build:data": "node scripts/build-store-data.mjs",
@@ -15,7 +15,11 @@
     "import:v8": "node scripts/import-v8-data.mjs",
     "backup:sqlite": "node scripts/backup-sqlite.mjs",
     "email:retry": "node scripts/retry-email-outbox.mjs",
-    "build:css": "node scripts/build-css.mjs"
+    "build:css": "node scripts/build-css.mjs",
+    "test:personas": "python3 tests/personas.py",
+    "restore:sqlite": "node scripts/restore-sqlite.mjs",
+    "migrate:kb": "node scripts/migrate-support-kb.mjs",
+    "inventory:compliance": "node scripts/compliance-inventory.mjs"
   },
   "engines": {
     "node": ">=22"

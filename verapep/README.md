@@ -1,17 +1,19 @@
-# VERAPEP Information Platform v16
+# VERAPEP Information Platform v17
 
 VERAPEP V14.1 is the production-readiness and operational-hardening release built on top of the V13 mobile-conversion storefront. The friend-test experience remains available, while live commerce is now protected by explicit infrastructure, legal, product, payment and security gates.
 
 ## Current status
 
-- Friend/staging testing: **ready**.
+- **Not approved for launch.** See `V17-LAUNCH-READINESS.md` for blocking legal and security items.
 - Live commerce: **blocked by default** until `/api/ready` reports no blockers.
-- Catalogue: 84 product families / 170 variants.
-- Live-enabled products in the packaged build: **0**.
+- Catalogue: 84 product families / 170 variants. **No product has a compliance approval.** The publication gate lists 40 in preview (44 high-risk products hidden) and 0 in production until products are approved in Admin → Compliance review.
+- Orderable products in the packaged build: **0** (sale of any kind requires an owner-recorded approval with scope "sale").
 
 Read these first:
 
-- `V16-IMPROVEMENT-REPORT.md` (latest release notes)
+- `V17-REPORT.md` (v17 overview, test results, links to all reports)
+- `V17-LAUNCH-READINESS.md` (what blocks launch, grouped by owner)
+- `V16-IMPROVEMENT-REPORT.md`
 - `PRODUCTION-CHECKLIST-V14.md`
 - `V14.1-OPERATIONAL-HARDENING.md`
 - `SECURITY.md`
@@ -53,21 +55,42 @@ A managed PostgreSQL runtime migration still requires an actual database instanc
 
 ```bash
 npm run backup:sqlite
+npm run restore:sqlite -- <backup.sqlite>          # validates only
+npm run restore:sqlite -- <backup.sqlite> --yes    # stop the server first; saves the current DB before replacing it
 ```
 
-The backup script checkpoints WAL, creates a consistent copy and runs an SQLite integrity check.
+The backup script checkpoints WAL, creates a consistent copy and runs an SQLite integrity check. The restore script validates integrity and schema, keeps a `pre-restore-*.sqlite` copy and removes stale WAL files.
+
+## Ask Vera knowledge updates
+
+Answers are seeded into the database on first start only. Existing databases are updated with a versioned migration that never runs automatically:
+
+```bash
+npm run migrate:kb                  # dry run: exactly what would change
+npm run migrate:kb -- --apply       # snapshot + full DB backup, then apply (or use Admin → Guide & AI)
+npm run migrate:kb -- --rollback <support-kb-….json>
+```
+
+Admin edits, locked answers and deliberately removed answers are preserved. See `V17-ASK-VERA.md`.
+
+## Compliance inventory
+
+```bash
+npm run inventory:compliance        # writes docs/v17/PRODUCT-COMPLIANCE-INVENTORY.{md,csv}
+```
 
 ## Tests
 
 ```bash
-npm test
+npm test               # unit/API (node:test)
 npm run test:static
-npm run test:e2e
+npm run test:e2e       # browser journeys, axe accessibility
+npm run test:personas  # simulated persona navigation (not real user research)
 ```
 
 The source/static regression suite passes in the packaged build.
 
-`npm run test:e2e` starts the server on a temporary copy of `data/` and drives Chromium (requires Python 3 with `pip install playwright==1.56.0` and `python3 -m playwright install chromium`). It waits for application state instead of network idleness, so the open Server-Sent Events stream does not stall it. It covers navigation, search, catalogue, all 84 product pages, cart states, mobile menu, forms, legal pages, broken links, accessibility (axe-core, vendored under `tests/vendor`) and administration. `E2E_ONLY=search,legal` runs selected tests.
+`npm run test:e2e` starts the server on a temporary copy of `data/` and drives Chromium (requires Python 3 with `pip install playwright==1.56.0` and `python3 -m playwright install chromium`). It waits for application state instead of network idleness, so the open Server-Sent Events stream does not stall it. It covers navigation, search, catalogue, every publicly listed product page, the publication gate, Ask Vera, mobile search, compliance admin, cart states, mobile menu, forms, legal pages, broken links, accessibility (axe-core, vendored under `tests/vendor`) and administration. `E2E_ONLY=search,legal` runs selected tests.
 
 ## CSS
 
