@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "entries": {
+    "delivery": [
+      {
+        "release": "14.1",
+        "hash": "09a733284bf6e2b65c79b080e98c5247cfc01b66aeab8f389dda34cd97edfa45",
+        "keywordsHash": "a4101a0185280e375297cdae94f640835e781e907544aeff82dd8a7939f6f4ae"
+      },
+      {
+        "release": "16.0",
+        "hash": "218c748e20c758b3ee97f2d95387aacc449ec587f47fa31113c7f29d4715d4c4",
+        "keywordsHash": "a4101a0185280e375297cdae94f640835e781e907544aeff82dd8a7939f6f4ae"
+      },
+      {
+        "release": "17.0",
+        "hash": "3c7038cbfacc7cde700ffc2fc86dcb3cc55050823f0d4a686b257c3570f5067d",
+        "keywordsHash": "9e8f6347010c732e8e27fa129caaf49a406673f9bb99709249215c75e9f61d49"
+      }
+    ],
+    "europe": [
+      {
+        "release": "14.1",
+        "hash": "8cb74dbcf7c315c1d39a4c747d4da0e5b76db9c58edfb01ec1de51627a354eb6",
+        "keywordsHash": "3ba79cbe37b444e6dfdda4ce1112fb0afb2affde91ea08af18a9de449bbbef82"
+      },
+      {
+        "release": "16.0",
+        "hash": "dcc55432556449a2b9383312596951cc01da840d011843def0787ee99640d7ca",
+        "keywordsHash": "3ba79cbe37b444e6dfdda4ce1112fb0afb2affde91ea08af18a9de449bbbef82"
+      },
+      {
+        "release": "17.0",
+        "hash": "11a2c04d7aecd4bbe412bd2f08cc7d43e519e3880ab17ccf8668b92b3896538e",
+        "keywordsHash": "05afd55f8f477bf1cab0b13761df96095d4016665566299cbd697ea6029ef1ce"
+      }
+    ],
+    "pricing": [
+      {
+        "release": "14.1",
+        "hash": "7ad9cc613e3cbf00f2e8626e059355ba0880db4898b91f4e194db4f495dcc0d9",
+        "keywordsHash": "12596d3e8da6eaf49d76365879935394689953321471c5b94dcd32ee8fa3d8c6"
+      },
+      {
+        "release": "16.0",
+        "hash": "1103f61f130451e70e1dc289b6bc8f7be2f12ceebebc99c912892f64217b564a",
+        "keywordsHash": "12596d3e8da6eaf49d76365879935394689953321471c5b94dcd32ee8fa3d8c6"
+      },
+      {
+        "release": "17.0",
+        "hash": "8933d094876bfd7b38b31040fffee01c15088ef7a820c080f7a19cf277b39ccd",
+        "keywordsHash": "41d7b498c3e89ab1857b45919972929bba459278e286003f59955d9faf27a9f4"
+      }
+    ],
+    "reports": [
+      {
+        "release": "14.1",
+        "hash": "f7fa8cb6cf0f9effc516a18b7d90d75d28e902eec1734002d653605728a08868",
+        "keywordsHash": "983ef45d7bcb0f5d3acf29fa9c48f4137db72510ad13ffd438aeb8fb5136c040"
+      },
+      {
+        "release": "16.0",
+        "hash": "61e8662c224a42e35c2402107a52d49cd76cace315a60db051b9bc5c67f0ff14",
+        "keywordsHash": "983ef45d7bcb0f5d3acf29fa9c48f4137db72510ad13ffd438aeb8fb5136c040"
+      },
+      {
+        "release": "17.0",
+        "hash": "d557528d8a6b54590ac93421ed48194dd8dd7b1e2a67df5edf940e0cde4444f5",
+        "keywordsHash": "ad21c7197bdbdcb48662894ad9c912c8a1b65db4265c88d90c4e9174385b3d6c"
+      }
+    ],
+    "account": [
+      {
+        "release": "14.1",
+        "hash": "d2b82190bbbf260afa5f0b0df98ec841f8b722e74d216830199b3f6b53a49498",
+        "keywordsHash": "5aef59aa9b71d256118103ff60faccce034733d0fb5589e4aff59e481c4e9362"
+      },
+      {
+        "release": "16.0",
+        "hash": "2ea542f27380d0880491ee2a1781712575b3131d4cf70945e03216a541469751",
+        "keywordsHash": "5aef59aa9b71d256118103ff60faccce034733d0fb5589e4aff59e481c4e9362"
+      },
+      {
+        "release": "17.0",
+        "hash": "fb071937afb0d62c1e348e39a53042aab40dd5fbb0a076ceffcda5ffc793c9ab",
+        "keywordsHash": "f570f878479be7008a34a10bf284093ea685fdf66aec90b0020722099d260f19"
+      }
+    ],
+    "saved": [
+      {
+        "release": "14.1",
+        "hash": "5205009118abd3647f06665321b933535f1b7a9717020af6156ff75d79c5f775",
+        "keywordsHash": "b1426e115987d9aa428b68422074701f154595a44c75fc3b3f223ba114f62d03"
+      },
+      {
+        "release": "16.0",
+        "hash": "55414ccc4c1fcb6753ab856769551338b76bd78dc843bc7b80a487d80de90d81",
+        "keywordsHash": "b1426e115987d9aa428b68422074701f154595a44c75fc3b3f223ba114f62d03"
+      },
+      {
+        "release": "17.0",
+        "hash": "15cda970715494b3135ee83cd37b556ff5990dc354c8cbaf3072b8e397fd4076",
+        "keywordsHash": "b4eda34f65a1fc6f7fa07283e775fa5e193588550ffee899e295dffdd61fa469"
+      }
+    ],
+    "finder": [
+      {
+        "release": "14.1",
+        "hash": "f26b7e8c25c0ae9ba062dc44ecbc87a42a8b6ec975fc2267d14eb7135355f680",
+        "keywordsHash": "c286549753758e192827759a5df1faa0da3e4cd2e88b935f064232d32f03fe97"
+      },
+      {
+        "release": "17.0",
+        "hash": "6cff6f5e30e7dd6651ee51ae02d39b7abb81baca0aba35cc6128403dbc1a82d4",
+        "keywordsHash": "d56b0a4316fd35851866576cc9fba32fbe2259d46f88d6180ac7b8ee53ce9308"
+      }
+    ],
+    "ratings": [
+      {
+        "release": "14.1",
+        "hash": "a66f6ca22c1560236bf1e9d343c1ae7049ad3f1f2ef07b5dd142dbeb7d0dcaeb",
+        "keywordsHash": "806d86a61d1dec4d82d1ba2e446043c45b478869fa70ac8edd5f43f1c5338333"
+      },
+      {
+        "release": "16.0",
+        "hash": "162dbec8a7eac5805f4c0801f2c84ca7a2f6cd8b23dd9f5af7c8f2d747f71b3b",
+        "keywordsHash": "806d86a61d1dec4d82d1ba2e446043c45b478869fa70ac8edd5f43f1c5338333"
+      },
+      {
+        "release": "17.0",
+        "hash": "04d44533c4c12b92b0350544dc12131dd8f7f5f817df4a83de09f754c51f948c",
+        "keywordsHash": "0efc29ec3b139e3d555309623addcab3536a1cad4897414cd6d7cb2cb9a59675"
+      }
+    ],
+    "returns": [
+      {
+        "release": "17.0",
+        "hash": "506af19c64d6b4cc34ae371d2bfa0ff4dde6beae4d560c0f4c3fa19e638557cd",
+        "keywordsHash": "5aec7c8f7c5b1e5b6fe919ed60443f75d2a9899f737d82c2db1bf195c7c2d106"
+      }
+    ],
+    "payment": [
+      {
+        "release": "17.0",
+        "hash": "c93d7352ef30b607c631ef63dc37b1e91c73a8c951b7539b568eec911f299712",
+        "keywordsHash": "e0e614c948159ee65ffa834deab37afef1feb3f0071bcdd5393c72a0d85f103e"
+      }
+    ],
+    "missing-information": [
+      {
+        "release": "17.0",
+        "hash": "106cda0dd9b17fd852a9afe074ee18b3fe362cb7b1c7b240e3f16c3dd4b6a526",
+        "keywordsHash": "20ad6458611430ded19e3ed4dafefe125b7ac09a8e4b1eb77da5bfcfe530d32a"
+      }
+    ],
+    "availability": [
+      {
+        "release": "17.0",
+        "hash": "a660e3227e9dba1544e2f707170122f4e2523b41e8449b7b859fbb278afe9c02",
+        "keywordsHash": "3d23e38a6ee4ea1f0e8103c43b1b803488f92f58854d0f6a533bc27d60dd04f7"
+      }
+    ],
+    "compare": [
+      {
+        "release": "17.0",
+        "hash": "963af1edf80536152997d26e7173a3a5593477172b448c8480c25bb917071a8e",
+        "keywordsHash": "458723d8204ee5542f51118c2fdb2464887fd51b500280d6790486e56fd2b677"
+      }
+    ],
+    "search": [
+      {
+        "release": "17.0",
+        "hash": "b361f9557ab9395c1a72c5b666322da866b0d361ecb13e5cf73c9915bde6368b",
+        "keywordsHash": "aa739f6bc304c7bea055994c01861765f6a44de7f6a4616d193989d6b059a672"
+      }
+    ],
+    "contact": [
+      {
+        "release": "17.0",
+        "hash": "dc96b1ec34921c5f9f83d75f698f78b5c1781dbb318add531bbc65e0d455076a",
+        "keywordsHash": "8906e396b9bc96b62c5bb45c58abe4bc9d6a08d09a72753dca547ded26055d29"
+      }
+    ],
+    "company": [
+      {
+        "release": "17.0",
+        "hash": "b44dca6b7c0563bb64fa07e68e76d616878605de3bc1232bef6bbca1668a7499",
+        "keywordsHash": "9398faaed141171aaa3f5f12f332f39c4f866ea709a2d6bb58d215ceacbddd94"
+      }
+    ],
+    "privacy": [
+      {
+        "release": "17.0",
+        "hash": "fd5465c2763cefd4eb9e51036053bd96048fd8bb0f1371bb4a35a424c5cdc40c",
+        "keywordsHash": "eafbed3f85dbf6c62f2f77de2a1296c9caa3171233ab4cb1266119eba9d463d5"
+      }
+    ],
+    "terms": [
+      {
+        "release": "17.0",
+        "hash": "da1039f843a776a7bd69887c2b8efbf7b6bbf20ed956d48f85a07ebb4a56712b",
+        "keywordsHash": "672775a50edb4ec02cd7a1646e439d2b7d7e9abbfbbd436b7433d4b4f541d54e"
+      }
+    ],
+    "track-order": [
+      {
+        "release": "17.0",
+        "hash": "0768d3bc157daf2a8ad9b1b58af13821f0c591390d6f0ff2abdc481b96440949",
+        "keywordsHash": "5cf9a6ac737357649380cefe0796e99621999d7f4cb4630295f254d8cf332bc2"
+      }
+    ],
+    "verification": [
+      {
+        "release": "17.0",
+        "hash": "b46fbb4fc41a874bc92705def679967e15232d7c5acfa4352b2763075ba51043",
+        "keywordsHash": "a8c2466bbd91bb85165c5c22e8330701e33edcf3ff708e861084bf25cde2d1a1"
+      }
+    ],
+    "about-vera": [
+      {
+        "release": "17.0",
+        "hash": "ccdf1cfebe99a7416469a8c77865761be19819412669134bacf46cca1fb74fd6",
+        "keywordsHash": "bebac8b32e853ea8a8e992f3e43dfa8d03c229bb347bda7ef065d60bf852745d"
+      }
+    ]
+  },
+  "fallbacks": [
+    {
+      "release": "14.1",
+      "hash": "438d3d9f7eca61777c531467a89a2fbd5e93ae59c3d4edac3b514329dbf220de"
+    },
+    {
+      "release": "16.0",
+      "hash": "6dd3193781f1054c271a8ff3b44f4557c22bb4216cc0354ad21238b2ece825a5"
+    },
+    {
+      "release": "17.0",
+      "hash": "dc2c1e3ff485ee0f96ce1fe36a38cd05bc30471845bcec3b430da47d89835714"
+    }
+  ],
+  "note": "Content hashes of every Ask Vera answer shipped by a release. Used by the knowledge-base migration to tell outdated shipped answers (safe to update) from admin edits (always kept). Generated by scripts/record-kb-release.mjs — do not edit by hand."
+}

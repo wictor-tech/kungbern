@@ -6,6 +6,8 @@ import crypto from 'node:crypto';
 import zlib from 'node:zlib';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { VerapepDatabase, verifyPassword } from './database.mjs';
+import { answerQuestion } from './lib/vera.mjs';
+import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
 import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
 const APP_ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -490,6 +492,14 @@ export function createVerapepServer(options = {}) {
   let compliance = database.readDocument('productCompliance', { version: 1, products: {} });
   if (!compliance.products) compliance.products = {};
   const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: process.env.PUBLICATION_GATE });
+  // v17: shipped knowledge base (for migration status) and privacy-preserving Vera counters (no question text).
+  let shippedKb = null;
+  try { shippedKb = loadShipped(rootDir); } catch { shippedKb = null; }
+  const shippedKbIds = new Set((shippedKb?.shipped?.entries || []).map(entry => entry.id));
+  const veraStats = { since: nowIso(), total: 0, byKind: {} };
+  // v17: last server errors for the admin status view (method, path, code only — no bodies, no personal data).
+  const recentErrors = [];
+  const serverStartedAt = nowIso();
 
   const productsById = new Map(catalogue.products.map(product => [product.id, product]));
   const variantsById = new Map();
@@ -598,6 +608,73 @@ export function createVerapepServer(options = {}) {
     if (content.published === false) return 'draft';
     if (content.availableForSale === true && content.informationOnly === false) return 'available_for_sale';
     return 'information_only';
+  }
+
+  function legalInfo() {
+    return {
+      companyLegalName: process.env.COMPANY_LEGAL_NAME || 'VERAPEP operator — company details pending',
+      companyRegistrationNumber: process.env.COMPANY_REGISTRATION_NUMBER || 'pending',
+      companyAddress: process.env.COMPANY_ADDRESS || 'pending',
+      supportEmail: process.env.SUPPORT_EMAIL || 'hello@verapep.eu',
+      privacyEmail: process.env.PRIVACY_EMAIL || process.env.SUPPORT_EMAIL || 'privacy@verapep.eu',
+      termsVersion: process.env.TERMS_VERSION || 'preview-v14.1',
+      privacyVersion: process.env.PRIVACY_VERSION || 'preview-v14.1',
+      environment: APP_ENV
+    };
+  }
+
+  /* Everything Ask Vera may know: configured values and publicly visible product facts. */
+  function veraContext(contextProductId) {
+    const visible = visibleCatalogueProducts();
+    const categoryLabel = id => catalogue.categories.find(category => category.id === id)?.label || id;
+    const summaries = visible.map(product => {
+      const content = productContent.products[product.id] || {};
+      const pub = productPublic(product);
+      return {
+        id: product.id,
+        name: product.name,
+        displayName: content.displayName || product.name,
+        aliases: Array.isArray(content.searchAliases) ? content.searchAliases : [],
+        categoryLabel: categoryLabel(product.category),
+        specifications: product.variants.map(variant => variant.specification).filter(Boolean),
+        shortDescription: String(content.shortDescription || '').trim(),
+        labReports: (content.labReports || []).filter(report => report.published && report.url).length,
+        orderable: pub.commerce.checkoutEnabled === true && pub.variants.some(variant => variant.checkoutEnabled)
+      };
+    });
+    const visibleIds = new Set(visible.map(product => product.id));
+    const hiddenNames = catalogue.products.filter(product => !visibleIds.has(product.id)).flatMap(product => {
+      const content = productContent.products[product.id] || {};
+      return [product.name, content.displayName, ...(content.searchAliases || [])].filter(Boolean);
+    });
+    const legal = legalInfo();
+    const orderable = summaries.filter(item => item.orderable).length;
+    const withReports = summaries.filter(item => item.labReports > 0).length;
+    const countries = config.allowedCountries || [];
+    return {
+      kb: supportKb,
+      products: summaries,
+      hiddenNames,
+      contextProductId: visibleIds.has(contextProductId) ? contextProductId : null,
+      vars: {
+        supportEmail: legal.supportEmail,
+        privacyEmail: legal.privacyEmail,
+        companyLine: process.env.COMPANY_LEGAL_NAME
+          ? `VERAPEP is operated by ${process.env.COMPANY_LEGAL_NAME}${process.env.COMPANY_REGISTRATION_NUMBER ? `, registration number ${process.env.COMPANY_REGISTRATION_NUMBER}` : ''}.`
+          : 'The registered company details of the operator have not been published yet.',
+        deliveryEstimate: config.shippingMethods?.[0]?.estimatedDays || '',
+        deliveryCountryCount: countries.length,
+        deliveryCountries: countries.map(country => country.name || country.code).join(', '),
+        orderingStatus: orderable === 0 ? 'No products can be ordered at the moment.' : `${orderable} product${orderable === 1 ? '' : 's'} can currently be ordered.`,
+        labReportStatus: withReports === 0 ? 'No lab reports have been published yet.' : `${withReports} product${withReports === 1 ? ' has' : 's have'} a published lab report.`
+      }
+    };
+  }
+
+  function supportKbStatus() {
+    if (!shippedKb) return { available: false };
+    const plan = planMigration(supportKb, shippedKb.shipped, shippedKb.history);
+    return { available: true, upToDate: plan.upToDate, pendingWrites: plan.writes, stored: plan.from, shipped: plan.to, counts: plan.counts };
   }
 
   function complianceRecord(productId) {
@@ -1409,16 +1486,7 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'GET' && pathname === '/api/legal') {
-      return sendJson(res, 200, {
-        companyLegalName: process.env.COMPANY_LEGAL_NAME || 'VERAPEP operator — company details pending',
-        companyRegistrationNumber: process.env.COMPANY_REGISTRATION_NUMBER || 'pending',
-        companyAddress: process.env.COMPANY_ADDRESS || 'pending',
-        supportEmail: process.env.SUPPORT_EMAIL || 'hello@verapep.eu',
-        privacyEmail: process.env.PRIVACY_EMAIL || process.env.SUPPORT_EMAIL || 'privacy@verapep.eu',
-        termsVersion: process.env.TERMS_VERSION || 'preview-v14.1',
-        privacyVersion: process.env.PRIVACY_VERSION || 'preview-v14.1',
-        environment: APP_ENV
-      });
+      return sendJson(res, 200, legalInfo());
     }
 
     if (method === 'GET' && pathname === '/api/storefront') {
@@ -1470,11 +1538,15 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'POST' && pathname === '/api/support/ask') {
+      const limit = rateLimit(`vera:${ip}`, 30, 60 * 1000);
+      if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'You are asking very quickly. Please wait a few seconds and try again.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
-      const question = cleanText(body.question, 500).toLowerCase();
-      const scored = supportKb.entries.map(entry => ({ entry, score: String(entry.question || '').toLowerCase().split(/\s+/).filter(word => word && question.includes(word)).length })).sort((a,b) => b.score-a.score);
-      const best = scored[0];
-      return sendJson(res, 200, best && best.score > 0 ? { answered: true, answer: best.entry.answer, url: best.entry.url || null } : { answered: false, answer: supportKb.fallback, liveSupport: 'mailto:hello@verapep.eu' });
+      // v17: the question is processed in memory only and never stored or logged.
+      const result = answerQuestion(cleanText(body.question, 500), veraContext(cleanText(body.productId, 160)));
+      veraStats.total += 1;
+      veraStats.byKind[result.kind] = (veraStats.byKind[result.kind] || 0) + 1;
+      const liveSupport = `mailto:${legalInfo().supportEmail}`;
+      return sendJson(res, 200, { ...result, url: result.url || null, ...(result.answered ? {} : { liveSupport }) });
     }
 
     if (method === 'GET' && pathname === '/api/reviews') {
@@ -1765,6 +1837,10 @@ export function createVerapepServer(options = {}) {
         mode: getMode(),
         productionReadiness: productionReadiness(),
         publication: { gate: gateMode, visibleProducts: visibleCatalogueProducts().length, totalProducts: catalogue.products.length },
+        supportKbStatus: ROLE_ACCESS[session.role]?.has('guide') ? supportKbStatus() : null,
+        veraStats: ROLE_ACCESS[session.role]?.has('guide') ? veraStats : null,
+        recentErrors: ROLE_ACCESS[session.role]?.has('audit') ? recentErrors : [],
+        startedAt: serverStartedAt,
         orderQueues: {
           awaitingPayment: orders.filter(order => order.paymentStatus === 'unpaid' && order.orderStatus === 'awaiting_payment').length,
           toPack: orders.filter(order => order.paymentStatus === 'paid' && order.orderStatus === 'processing').length,
@@ -1989,11 +2065,65 @@ export function createVerapepServer(options = {}) {
       return sendJson(res, 200, { guide });
     }
 
+    if (method === 'GET' && pathname === '/api/admin/support-kb/migration') {
+      const session = requireAdmin(req); requireRole(session, 'guide');
+      if (!shippedKb) return sendJson(res, 503, { error: 'kb_migration_unavailable', message: 'The shipped knowledge base could not be read.' });
+      return sendJson(res, 200, { plan: planMigration(supportKb, shippedKb.shipped, shippedKb.history), snapshots: listSnapshots(dataDir).slice(0, 20) });
+    }
+
+    if (method === 'POST' && pathname === '/api/admin/support-kb/migration') {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
+      if (!shippedKb) return sendJson(res, 503, { error: 'kb_migration_unavailable', message: 'The shipped knowledge base could not be read.' });
+      const body = await readJsonBody(req);
+      const plan = planMigration(supportKb, shippedKb.shipped, shippedKb.history);
+      if (plan.upToDate) return sendJson(res, 200, { applied: false, message: 'The knowledge base is already up to date.', plan });
+      if (Number(body.confirmWrites) !== plan.writes) return sendJson(res, 409, { error: 'migration_confirmation_required', message: `This update writes ${plan.writes} change(s). Review the list and confirm to continue.`, plan });
+      const before = structuredClone(supportKb);
+      const snapshot = writeSnapshot(dataDir, before, `before ${plan.migration} (admin ${session.email})`);
+      const sqliteBackup = database.filePath ? database.backupTo(path.join(snapshotDir(dataDir), `verapep-${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}-${randomToken(3).replace(/[^a-zA-Z0-9]/g, '')}-pre-kb-migration.sqlite`)) : null;
+      supportKb = applyPlan(before, shippedKb.shipped, plan, { by: session.email, snapshot });
+      await persistSupportKb();
+      audit(session, 'support_kb.migrated', 'support_kb', 'vera', { entries: before.entries?.length ?? 0, contentVersion: before.contentVersion ?? null }, { entries: supportKb.entries.length, contentVersion: supportKb.contentVersion, counts: plan.counts, snapshot });
+      return sendJson(res, 200, { applied: true, snapshot, databaseBackup: sqliteBackup ? path.basename(sqliteBackup) : null, counts: plan.counts, supportKb });
+    }
+
+    if (method === 'POST' && pathname === '/api/admin/support-kb/rollback') {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
+      const body = await readJsonBody(req);
+      if (body.confirm !== true) return sendJson(res, 400, { error: 'rollback_confirmation_required', message: 'Confirm the rollback to continue.' });
+      const restored = readSnapshot(dataDir, cleanText(body.snapshot, 120));
+      const before = structuredClone(supportKb);
+      const safety = writeSnapshot(dataDir, before, `before rollback to ${cleanText(body.snapshot, 120)} (admin ${session.email})`);
+      supportKb = restored;
+      await persistSupportKb();
+      audit(session, 'support_kb.rolled_back', 'support_kb', 'vera', { entries: before.entries?.length ?? 0, contentVersion: before.contentVersion ?? null }, { entries: restored.entries.length, contentVersion: restored.contentVersion ?? null, from: cleanText(body.snapshot, 120), safetySnapshot: safety });
+      return sendJson(res, 200, { restored: true, safetySnapshot: safety, supportKb });
+    }
+
     if (method === 'PATCH' && pathname === '/api/admin/support-kb') {
       const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
       const before = structuredClone(supportKb);
       const body = await readJsonBody(req);
-      if (Array.isArray(body.entries)) supportKb.entries = body.entries.slice(0,100).map(item => ({ id: cleanText(item.id,80)||randomToken(6), question: cleanText(item.question,500), answer: cleanText(item.answer,3000), url: cleanText(item.url,500) }));
+      if (Array.isArray(body.entries)) {
+        // v17: ids are preserved (the migration relies on them), links are validated and admins can lock wording.
+        const entries = body.entries.slice(0, 100).map(item => {
+          const keywords = (Array.isArray(item.keywords) ? item.keywords : String(item.keywords || item.question || '').split(/[,\n]/)).map(value => cleanText(value, 80).toLowerCase()).filter(Boolean).slice(0, 30);
+          const previous = supportKb.entries.find(entry => entry.id === cleanText(item.id, 80));
+          return { ...(previous || {}), id: cleanText(item.id, 80) || `custom-${randomToken(4)}`, title: cleanText(item.title, 120) || previous?.title || keywords[0] || 'Untitled', keywords, question: keywords.join(' '), answer: cleanText(item.answer, 3000), url: cleanText(item.url, 500), locked: item.locked === true };
+        }).filter(entry => entry.answer && entry.keywords.length);
+        const badLink = entries.find(entry => entry.url && !safePublicUrl(entry.url, { allowMailto: true }));
+        if (badLink) return sendJson(res, 400, { error: 'invalid_url', message: `The link for "${badLink.title}" must be a site path (/page.html) or an https:// or mailto: address.` });
+        const nextIds = new Set(entries.map(entry => entry.id));
+        const removed = supportKb.entries.filter(entry => !nextIds.has(entry.id));
+        if (removed.length > 2 && Number(body.confirmRemoved) !== removed.length) {
+          return sendJson(res, 409, { error: 'bulk_removal_confirmation_required', message: `This save removes ${removed.length} answers (${removed.slice(0, 5).map(entry => entry.title || entry.id).join(', ')}${removed.length > 5 ? ', …' : ''}). Confirm to continue.`, removed: removed.length });
+        }
+        const removedShipped = new Set(supportKb.removedShippedIds || []);
+        for (const entry of removed) if (shippedKbIds.has(entry.id)) removedShipped.add(entry.id);
+        for (const entry of entries) removedShipped.delete(entry.id);
+        supportKb.entries = entries;
+        supportKb.removedShippedIds = [...removedShipped];
+      }
       if (body.fallback !== undefined) supportKb.fallback = cleanText(body.fallback,1000);
       await persistSupportKb();
       audit(session, 'support_kb.updated', 'support_kb', 'vera', before, supportKb);
@@ -2510,6 +2640,8 @@ export function createVerapepServer(options = {}) {
       if (status >= 500) {
         console.error(error);
         void notifyMonitoring({ type: 'server_error', method: req.method || 'GET', path: String(req.url || '').split('?')[0], status, code: error.code || 'request_failed' });
+        recentErrors.unshift({ at: nowIso(), method: req.method || 'GET', path: String(req.url || '').split('?')[0].slice(0, 200), status, code: error.code || 'request_failed' });
+        recentErrors.length = Math.min(recentErrors.length, 50);
       }
       if (!res.headersSent) sendJson(res, status, errorPayload(error));
       else res.end();

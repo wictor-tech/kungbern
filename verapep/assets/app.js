@@ -509,11 +509,6 @@
     els.veraPanel.hidden = true;
     els.veraLauncher.setAttribute('aria-expanded', 'false');
   }
-  function veraMessage(text, user = false, link = '') {
-    els.veraLog.insertAdjacentHTML('beforeend', `<div class="vera-message${user ? ' vera-message--user' : ''}">${escapeHtml(text)}${link}</div>`);
-    els.veraLog.scrollTop = els.veraLog.scrollHeight;
-  }
-
   function setupMotion() {
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion) document.body.classList.add('motion-ready');
@@ -668,33 +663,15 @@
   $('hero-ask-vera-card')?.addEventListener('click', openVera);
   $('section-ask-vera')?.addEventListener('click', openVera);
   $('info-ask-vera')?.addEventListener('click', openVera);
+  // v17: the panel uses the shared Vera client (pending state, links, suggestions, plain-language errors).
+  // Quick buttons ask common questions instead of applying health-area filters.
+  const veraChat = window.VeraClient?.attach({ form: els.veraForm, input: els.veraQuestion, log: els.veraLog, submit: els.veraForm.querySelector('button[type="submit"]') });
   els.veraQuick.addEventListener('click', event => {
-    const focus = event.target.closest('[data-vera-focus]');
-    const priority = event.target.closest('[data-vera-priority]');
-    if (focus) {
-      applyFocus(focus.dataset.veraFocus, false);
-      veraMessage(`I filtered the catalogue for ${focus.textContent.trim()}.`);
-    }
-    if (priority) {
-      state.priorities.add(priority.dataset.veraPriority);
-      persist(); render();
-      veraMessage(`I applied the ${priority.textContent.trim()} priority.`);
-    }
-    $('catalogue').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const quick = event.target.closest('[data-vera-ask]');
+    if (quick) veraChat?.send(quick.dataset.veraAsk);
   });
-  els.veraForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const question = els.veraQuestion.value.trim();
-    if (!question) return;
-    veraMessage(question, true);
-    els.veraQuestion.value = '';
-    try {
-      const response = await fetch('/api/support/ask', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question }) });
-      const payload = await response.json();
-      veraMessage(payload.answer, false, payload.url ? ` <a href="${escapeHtml(payload.url)}">Open information →</a>` : payload.liveSupport ? ' <a href="mailto:hello@verapep.eu">Contact support →</a>' : '');
-    } catch {
-      veraMessage('I could not connect to the approved information service. Please contact live support.');
-    }
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !els.veraPanel.hidden) { closeVera(); els.veraLauncher.focus(); }
   });
   els.menu.addEventListener('click', () => {
     const expanded = els.menu.getAttribute('aria-expanded') === 'true';

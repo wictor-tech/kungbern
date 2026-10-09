@@ -42,7 +42,7 @@
     if (state.csrf && ['POST', 'PATCH', 'DELETE'].includes(options.method || 'GET') && !url.endsWith('/login') && !url.endsWith('/logout')) headers['X-CSRF-Token'] = state.csrf;
     const response = await fetch(url, { ...options, headers, credentials: 'same-origin' });
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.message || 'The request could not be completed.');
+    if (!response.ok) throw Object.assign(new Error(payload.message || 'The request could not be completed.'), { status: response.status, payload });
     return payload;
   }
 
@@ -240,7 +240,166 @@
     const preview = document.getElementById('guide-taxonomy-preview');
     if (preview) preview.innerHTML = (state.dashboard.guide?.focusAreas || []).map(area => `<article><strong>${escapeHtml(area.label)}</strong><small>${escapeHtml((area.needs || []).map(item => item.label).join(' · '))}</small></article>`).join('');
     document.getElementById('support-fallback').value = state.dashboard.supportKb?.fallback || '';
-    document.getElementById('support-entries').value = (state.dashboard.supportKb?.entries || []).map(entry => [entry.question, entry.answer, entry.url].join(' | ')).join('\n');
+    renderKbEditor(state.dashboard.supportKb?.entries || []);
+    renderVeraStats();
+    loadKbMigration();
+  }
+
+  /* ---------- v17: structured Ask Vera knowledge editor (ids are preserved) ---------- */
+  function kbEntryMarkup(entry = {}) {
+    const keywords = Array.isArray(entry.keywords) && entry.keywords.length ? entry.keywords.join(', ') : String(entry.question || '').split(/\s+/).filter(Boolean).join(', ');
+    return `<details class="kb-entry" data-kb-id="${escapeHtml(entry.id || '')}" ${entry.id ? '' : 'open'}>
+      <summary><strong>${escapeHtml(entry.title || entry.id || 'New answer')}</strong>${entry.locked ? ' <span class="kb-entry__lock">Locked</span>' : ''} <small>${escapeHtml(String(entry.answer || '').slice(0, 90))}${String(entry.answer || '').length > 90 ? '…' : ''}</small></summary>
+      <div class="admin-form-grid">
+        <label class="field"><span>Title</span><input data-kb="title" value="${escapeHtml(entry.title || '')}" maxlength="120"/></label>
+        <label class="field"><span>Link (site path or https://)</span><input data-kb="url" value="${escapeHtml(entry.url || '')}" maxlength="500"/></label>
+        <label class="field field--wide"><span>Keywords and phrases (comma separated)</span><input data-kb="keywords" value="${escapeHtml(keywords)}"/></label>
+        <label class="field field--wide"><span>Approved answer</span><textarea data-kb="answer" rows="3" maxlength="3000">${escapeHtml(entry.answer || '')}</textarea></label>
+      </div>
+      <div class="kb-entry__actions"><label><input data-kb="locked" type="checkbox" ${entry.locked ? 'checked' : ''}/> Keep my wording during knowledge updates</label><button class="button button--light" data-kb-remove type="button">Remove</button></div>
+    </details>`;
+  }
+
+  function renderKbEditor(entries) {
+    const list = document.getElementById('kb-entries');
+    if (list) list.innerHTML = entries.map(kbEntryMarkup).join('') || '<p class="muted">No answers yet.</p>';
+  }
+
+  function collectKbEntries() {
+    return [...document.querySelectorAll('#kb-entries .kb-entry')].map(node => ({
+      id: node.dataset.kbId,
+      title: node.querySelector('[data-kb="title"]').value,
+      url: node.querySelector('[data-kb="url"]').value,
+      keywords: node.querySelector('[data-kb="keywords"]').value.split(',').map(value => value.trim()).filter(Boolean),
+      answer: node.querySelector('[data-kb="answer"]').value,
+      locked: node.querySelector('[data-kb="locked"]').checked
+    }));
+  }
+
+  function renderVeraStats() {
+    const box = document.getElementById('vera-stats');
+    const stats = state.dashboard.veraStats;
+    if (!box) return;
+    if (!stats) { box.hidden = true; return; }
+    const kinds = { knowledge: 'Answered from knowledge', product: 'Product facts', safety: 'Refused (medical/dosing)', fallback: 'No answer found', unknown_product: 'Unknown or hidden product', greeting: 'Greetings', empty: 'Empty' };
+    box.innerHTML = `<h3>Ask Vera usage</h3><p class="muted">Counts since ${escapeHtml(formatDate(stats.since))}. Question text is never stored.</p>
+      <dl class="status-dl"><div><dt>Questions</dt><dd>${escapeHtml(stats.total)}</dd></div>${Object.entries(stats.byKind || {}).map(([kind, count]) => `<div><dt>${escapeHtml(kinds[kind] || label(kind))}</dt><dd>${escapeHtml(count)}</dd></div>`).join('')}</dl>
+      ${(stats.byKind?.fallback || 0) > 0 ? '<p class="muted">Many unanswered questions suggest an answer is missing. Ask visitors (or support emails) what they needed and add an approved answer.</p>' : ''}`;
+  }
+
+  async function loadKbMigration() {
+    const box = document.getElementById('kb-migration');
+    if (!box) return;
+    try {
+      const { plan, snapshots } = await requestJson('/api/admin/support-kb/migration');
+      const changed = plan.changes.filter(change => ['update', 'add', 'rename'].includes(change.action));
+      const kept = plan.changes.filter(change => ['keep_customised', 'keep_locked'].includes(change.action));
+      box.innerHTML = `<h3>Knowledge updates</h3>
+        <p>${plan.upToDate ? `Up to date with version ${escapeHtml(plan.to.contentVersion)}.` : `Version ${escapeHtml(plan.to.contentVersion)} has ${plan.writes} update(s) for the stored answers (stored: ${escapeHtml(plan.from.contentVersion || `schema v${plan.from.version}`)}).`}</p>
+        ${changed.length ? `<ul class="status-list">${changed.map(change => `<li><strong>${escapeHtml(label(change.action))}</strong> · ${escapeHtml(change.title || change.id)}<br/><small>${escapeHtml(change.reason)}</small></li>`).join('')}</ul>` : ''}
+        ${kept.length ? `<p class="muted">Kept unchanged (edited or locked by an admin): ${kept.map(change => escapeHtml(change.title || change.id)).join(', ')}.</p>` : ''}
+        ${plan.upToDate ? '' : `<button class="button button--primary" data-kb-apply="${plan.writes}" type="button">Back up and apply ${plan.writes} update(s)</button>`}
+        ${snapshots.length ? `<details><summary>Backups (${snapshots.length})</summary><ul class="status-list">${snapshots.map(item => `<li>${escapeHtml(formatDate(item.createdAt))} · ${escapeHtml(item.entries)} answers · <small>${escapeHtml(item.reason || '')}</small> <button class="button button--light" data-kb-rollback="${escapeHtml(item.name)}" type="button">Restore</button></li>`).join('')}</ul></details>` : ''}`;
+    } catch (error) {
+      box.innerHTML = `<h3>Knowledge updates</h3><p class="muted">${escapeHtml(error.message)}</p>`;
+    }
+  }
+
+  /* ---------- v17: compliance review ---------- */
+  const compliance = { data: null, selected: new Set(), openId: null };
+  const STATUS_TEXT = { not_reviewed: 'Not reviewed', needs_evidence: 'Needs evidence', in_legal_review: 'In legal review', approved_for_publication: 'Approved (specific)', do_not_publish: 'Do not publish' };
+
+  async function loadCompliance() {
+    if (!(state.dashboard?.permissions || []).includes('products')) return;
+    try {
+      compliance.data = await requestJson('/api/admin/compliance');
+      renderCompliance();
+    } catch (error) { showMessage(error.message); }
+  }
+
+  function filteredComplianceRows() {
+    const query = (document.getElementById('compliance-search')?.value || '').trim().toLowerCase();
+    const status = document.getElementById('compliance-status-filter')?.value || '';
+    const risk = document.getElementById('compliance-risk-filter')?.value || '';
+    const visible = document.getElementById('compliance-visible-filter')?.value || '';
+    return (compliance.data?.rows || []).filter(row => (!query || `${row.name} ${row.displayName} ${row.id}`.toLowerCase().includes(query))
+      && (!status || row.review.status === status) && (!risk || row.suggestion.level === risk)
+      && (!visible || (visible === 'yes') === row.publiclyVisible));
+  }
+
+  function renderCompliance() {
+    const data = compliance.data;
+    if (!data) return;
+    const summary = document.getElementById('compliance-summary');
+    summary.innerHTML = `<article><span>Publication gate</span><strong>${escapeHtml(label(data.gate))}</strong></article>
+      <article><span>Publicly visible</span><strong>${data.summary.publiclyVisible} / ${data.summary.total}</strong></article>
+      <article><span>High-risk indicator</span><strong>${data.summary.highRisk}</strong></article>
+      ${data.statuses.map(status => `<article><span>${escapeHtml(STATUS_TEXT[status])}</span><strong>${data.summary[status] || 0}</strong></article>`).join('')}`;
+    const statusFilter = document.getElementById('compliance-status-filter');
+    if (statusFilter.options.length === 1) statusFilter.insertAdjacentHTML('beforeend', data.statuses.map(status => `<option value="${status}">${escapeHtml(STATUS_TEXT[status])}</option>`).join(''));
+    const bulkStatus = document.getElementById('compliance-bulk-status');
+    if (!bulkStatus.options.length) bulkStatus.innerHTML = data.statuses.filter(status => status !== 'approved_for_publication').map(status => `<option value="${status}">${escapeHtml(STATUS_TEXT[status])}</option>`).join('');
+    const rows = filteredComplianceRows();
+    document.getElementById('compliance-rows').innerHTML = rows.map(row => `<tr data-compliance-id="${escapeHtml(row.id)}" class="${compliance.openId === row.id ? 'is-selected' : ''}">
+      <td><input type="checkbox" data-compliance-select ${compliance.selected.has(row.id) ? 'checked' : ''} aria-label="Select ${escapeHtml(row.displayName)}"/></td>
+      <td><button class="link-button" data-compliance-open type="button"><strong>${escapeHtml(row.displayName)}</strong></button><br/><small>${escapeHtml(row.id)} · ${escapeHtml(label(row.category))}</small></td>
+      <td><span class="risk-pill risk-pill--${escapeHtml(row.suggestion.level)}">${escapeHtml(label(row.suggestion.level))}</span></td>
+      <td><span class="status-pill status-pill--${escapeHtml(row.review.status)}">${escapeHtml(STATUS_TEXT[row.review.status] || row.review.status)}</span>${row.review.contentChangedAfterApproval ? '<br/><small class="warning-text">Changed after approval</small>' : ''}</td>
+      <td>${row.publiclyVisible ? 'Visible' : 'Hidden'}<br/><small>${escapeHtml(label(row.visibilityReason))}</small></td>
+      <td>${row.publishedLabReports} report(s) · ${row.approvedDocuments} doc(s)<br/><small>${row.verifiedContentFields.length ? escapeHtml(row.verifiedContentFields.join(', ')) : 'No verified content'}</small></td>
+      <td>${row.unsupportedClaims.length ? `<span class="warning-text">${escapeHtml(row.unsupportedClaims.join('; '))}</span>` : '—'}</td></tr>`).join('') || '<tr><td colspan="7">No products match these filters.</td></tr>';
+    const bulk = document.getElementById('compliance-bulk');
+    bulk.hidden = compliance.selected.size === 0;
+    document.getElementById('compliance-bulk-count').textContent = `${compliance.selected.size} selected`;
+    renderComplianceDetail();
+  }
+
+  async function renderComplianceDetail() {
+    const box = document.getElementById('compliance-detail');
+    const row = (compliance.data?.rows || []).find(item => item.id === compliance.openId);
+    if (!row) { box.hidden = true; return; }
+    let history = [];
+    try { history = (await requestJson(`/api/admin/compliance/${encodeURIComponent(row.id)}`)).history || []; } catch {}
+    const canApprove = compliance.data.canApprove;
+    const countries = (state.dashboard.config?.allowedCountries || []);
+    box.hidden = false;
+    box.innerHTML = `<div class="admin-editor-heading"><div><h3>${escapeHtml(row.displayName)}</h3><p class="muted">${escapeHtml(row.id)} · ${row.variants.length} specification(s): ${escapeHtml(row.variants.map(variant => variant.specification).join(', '))}</p></div><button class="button button--light" data-compliance-close type="button">Close</button></div>
+      <div class="compliance-suggestion"><h4>Automated suggestion — not a decision</h4><p><strong>${escapeHtml(label(row.suggestion.level))} risk indicator</strong>, suggested status: ${escapeHtml(STATUS_TEXT[row.suggestion.suggestedStatus])}.</p><ul>${row.suggestion.reasons.map(reason => `<li>${escapeHtml(reason)}</li>`).join('')}</ul><p class="muted">${escapeHtml(row.suggestion.basis)}</p></div>
+      <form class="compliance-form" data-compliance-form="${escapeHtml(row.id)}">
+        <div class="admin-form-grid">
+          <label class="field"><span>Decision</span><select name="status">${compliance.data.statuses.filter(status => canApprove || status !== 'approved_for_publication' || row.review.status === status).map(status => `<option value="${status}" ${row.review.status === status ? 'selected' : ''}>${escapeHtml(STATUS_TEXT[status])}</option>`).join('')}</select></label>
+          <label class="field"><span>Note</span><input name="note" value="${escapeHtml(row.review.note || '')}" maxlength="1000"/></label>
+          <label class="field field--wide"><span>Evidence on file (one per line: title | https:// link | date)</span><textarea name="evidence" rows="2">${escapeHtml((row.review.evidence || []).map(item => [item.title, item.url, item.date].join(' | ')).join('\n'))}</textarea></label>
+        </div>
+        <fieldset class="compliance-approval" ${canApprove ? '' : 'disabled'}><legend>Approval for specific publication ${canApprove ? '(owner)' : '— only the owner can approve'}</legend>
+          <div class="admin-form-grid">
+            <label class="field"><span>Approved scope</span><select name="scope"><option value="information" ${row.review.scope === 'information' ? 'selected' : ''}>Information page only</option><option value="sale" ${row.review.scope === 'sale' ? 'selected' : ''}>Information and sale</option></select></label>
+            <label class="field"><span>Qualified reviewer or firm</span><input name="reviewer" value="${escapeHtml(row.review.reviewer || '')}"/></label>
+            <label class="field"><span>Review reference</span><input name="reviewReference" value="${escapeHtml(row.review.reviewReference || '')}"/></label>
+            <label class="field"><span>Type ${escapeHtml(compliance.data.approvalConfirmation)} to confirm</span><input name="confirmation" autocomplete="off"/></label>
+          </div>
+          <div class="compliance-markets">${countries.map(country => `<label><input type="checkbox" name="markets" value="${escapeHtml(country.code)}" ${(row.review.markets || []).includes(country.code) ? 'checked' : ''}/> ${escapeHtml(country.code)}</label>`).join('')}</div>
+        </fieldset>
+        <button class="button button--primary" type="submit">Save decision</button>
+      </form>
+      <h4>History</h4>${history.length ? `<ol class="status-list">${history.slice().reverse().map(item => `<li>${escapeHtml(formatDate(item.at))} · ${escapeHtml(item.by)} · ${escapeHtml(STATUS_TEXT[item.from] || item.from || item.event || '')} → ${escapeHtml(STATUS_TEXT[item.to] || item.to || '')}${item.note ? ` · ${escapeHtml(item.note)}` : ''}${item.bulk ? ' (bulk)' : ''}</li>`).join('')}</ol>` : '<p class="muted">No decisions recorded yet.</p>'}`;
+  }
+
+  /* ---------- v17: system status ---------- */
+  function renderStatus() {
+    const dash = state.dashboard;
+    const readiness = dash.productionReadiness || {};
+    const overview = document.getElementById('status-overview');
+    if (!overview) return;
+    overview.innerHTML = `<article><span>Launch</span><strong class="${readiness.ready ? '' : 'warning-text'}">${readiness.ready ? 'Ready' : 'Not approved for launch'}</strong></article>
+      <article><span>Mode</span><strong>${escapeHtml(label(dash.mode))}</strong></article>
+      <article><span>Publication gate</span><strong>${escapeHtml(label(dash.publication?.gate))}</strong></article>
+      <article><span>Public products</span><strong>${escapeHtml(dash.publication?.visibleProducts)} / ${escapeHtml(dash.publication?.totalProducts)}</strong></article>
+      <article><span>Ask Vera knowledge</span><strong>${dash.supportKbStatus ? (dash.supportKbStatus.upToDate ? 'Up to date' : `${dash.supportKbStatus.pendingWrites} update(s) available`) : '—'}</strong></article>
+      <article><span>Server started</span><strong>${escapeHtml(formatDate(dash.startedAt))}</strong></article>`;
+    document.getElementById('status-blockers').innerHTML = (readiness.blockers || []).map(item => `<li>${escapeHtml(item)}</li>`).join('') || '<li>None</li>';
+    document.getElementById('status-warnings').innerHTML = (readiness.warnings || []).map(item => `<li>${escapeHtml(item)}</li>`).join('') || '<li>None</li>';
+    document.getElementById('status-errors').innerHTML = (dash.recentErrors || []).map(item => `<li>${escapeHtml(formatDate(item.at))} · ${escapeHtml(item.method)} ${escapeHtml(item.path)} · ${escapeHtml(item.status)} ${escapeHtml(item.code)}</li>`).join('') || '<li>No server errors since the last restart.</li>';
   }
 
   function renderReturns() {
@@ -286,7 +445,7 @@
 
   function applyPermissions() {
     const permissions = new Set(state.dashboard.permissions || []);
-    const mapping = { settings:'settings', products:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
+    const mapping = { settings:'settings', products:'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
     const tabs = [...document.querySelectorAll('[data-admin-tab]')];
     tabs.forEach(button => {
       const needed = mapping[button.dataset.adminTab];
@@ -317,7 +476,9 @@
     renderAudit();
     renderUsers();
     renderMfaStatus();
+    renderStatus();
     applyPermissions();
+    loadCompliance();
   }
 
   async function loadDashboard() {
@@ -537,10 +698,93 @@
     try { await requestJson('/api/admin/guide', { method: 'PATCH', body: JSON.stringify({ enabled: document.getElementById('guide-enabled').checked, rules: state.dashboard.guide.rules }) }); await loadDashboard(); showMessage('Product guide settings saved.', 'success'); } catch (error) { showMessage(error.message); }
   });
 
-  document.getElementById('support-form').addEventListener('submit', async event => {
+  async function saveKnowledge(confirmRemoved) {
+    const body = { entries: collectKbEntries(), fallback: document.getElementById('support-fallback').value, ...(confirmRemoved ? { confirmRemoved } : {}) };
+    try {
+      await requestJson('/api/admin/support-kb', { method: 'PATCH', body: JSON.stringify(body) });
+      await loadDashboard();
+      showMessage('Ask Vera knowledge saved.', 'success');
+    } catch (error) {
+      if (error.payload?.error === 'bulk_removal_confirmation_required' && confirm(`${error.message}\n\nRemove these answers?`)) return saveKnowledge(error.payload.removed);
+      showMessage(error.message);
+    }
+  }
+  document.getElementById('support-form').addEventListener('submit', event => { event.preventDefault(); saveKnowledge(); });
+  document.getElementById('kb-add')?.addEventListener('click', () => {
+    document.getElementById('kb-entries').insertAdjacentHTML('beforeend', kbEntryMarkup({ title: '' }));
+    document.querySelector('#kb-entries .kb-entry:last-child [data-kb="title"]')?.focus();
+  });
+  document.getElementById('kb-entries')?.addEventListener('click', event => {
+    if (event.target.closest('[data-kb-remove]')) event.target.closest('.kb-entry').remove();
+  });
+  document.getElementById('kb-migration')?.addEventListener('click', async event => {
+    const apply = event.target.closest('[data-kb-apply]');
+    const rollback = event.target.closest('[data-kb-rollback]');
+    try {
+      if (apply) {
+        if (!confirm(`Apply ${apply.dataset.kbApply} knowledge update(s)? A backup is made first and can be restored here.`)) return;
+        const result = await requestJson('/api/admin/support-kb/migration', { method: 'POST', body: JSON.stringify({ confirmWrites: Number(apply.dataset.kbApply) }) });
+        await loadDashboard();
+        showMessage(result.applied ? `Knowledge updated. Backup: ${result.snapshot}.` : result.message, 'success');
+      }
+      if (rollback) {
+        if (!confirm('Restore the knowledge base from this backup? The current answers are backed up first.')) return;
+        await requestJson('/api/admin/support-kb/rollback', { method: 'POST', body: JSON.stringify({ snapshot: rollback.dataset.kbRollback, confirm: true }) });
+        await loadDashboard();
+        showMessage('Knowledge base restored from backup.', 'success');
+      }
+    } catch (error) { showMessage(error.message); }
+  });
+
+  document.getElementById('status-refresh')?.addEventListener('click', () => loadDashboard().catch(error => showMessage(error.message)));
+  ['compliance-search', 'compliance-status-filter', 'compliance-risk-filter', 'compliance-visible-filter'].forEach(id => document.getElementById(id)?.addEventListener('input', renderCompliance));
+  document.getElementById('compliance-rows')?.addEventListener('click', event => {
+    const row = event.target.closest('[data-compliance-id]');
+    if (!row) return;
+    if (event.target.closest('[data-compliance-select]')) {
+      if (event.target.checked) compliance.selected.add(row.dataset.complianceId); else compliance.selected.delete(row.dataset.complianceId);
+      renderCompliance();
+    } else if (event.target.closest('[data-compliance-open]')) {
+      compliance.openId = row.dataset.complianceId;
+      renderCompliance();
+      document.getElementById('compliance-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  document.getElementById('compliance-select-all')?.addEventListener('change', event => {
+    filteredComplianceRows().forEach(row => event.target.checked ? compliance.selected.add(row.id) : compliance.selected.delete(row.id));
+    renderCompliance();
+  });
+  async function applyBulk(confirmCount) {
+    const body = { productIds: [...compliance.selected], status: document.getElementById('compliance-bulk-status').value, note: document.getElementById('compliance-bulk-note').value, ...(confirmCount ? { confirmCount } : {}) };
+    try {
+      const result = await requestJson('/api/admin/compliance/bulk', { method: 'POST', body: JSON.stringify(body) });
+      compliance.selected.clear();
+      await loadDashboard();
+      showMessage(`${result.updated} product(s) set to ${STATUS_TEXT[result.status]}.${result.revokedSales ? ` Sale switched off for ${result.revokedSales}.` : ''}`, 'success');
+    } catch (error) {
+      if (error.payload?.error === 'bulk_confirmation_required' && confirm(error.message)) return applyBulk(error.payload.count);
+      showMessage(error.message);
+    }
+  }
+  document.getElementById('compliance-bulk-apply')?.addEventListener('click', () => applyBulk());
+  document.getElementById('compliance-detail')?.addEventListener('click', event => {
+    if (event.target.closest('[data-compliance-close]')) { compliance.openId = null; renderCompliance(); }
+  });
+  document.getElementById('compliance-detail')?.addEventListener('submit', async event => {
+    const form = event.target.closest('[data-compliance-form]');
+    if (!form) return;
     event.preventDefault();
-    const entries = document.getElementById('support-entries').value.split(/\r?\n/).map(line => line.trim()).filter(Boolean).map((line, index) => { const [question, answer, url] = line.split('|').map(part => part.trim()); return { id: `kb-${index+1}`, question, answer, url }; });
-    try { await requestJson('/api/admin/support-kb', { method: 'PATCH', body: JSON.stringify({ entries, fallback: document.getElementById('support-fallback').value }) }); await loadDashboard(); showMessage('Approved AI knowledge saved.', 'success'); } catch (error) { showMessage(error.message); }
+    const data = new FormData(form);
+    const body = {
+      status: data.get('status'), note: data.get('note'),
+      evidence: String(data.get('evidence') || '').split(/\r?\n/).map(line => line.split('|').map(part => part.trim())).filter(parts => parts[0]).map(([title, url, date]) => ({ title, url: url || '', date: date || '' })),
+      scope: data.get('scope'), reviewer: data.get('reviewer'), reviewReference: data.get('reviewReference'), confirmation: data.get('confirmation'), markets: data.getAll('markets')
+    };
+    try {
+      const result = await requestJson(`/api/admin/compliance/${encodeURIComponent(form.dataset.complianceForm)}`, { method: 'PATCH', body: JSON.stringify(body) });
+      await loadDashboard();
+      showMessage(`Decision saved for ${result.row.displayName}.${result.commerceRevoked ? ' Sale was switched off.' : ''}`, 'success');
+    } catch (error) { showMessage(error.message); }
   });
 
   document.getElementById('admin-returns').addEventListener('click', async event => {

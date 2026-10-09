@@ -8,7 +8,7 @@
 <meta content="Manage demonstration orders, inventory, product access, returns and messages." name="description"/>
 <title>Operations Dashboard — VERAPEP</title>
 <link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
-<link href="/assets/bundle-admin.css?v=16.0" rel="stylesheet"/>
+<link href="/assets/bundle-admin.css?v=17.0" rel="stylesheet"/>
 
 
 
@@ -35,7 +35,7 @@
 <nav aria-label="Admin sections" class="admin-tabs">
 <button class="is-active" data-admin-tab="orders" type="button">Orders</button>
 <button data-admin-tab="inventory" type="button">Inventory</button>
-<button data-admin-tab="products" type="button">Products</button>
+<button data-admin-tab="status" type="button">System status</button><button data-admin-tab="compliance" type="button">Compliance review</button><button data-admin-tab="products" type="button">Products</button>
 <button data-admin-tab="settings" type="button">Store settings</button>
 <button data-admin-tab="reviews" type="button">Reviews</button>
 <button data-admin-tab="guide" type="button">Guide &amp; AI</button>
@@ -54,6 +54,19 @@
 <section class="admin-section" data-admin-panel="inventory" hidden="">
 <div class="admin-section__heading"><div><h3>Inventory</h3><p>Review available quantities and low-stock thresholds for the demonstration store.</p></div><label class="field admin-search"><span>Search inventory</span><input id="inventory-search" placeholder="Product, catalogue number or specification" type="search"/></label></div>
 <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Product</th><th>Catalogue</th><th>Specification</th><th>On hand</th><th>Retail price (EUR)</th><th>Variant sale</th><th>Save</th></tr></thead><tbody id="admin-inventory"></tbody></table></div>
+</section>
+<section class="admin-section" data-admin-panel="compliance" hidden="">
+<div class="admin-section__heading"><div><h3>Compliance review</h3><p>Every product needs a human decision before it is published or sold. The risk indicator is an automated, name-based suggestion — it is not a legal classification and it never approves anything.</p></div></div>
+<div class="compliance-summary" id="compliance-summary"></div>
+<div class="admin-toolbar compliance-toolbar"><label class="field"><span>Search</span><input id="compliance-search" type="search" placeholder="Product name or id"/></label><label class="field"><span>Review status</span><select id="compliance-status-filter"><option value="">All statuses</option></select></label><label class="field"><span>Risk indicator</span><select id="compliance-risk-filter"><option value="">All</option><option value="high">High</option><option value="elevated">Elevated</option></select></label><label class="field"><span>Public</span><select id="compliance-visible-filter"><option value="">All</option><option value="yes">Visible</option><option value="no">Hidden</option></select></label></div>
+<div class="compliance-bulk" id="compliance-bulk" hidden><strong id="compliance-bulk-count">0 selected</strong><select id="compliance-bulk-status" aria-label="New status for selected products"></select><input id="compliance-bulk-note" placeholder="Reason for this change (required)" aria-label="Reason"/><button class="button button--dark" id="compliance-bulk-apply" type="button">Apply to selected</button><p>Approvals are never bulk actions.</p></div>
+<div class="admin-table-wrap"><table class="admin-table compliance-table"><thead><tr><th><input id="compliance-select-all" type="checkbox" aria-label="Select all shown"/></th><th>Product</th><th>Risk (suggestion)</th><th>Review status</th><th>Public</th><th>Evidence</th><th>Claims</th></tr></thead><tbody id="compliance-rows"></tbody></table></div>
+<div class="admin-card compliance-detail" id="compliance-detail" hidden></div>
+</section>
+<section class="admin-section" data-admin-panel="status" hidden="">
+<div class="admin-section__heading"><div><h3>System status</h3><p>What still blocks a public launch, how the publication gate is set, and recent server errors.</p></div><button class="button button--light" id="status-refresh" type="button">Refresh</button></div>
+<div class="status-grid" id="status-overview"></div>
+<div class="admin-guide-grid"><div class="admin-card"><h3>Launch blockers</h3><ul class="status-list status-list--blockers" id="status-blockers"></ul><h3>Warnings</h3><ul class="status-list" id="status-warnings"></ul></div><div class="admin-card"><h3>Recent server errors</h3><p class="muted">Since the last restart. Only method, path and error code are kept.</p><ul class="status-list" id="status-errors"></ul></div></div>
 </section>
 <section class="admin-section" data-admin-panel="products" hidden="">
 <div class="admin-section__heading"><div><h3>Product information</h3><p>Edit discovery tags, ingredients, publication status, descriptions, images, delivery information, storage, usage, country access and lab-report links. All products remain information-only until separately approved.</p></div><label class="field admin-search"><span>Search products</span><input id="product-search" placeholder="Product name or category" type="search"/></label></div>
@@ -118,10 +131,12 @@
 <div class="review-summary" id="review-summary"></div><div class="review-admin-list" id="admin-reviews"></div>
 </section>
 <section class="admin-section" data-admin-panel="guide" hidden="">
-<div class="admin-section__heading"><div><h3>Product guide and AI support</h3><p>Control the category-based guide and the approved information used by the support assistant.</p></div></div>
+<div class="admin-section__heading"><div><h3>Product guide and Ask Vera</h3><p>Control the product guide, the approved answers Vera may give and knowledge updates shipped with new versions.</p></div></div>
 <div class="admin-guide-grid">
 <form class="admin-card" id="guide-form"><h3>Interactive guide</h3><label class="switch"><input id="guide-enabled" type="checkbox"/><span></span><em>Enabled</em></label><p>The guide uses focus and specific information-area tags attached to each existing product.</p><div class="admin-taxonomy-preview" id="guide-taxonomy-preview"></div><button class="button button--primary" type="submit">Save guide</button></form>
-<form class="admin-card" id="support-form"><h3>Approved AI knowledge</h3><label class="field"><span>Fallback response</span><textarea id="support-fallback" rows="3"></textarea></label><label class="field"><span>Knowledge entries (Question keywords | Approved answer | Link)</span><textarea id="support-entries" rows="10"></textarea></label><button class="button button--primary" type="submit">Save AI knowledge</button></form>
+<form class="admin-card" id="support-form"><h3>Ask Vera knowledge</h3><p class="muted">Approved answers only. Use {supportEmail}, {deliveryEstimate}, {orderingStatus} and similar placeholders for values that come from settings. Medical and dosing questions are always refused and cannot be edited here.</p><div class="kb-entries" id="kb-entries"></div><button class="button button--light" id="kb-add" type="button">Add answer</button><label class="field"><span>Fallback (when no answer matches)</span><textarea id="support-fallback" rows="2"></textarea></label><button class="button button--primary" type="submit">Save knowledge</button></form>
+</div>
+<div class="admin-guide-grid"><div class="admin-card" id="kb-migration"><h3>Knowledge updates</h3><p class="muted">Checking…</p></div><div class="admin-card" id="vera-stats"><h3>Ask Vera usage</h3><p class="muted">No data yet.</p></div>
 </div>
 </section>
 <section class="admin-section" data-admin-panel="returns" hidden="">

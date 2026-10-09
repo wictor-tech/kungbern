@@ -207,5 +207,12 @@ export class VerapepDatabase {
     return Number(result.changes || 0) > 0;
   }
 
+  /* v17: consistent online copy of the whole database (used before bulk changes). */
+  backupTo(file) {
+    this.db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
+    this.db.exec(`VACUUM INTO '${String(file).replaceAll("'", "''")}'`);
+    return file;
+  }
+
   close() { this.db.close(); }
 }
