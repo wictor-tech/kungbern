@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { CONTENT_FIELDS, CLAIM_FIELDS, DRAFT_STATUS_LABELS, PURPOSES, productEntry, snapshot, sanitiseFields, validateDraft, draftDiff, newDraft, assertTransition, recordLiveVersion, WorkflowError } from './content-workflow.mjs';
-import { DOCUMENT_KINDS, MAX_DOCUMENT_BYTES, detectType, imageSize, storeFile, readStoredFile, cleanTitle } from './documents.mjs';
+import { DOCUMENT_KINDS, MAX_DOCUMENT_BYTES, detectType, imageSize, storeFile, readStoredFile, cleanTitle, documentsDir } from './documents.mjs';
 import { REVIEW_STATUS_LABELS } from './compliance.mjs';
 
 const EDITORIAL_REVIEWERS = new Set(['owner', 'admin']);
@@ -18,13 +18,14 @@ export function createV19(ctx) {
   const {
     rootDir, dataDir, database, catalogue, productsById, sendJson, sendFile, readJsonBody, requireAdmin, requireCsrf, requireRole, audit,
     getContent, getCompliance, getPolicy, getConfig, persistProductContent, persistCompliance, isPubliclyVisible, inventoryRow, gateMode,
-    productionReadiness, supportKbStatus, recentErrors, veraStats, serverStartedAt, legalInfo, nowIso
+    productionReadiness, supportKbStatus, recentErrors, veraStats, serverStartedAt, legalInfo, nowIso, transact, broadcast
   } = ctx;
 
   let workflow = database.readDocument('productWorkflow', { version: 1, products: {} });
   let documents = database.readDocument('productDocuments', { version: 1, documents: [] });
-  const persistWorkflow = () => database.writeDocument('productWorkflow', workflow);
-  const persistDocuments = () => database.writeDocument('productDocuments', documents);
+  // v20: on a failed write, memory is reloaded from the database so it never holds unsaved changes.
+  const persistWorkflow = () => { try { database.writeDocument('productWorkflow', workflow); } catch (error) { workflow = database.readDocument('productWorkflow', workflow); throw error; } };
+  const persistDocuments = () => { try { database.writeDocument('productDocuments', documents); } catch (error) { documents = database.readDocument('productDocuments', documents); throw error; } };
   const docsFor = productId => documents.documents.filter(doc => doc.productId === productId);
   const allDrafts = () => Object.values(workflow.products).flatMap(entry => entry.drafts);
   const findDraft = id => allDrafts().find(draft => draft.id === id);
@@ -103,11 +104,8 @@ export function createV19(ctx) {
     pages.push({ page: 'Product pages', url: '/index.html#catalogue', issues: withoutText ? [`${withoutText} of ${visible.length} publicly listed products have no description and show "Not yet published".`] : [] });
     const kb = supportKbStatus();
     pages.push({ page: 'Ask Vera', url: '/support.html', issues: [...(kb.available && !kb.upToDate ? [`${kb.pendingWrites} knowledge update(s) are waiting to be applied.`] : []), ...(veraStats.byKind?.fallback ? [`${veraStats.byKind.fallback} question(s) had no answer since the last restart.`] : [])] });
-    let images = { totals: null, flagged: [] };
-    try {
-      const report = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'image-audit.json'), 'utf8'));
-      images = { totals: report.totals, flagged: report.images.filter(item => item.flags.length).map(item => ({ file: item.file, width: item.width, kb: Math.round(item.bytes / 1024), flags: item.flags })) };
-    } catch { /* report missing */ }
+    const report = imageAudit();
+    const images = report ? { totals: report.totals, flagged: report.images.filter(item => item.flags.length).map(item => ({ file: item.file, width: item.width, kb: Math.round(item.bytes / 1024), flags: item.flags })) } : { totals: null, flagged: [] };
     return { pages, images };
   }
 
@@ -118,16 +116,28 @@ export function createV19(ctx) {
     return { count: files.length, newest: files[0] || null };
   }
 
-  function manifestInfo() {
+  /* v20: PRAGMA quick_check and the audit row count grow with the database (about 250 ms at 300k
+     audit rows) and block every other request while they run, so the result is reused for 60 s.
+     The manifest and image report only change with a release, so they are read once. */
+  let healthCache = { at: 0, value: null };
+  function databaseHealth() {
+    if (!healthCache.value || Date.now() - healthCache.at > 60_000) healthCache = { at: Date.now(), value: { ...database.health(), checkedAt: nowIso() } };
+    return healthCache.value;
+  }
+  const once = fn => { let done = false; let value; return () => { if (!done) { value = fn(); done = true; } return value; }; };
+  const manifestInfo = once(() => {
     try {
       const head = fs.readFileSync(path.join(rootDir, 'FILE-MANIFEST.txt'), 'utf8').split('\n').slice(0, 6).join(' ');
       return { generated: head.match(/Generated: (\S+)/)?.[1] || null, files: Number(head.match(/Files listed: (\d+)/)?.[1] || 0) };
     } catch { return { generated: null, files: 0 }; }
-  }
+  });
+  const imageAudit = once(() => {
+    try { return JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'image-audit.json'), 'utf8')); } catch { return null; }
+  });
 
   function overview(session) {
     const readiness = productionReadiness();
-    const health = database.health();
+    const health = databaseHealth();
     const backup = backups();
     const hosted = Boolean(process.env.RENDER || process.env.VERCEL || String(process.env.BASE_URL || '').startsWith('https://'));
     const summaries = catalogue.products.map(productSummary);
@@ -216,7 +226,8 @@ export function createV19(ctx) {
       if (!product) errors.push(productId ? `Unknown product id "${productId}".` : 'Missing productId.');
       if (seen.has(productId)) errors.push('The same product appears more than once.');
       seen.add(productId);
-      const validation = validateDraft(fields, { documents: product ? docsFor(product.id) : [] });
+      // v20: a row without a known product only reports that problem (not "the draft does not change anything").
+      const validation = product ? validateDraft(fields, { documents: docsFor(product.id) }) : { errors: [], warnings: [] };
       errors.push(...validation.errors);
       const live = product ? snapshot(getContent().products[product.id]) : {};
       return {
@@ -229,9 +240,9 @@ export function createV19(ctx) {
   }
 
   /* ---------- re-review when evidence changes ---------- */
-  function flagReReview(oldDocId, reason, by) {
+  function flagReReview(oldDocId, reason, by, wf = workflow, compliance = getCompliance()) {
     let flagged = 0;
-    for (const draft of allDrafts()) {
+    for (const draft of Object.values(wf.products).flatMap(entry => entry.drafts)) {
       const uses = draft.fields.imageDocumentId === oldDocId || draft.sources.some(source => source.ref === oldDocId);
       if (uses && ['approved', 'applied', 'internal_review', 'external_review'].includes(draft.status)) {
         draft.requiresReReview = { at: nowIso(), reason };
@@ -239,7 +250,6 @@ export function createV19(ctx) {
         flagged += 1;
       }
     }
-    const compliance = getCompliance();
     for (const [productId, record] of Object.entries(compliance.products || {})) {
       if (record.status === 'approved_for_publication' && (record.evidence || []).some(item => String(item.url || '').includes(oldDocId) || item.documentId === oldDocId)) {
         compliance.products[productId] = { ...record, contentChangedAfterApproval: true, history: [...(record.history || []), { at: nowIso(), by, event: 'evidence_replaced_after_approval', note: reason }] };
@@ -263,7 +273,8 @@ export function createV19(ctx) {
     if (!pathname.startsWith('/api/admin/')) return false;
 
     if (method === 'GET' && pathname === '/api/admin/overview') {
-      const session = requireAdmin(req);
+      // v20: the overview shows errors, backups and approval references; support staff do not need them.
+      const session = requireAdmin(req); requireRole(session, 'products');
       return sendJson(res, 200, overview(session)), true;
     }
 
@@ -358,8 +369,11 @@ export function createV19(ctx) {
         } else if (method === 'POST' && action === 'review') {
           assertTransition(draft, ['internal_review'], 'reviewed');
           if (!EDITORIAL_REVIEWERS.has(session.role)) throw fail(403, 'reviewer_role_required', 'Only an owner or admin can review content.');
-          const selfReview = draft.createdBy === session.email;
-          if (selfReview && !(session.role === 'owner' && body.selfReviewConfirmed === true)) throw fail(409, 'self_review_not_allowed', 'You wrote this draft. Ask another admin to review it, or (owner only) confirm a self-review explicitly.');
+          // v20: anyone who created, edited or submitted the text is an author (four-eyes principle);
+          // previously only the creator was checked, so an admin could rewrite a draft and approve it.
+          const authors = new Set([draft.createdBy, ...draft.history.filter(item => ['created', 'edited', 'submitted'].includes(item.action)).map(item => item.by)]);
+          const selfReview = authors.has(session.email);
+          if (selfReview && !(session.role === 'owner' && body.selfReviewConfirmed === true)) throw fail(409, 'self_review_not_allowed', 'You wrote or edited this draft. Ask another admin to review it, or (owner only) confirm a self-review explicitly.');
           if (!['approve', 'request_changes'].includes(body.decision)) throw fail(400, 'invalid_decision', 'Choose approve or request changes.');
           if (body.decision === 'request_changes' && note.length < 3) throw fail(400, 'note_required', 'Explain which changes are needed.');
           const validation = validateDraft(draft.fields, { documents: docsFor(draft.productId) });
@@ -383,31 +397,57 @@ export function createV19(ctx) {
           if (!EDITORIAL_REVIEWERS.has(session.role)) throw fail(403, 'reviewer_role_required', 'Only an owner or admin can apply approved content.');
           if (body.confirm !== true) throw fail(400, 'apply_confirmation_required', 'Confirm that the approved text should replace the live text.');
           if (draft.requiresReReview) throw fail(409, 're_review_required', `This draft must be reviewed again: ${draft.requiresReReview.reason}`);
-          const content = getContent();
-          const current = content.products[draft.productId] || { productId: draft.productId };
-          const before = snapshot(current);
-          for (const field of CONTENT_FIELDS) if (draft.fields[field] !== undefined) current[field] = draft.fields[field];
+          // v20: every check happens before anything changes, and the live text, the version history,
+          // the draft status and any compliance flag are written in one transaction.
+          let imageUrl = null;
           if (draft.fields.imageDocumentId) {
-            const doc = documents.documents.find(item => item.id === draft.fields.imageDocumentId && item.status === 'verified' && item.kind === 'product_image');
+            const doc = documents.documents.find(item => item.id === draft.fields.imageDocumentId && item.status === 'verified' && item.kind === 'product_image' && !item.supersededBy);
             if (!doc) throw fail(409, 'image_not_verified', 'The image is no longer verified.');
-            current.imageUrl = `/product-media/${doc.storedAs}`;
-            current.imageSrcset = '';
+            imageUrl = `/product-media/${doc.storedAs}`;
           }
-          current.updatedAt = at;
-          content.products[draft.productId] = current;
-          const entry = productEntry(workflow, draft.productId);
-          if (!entry.versions.length) recordLiveVersion(entry, { fields: before, by: 'system', workflow: 'baseline', note: 'Live text before the first reviewed change.' });
-          const version = recordLiveVersion(entry, { fields: current, by: session.email, workflow: 'draft', draftId: draft.id, note });
-          Object.assign(draft, { status: 'applied', appliedVersion: version, appliedBy: session.email, appliedAt: at, updatedAt: at });
-          draft.history.push({ at, by: session.email, action: 'applied', note: `Live version ${version}` });
-          // Text shown to customers changed: an existing legal approval must be looked at again.
-          const record = getCompliance().products?.[draft.productId];
-          if (record?.status === 'approved_for_publication' && CLAIM_FIELDS.some(field => draft.fields[field] !== undefined)) {
-            getCompliance().products[draft.productId] = { ...record, contentChangedAfterApproval: true, history: [...(record.history || []), { at, by: session.email, event: 'content_changed_after_approval', note: `Draft ${draft.id}` }] };
-            await persistCompliance();
-          }
-          await persistProductContent();
-          audit(session, 'content.draft_applied', 'product', draft.productId, before, { draftId: draft.id, version, fields: Object.keys(draft.fields) });
+          const draftId = draft.id;
+          const productId = draft.productId;
+          let before; let version; let complianceChanged = false;
+          await transact(() => {
+            const content = getContent();
+            const current = content.products[productId] || { productId };
+            before = snapshot(current);
+            const next = { ...current, updatedAt: at };
+            for (const field of CONTENT_FIELDS) if (draft.fields[field] !== undefined) next[field] = draft.fields[field];
+            if (imageUrl) { next.imageUrl = imageUrl; next.imageSrcset = ''; }
+            const nextContent = { ...content, products: { ...content.products, [productId]: next }, updatedAt: at };
+            const nextWorkflow = structuredClone(workflow);
+            const entry = productEntry(nextWorkflow, productId);
+            if (!entry.versions.length) recordLiveVersion(entry, { fields: before, by: 'system', workflow: 'baseline', note: 'Live text before the first reviewed change.' });
+            version = recordLiveVersion(entry, { fields: next, by: session.email, workflow: 'draft', draftId, note });
+            const nextDraft = entry.drafts.find(item => item.id === draftId);
+            if (nextDraft.status !== 'approved') throw fail(409, 'invalid_draft_transition', 'This draft was changed by someone else. Reload and try again.');
+            Object.assign(nextDraft, { status: 'applied', appliedVersion: version, appliedBy: session.email, appliedAt: at, updatedAt: at });
+            nextDraft.history.push({ at, by: session.email, action: 'applied', note: `Live version ${version}` });
+            const write = { productContent: nextContent, productWorkflow: nextWorkflow };
+            // Text shown to customers changed: an existing legal approval must be looked at again.
+            const compliance = getCompliance();
+            const record = compliance.products?.[productId];
+            let nextRecord = null;
+            if (record?.status === 'approved_for_publication' && CLAIM_FIELDS.some(field => draft.fields[field] !== undefined)) {
+              nextRecord = { ...record, contentChangedAfterApproval: true, history: [...(record.history || []), { at, by: session.email, event: 'content_changed_after_approval', note: `Draft ${draftId}` }] };
+              write.productCompliance = { ...compliance, products: { ...compliance.products, [productId]: nextRecord }, updatedAt: at };
+            }
+            return {
+              write,
+              commit() {
+                content.products[productId] = next;
+                content.updatedAt = at;
+                workflow = nextWorkflow;
+                if (nextRecord) { compliance.products[productId] = nextRecord; compliance.updatedAt = at; complianceChanged = true; }
+              }
+            };
+          });
+          broadcast('product');
+          if (complianceChanged) broadcast('compliance');
+          audit(session, 'content.draft_applied', 'product', productId, before, { draftId, version, fields: Object.keys(draft.fields) });
+          const applied = findDraft(draftId);
+          return sendJson(res, 200, { draft: { ...applied, statusLabel: DRAFT_STATUS_LABELS[applied.status] } }), true;
         } else if (method === 'POST' && action === 'withdraw') {
           assertTransition(draft, ['draft', 'internal_review', 'external_review', 'approved', 'rejected'], 'withdrawn');
           Object.assign(draft, { status: 'withdrawn', updatedAt: at });
@@ -449,17 +489,41 @@ export function createV19(ctx) {
       const supersedes = String(req.headers['x-supersedes'] || '').trim();
       const previous = supersedes ? documents.documents.find(doc => doc.id === supersedes && doc.productId === product.id) : null;
       if (supersedes && !previous) throw fail(404, 'document_not_found', 'The document to replace was not found.');
+      // v20: only the current version can be replaced; otherwise two versions would both look current.
+      if (previous?.supersededBy) throw fail(409, 'document_already_replaced', 'This document has already been replaced by a newer version. Replace the newest version instead.');
       const { id, storedAs } = storeFile(dataDir, buffer, type);
       const doc = { id, productId: product.id, kind, title, mime: type.mime, bytes: buffer.length, width: dims?.width || null, height: dims?.height || null, sha256: crypto.createHash('sha256').update(buffer).digest('hex'), storedAs, uploadedBy: session.email, uploadedAt: nowIso(), status: 'unverified', supersedes: previous?.id || null, supersededBy: null, visibility: 'internal' };
-      documents.documents.push(doc);
       let reReview = 0;
-      if (previous) {
-        previous.supersededBy = doc.id;
-        reReview = flagReReview(previous.id, `"${previous.title}" was replaced by a new version.`, session.email);
-        persistWorkflow();
-        if (reReview) await persistCompliance();
+      // v20: the document record, re-review flags and compliance flags are saved together; if that
+      // fails, the stored file is removed so no orphan file is left behind.
+      try {
+        await transact(() => {
+          const nextDocuments = structuredClone(documents);
+          nextDocuments.documents.push(doc);
+          const write = { productDocuments: nextDocuments };
+          let nextWorkflow = null; let nextCompliance = null;
+          if (previous) {
+            nextDocuments.documents.find(item => item.id === previous.id).supersededBy = doc.id;
+            nextWorkflow = structuredClone(workflow);
+            nextCompliance = structuredClone(getCompliance());
+            reReview = flagReReview(previous.id, `"${previous.title}" was replaced by a new version.`, session.email, nextWorkflow, nextCompliance);
+            write.productWorkflow = nextWorkflow;
+            if (reReview) write.productCompliance = nextCompliance;
+          }
+          return {
+            write,
+            commit() {
+              documents = nextDocuments;
+              if (nextWorkflow) workflow = nextWorkflow;
+              if (reReview && nextCompliance) Object.assign(getCompliance().products, nextCompliance.products);
+            }
+          };
+        });
+      } catch (error) {
+        try { fs.unlinkSync(path.join(documentsDir(dataDir), storedAs)); } catch { /* already gone */ }
+        throw error;
       }
-      persistDocuments();
+      if (reReview) broadcast('compliance');
       audit(session, 'document.uploaded', 'product', product.id, null, { documentId: doc.id, kind, title, bytes: doc.bytes, supersedes: doc.supersedes });
       return sendJson(res, 201, { document: doc, warnings, flaggedForReReview: reReview }), true;
     }
@@ -518,10 +582,18 @@ export function createV19(ctx) {
   /* Direct edits through the legacy product-content API are still possible for owner/admin, but
      every change to customer-visible text becomes a numbered live version marked "direct", so it
      shows up as "changed without review" in the overview. Editors must use drafts. */
+  /* v20: editors may not change anything customers see through the direct editor — not just the
+     claim text. Images, alt text, storage, lab-report links, aliases, visibility and stock status
+     previously went live immediately for editors. They use drafts and documents instead. */
+  // Search aliases, finder tags and responsive-image hints stay editable: they do not put new text,
+  // images or availability in front of customers (srcset may only point to this site's own files).
+  const DIRECT_PUBLIC_FIELDS = [...CONTENT_FIELDS, 'imageUrl', 'labReports', 'published', 'archived', 'stockStatus', 'informationOnly', 'availableForSale', 'specialistOnly', 'allowedCountries', 'deliveryEstimate'];
+  const comparable = value => JSON.stringify(typeof value === 'string' ? value.trim() : value ?? null);
   function beforeDirectEdit(session, productId, body, current) {
-    const changedClaims = CLAIM_FIELDS.filter(field => body[field] !== undefined && String(body[field]).trim() !== String(current[field] ?? '').trim());
-    if (changedClaims.length && !EDITORIAL_REVIEWERS.has(session.role)) {
-      throw fail(403, 'use_draft_workflow', `Editors change product text through a draft and review (fields: ${changedClaims.join(', ')}).`);
+    if (!EDITORIAL_REVIEWERS.has(session.role)) {
+      const changed = DIRECT_PUBLIC_FIELDS.filter(field => body[field] !== undefined && comparable(body[field]) !== comparable(current[field] ?? (typeof body[field] === 'string' ? '' : current[field])));
+      if (body.imageSrcset && String(body.imageSrcset).split(',').some(candidate => /^[a-z][a-z0-9+.-]*:|^\/\//i.test(candidate.trim()))) changed.push('imageSrcset (external address)');
+      if (changed.length) throw fail(403, 'use_draft_workflow', `Editors change what customers see through a draft and review, or by uploading documents (fields: ${changed.join(', ')}).`);
     }
     return snapshot(current);
   }

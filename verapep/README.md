@@ -1,4 +1,4 @@
-# VERAPEP Information Platform v19
+# VERAPEP Information Platform v20
 
 VERAPEP V14.1 is the production-readiness and operational-hardening release built on top of the V13 mobile-conversion storefront. The friend-test experience remains available, while live commerce is now protected by explicit infrastructure, legal, product, payment and security gates.
 
@@ -11,6 +11,8 @@ VERAPEP V14.1 is the production-readiness and operational-hardening release buil
 
 Read these first:
 
+- `V20-INDEPENDENT-AUDIT.md` (independent audit: fixed defects, remaining risks, external decisions)
+- `V20-SECURITY-REPORT.md`, `V20-PERFORMANCE-REPORT.md`, `V20-LAUNCH-BLOCKERS.md`
 - `V19-OWNER-GUIDE.md` (step-by-step owner guide, Swedish)
 - `V19-REPORT.md` (owner control center, product workspace, content workflow, tests)
 - `V19-OWNER-INPUT-NEEDED.md` and `V19-EXTERNAL-DECISIONS.md` (what only the owner can provide or decide)
@@ -78,6 +80,13 @@ npm run migrate:kb -- --rollback <support-kb-….json>
 ```
 
 Admin edits, locked answers and deliberately removed answers are preserved. See `V17-ASK-VERA.md`.
+
+## Maintenance and release checks (v20)
+
+- Stop the server before `migrate-support-kb --apply`, `retention --apply --yes` or `restore-sqlite --yes`: the server writes `DATA_DIR/.server.pid` and these scripts refuse to run while it is alive (the server would otherwise overwrite their change).
+- `npm run backup:sqlite` copies product documents to `<backup>-documents`; `restore-sqlite.mjs` restores them.
+- After changing any file under `assets/`, run `npm run build:css` (for CSS) and `npm run assets:versions`; CI fails if a `?v=` cache-busting value does not match the file contents.
+- Load test (isolated, temporary data): `node tests/load/load-test.mjs`.
 
 ## Owner control center and content workflow (v19)
 

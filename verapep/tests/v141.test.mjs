@@ -87,7 +87,8 @@ test('VERAPEP V14.1 operational hardening', async t => {
     assert.equal(without.response.status, 401);
     assert.equal(without.payload.error, 'invalid_mfa');
 
-    const withTotp = await jsonRequest(baseUrl, '/api/admin/login', { method:'POST', body:JSON.stringify({ email:'admin@verapep.local', password:'ChangeMe-123!', mfaCode:totp(secret) }) });
+    const firstCode = totp(secret);
+    const withTotp = await jsonRequest(baseUrl, '/api/admin/login', { method:'POST', body:JSON.stringify({ email:'admin@verapep.local', password:'ChangeMe-123!', mfaCode:firstCode }) });
     assert.equal(withTotp.response.status, 200);
     cookie = withTotp.response.headers.get('set-cookie').split(';')[0];
     authHeaders = { Cookie:cookie, 'X-CSRF-Token':withTotp.payload.csrf };
@@ -103,7 +104,11 @@ test('VERAPEP V14.1 operational hardening', async t => {
     const reusedRecovery = await jsonRequest(baseUrl, '/api/admin/login', { method:'POST', body:JSON.stringify({ email:'admin@verapep.local', password:'ChangeMe-123!', mfaCode:recoveryCodes[0] }) });
     assert.equal(reusedRecovery.response.status, 401);
 
-    const relogin = await jsonRequest(baseUrl, '/api/admin/login', { method:'POST', body:JSON.stringify({ email:'admin@verapep.local', password:'ChangeMe-123!', mfaCode:totp(secret) }) });
+    // v20: an authenticator code is accepted only once. Re-using the code from the login above is
+    // refused, so the re-login uses the next 30-second code (accepted by the ±1 step tolerance).
+    const replayed = await jsonRequest(baseUrl, '/api/admin/login', { method:'POST', body:JSON.stringify({ email:'admin@verapep.local', password:'ChangeMe-123!', mfaCode:firstCode }) });
+    assert.equal(replayed.response.status, 401, 'a used authenticator code cannot be replayed');
+    const relogin = await jsonRequest(baseUrl, '/api/admin/login', { method:'POST', body:JSON.stringify({ email:'admin@verapep.local', password:'ChangeMe-123!', mfaCode:totp(secret, Date.now() + 30000) }) });
     cookie = relogin.response.headers.get('set-cookie').split(';')[0];
     authHeaders = { Cookie:cookie, 'X-CSRF-Token':relogin.payload.csrf };
   });

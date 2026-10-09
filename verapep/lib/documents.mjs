@@ -67,7 +67,14 @@ export function storeFile(dataDir, buffer, type) {
 
 export function readStoredFile(dataDir, storedAs) {
   if (!/^doc_[a-f0-9]{16}\.(pdf|png|jpg|webp)$/.test(String(storedAs))) throw Object.assign(new Error('Invalid document reference.'), { status: 400, code: 'invalid_document' });
-  return fs.readFileSync(path.join(documentsDir(dataDir), storedAs));
+  try {
+    return fs.readFileSync(path.join(documentsDir(dataDir), storedAs));
+  } catch (error) {
+    // v20: a record whose file is missing (e.g. a database restored without its documents) is a
+    // clear 404 for the admin, not a server error.
+    if (error.code === 'ENOENT') throw Object.assign(new Error('The file for this document is missing from storage. Restore it from a backup (backups include a "-documents" folder).'), { status: 404, code: 'document_file_missing' });
+    throw error;
+  }
 }
 
 export function cleanTitle(value) {

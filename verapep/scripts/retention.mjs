@@ -7,6 +7,7 @@
    Actions when approved: delete outbox messages and backup files past their period, delete
    rejected/hidden reviews past their period and pseudonymise customer details inside audit-log
    order snapshots past their period. Orders themselves are only reported, never deleted. */
+import { refuseWhileServerRuns } from '../lib/server-lock.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -42,7 +43,7 @@ export function report(dataDir, policy, now = Date.now()) {
   const outbox = path.join(dataDir, 'outbox');
   out.outbox = fs.existsSync(outbox) ? fs.readdirSync(outbox).filter(name => name.endsWith('.json')).filter(name => (now - fs.statSync(path.join(outbox, name)).mtimeMs) / DAY > rules.outboxDays) : [];
   const backups = path.resolve(process.env.BACKUP_DIR || path.join(dataDir, 'backups'));
-  out.backups = fs.existsSync(backups) ? fs.readdirSync(backups).filter(name => /\.(sqlite|json)$/.test(name)).filter(name => (now - fs.statSync(path.join(backups, name)).mtimeMs) / DAY > rules.backupDays) : [];
+  out.backups = fs.existsSync(backups) ? fs.readdirSync(backups).filter(name => /\.(sqlite|json)$/.test(name) || /-documents$/.test(name)).filter(name => (now - fs.statSync(path.join(backups, name)).mtimeMs) / DAY > rules.backupDays) : [];
   const db = new DatabaseSync(path.join(dataDir, 'verapep.sqlite'), { readOnly: true });
   const doc = key => { const row = db.prepare('SELECT value_json FROM documents WHERE key = ?').get(key); return row ? JSON.parse(row.value_json) : null; };
   const reviews = doc('reviews')?.reviews || [];
@@ -72,6 +73,7 @@ function main() {
   if (!args.includes('--apply')) return;
   if (policy.approved !== true || !policy.approvedBy) { console.error('Refused: the retention policy has not been approved. Set approved=true, approvedBy and approvedAt after legal review.'); process.exit(2); }
   if (!args.includes('--yes')) { console.error('Refusing to delete or pseudonymise without --yes.'); process.exit(1); }
+  refuseWhileServerRuns(dataDir, 'applying retention');
   const db = new DatabaseSync(path.join(dataDir, 'verapep.sqlite'));
   const backups = path.resolve(process.env.BACKUP_DIR || path.join(dataDir, 'backups'));
   fs.mkdirSync(backups, { recursive: true });
@@ -79,7 +81,7 @@ function main() {
   db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
   db.prepare('VACUUM INTO ?').run(copy);
   for (const name of found.outbox) fs.rmSync(path.join(dataDir, 'outbox', name), { force: true });
-  for (const name of found.backups) fs.rmSync(path.join(backups, name), { force: true });
+  for (const name of found.backups) fs.rmSync(path.join(backups, name), { force: true, recursive: true });
   db.exec('BEGIN IMMEDIATE');
   try {
     if (found.rejectedReviews.length) {

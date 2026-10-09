@@ -224,7 +224,7 @@ test('v18 security regressions stay fixed', async t => {
   const shell = await (await fetch(`${baseUrl}/assets/catalogue-data.js`)).text();
   assert.doesNotMatch(shell, /priceUsd|variantId/);
   const health = (await jsonRequest(baseUrl, '/api/health')).payload;
-  assert.equal(health.version, '19.0.0');
+  assert.equal(health.version, '20.0.0');
   const ready = await jsonRequest(baseUrl, '/api/ready');
   assert.equal(ready.response.status, 503, 'the site still reports itself as not launch-ready');
   assert.ok(ready.payload.blockers.length >= 19, 'no blocker was removed');

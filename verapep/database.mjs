@@ -24,7 +24,8 @@ export class VerapepDatabase {
   constructor({ dataDir, seedFiles = {}, defaultAdmin }) {
     fs.mkdirSync(dataDir, { recursive: true });
     this.filePath = path.join(dataDir, 'verapep.sqlite');
-    this.db = new DatabaseSync(this.filePath);
+    // v20: wait up to 5 s for a lock held by a maintenance script instead of failing at once.
+    this.db = new DatabaseSync(this.filePath, { timeout: 5000 });
     this.db.exec(`
       PRAGMA journal_mode = WAL;
       PRAGMA foreign_keys = ON;

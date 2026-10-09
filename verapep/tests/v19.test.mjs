@@ -322,12 +322,16 @@ test('v19 Ask Vera answers in Swedish only with an approved, current translation
   assert.equal(detectLanguage('delivery', 'sv'), 'sv', 'an explicit choice wins');
 
   const shipped = JSON.parse(fs.readFileSync(path.join(root, 'data', 'vera-translations.json'), 'utf8'));
-  assert.ok(Object.values(shipped.languages.sv.items).every(item => item.status === 'proposed'), 'shipped translations are proposals, not approvals');
+  // v20: the owner approved the shipped translations (2026-10-09); each approval is recorded.
+  assert.ok(Object.values(shipped.languages.sv.items).every(item => item.status === 'approved' && item.approvedBy && item.approvedAt), 'shipped approvals name who approved them');
 
   const dataDir = await tempData();
   const { server, baseUrl } = await start(dataDir);
   try {
     const ask = (question, extra = {}) => jsonRequest(baseUrl, '/api/support/ask', { method: 'POST', body: JSON.stringify({ question, ...extra }) }).then(result => result.payload);
+    // Withdraw the approval first: without an approved translation Vera answers in English.
+    const ownerFirst = await login(baseUrl);
+    assert.equal((await patch(baseUrl, ownerFirst, '/api/admin/vera-translations/sv/entry:delivery', { action: 'revoke' })).status, 200);
     const before = await ask('Hur lång är leveranstiden?');
     assert.equal(before.language, 'en');
     assert.match(before.languageNotice, /granskad svensk översättning/);
@@ -349,10 +353,10 @@ test('v19 Ask Vera answers in Swedish only with an approved, current translation
     assert.equal(after.languageNotice, undefined);
     assert.equal((await ask('How long does delivery take?')).language, 'en', 'English questions stay English');
 
-    // Safety refusals stay refusals in every language; unapproved safety text falls back to English.
+    // Safety refusals stay refusals in every language (v20: the Swedish refusal is owner-approved).
     const safety = await ask('Hur mycket ska jag injicera per dag?');
     assert.equal(safety.kind, 'safety');
-    assert.match(safety.answer, /medical advice/);
+    assert.match(safety.answer, /ger inte medicinsk rådgivning/, 'the owner-approved Swedish refusal is used'); // v20
 
     // When the English source changes, the old approval is no longer used.
     const kb = await jsonRequest(baseUrl, '/api/admin/dashboard', { headers: owner });
