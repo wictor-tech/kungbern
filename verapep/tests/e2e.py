@@ -511,8 +511,9 @@ class Suite:
         page.on('dialog', lambda dialog: dialog.accept(''))  # confirmations and optional notes
         item.locator('[data-decision="approve"]').click()
         expect(page.locator('#admin-message')).to_contain_text('approved')
+        # The queue reloads after a decision; the opened proposal stays open and shows the next action.
         item = page.locator('.queue-item', has_text='KPV').filter(has_text='Storage').first
-        item.locator('[data-review-draft]').click()
+        expect(item).to_contain_text('Approved for stated purpose')
         item.locator('[data-draft-apply]').click()
         expect(page.locator('#admin-message')).to_contain_text('now live')
         # Applying text did not publish anything: KPV is still governed by its legal status.

@@ -81,7 +81,7 @@ V8-CHANGES.md | 1342 | f12843aa36f7b3a9
 V8.1-CHANGES.md | 566 | 0a9da45f23da7e02
 V9-CHANGES.md | 1818 | 2bbcd9a24eeff30e
 admin.html | 29920 | 81e0d1f671456015
-assets/admin-v19.js | 52096 | 484ef13483692ae9
+assets/admin-v19.js | 52350 | fc998b4edabb3555
 assets/admin.js | 64105 | 57e65feaf8bc25cc
 assets/app.js | 54203 | 03dfb6a05a0cb026
 assets/bundle-admin.css | 307525 | 140fbdac4db49dda
@@ -241,7 +241,7 @@ support.html | 7680 | 8d47f34c9813d357
 terms.html | 7301 | 5f08bda448637023
 tests/admin-personas.py | 11979 | 7ca38fe3bf45d8ad
 tests/api.test.mjs | 9975 | 1eb82f8cde4d2d4b
-tests/e2e.py | 32704 | 79c34ef0b27baa1b
+tests/e2e.py | 32824 | 5dbef6754aaf4932
 tests/personas.py | 17480 | 8134e960b8199522
 tests/static-validation.py | 4741 | 1935bcfc52a549b9
 tests/support/compliance.mjs | 1116 | 10c08360786e36a6

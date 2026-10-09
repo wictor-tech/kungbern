@@ -6,7 +6,7 @@
   const A = window.VerapepAdmin;
   if (!A) return;
   const { requestJson, escapeHtml, formatDate, showMessage, state } = A;
-  const v19 = { overview: null, products: null, statuses: {}, kinds: {}, workspace: null, current: null, queue: [], importPreview: null };
+  const v19 = { openProposals: new Set(), overview: null, products: null, statuses: {}, kinds: {}, workspace: null, current: null, queue: [], importPreview: null };
   const $ = id => document.getElementById(id);
   const FIELD_LABELS = {
     shortDescription: 'Short description', fullDescription: 'Full description', ingredients: 'Contents / composition', storage: 'Storage',
@@ -513,8 +513,8 @@
       node.innerHTML = payload.items.length ? payload.items.map(item => `
         <article class="queue-item" data-queue-id="${item.id}">
           <div class="queue-item__head"><div><strong>${escapeHtml(item.productName)}</strong> ${pill(item.statusLabel, item.status === 'approved' ? 'approved_for_publication' : 'in_legal_review')}${item.requiresReReview ? pill('Re-review', 'needs_evidence') : ''}<br><small>Changes ${item.diff.map(part => escapeHtml(FIELD_LABELS[part.field] || part.field)).join(', ') || 'image'} · by ${escapeHtml(item.createdBy)} · ${escapeHtml(formatDate(item.updatedAt))}</small></div>
-            <button class="button button--light" type="button" data-review-draft="${item.id}" aria-expanded="false">Open proposal</button></div>
-          <div class="queue-item__body" hidden>
+            <button class="button button--light" type="button" data-review-draft="${item.id}" aria-expanded="${v19.openProposals.has(item.id)}">${v19.openProposals.has(item.id) ? 'Close' : 'Open proposal'}</button></div>
+          <div class="queue-item__body" ${v19.openProposals.has(item.id) ? '' : 'hidden'}>
             ${diffMarkup(item.diff)}
             ${item.validation.warnings.length ? `<ul class="draft-warnings">${item.validation.warnings.map(warning => `<li>${escapeHtml(warning)}</li>`).join('')}</ul>` : ''}
             <p class="draft-sources"><strong>Sources:</strong> ${item.sources.map(source => `${escapeHtml(FIELD_LABELS[source.field] || source.field)}: ${escapeHtml(source.kind)}${source.ref ? ` (${escapeHtml(source.ref)})` : ''}`).join('; ') || '<span class="warning-text">none given</span>'}</p>
@@ -533,6 +533,7 @@
     if (ds.reviewDraft) {
       const body = target.closest('.queue-item').querySelector('.queue-item__body');
       body.hidden = !body.hidden;
+      if (body.hidden) v19.openProposals.delete(ds.reviewDraft); else v19.openProposals.add(ds.reviewDraft);
       target.setAttribute('aria-expanded', String(!body.hidden));
       target.textContent = body.hidden ? 'Open proposal' : 'Close';
       return;
