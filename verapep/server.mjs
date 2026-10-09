@@ -4,8 +4,16 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import net from 'node:net';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { VerapepDatabase, verifyPassword } from './database.mjs';
+import { VerapepDatabase, verifyPassword, hashPassword } from './database.mjs';
+import { answerQuestion, ENGINE_STRINGS } from './lib/vera.mjs';
+import { classifyBlocker } from './lib/readiness.mjs';
+import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
+import { createV19 } from './lib/admin-v19.mjs';
+import { writeServerLock, removeServerLock } from './lib/server-lock.mjs';
+import { detectLanguage, localise, translationStatus, sourceHash, englishSources } from './lib/vera-language.mjs';
+import { REVIEW_STATUSES, REVIEW_STATUS_LABELS, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
 const APP_ROOT = path.dirname(fileURLToPath(import.meta.url));
 
@@ -51,7 +59,10 @@ const MIME_TYPES = {
 const ORDER_STATUSES = new Set(['awaiting_payment', 'processing', 'packed', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled', 'refunded']);
 const RETURN_STATUSES = new Set(['requested', 'approved', 'rejected', 'received', 'refunded']);
 const MAX_BODY_BYTES = 1_000_000;
+const VERSION = '20.0.0';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const SESSION_ABSOLUTE_MS = 12 * 60 * 60 * 1000;
+const DUMMY_PASSWORD_HASH = hashPassword('verapep-timing-equaliser-not-a-real-password');
 const APP_ENV = String(process.env.APP_ENV || process.env.NODE_ENV || 'development').trim().toLowerCase();
 const IS_PRODUCTION = APP_ENV === 'production';
 const LIVE_COMMERCE_REQUESTED = String(process.env.ENABLE_LIVE_COMMERCE || '').toLowerCase() === 'true';
@@ -65,12 +76,6 @@ function readJsonSync(filePath, fallback) {
     if (error.code === 'ENOENT' && fallback !== undefined) return fallback;
     throw new Error(`Could not read ${filePath}: ${error.message}`);
   }
-}
-
-async function writeJsonAtomic(filePath, value) {
-  const temp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
-  await fsp.writeFile(temp, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-  await fsp.rename(temp, filePath);
 }
 
 function sha256(value) {
@@ -118,6 +123,58 @@ function cleanText(value, maxLength = 200) {
 
 function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value ?? '').trim()) && String(value).length <= 254;
+}
+
+/* v17: links stored by admins are rendered for visitors. Allow site paths and https:// only
+   (optionally mailto:), never javascript:, data: or protocol-relative URLs. */
+export function safePublicUrl(value, { allowMailto = false } = {}) {
+  const url = String(value ?? '').trim();
+  if (!url) return false;
+  if (/^https:\/\/[^\s]+$/i.test(url)) return true;
+  if (allowMailto && /^mailto:[^\s@]+@[^\s@]+$/i.test(url)) return true;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(url) || url.startsWith('//') || url.includes('\\')) return false;
+  return /^[\w\-./#?=&%~]+$/.test(url);
+}
+
+/* v17: admin user records returned to clients or written to the audit log never include secrets. */
+function sanitiseAdminUser(user) {
+  if (!user) return user;
+  const { passwordHash, mfaSecret, recoveryCodeHashes, ...safe } = user;
+  return { ...safe, recoveryCodesRemaining: Array.isArray(recoveryCodeHashes) ? recoveryCodeHashes.length : 0 };
+}
+
+/* Behind a reverse proxy (Render, nginx) every request arrives from the proxy address, which
+   makes per-IP rate limits global. TRUST_PROXY is the number of trusted proxy hops in front of
+   the server ("true" = 1). v18: the client address is taken from the RIGHT of X-Forwarded-For —
+   entries further left are written by the client itself and can be forged to evade rate limits
+   (v17 used the leftmost entry). Without TRUST_PROXY the header is ignored entirely. */
+export function trustedProxyHops(value = process.env.TRUST_PROXY) {
+  const setting = String(value ?? '').trim().toLowerCase();
+  if (setting === 'true') return 1;
+  if (/^\d{1,2}$/.test(setting)) return Math.min(10, Number(setting));
+  return 0;
+}
+
+export function resolveClientIp(socketAddress, forwardedFor, hops = trustedProxyHops()) {
+  const direct = socketAddress || 'unknown';
+  if (!hops) return direct;
+  const chain = String(forwardedFor || '').split(',').map(part => part.trim()).filter(Boolean);
+  const addresses = [...chain, direct];
+  const candidate = addresses[addresses.length - 1 - hops];
+  // Fewer entries than trusted hops means the request did not pass through the expected proxies.
+  if (!candidate || !net.isIP(candidate)) return direct;
+  return candidate;
+}
+
+function clientIp(req) {
+  return resolveClientIp(req.socket.remoteAddress, req.headers['x-forwarded-for']);
+}
+
+export function containsContactDetails(value) {
+  const text = String(value || '');
+  if (/[^\s@]+@[^\s@]+\.[a-z]{2,}/i.test(text)) return true;
+  // Phone numbers: a run of 9+ digits with common separators (dates such as 2025-10-09 have 8).
+  return (text.match(/\+?\d[\d\s().-]{6,}\d/g) || []).some(run => run.replace(/\D/g, '').length >= 9);
 }
 
 function validAdminPassword(value) {
@@ -218,7 +275,9 @@ function verifyTotp(code, secret, now = Date.now()) {
 function parseCookies(header = '') {
   return Object.fromEntries(header.split(';').map(part => part.trim()).filter(Boolean).map(part => {
     const index = part.indexOf('=');
-    return index === -1 ? [part, ''] : [part.slice(0, index), decodeURIComponent(part.slice(index + 1))];
+    if (index === -1) return [part, ''];
+    // v20: a malformed cookie value is ignored instead of failing every request.
+    try { return [part.slice(0, index), decodeURIComponent(part.slice(index + 1))]; } catch { return [part.slice(0, index), ''];  }
   }));
 }
 
@@ -251,13 +310,24 @@ function securityHeaders(contentType = '', requestIsHttps = false) {
 
 function sendJson(res, status, payload, extraHeaders = {}) {
   const body = JSON.stringify(payload);
+  // Transport compression for larger responses (the storefront payload is ~150 KB).
+  // The JSON contract is unchanged; clients negotiate via Accept-Encoding.
+  const accepted = String(res.vpAcceptEncoding || '');
+  let responseBody = body;
+  let encoding = null;
+  if (Buffer.byteLength(body) > 2048 && !extraHeaders['Content-Encoding']) {
+    if (accepted.includes('br')) { responseBody = zlib.brotliCompressSync(body, { params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); encoding = 'br'; }
+    else if (accepted.includes('gzip')) { responseBody = zlib.gzipSync(body, { level: 6 }); encoding = 'gzip'; }
+  }
   res.writeHead(status, {
     ...securityHeaders('application/json; charset=utf-8'),
     'Cache-Control': 'no-store',
-    'Content-Length': Buffer.byteLength(body),
+    'Content-Length': Buffer.byteLength(responseBody),
+    Vary: 'Accept-Encoding',
+    ...(encoding ? { 'Content-Encoding': encoding } : {}),
     ...extraHeaders
   });
-  res.end(body);
+  res.end(responseBody);
 }
 
 function sendText(res, status, body, contentType = 'text/plain; charset=utf-8', extraHeaders = {}) {
@@ -268,6 +338,11 @@ function sendText(res, status, body, contentType = 'text/plain; charset=utf-8', 
     ...extraHeaders
   });
   res.end(body);
+}
+
+function sendFile(res, buffer, contentType, extraHeaders = {}) {
+  res.writeHead(200, { ...securityHeaders(contentType), 'Content-Length': buffer.length, ...extraHeaders });
+  res.end(buffer);
 }
 
 async function readBodyBuffer(req) {
@@ -308,6 +383,8 @@ function createRateLimiter() {
   const buckets = new Map();
   return function rateLimit(key, max, windowMs) {
     const now = Date.now();
+    // v17: drop expired buckets so many distinct clients cannot grow memory without bound.
+    if (buckets.size > 5000) for (const [bucketKey, item] of buckets) if (item.resetAt <= now) buckets.delete(bucketKey);
     const bucket = buckets.get(key);
     if (!bucket || bucket.resetAt <= now) {
       buckets.set(key, { count: 1, resetAt: now + windowMs });
@@ -386,19 +463,25 @@ export function createVerapepServer(options = {}) {
   fs.mkdirSync(dataDir, { recursive: true });
   fs.mkdirSync(outboxDir, { recursive: true });
 
+  // v20: seeds come from DATA_DIR when present, otherwise from the shipped data/ folder, so a
+  // fresh, empty persistent disk can start (it previously crashed on first boot).
+  const seedPath = name => fs.existsSync(path.join(dataDir, name)) ? path.join(dataDir, name) : path.join(rootDir, 'data', name);
   const paths = {
-    catalogue: path.join(dataDir, 'catalogue.json'),
-    policy: path.join(dataDir, 'commerce-policy.json'),
-    inventory: path.join(dataDir, 'inventory.json'),
-    config: path.join(dataDir, 'store-config.json'),
-    orders: path.join(dataDir, 'orders.json'),
-    returns: path.join(dataDir, 'returns.json'),
-    withdrawals: path.join(dataDir, 'withdrawals.json'),
-    productContent: path.join(dataDir, 'product-content.json'),
-    reviews: path.join(dataDir, 'reviews.json'),
-    guide: path.join(dataDir, 'guide-config.json'),
-    supportKb: path.join(dataDir, 'support-kb.json'),
-    customers: path.join(dataDir, 'customers.json')
+    catalogue: seedPath('catalogue.json'),
+    policy: seedPath('commerce-policy.json'),
+    inventory: seedPath('inventory.json'),
+    config: seedPath('store-config.json'),
+    orders: seedPath('orders.json'),
+    returns: seedPath('returns.json'),
+    withdrawals: seedPath('withdrawals.json'),
+    productContent: seedPath('product-content.json'),
+    reviews: seedPath('reviews.json'),
+    guide: seedPath('guide-config.json'),
+    supportKb: seedPath('support-kb.json'),
+    customers: seedPath('customers.json'),
+    productCompliance: seedPath('product-compliance.json'),
+    // v19: proposed/approved translations of Ask Vera answers.
+    veraTranslations: seedPath('vera-translations.json')
   };
 
   const database = new VerapepDatabase({
@@ -415,7 +498,9 @@ export function createVerapepServer(options = {}) {
       reviews: paths.reviews,
       guide: paths.guide,
       supportKb: paths.supportKb,
-      customers: paths.customers
+      customers: paths.customers,
+      productCompliance: paths.productCompliance,
+      veraTranslations: paths.veraTranslations
     },
     defaultAdmin: {
       email: process.env.ADMIN_EMAIL || 'admin@verapep.local',
@@ -437,8 +522,25 @@ export function createVerapepServer(options = {}) {
   let guide = database.readDocument('guide', { version: 1, enabled: false, questions: [], rules: [] });
   let supportKb = database.readDocument('supportKb', { version: 1, entries: [], fallback: 'Please contact support.' });
   let customers = database.readDocument('customers', { version: 1, customers: [] });
+  // v17: human compliance decisions per product. Absent record = "not reviewed".
+  let compliance = database.readDocument('productCompliance', { version: 1, products: {} });
+  let veraTranslations = database.readDocument('veraTranslations', { version: 1, languages: {} });
+  if (!compliance.products) compliance.products = {};
+  const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: process.env.PUBLICATION_GATE, hosted: isHostedEnvironment() });
+  // v17: shipped knowledge base (for migration status) and privacy-preserving Vera counters (no question text).
+  let shippedKb = null;
+  try { shippedKb = loadShipped(rootDir); } catch { shippedKb = null; }
+  const shippedKbIds = new Set((shippedKb?.shipped?.entries || []).map(entry => entry.id));
+  const veraStats = { since: nowIso(), total: 0, byKind: {} };
+  // v17: last server errors for the admin status view (method, path, code only — no bodies, no personal data).
+  const recentErrors = [];
+  const serverStartedAt = nowIso();
 
   const productsById = new Map(catalogue.products.map(product => [product.id, product]));
+  // v18: product photo overrides live server-side; browsers only receive entries for visible products,
+  // and the photo files of hidden products are not served.
+  const productImages = readJsonSync(path.join(rootDir, 'data', 'product-images.json'), { images: {} }).images || {};
+  const productIdByImagePath = new Map(Object.entries(productImages).map(([id, url]) => [String(url).split('?')[0], id]));
   const variantsById = new Map();
   for (const product of catalogue.products) {
     for (const variant of product.variants) variantsById.set(variant.variantId, { product, variant });
@@ -461,6 +563,48 @@ export function createVerapepServer(options = {}) {
   function enqueueWrite(operation) {
     writeChain = writeChain.then(operation, operation);
     return writeChain;
+  }
+
+  /* v20: the server keeps documents in memory and writes whole documents. If a write fails
+     (database locked by a maintenance script, disk full), the in-memory copy is reloaded from the
+     database so the failed change is not silently saved later by an unrelated write. */
+  const MEMORY_DOCUMENTS = {
+    orders: [() => orders, value => { orders = value; }],
+    inventory: [() => inventory, value => { inventory = value; }],
+    policy: [() => policy, value => { policy = value; }],
+    returns: [() => returns, value => { returns = value; }],
+    withdrawals: [() => withdrawals, value => { withdrawals = value; }],
+    productContent: [() => productContent, value => { productContent = value; }],
+    reviews: [() => reviews, value => { reviews = value; }],
+    guide: [() => guide, value => { guide = value; }],
+    supportKb: [() => supportKb, value => { supportKb = value; }],
+    productCompliance: [() => compliance, value => { compliance = value; if (!compliance.products) compliance.products = {}; }],
+    customers: [() => customers, value => { customers = value; }]
+  };
+  function reloadFromDatabase(keys) {
+    for (const key of keys) {
+      const [get, set] = MEMORY_DOCUMENTS[key] || [];
+      if (!get) continue;
+      try { set(database.readDocument(key, get())); } catch (error) { console.error(`Could not reload ${key} after a failed write:`, error.message); }
+    }
+  }
+  async function writeKeys(keys, operation) {
+    try {
+      await enqueueWrite(operation);
+    } catch (error) {
+      reloadFromDatabase(keys);
+      throw Object.assign(error, { status: error.status || 503, code: error.code === 'ERR_SQLITE_ERROR' ? 'storage_unavailable' : error.code, message: /locked|busy/i.test(error.message) ? 'The database is busy (maintenance may be running). Nothing was saved. Try again in a moment.' : error.message });
+    }
+  }
+  /* v20: several documents in one transaction. build() runs inside the write queue, so no other
+     request can interleave; it returns { write: {key: value}, commit() } and commit() updates
+     memory only after the transaction succeeded. */
+  function transact(build) {
+    return writeKeys([], () => {
+      const { write, commit } = build();
+      database.writeDocuments(write);
+      commit?.();
+    });
   }
 
   function liveEnvironmentConfigured() {
@@ -498,6 +642,7 @@ export function createVerapepServer(options = {}) {
   function stripeEligibility(item) {
     const allowlist = liveAllowlist();
     const commerce = policy.products[item.productId] || {};
+    if (!complianceSaleApproved(item.productId)) return false;
     if (getMode() === 'live') {
       return stripeLiveConfigured()
         && commerce.liveEnabled === true
@@ -546,6 +691,111 @@ export function createVerapepServer(options = {}) {
     return 'information_only';
   }
 
+  function legalInfo() {
+    return {
+      companyLegalName: process.env.COMPANY_LEGAL_NAME || 'VERAPEP operator — company details pending',
+      companyRegistrationNumber: process.env.COMPANY_REGISTRATION_NUMBER || 'pending',
+      companyAddress: process.env.COMPANY_ADDRESS || 'pending',
+      supportEmail: process.env.SUPPORT_EMAIL || 'hello@verapep.eu',
+      privacyEmail: process.env.PRIVACY_EMAIL || process.env.SUPPORT_EMAIL || 'privacy@verapep.eu',
+      termsVersion: process.env.TERMS_VERSION || 'preview-v14.1',
+      privacyVersion: process.env.PRIVACY_VERSION || 'preview-v14.1',
+      environment: APP_ENV
+    };
+  }
+
+  /* Everything Ask Vera may know: configured values and publicly visible product facts. */
+  function veraContext(contextProductId) {
+    const visible = visibleCatalogueProducts();
+    const categoryLabel = id => catalogue.categories.find(category => category.id === id)?.label || id;
+    const summaries = visible.map(product => {
+      const content = productContent.products[product.id] || {};
+      const pub = productPublic(product);
+      return {
+        id: product.id,
+        name: product.name,
+        displayName: content.displayName || product.name,
+        aliases: Array.isArray(content.searchAliases) ? content.searchAliases : [],
+        categoryLabel: categoryLabel(product.category),
+        specifications: product.variants.map(variant => variant.specification).filter(Boolean),
+        shortDescription: String(content.shortDescription || '').trim(),
+        labReports: (content.labReports || []).filter(report => report.published && report.url).length,
+        orderable: pub.commerce.checkoutEnabled === true && pub.variants.some(variant => variant.checkoutEnabled)
+      };
+    });
+    const visibleIds = new Set(visible.map(product => product.id));
+    const hiddenNames = catalogue.products.filter(product => !visibleIds.has(product.id)).flatMap(product => {
+      const content = productContent.products[product.id] || {};
+      return [product.name, content.displayName, ...(content.searchAliases || [])].filter(Boolean);
+    });
+    const legal = legalInfo();
+    const orderable = summaries.filter(item => item.orderable).length;
+    const withReports = summaries.filter(item => item.labReports > 0).length;
+    const countries = config.allowedCountries || [];
+    return {
+      kb: supportKb,
+      products: summaries,
+      hiddenNames,
+      contextProductId: visibleIds.has(contextProductId) ? contextProductId : null,
+      vars: {
+        supportEmail: legal.supportEmail,
+        privacyEmail: legal.privacyEmail,
+        companyLine: process.env.COMPANY_LEGAL_NAME
+          ? `VERAPEP is operated by ${process.env.COMPANY_LEGAL_NAME}${process.env.COMPANY_REGISTRATION_NUMBER ? `, registration number ${process.env.COMPANY_REGISTRATION_NUMBER}` : ''}.`
+          : 'The registered company details of the operator have not been published yet.',
+        deliveryEstimate: config.shippingMethods?.[0]?.estimatedDays || '',
+        deliveryCountryCount: countries.length,
+        deliveryCountries: countries.map(country => country.name || country.code).join(', '),
+        orderingStatus: orderable === 0 ? 'No products can be ordered at the moment.' : `${orderable} product${orderable === 1 ? '' : 's'} can currently be ordered.`,
+        labReportStatus: withReports === 0 ? 'No lab reports have been published yet.' : `${withReports} product${withReports === 1 ? ' has' : 's have'} a published lab report.`
+      },
+      // v19: the same facts as plain values, so reviewed translations can phrase them in the visitor's language.
+      facts: { orderable, withReports, countryCodes: countries.map(country => country.code).filter(Boolean), companyName: process.env.COMPANY_LEGAL_NAME || '', companyRegistration: process.env.COMPANY_REGISTRATION_NUMBER || '' }
+    };
+  }
+
+  function supportKbStatus() {
+    if (!shippedKb) return { available: false };
+    const plan = planMigration(supportKb, shippedKb.shipped, shippedKb.history);
+    return { available: true, upToDate: plan.upToDate, pendingWrites: plan.writes, stored: plan.from, shipped: plan.to, counts: plan.counts };
+  }
+
+  function complianceRecord(productId) {
+    return recordFor(compliance, productId);
+  }
+
+  /* v17 single source of truth for public exposure: the editor's publish/archive flags AND the
+     compliance gate. Everything public (storefront, product pages, guide, sitemap, reviews,
+     product content, Ask Vera, cart) goes through this. */
+  function isPubliclyVisible(productOrId) {
+    const product = typeof productOrId === 'string' ? productsById.get(productOrId) : productOrId;
+    if (!product) return false;
+    const content = productContent.products[product.id] || {};
+    if (content.published === false || content.archived === true || content.stockStatus === 'archived') return false;
+    return publicVisibility(product, content, complianceRecord(product.id), gateMode).visible;
+  }
+
+  function visibleCatalogueProducts() {
+    return catalogue.products.filter(product => isPubliclyVisible(product));
+  }
+
+  function complianceSaleApproved(productId, country = null) {
+    return saleApproved(complianceRecord(productId), country);
+  }
+
+  function complianceBlocked(message) {
+    const error = new Error(message);
+    error.status = 409;
+    error.code = 'compliance_approval_required';
+    return error;
+  }
+
+  async function persistCompliance() {
+    compliance.updatedAt = nowIso();
+    await writeKeys(['productCompliance'], () => database.writeDocument('productCompliance', compliance));
+    broadcastStorefront('compliance');
+  }
+
   function productReadiness(productId) {
     const product = productsById.get(productId);
     const content = productContent.products[productId] || {};
@@ -560,6 +810,7 @@ export function createVerapepServer(options = {}) {
       return stock?.saleEnabled === true && Number.isInteger(stock.retailPriceCents) && stock.retailPriceCents > 0 && Number(stock.onHand) > Number(stock.reserved || 0);
     });
     if (eligibleVariants.length === 0) missing.push('At least one enabled variant with EUR price and available stock');
+    if (!complianceSaleApproved(productId)) missing.push('Compliance approval for sale (owner decision with review reference)');
     return {
       ready: missing.length === 0,
       missing,
@@ -602,6 +853,14 @@ export function createVerapepServer(options = {}) {
     if (!LIVE_COMMERCE_REQUESTED) blockers.push('ENABLE_LIVE_COMMERCE is not enabled.');
     if (LIVE_COMMERCE_ACK !== LIVE_COMMERCE_ACK_VALUE) blockers.push('Live-commerce acknowledgement is not present.');
     if (liveApprovedProducts.length === 0) blockers.push('No product has complete content plus an explicit live legal/compliance approval.');
+    const complianceRecords = catalogue.products.map(product => complianceRecord(product.id));
+    const approvedForPublication = complianceRecords.filter(record => record.status === 'approved_for_publication').length;
+    const undecided = complianceRecords.filter(record => !['approved_for_publication', 'do_not_publish'].includes(record.status)).length;
+    if (approvedForPublication === 0) blockers.push('No product has a recorded compliance approval for publication (qualified legal review).');
+    if (undecided > 0) warnings.push(`${undecided} of ${catalogue.products.length} products have no final compliance decision; they stay hidden in production.`);
+    const changedAfterApproval = complianceRecords.filter(record => record.status === 'approved_for_publication' && record.contentChangedAfterApproval).length;
+    if (changedAfterApproval > 0) blockers.push(`${changedAfterApproval} approved product(s) changed after approval and need re-review.`);
+    if (gateMode !== 'strict') warnings.push('Publication gate is in preview mode: unreviewed lower-risk products are visible. Production always uses the strict gate.');
     if (!process.env.COMPANY_LEGAL_NAME || !process.env.COMPANY_REGISTRATION_NUMBER || !process.env.COMPANY_ADDRESS) blockers.push('Required company identity details are incomplete.');
     if (String(process.env.PRIVACY_REVIEW_ACK || '').toLowerCase() !== 'true') blockers.push('Privacy/GDPR review acknowledgement is missing.');
     if (String(process.env.LEGAL_TERMS_REVIEW_ACK || '').toLowerCase() !== 'true') blockers.push('Terms/consumer-law review acknowledgement is missing.');
@@ -615,8 +874,11 @@ export function createVerapepServer(options = {}) {
       ready: blockers.length === 0,
       environment: APP_ENV,
       blockers,
+      blockerDetails: blockers.map(classifyBlocker),
       warnings,
       liveApprovedProducts: liveApprovedProducts.length,
+      publicationGate: gateMode,
+      complianceApproved: approvedForPublication,
       totalProducts: catalogue.productCount,
       checkedAt: nowIso()
     };
@@ -641,7 +903,8 @@ export function createVerapepServer(options = {}) {
       && productPolicy.liveEnabled === true
       && productPolicy.status === 'live_approved'
       && Boolean(productPolicy.reviewReference);
-    const productSaleEnabled = sandboxSaleEnabled || liveSaleEnabled;
+    // v17: no sale of any kind without a recorded compliance approval whose scope includes sale.
+    const productSaleEnabled = (sandboxSaleEnabled || liveSaleEnabled) && complianceSaleApproved(product.id);
     return {
       ...product,
       content,
@@ -674,6 +937,7 @@ export function createVerapepServer(options = {}) {
   }
 
   function storefrontPayload() {
+    const visible = visibleCatalogueProducts();
     return {
       mode: getMode(),
       environment: APP_ENV,
@@ -702,10 +966,15 @@ export function createVerapepServer(options = {}) {
         checkoutMode: config.checkoutMode || 'catalogue_only'
       },
       guide: { enabled: guide.enabled === true, disclaimer: guide.disclaimer || '', focusAreas: guide.focusAreas || [], priorities: guide.priorities || [] },
-      categories: catalogue.categories,
-      productCount: catalogue.productCount,
-      variantCount: catalogue.variantCount,
-      products: catalogue.products.map(productPublic).filter(product => product.content?.published !== false && product.content?.stockStatus !== 'archived')
+      categories: catalogue.categories.map(category => {
+        const inCategory = visible.filter(product => product.category === category.id);
+        return { ...category, count: inCategory.length, variantCount: inCategory.reduce((sum, product) => sum + product.variants.length, 0) };
+      }),
+      // v17: counts describe what is publicly listed, not the internal catalogue.
+      productCount: visible.length,
+      variantCount: visible.reduce((sum, product) => sum + product.variants.length, 0),
+      publication: { gate: gateMode },
+      products: visible.map(productPublic)
     };
   }
 
@@ -729,6 +998,12 @@ export function createVerapepServer(options = {}) {
       const found = variantsById.get(variantId);
       if (!found) {
         const error = new Error(`Unknown product variant: ${variantId || 'missing ID'}.`);
+        error.status = 400;
+        error.code = 'unknown_variant';
+        throw error;
+      }
+      if (!isPubliclyVisible(found.product)) {
+        const error = new Error(`Unknown product variant: ${variantId}.`);
         error.status = 400;
         error.code = 'unknown_variant';
         throw error;
@@ -876,52 +1151,52 @@ export function createVerapepServer(options = {}) {
   }
 
   async function persistOrders() {
-    await enqueueWrite(() => database.writeDocument('orders', orders));
+    await writeKeys(['orders'], () => database.writeDocument('orders', orders));
   }
 
   async function persistInventory() {
     inventory.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocument('inventory', inventory));
+    await writeKeys(['inventory'], () => database.writeDocument('inventory', inventory));
     broadcastStorefront('inventory');
   }
 
   async function persistOrdersAndInventory(reason = 'commerce') {
     inventory.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocuments({ orders, inventory }));
+    await writeKeys(['orders', 'inventory'], () => database.writeDocuments({ orders, inventory }));
     broadcastStorefront(reason);
   }
 
   async function persistPolicy() {
-    await enqueueWrite(() => database.writeDocument('policy', policy));
+    await writeKeys(['policy'], () => database.writeDocument('policy', policy));
     broadcastStorefront('commerce');
   }
 
   async function persistReturns() {
-    await enqueueWrite(() => database.writeDocument('returns', returns));
+    await writeKeys(['returns'], () => database.writeDocument('returns', returns));
   }
 
   async function persistWithdrawals() {
-    await enqueueWrite(() => database.writeDocument('withdrawals', withdrawals));
+    await writeKeys(['withdrawals'], () => database.writeDocument('withdrawals', withdrawals));
   }
 
   async function persistProductContent() {
     productContent.updatedAt = nowIso();
-    await enqueueWrite(() => database.writeDocument('productContent', productContent));
+    await writeKeys(['productContent'], () => database.writeDocument('productContent', productContent));
     broadcastStorefront('product');
   }
 
   async function persistReviews() {
-    await enqueueWrite(() => database.writeDocument('reviews', reviews));
+    await writeKeys(['reviews'], () => database.writeDocument('reviews', reviews));
     broadcastStorefront('reviews');
   }
 
   async function persistGuide() {
-    await enqueueWrite(() => database.writeDocument('guide', guide));
+    await writeKeys(['guide'], () => database.writeDocument('guide', guide));
     broadcastStorefront('guide');
   }
 
   async function persistSupportKb() {
-    await enqueueWrite(() => database.writeDocument('supportKb', supportKb));
+    await writeKeys(['supportKb'], () => database.writeDocument('supportKb', supportKb));
     broadcastStorefront('support');
   }
 
@@ -1000,6 +1275,10 @@ export function createVerapepServer(options = {}) {
     const orderQuote = quote(body.items, body.shippingMethodId, shippingAddress.country);
     for (const line of orderQuote.lines) {
       const allowed = productContent.products[line.productId]?.allowedCountries || [];
+      if (!complianceSaleApproved(line.productId, shippingAddress.country)) {
+        const error = new Error(`${line.productName} is not approved for sale to the selected country.`);
+        error.status = 403; error.code = 'country_not_approved'; throw error;
+      }
       if (allowed.length && !allowed.includes(shippingAddress.country)) {
         const error = new Error(`${line.productName} is not enabled for delivery to the selected country.`);
         error.status = 403; error.code = 'country_not_allowed'; throw error;
@@ -1231,6 +1510,18 @@ export function createVerapepServer(options = {}) {
     return order;
   }
 
+  /* v20: an authenticator code is accepted once per account; replaying an intercepted code within its
+     30-second window (plus the ±1 step tolerance) is refused. */
+  const usedTotpCodes = new Map();
+  function totpOnce(email, code, secret) {
+    const now = Date.now();
+    for (const [key, expires] of usedTotpCodes) if (expires < now) usedTotpCodes.delete(key);
+    const key = `${email}:${String(code || '').replace(/\s+/g, '')}`;
+    if (usedTotpCodes.has(key) || !verifyTotp(code, secret)) return false;
+    usedTotpCodes.set(key, now + 120_000);
+    return true;
+  }
+
   function adminSession(req) {
     const token = parseCookies(req.headers.cookie).vp_admin;
     if (!token) return null;
@@ -1239,6 +1530,16 @@ export function createVerapepServer(options = {}) {
       if (token) sessions.delete(token);
       return null;
     }
+    // v20: the account is re-read on every request. Disabling a user, changing their role or their
+    // password takes effect immediately (sessions used to keep the role from login for up to 8 h of
+    // activity), and a session never lives longer than 12 h in total.
+    const user = database.findUser(session.email);
+    if (!user || !user.enabled || user.passwordHash !== session.passwordHash || Date.now() - session.createdAt > SESSION_ABSOLUTE_MS) {
+      sessions.delete(token);
+      return null;
+    }
+    session.role = user.role;
+    session.displayName = user.displayName;
     session.expiresAt = Date.now() + SESSION_TTL_MS;
     return session;
   }
@@ -1276,13 +1577,23 @@ export function createVerapepServer(options = {}) {
     return messages;
   }
 
+  // v19: Owner Control Center, product workspace, content workflow, private documents and import.
+  const v19 = createV19({
+    rootDir, dataDir, database, catalogue, productsById, sendJson, sendFile, readJsonBody, requireAdmin, requireCsrf, requireRole, audit,
+    getContent: () => productContent, getCompliance: () => compliance, getPolicy: () => policy, getConfig: () => config,
+    persistProductContent: () => persistProductContent(), persistCompliance: () => persistCompliance(), isPubliclyVisible, inventoryRow, gateMode,
+    productionReadiness: () => productionReadiness(), supportKbStatus: () => supportKbStatus(), recentErrors, veraStats, serverStartedAt, legalInfo: () => legalInfo(), nowIso,
+    transact, broadcast: reason => broadcastStorefront(reason),
+    version: VERSION
+  });
+
   async function handleApi(req, res, url) {
     const method = req.method || 'GET';
     const pathname = url.pathname;
-    const ip = req.socket.remoteAddress || 'unknown';
+    const ip = clientIp(req);
 
     if (method === 'GET' && pathname === '/api/health') {
-      return sendJson(res, 200, { ok: true, version: '14.1.0', mode: getMode(), environment: APP_ENV, database: 'SQLite', products: catalogue.productCount, variants: catalogue.variantCount, timestamp: nowIso() });
+      return sendJson(res, 200, { ok: true, version: VERSION, mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
     }
 
     if (method === 'GET' && pathname === '/api/ready') {
@@ -1291,16 +1602,7 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'GET' && pathname === '/api/legal') {
-      return sendJson(res, 200, {
-        companyLegalName: process.env.COMPANY_LEGAL_NAME || 'VERAPEP operator — company details pending',
-        companyRegistrationNumber: process.env.COMPANY_REGISTRATION_NUMBER || 'pending',
-        companyAddress: process.env.COMPANY_ADDRESS || 'pending',
-        supportEmail: process.env.SUPPORT_EMAIL || 'hello@verapep.eu',
-        privacyEmail: process.env.PRIVACY_EMAIL || process.env.SUPPORT_EMAIL || 'privacy@verapep.eu',
-        termsVersion: process.env.TERMS_VERSION || 'preview-v14.1',
-        privacyVersion: process.env.PRIVACY_VERSION || 'preview-v14.1',
-        environment: APP_ENV
-      });
+      return sendJson(res, 200, legalInfo());
     }
 
     if (method === 'GET' && pathname === '/api/storefront') {
@@ -1318,16 +1620,21 @@ export function createVerapepServer(options = {}) {
 
 
     if (method === 'GET' && pathname === '/api/product-content') {
-      return sendJson(res, 200, { products: productContent.products, reviews: reviews.reviews.filter(review => review.status === 'approved') });
+      // v17: only content for publicly listed products (drafts and gated products stay internal).
+      const visibleIds = new Set(visibleCatalogueProducts().map(product => product.id));
+      const products = Object.fromEntries(Object.entries(productContent.products).filter(([id]) => visibleIds.has(id)));
+      return sendJson(res, 200, { products, reviews: reviews.reviews.filter(review => review.status === 'approved' && visibleIds.has(review.productId)) });
     }
 
     if (method === 'POST' && pathname === '/api/guide/recommendations') {
+      const limit = rateLimit(`guide:${ip}`, 120, 60 * 1000);
+      if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many requests. Please wait a moment.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
       const requestedCategory = cleanText(body.category, 40);
       const focuses = (Array.isArray(body.focuses) ? body.focuses : [body.focus]).map(value => cleanText(value, 80)).filter(Boolean);
       const needsSelected = (Array.isArray(body.needs) ? body.needs : [body.need]).map(value => cleanText(value, 80)).filter(Boolean);
       const priorities = Array.isArray(body.priorities) ? body.priorities.map(value => cleanText(value, 80)).filter(Boolean) : [];
-      let products = catalogue.products.map(productPublic).filter(product => {
+      let products = visibleCatalogueProducts().map(productPublic).filter(product => {
         const goals = product.content?.discoveryGoals || [];
         const needs = product.content?.discoveryNeeds || [];
         if (requestedCategory && product.category !== requestedCategory) return false;
@@ -1347,26 +1654,37 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'POST' && pathname === '/api/support/ask') {
+      const limit = rateLimit(`vera:${ip}`, 30, 60 * 1000);
+      if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'You are asking very quickly. Please wait a few seconds and try again.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
-      const question = cleanText(body.question, 500).toLowerCase();
-      const scored = supportKb.entries.map(entry => ({ entry, score: String(entry.question || '').toLowerCase().split(/\s+/).filter(word => word && question.includes(word)).length })).sort((a,b) => b.score-a.score);
-      const best = scored[0];
-      return sendJson(res, 200, best && best.score > 0 ? { answered: true, answer: best.entry.answer, url: best.entry.url || null } : { answered: false, answer: supportKb.fallback, liveSupport: 'mailto:hello@verapep.eu' });
+      // v17: the question is processed in memory only and never stored or logged.
+      const question = cleanText(body.question, 500);
+      const context = veraContext(cleanText(body.productId, 160));
+      // v19: answer in the visitor's language only where an approved translation exists.
+      const result = localise(answerQuestion(question, context), { lang: detectLanguage(question, cleanText(body.lang, 5)), store: veraTranslations, kb: context.kb, engineStrings: ENGINE_STRINGS, vars: context.vars, facts: context.facts });
+      veraStats.total += 1;
+      veraStats.byKind[result.kind] = (veraStats.byKind[result.kind] || 0) + 1;
+      const liveSupport = `mailto:${legalInfo().supportEmail}`;
+      return sendJson(res, 200, { ...result, url: result.url || null, ...(result.answered ? {} : { liveSupport }) });
     }
 
     if (method === 'GET' && pathname === '/api/reviews') {
       const productId = cleanText(url.searchParams.get('productId'), 160);
-      return sendJson(res, 200, { reviews: reviews.reviews.filter(review => review.status === 'approved' && (!productId || review.productId === productId)) });
+      return sendJson(res, 200, { reviews: reviews.reviews.filter(review => review.status === 'approved' && isPubliclyVisible(review.productId) && (!productId || review.productId === productId)) });
     }
 
     if (method === 'POST' && pathname === '/api/reviews') {
+      const limit = rateLimit(`review:${ip}`, 5, 15 * 60 * 1000);
+      if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'You have sent several reviews in a short time. Please try again later.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
       const productId = cleanText(body.productId, 160);
-      if (!productsById.has(productId)) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
+      if (!isPubliclyVisible(productId)) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
       const rating = clampInt(body.rating, 1, 5);
       const text = cleanText(body.text, 1200);
       const name = cleanText(body.name, 80) || 'Customer';
       if (text.length < 10) return sendJson(res, 400, { error: 'review_too_short', message: 'Please add a little more detail.' });
+      // v17 data minimisation: reviews are published, so contact details must not be in them.
+      if (containsContactDetails(`${text} ${name}`)) return sendJson(res, 400, { error: 'review_contains_personal_data', message: 'Please remove email addresses and phone numbers. Reviews are published, so they should not contain contact details.' });
       const review = { id: `review_${Date.now()}_${randomToken(4)}`, productId, rating, text, name, status: 'pending', verifiedPurchase: false, createdAt: nowIso() };
       reviews.reviews.unshift(review);
       await persistReviews();
@@ -1407,10 +1725,16 @@ export function createVerapepServer(options = {}) {
     const orderMatch = pathname.match(/^\/api\/orders\/([^/]+)$/);
     if (method === 'GET' && orderMatch) {
       const order = findOrder(decodeURIComponent(orderMatch[1]));
-      const token = url.searchParams.get('token') || req.headers['x-order-token'];
-      const email = url.searchParams.get('email');
+      const token = req.headers['x-order-token'] || url.searchParams.get('token');
       const isAdmin = Boolean(adminSession(req));
-      if (!order || (!isAdmin && !verifyOrderAccess(order, token, email))) return sendJson(res, 404, { error: 'order_not_found', message: 'The order could not be found or accessed.' });
+      // v18: email-based access moved to POST /api/orders/lookup so personal data never travels in
+      // URLs (access logs, browser history, referrers). Old links are handled by the order page.
+      if (url.searchParams.has('email')) {
+        return sendJson(res, 400, { error: 'order_lookup_requires_post', message: 'Look up orders by email with POST /api/orders/lookup.' }, { Deprecation: 'true', Link: '</api/orders/lookup>; rel="alternate"' });
+      }
+      const limit = rateLimit(`order-get:${ip}`, 60, 15 * 60 * 1000);
+      if (!isAdmin && !limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many order requests from this address.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
+      if (!order || (!isAdmin && !verifyOrderAccess(order, token, null))) return sendJson(res, 404, { error: 'order_not_found', message: 'The order could not be found or accessed.' });
       return sendJson(res, 200, { order: publicOrder(order, true) });
     }
 
@@ -1562,16 +1886,25 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'POST' && pathname === '/api/admin/login') {
+      // v20: browsers cannot send application/json cross-site without a CORS preflight, so requiring it
+      // stops another website from logging a visitor into an attacker's admin account (login CSRF).
+      if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return sendJson(res, 415, { error: 'json_required', message: 'Send the login as application/json.' });
       const limit = rateLimit(`admin-login:${ip}`, 8, 15 * 60 * 1000);
       if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many login attempts.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
       const email = String(body.email || '').trim().toLowerCase();
+      // v17: per-account limit as well, so distributed guessing against one account is slowed down.
+      const accountLimit = rateLimit(`admin-login-account:${sha256(email)}`, 10, 15 * 60 * 1000);
+      if (!accountLimit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many login attempts for this account. Try again later.' }, { 'Retry-After': String(Math.ceil(accountLimit.retryAfterMs / 1000)) });
       const user = database.findUser(email);
-      if (!user || !user.enabled || !verifyPassword(String(body.password || ''), user.passwordHash)) return sendJson(res, 401, { error: 'invalid_credentials', message: 'Invalid admin credentials.' });
+      // v20: unknown accounts are checked against a dummy hash so the response time does not reveal
+      // which email addresses have an admin account.
+      const passwordOk = verifyPassword(String(body.password || ''), user?.passwordHash || DUMMY_PASSWORD_HASH);
+      if (!user || !user.enabled || !passwordOk) return sendJson(res, 401, { error: 'invalid_credentials', message: 'Invalid admin credentials.' });
       let mfaMethod = 'none';
       if (user.mfaEnabled) {
         const candidate = String(body.mfaCode || '').trim();
-        if (verifyTotp(candidate, decryptMfaSecret(user.mfaSecret))) {
+        if (totpOnce(user.email, candidate, decryptMfaSecret(user.mfaSecret))) {
           mfaMethod = 'totp';
         } else {
           const recoveryCode = normaliseRecoveryCode(candidate);
@@ -1581,11 +1914,11 @@ export function createVerapepServer(options = {}) {
         }
       } else if (IS_PRODUCTION) {
         if (user.role !== 'owner' || !process.env.ADMIN_TOTP_SECRET) return sendJson(res, 503, { error: 'admin_mfa_not_enrolled', message: 'This production admin account must enroll per-user MFA before it can be used.' });
-        if (!verifyTotp(body.mfaCode, process.env.ADMIN_TOTP_SECRET)) return sendJson(res, 401, { error: 'invalid_mfa', message: 'Enter the bootstrap owner authenticator code.' });
+        if (!totpOnce(user.email, body.mfaCode, process.env.ADMIN_TOTP_SECRET)) return sendJson(res, 401, { error: 'invalid_mfa', message: 'Enter the bootstrap owner authenticator code.' });
         mfaMethod = 'bootstrap_totp';
       }
       const token = randomToken(32);
-      const session = { email: user.email, displayName: user.displayName, role: user.role, csrf: randomToken(24), mfaMethod, expiresAt: Date.now() + SESSION_TTL_MS };
+      const session = { email: user.email, displayName: user.displayName, role: user.role, csrf: randomToken(24), mfaMethod, expiresAt: Date.now() + SESSION_TTL_MS, createdAt: Date.now(), passwordHash: user.passwordHash };
       sessions.set(token, session);
       audit(session, 'admin.login', 'admin_user', user.email, null, { role: user.role, mfaMethod });
       const secure = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? '; Secure' : '';
@@ -1634,6 +1967,11 @@ export function createVerapepServer(options = {}) {
         outbox: ROLE_ACCESS[session.role]?.has('orders') ? await listOutbox() : [],
         mode: getMode(),
         productionReadiness: productionReadiness(),
+        publication: { gate: gateMode, visibleProducts: visibleCatalogueProducts().length, totalProducts: catalogue.products.length },
+        supportKbStatus: ROLE_ACCESS[session.role]?.has('guide') ? supportKbStatus() : null,
+        veraStats: ROLE_ACCESS[session.role]?.has('guide') ? veraStats : null,
+        recentErrors: ROLE_ACCESS[session.role]?.has('audit') ? recentErrors : [],
+        startedAt: serverStartedAt,
         orderQueues: {
           awaitingPayment: orders.filter(order => order.paymentStatus === 'unpaid' && order.orderStatus === 'awaiting_payment').length,
           toPack: orders.filter(order => order.paymentStatus === 'paid' && order.orderStatus === 'processing').length,
@@ -1745,7 +2083,9 @@ export function createVerapepServer(options = {}) {
       const role = cleanText(body.role, 20);
       if (!validEmail(email) || !['owner','admin','editor','support'].includes(role)) return sendJson(res, 400, { error: 'invalid_admin_user', message: 'Enter a valid email and role.' });
       if (!validAdminPassword(body.password)) return sendJson(res, 400, { error: 'weak_password', message: 'Use an admin password of at least 12 characters.' });
-      const user = database.upsertUser({ email, displayName: cleanText(body.displayName, 100) || email, role, password: String(body.password), enabled: body.enabled !== false });
+      // v20: "add user" no longer silently overwrites an existing account (it could demote the owner).
+      if (database.findUser(email)) return sendJson(res, 409, { error: 'admin_user_exists', message: 'An admin account with this email already exists. Edit it in the list instead.' });
+      const user = sanitiseAdminUser(database.upsertUser({ email, displayName: cleanText(body.displayName, 100) || email, role, password: String(body.password), enabled: body.enabled !== false }));
       audit(session, 'admin_user.created', 'admin_user', email, null, user);
       return sendJson(res, 201, { user });
     }
@@ -1760,8 +2100,13 @@ export function createVerapepServer(options = {}) {
       const role = body.role === undefined ? before.role : cleanText(body.role, 20);
       if (!['owner','admin','editor','support'].includes(role)) return sendJson(res, 400, { error: 'invalid_role', message: 'Invalid admin role.' });
       if (body.password && !validAdminPassword(body.password)) return sendJson(res, 400, { error: 'weak_password', message: 'Use an admin password of at least 12 characters.' });
-      const user = database.upsertUser({ email, displayName: cleanText(body.displayName, 100) || before.displayName, role, password: body.password ? String(body.password) : undefined, enabled: body.enabled === undefined ? before.enabled : body.enabled === true });
-      audit(session, 'admin_user.updated', 'admin_user', email, { displayName: before.displayName, role: before.role, enabled: before.enabled }, user);
+      // v20: never leave the store without an enabled owner (owner-only decisions would become impossible).
+      const staysOwner = role === 'owner' && (body.enabled === undefined ? before.enabled : body.enabled === true);
+      if (before.role === 'owner' && before.enabled && !staysOwner && database.listUsers().filter(item => item.role === 'owner' && item.enabled).length <= 1) {
+        return sendJson(res, 409, { error: 'last_owner', message: 'This is the only active owner. Add another owner before changing or disabling this account.' });
+      }
+      const user = sanitiseAdminUser(database.upsertUser({ email, displayName: cleanText(body.displayName, 100) || before.displayName, role, password: body.password ? String(body.password) : undefined, enabled: body.enabled === undefined ? before.enabled : body.enabled === true }));
+      audit(session, 'admin_user.updated', 'admin_user', email, { displayName: before.displayName, role: before.role, enabled: before.enabled }, { ...user, passwordChanged: Boolean(body.password) });
       return sendJson(res, 200, { user });
     }
 
@@ -1791,6 +2136,47 @@ export function createVerapepServer(options = {}) {
       return sendJson(res, 200, { config });
     }
 
+    if (method === 'GET' && pathname === '/api/admin/vera-translations') {
+      const session = requireAdmin(req); requireRole(session, 'guide');
+      return sendJson(res, 200, { language: 'sv', items: translationStatus(veraTranslations, supportKb, ENGINE_STRINGS, 'sv'), canApprove: ['owner', 'admin'].includes(session.role) });
+    }
+
+    const translationMatch = pathname.match(/^\/api\/admin\/vera-translations\/sv\/((?:string|entry):[a-zA-Z0-9_-]{1,60})$/);
+    if (method === 'PATCH' && translationMatch) {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
+      const key = translationMatch[1];
+      const sources = englishSources(supportKb, ENGINE_STRINGS);
+      if (!sources[key]) return sendJson(res, 404, { error: 'translation_not_found', message: 'Unknown text.' });
+      const body = await readJsonBody(req);
+      const language = (veraTranslations.languages ||= {}).sv ||= { items: {} };
+      const before = structuredClone(language.items[key] || null);
+      const item = language.items[key] || {};
+      if (body.action === 'save') {
+        const text = cleanText(body.text, 2000);
+        if (text.length < 2) return sendJson(res, 400, { error: 'translation_empty', message: 'Write the translation first.' });
+        const placeholders = value => [...String(value).matchAll(/\{(\w+)\}/g)].map(match => match[1]).sort().join(',');
+        if (placeholders(text) !== placeholders(sources[key].text)) return sendJson(res, 400, { error: 'translation_placeholders', message: 'Keep the same {placeholders} as the English text.' });
+        language.items[key] = { text, status: 'proposed', sourceHash: sourceHash(sources[key].text), proposedBy: session.email, proposedAt: nowIso(), note: cleanText(body.note, 300) };
+      } else if (body.action === 'approve' || body.action === 'revoke') {
+        if (!['owner', 'admin'].includes(session.role)) return sendJson(res, 403, { error: 'reviewer_role_required', message: 'Only an owner or admin can approve translations.' });
+        if (body.action === 'approve') {
+          if (body.confirm !== true) return sendJson(res, 400, { error: 'approval_confirmation_required', message: 'Confirm that the translation says the same as the English text.' });
+          if (!item.text) return sendJson(res, 409, { error: 'translation_empty', message: 'There is no translation to approve.' });
+          if (item.sourceHash !== sourceHash(sources[key].text)) return sendJson(res, 409, { error: 'translation_outdated', message: 'The English text changed after this translation was written. Update the translation first.' });
+          language.items[key] = { ...item, status: 'approved', approvedBy: session.email, approvedAt: nowIso() };
+        } else {
+          language.items[key] = { ...item, status: 'proposed', approvedBy: null, approvedAt: null };
+        }
+      } else {
+        return sendJson(res, 400, { error: 'invalid_action', message: 'Choose save, approve or revoke.' });
+      }
+      database.writeDocument('veraTranslations', veraTranslations);
+      audit(session, `vera.translation_${body.action}`, 'vera_translation', `sv:${key}`, before, language.items[key]);
+      return sendJson(res, 200, { item: translationStatus(veraTranslations, supportKb, ENGINE_STRINGS, 'sv').find(entry => entry.key === key) });
+    }
+
+    if (await v19.handle(req, res, url, method, pathname)) return;
+
     const contentMatch = pathname.match(/^\/api\/admin\/product-content\/([^/]+)$/);
     if (method === 'PATCH' && contentMatch) {
       const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'products');
@@ -1799,6 +2185,10 @@ export function createVerapepServer(options = {}) {
       if (!productsById.has(productId)) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
       const current = productContent.products[productId] || { productId };
       const before = structuredClone(current);
+      const textBefore = v19.beforeDirectEdit(session, productId, body, current);
+      if (body.availableForSale === true && !complianceSaleApproved(productId)) throw complianceBlocked('This product has no compliance approval for sale. Sale cannot be switched on.');
+      for (const field of ['labReports']) if (Array.isArray(body[field])) body[field] = body[field].filter(item => item && (!item.url || safePublicUrl(item.url)));
+      if (body.imageUrl !== undefined && body.imageUrl && !safePublicUrl(body.imageUrl)) return sendJson(res, 400, { error: 'invalid_url', message: 'Image URL must be a site path (/assets/…) or an https:// address.' });
       for (const field of ['displayName','shortDescription','fullDescription','ingredients','storage','usage','warnings','deliveryEstimate','imageUrl','imageAlt','imageSrcset','imageSizes','imageFocalPoint','stockStatus']) {
         if (body[field] !== undefined) current[field] = cleanText(body[field], field.includes('Description') ? 4000 : 1000);
       }
@@ -1817,8 +2207,16 @@ export function createVerapepServer(options = {}) {
       policy.products[productId] = productPolicy;
       current.updatedAt = nowIso();
       productContent.products[productId] = current;
+      // v17: content shown to customers changed after approval → flag for re-review (does not auto-publish anything).
+      const reviewed = complianceRecord(productId);
+      const claimFields = ['displayName','shortDescription','fullDescription','ingredients','usage','warnings','labReports','searchAliases'];
+      if (reviewed.status === 'approved_for_publication' && claimFields.some(field => JSON.stringify(before[field] ?? null) !== JSON.stringify(current[field] ?? null))) {
+        compliance.products[productId] = { ...reviewed, contentChangedAfterApproval: true, history: [...(reviewed.history || []), { at: nowIso(), by: session.email, event: 'content_changed_after_approval' }] };
+        await persistCompliance();
+      }
       await persistProductContent();
       await persistPolicy();
+      v19.afterDirectEdit(session, productId, textBefore, current);
       audit(session, 'product.updated', 'product', productId, before, current);
       return sendJson(res, 200, { productId, content: { ...current, publicStatus: derivePublicStatus(current), readiness: productReadiness(productId) }, commerce: productPolicy });
     }
@@ -1848,15 +2246,192 @@ export function createVerapepServer(options = {}) {
       return sendJson(res, 200, { guide });
     }
 
+    if (method === 'GET' && pathname === '/api/admin/support-kb/migration') {
+      const session = requireAdmin(req); requireRole(session, 'guide');
+      if (!shippedKb) return sendJson(res, 503, { error: 'kb_migration_unavailable', message: 'The shipped knowledge base could not be read.' });
+      return sendJson(res, 200, { plan: planMigration(supportKb, shippedKb.shipped, shippedKb.history), snapshots: listSnapshots(dataDir).slice(0, 20) });
+    }
+
+    if (method === 'POST' && pathname === '/api/admin/support-kb/migration') {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
+      if (!shippedKb) return sendJson(res, 503, { error: 'kb_migration_unavailable', message: 'The shipped knowledge base could not be read.' });
+      const body = await readJsonBody(req);
+      const plan = planMigration(supportKb, shippedKb.shipped, shippedKb.history);
+      if (plan.upToDate) return sendJson(res, 200, { applied: false, message: 'The knowledge base is already up to date.', plan });
+      if (Number(body.confirmWrites) !== plan.writes) return sendJson(res, 409, { error: 'migration_confirmation_required', message: `This update writes ${plan.writes} change(s). Review the list and confirm to continue.`, plan });
+      const before = structuredClone(supportKb);
+      const snapshot = writeSnapshot(dataDir, before, `before ${plan.migration} (admin ${session.email})`);
+      const sqliteBackup = database.filePath ? database.backupTo(path.join(snapshotDir(dataDir), `verapep-${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}-${randomToken(3).replace(/[^a-zA-Z0-9]/g, '')}-pre-kb-migration.sqlite`)) : null;
+      supportKb = applyPlan(before, shippedKb.shipped, plan, { by: session.email, snapshot });
+      await persistSupportKb();
+      audit(session, 'support_kb.migrated', 'support_kb', 'vera', { entries: before.entries?.length ?? 0, contentVersion: before.contentVersion ?? null }, { entries: supportKb.entries.length, contentVersion: supportKb.contentVersion, counts: plan.counts, snapshot });
+      return sendJson(res, 200, { applied: true, snapshot, databaseBackup: sqliteBackup ? path.basename(sqliteBackup) : null, counts: plan.counts, supportKb });
+    }
+
+    if (method === 'POST' && pathname === '/api/admin/support-kb/rollback') {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
+      const body = await readJsonBody(req);
+      if (body.confirm !== true) return sendJson(res, 400, { error: 'rollback_confirmation_required', message: 'Confirm the rollback to continue.' });
+      const restored = readSnapshot(dataDir, cleanText(body.snapshot, 120));
+      const before = structuredClone(supportKb);
+      const safety = writeSnapshot(dataDir, before, `before rollback to ${cleanText(body.snapshot, 120)} (admin ${session.email})`);
+      supportKb = restored;
+      await persistSupportKb();
+      audit(session, 'support_kb.rolled_back', 'support_kb', 'vera', { entries: before.entries?.length ?? 0, contentVersion: before.contentVersion ?? null }, { entries: restored.entries.length, contentVersion: restored.contentVersion ?? null, from: cleanText(body.snapshot, 120), safetySnapshot: safety });
+      return sendJson(res, 200, { restored: true, safetySnapshot: safety, supportKb });
+    }
+
     if (method === 'PATCH' && pathname === '/api/admin/support-kb') {
       const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
       const before = structuredClone(supportKb);
       const body = await readJsonBody(req);
-      if (Array.isArray(body.entries)) supportKb.entries = body.entries.slice(0,100).map(item => ({ id: cleanText(item.id,80)||randomToken(6), question: cleanText(item.question,500), answer: cleanText(item.answer,3000), url: cleanText(item.url,500) }));
+      if (Array.isArray(body.entries)) {
+        // v17: ids are preserved (the migration relies on them), links are validated and admins can lock wording.
+        const entries = body.entries.slice(0, 100).map(item => {
+          const keywords = (Array.isArray(item.keywords) ? item.keywords : String(item.keywords || item.question || '').split(/[,\n]/)).map(value => cleanText(value, 80).toLowerCase()).filter(Boolean).slice(0, 30);
+          const previous = supportKb.entries.find(entry => entry.id === cleanText(item.id, 80));
+          return { ...(previous || {}), id: cleanText(item.id, 80) || `custom-${randomToken(4)}`, title: cleanText(item.title, 120) || previous?.title || keywords[0] || 'Untitled', keywords, question: keywords.join(' '), answer: cleanText(item.answer, 3000), url: cleanText(item.url, 500), locked: item.locked === true };
+        }).filter(entry => entry.answer && entry.keywords.length);
+        const badLink = entries.find(entry => entry.url && !safePublicUrl(entry.url, { allowMailto: true }));
+        if (badLink) return sendJson(res, 400, { error: 'invalid_url', message: `The link for "${badLink.title}" must be a site path (/page.html) or an https:// or mailto: address.` });
+        const nextIds = new Set(entries.map(entry => entry.id));
+        const removed = supportKb.entries.filter(entry => !nextIds.has(entry.id));
+        if (removed.length > 2 && Number(body.confirmRemoved) !== removed.length) {
+          return sendJson(res, 409, { error: 'bulk_removal_confirmation_required', message: `This save removes ${removed.length} answers (${removed.slice(0, 5).map(entry => entry.title || entry.id).join(', ')}${removed.length > 5 ? ', …' : ''}). Confirm to continue.`, removed: removed.length });
+        }
+        const removedShipped = new Set(supportKb.removedShippedIds || []);
+        for (const entry of removed) if (shippedKbIds.has(entry.id)) removedShipped.add(entry.id);
+        for (const entry of entries) removedShipped.delete(entry.id);
+        supportKb.entries = entries;
+        supportKb.removedShippedIds = [...removedShipped];
+      }
       if (body.fallback !== undefined) supportKb.fallback = cleanText(body.fallback,1000);
       await persistSupportKb();
       audit(session, 'support_kb.updated', 'support_kb', 'vera', before, supportKb);
       return sendJson(res, 200, { supportKb });
+    }
+
+    /* ---------- v17 compliance review workflow ---------- */
+    if (method === 'GET' && pathname === '/api/admin/compliance') {
+      const session = requireAdmin(req); requireRole(session, 'products');
+      const rows = catalogue.products.map(product => inventoryRow(product, productContent.products[product.id] || {}, complianceRecord(product.id), gateMode, policy.products[product.id] || {}));
+      const summary = Object.fromEntries(REVIEW_STATUSES.map(status => [status, rows.filter(row => row.review.status === status).length]));
+      return sendJson(res, 200, {
+        gate: gateMode,
+        statuses: REVIEW_STATUSES,
+        scopes: APPROVAL_SCOPES,
+        approvalConfirmation: APPROVAL_CONFIRMATION,
+        canApprove: session.role === 'owner',
+        summary: { ...summary, total: rows.length, publiclyVisible: rows.filter(row => row.publiclyVisible).length, highRisk: rows.filter(row => row.suggestion.level === 'high').length, flaggedClaims: rows.filter(row => row.unsupportedClaims.length).length },
+        rows
+      });
+    }
+
+    const complianceMatch = pathname.match(/^\/api\/admin\/compliance\/([^/]+)$/);
+    if (method === 'GET' && complianceMatch && complianceMatch[1] !== 'bulk') {
+      const session = requireAdmin(req); requireRole(session, 'products');
+      const productId = decodeURIComponent(complianceMatch[1]);
+      const product = productsById.get(productId);
+      if (!product) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
+      const record = complianceRecord(productId);
+      return sendJson(res, 200, { row: inventoryRow(product, productContent.products[productId] || {}, record, gateMode, policy.products[productId] || {}), history: record.history || [] });
+    }
+
+    async function revokeCommerce(productId, reason) {
+      const product = productsById.get(productId);
+      const content = productContent.products[productId] || { productId };
+      const productPolicy = policy.products[productId] || {};
+      const wasSelling = content.availableForSale === true || productPolicy.sandboxEnabled === true || productPolicy.liveEnabled === true;
+      content.availableForSale = false; content.informationOnly = true;
+      if (content.stockStatus !== 'archived') content.stockStatus = 'information_only';
+      productPolicy.sandboxEnabled = false; productPolicy.liveEnabled = false;
+      if (productPolicy.status === 'live_approved' || productPolicy.status === 'sandbox_sale_enabled') productPolicy.status = 'information_only';
+      productPolicy.note = reason;
+      for (const variant of product?.variants || []) if (inventory.variants[variant.variantId]) inventory.variants[variant.variantId].saleEnabled = false;
+      productContent.products[productId] = content; policy.products[productId] = productPolicy;
+      return wasSelling;
+    }
+
+    if (method === 'PATCH' && complianceMatch) {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'products');
+      const productId = decodeURIComponent(complianceMatch[1]);
+      const product = productsById.get(productId);
+      if (!product) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
+      const body = await readJsonBody(req);
+      const status = cleanText(body.status, 40);
+      if (!REVIEW_STATUSES.includes(status)) return sendJson(res, 400, { error: 'invalid_review_status', message: 'Choose a valid review status.' });
+      const before = complianceRecord(productId);
+      const note = cleanText(body.note, 1000);
+      const next = { ...before, status, note, contentChangedAfterApproval: false, decidedBy: session.email, decidedAt: nowIso() };
+      if (Array.isArray(body.evidence)) {
+        const evidence = body.evidence.slice(0, 20).map(item => ({ title: cleanText(item.title, 160), url: cleanText(item.url, 500), date: cleanText(item.date, 40) })).filter(item => item.title);
+        if (evidence.some(item => item.url && !safePublicUrl(item.url))) return sendJson(res, 400, { error: 'invalid_url', message: 'Evidence links must be site paths or https:// addresses.' });
+        next.evidence = evidence;
+      }
+      // v20: an owner/admin decision to hide a product ("Do not publish") or an owner approval can only
+      // be changed by an owner or admin. Editors could previously undo "Do not publish", which
+      // re-exposes the product in preview mode, or remove an owner's approval.
+      if (['do_not_publish', 'approved_for_publication'].includes(before.status) && status !== before.status && !['owner', 'admin'].includes(session.role)) {
+        return sendJson(res, 403, { error: 'reviewer_role_required', message: `Only an owner or admin can change a product that is "${REVIEW_STATUS_LABELS[before.status]}".` });
+      }
+      if (status === 'approved_for_publication') {
+        // Final publication approval is a human, owner-level decision backed by an external review.
+        if (session.role !== 'owner') return sendJson(res, 403, { error: 'owner_required', message: 'Only the owner can record an approval for publication.' });
+        if (cleanText(body.confirmation, 120) !== APPROVAL_CONFIRMATION) return sendJson(res, 400, { error: 'approval_confirmation_required', message: 'Type the exact approval confirmation to record a reviewed approval.' });
+        const reviewReference = cleanText(body.reviewReference, 240);
+        const reviewer = cleanText(body.reviewer, 160);
+        if (reviewReference.length < 5) return sendJson(res, 400, { error: 'review_reference_required', message: 'Add a traceable review reference (for example a legal memo or case number).' });
+        if (reviewer.length < 3) return sendJson(res, 400, { error: 'reviewer_required', message: 'Name the qualified reviewer or firm responsible for the decision.' });
+        const scope = cleanText(body.scope, 20);
+        if (!APPROVAL_SCOPES.includes(scope)) return sendJson(res, 400, { error: 'approval_scope_required', message: 'Choose what is approved: information only, or information and sale.' });
+        const allowed = new Set((config.allowedCountries || []).map(item => item.code));
+        const markets = [...new Set((Array.isArray(body.markets) ? body.markets : []).map(value => cleanText(value, 2).toUpperCase()).filter(code => allowed.has(code)))];
+        if (!markets.length) return sendJson(res, 400, { error: 'approval_markets_required', message: 'Select the specific markets the approval covers.' });
+        Object.assign(next, { reviewReference, reviewer, scope, markets });
+      } else {
+        Object.assign(next, { scope: null, markets: [], reviewReference: before.status === 'approved_for_publication' ? null : before.reviewReference, reviewer: before.status === 'approved_for_publication' ? null : before.reviewer });
+      }
+      let commerceRevoked = false;
+      if (before.status === 'approved_for_publication' && (status !== 'approved_for_publication' || next.scope !== 'sale')) {
+        commerceRevoked = await revokeCommerce(productId, `Sale switched off: compliance status changed to ${status}.`);
+      }
+      next.history = [...(before.history || []), { at: next.decidedAt, by: session.email, role: session.role, from: before.status, to: status, note, scope: next.scope, markets: next.markets, reviewReference: next.reviewReference }].slice(-200);
+      compliance.products[productId] = next;
+      await persistCompliance();
+      if (commerceRevoked) { await persistProductContent(); await persistPolicy(); await persistInventory(); }
+      audit(session, 'compliance.status_changed', 'product', productId, { status: before.status, scope: before.scope, markets: before.markets }, { status, scope: next.scope, markets: next.markets, reviewReference: next.reviewReference, reviewer: next.reviewer, note, commerceRevoked });
+      return sendJson(res, 200, { row: inventoryRow(product, productContent.products[productId] || {}, next, gateMode, policy.products[productId] || {}), commerceRevoked });
+    }
+
+    if (method === 'POST' && pathname === '/api/admin/compliance/bulk') {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'products');
+      const body = await readJsonBody(req);
+      const status = cleanText(body.status, 40);
+      // Approvals are never bulk actions: each one needs its own reference, scope and markets.
+      if (!NON_APPROVAL_STATUSES.includes(status)) return sendJson(res, 400, { error: 'invalid_bulk_status', message: 'Bulk changes can only set Not reviewed, Needs evidence, In legal review or Do not publish.' });
+      const productIds = [...new Set((Array.isArray(body.productIds) ? body.productIds : []).map(value => cleanText(value, 160)))].filter(id => productsById.has(id));
+      if (!productIds.length) return sendJson(res, 400, { error: 'no_products_selected', message: 'Select at least one product.' });
+      const note = cleanText(body.note, 1000);
+      if (note.length < 3) return sendJson(res, 400, { error: 'note_required', message: 'Add a short note explaining the bulk change.' });
+      if (!['owner', 'admin'].includes(session.role)) {
+        const protectedIds = productIds.filter(id => ['do_not_publish', 'approved_for_publication'].includes(complianceRecord(id).status) && complianceRecord(id).status !== status);
+        if (protectedIds.length) return sendJson(res, 403, { error: 'reviewer_role_required', message: `${protectedIds.length} selected product(s) are "Do not publish" or approved. Only an owner or admin can change those.` });
+      }
+      const affectedApproved = productIds.filter(id => complianceRecord(id).status === 'approved_for_publication');
+      if (Number(body.confirmCount) !== productIds.length) {
+        return sendJson(res, 409, { error: 'bulk_confirmation_required', message: `This changes ${productIds.length} products${affectedApproved.length ? `, including ${affectedApproved.length} approved product(s) that will lose their approval and any sale` : ''}. Confirm the number of products to continue.`, count: productIds.length, affectsApproved: affectedApproved.length });
+      }
+      const at = nowIso();
+      let revoked = 0;
+      for (const productId of productIds) {
+        const before = complianceRecord(productId);
+        if (before.status === 'approved_for_publication' && await revokeCommerce(productId, `Sale switched off: bulk status change to ${status}.`)) revoked += 1;
+        compliance.products[productId] = { ...before, status, note, scope: null, markets: [], decidedBy: session.email, decidedAt: at, contentChangedAfterApproval: false, history: [...(before.history || []), { at, by: session.email, role: session.role, from: before.status, to: status, note, bulk: true }].slice(-200) };
+      }
+      await persistCompliance();
+      if (affectedApproved.length) { await persistProductContent(); await persistPolicy(); await persistInventory(); }
+      audit(session, 'compliance.bulk_status_changed', 'product', `${productIds.length} products`, null, { status, note, productIds, revokedSales: revoked });
+      return sendJson(res, 200, { updated: productIds.length, status, revokedSales: revoked });
     }
 
     const adminOrderMatch = pathname.match(/^\/api\/admin\/orders\/([^/]+)$/);
@@ -1930,6 +2505,11 @@ export function createVerapepServer(options = {}) {
       const changedVariants = [];
       const blockedVariants = [];
 
+      if (enabled && !complianceSaleApproved(productId)) throw complianceBlocked('This product has no compliance approval for sale. Record a reviewed approval (scope: sale) before enabling the webshop.');
+      // v17: switching the store-wide checkout mode is a settings change; editors may not do it as a side effect.
+      if (enabled && config.checkoutMode !== 'sandbox' && !ROLE_ACCESS[session.role]?.has('settings')) {
+        return sendJson(res, 403, { error: 'admin_permission_denied', message: 'Checkout is switched off store-wide. Ask an owner or admin to enable sandbox checkout in Settings first.' });
+      }
       if (enabled) {
         config.checkoutMode = 'sandbox';
         current.published = true;
@@ -2017,7 +2597,9 @@ export function createVerapepServer(options = {}) {
         }
         const reviewReference = cleanText(body.reviewReference, 240);
         if (reviewReference.length < 5) return sendJson(res, 400, { error: 'review_reference_required', message: 'Add a traceable legal/compliance review reference.' });
-        const allowedCountrySet = new Set((config.allowedCountries || []).map(item => item.code));
+        const reviewed = complianceRecord(productId);
+        if (!saleApproved(reviewed)) throw complianceBlocked('Record a compliance approval with scope "sale" before live approval.');
+        const allowedCountrySet = new Set((config.allowedCountries || []).map(item => item.code).filter(code => reviewed.markets.includes(code)));
         const countries = (Array.isArray(body.allowedCountries) ? body.allowedCountries : []).map(value => cleanText(value, 2).toUpperCase()).filter(code => allowedCountrySet.has(code));
         if (!countries.length) return sendJson(res, 400, { error: 'approved_countries_required', message: 'Select at least one specifically approved destination country.' });
         const completeFields = ['shortDescription','fullDescription','warnings','ingredients','imageUrl'];
@@ -2091,9 +2673,13 @@ export function createVerapepServer(options = {}) {
       if (!productsById.has(productId)) return sendJson(res, 404, { error: 'product_not_found', message: 'Product not found.' });
       const productPolicy = policy.products[productId] || {};
       const before = structuredClone(productPolicy);
+      if (body.sandboxEnabled === true && !complianceSaleApproved(productId)) throw complianceBlocked('This product has no compliance approval for sale.');
       if (typeof body.sandboxEnabled === 'boolean') productPolicy.sandboxEnabled = body.sandboxEnabled;
       productPolicy.liveEnabled = false;
-      productPolicy.status = cleanText(body.status || productPolicy.status || 'catalogue_only', 60);
+      const requestedStatus = cleanText(body.status || productPolicy.status || 'catalogue_only', 60);
+      // v17: the commerce status is descriptive; 'live_approved' can only be set by the owner live-review action.
+      if (!['catalogue_only','information_only','sandbox_sale_enabled','archived'].includes(requestedStatus)) return sendJson(res, 400, { error: 'invalid_status', message: 'Invalid commerce status.' });
+      productPolicy.status = requestedStatus;
       productPolicy.note = cleanText(body.note || productPolicy.note || '', 500);
       policy.products[productId] = productPolicy;
       await persistPolicy();
@@ -2122,8 +2708,24 @@ export function createVerapepServer(options = {}) {
     return sendJson(res, 404, { error: 'not_found', message: 'API route not found.' });
   }
 
+  async function sendNotFound(req, res, pathname, message = 'Not found') {
+    // Page requests get the branded 404 page; assets and data keep a plain-text 404.
+    const extension = path.extname(pathname).toLowerCase();
+    if (req.method === 'GET' && (!extension || extension === '.html')) {
+      try {
+        const body = await fsp.readFile(path.join(rootDir, '404.html'));
+        return sendText(res, 404, body.toString('utf8'), 'text/html; charset=utf-8');
+      } catch { /* fall through to plain text */ }
+    }
+    return sendText(res, 404, message);
+  }
+
   async function serveStatic(req, res, url) {
-    let pathname = decodeURIComponent(url.pathname);
+    // v20: malformed escapes are a client error (was 500), and decoded "..", backslashes or NUL
+    // are refused before any path logic: "/assets%2F..%2Fserver.mjs" used to serve server code.
+    let pathname;
+    try { pathname = decodeURIComponent(url.pathname); } catch { return sendText(res, 400, 'Bad request'); }
+    if (/(^|\/)\.\.(\/|$)|\\|\0/.test(pathname)) return sendNotFound(req, res, url.pathname);
     const searchIndexingEnabled = IS_PRODUCTION && String(process.env.PRODUCTION_SEO_INDEXING || '').toLowerCase() === 'true';
     if (pathname === '/robots.txt') {
       const baseUrl = String(process.env.BASE_URL || '').replace(/\/$/, '');
@@ -2137,32 +2739,46 @@ export function createVerapepServer(options = {}) {
       const baseUrl = String(process.env.BASE_URL || '').replace(/\/$/, '');
       if (!baseUrl) return sendText(res, 503, 'BASE_URL is required for sitemap generation.');
       const pages = ['/', '/guide.html', '/support.html', '/privacy.html', '/terms.html', '/shipping-returns.html'];
-      for (const product of catalogue.products.map(productPublic)) {
-        if (product.content?.published !== false && product.content?.stockStatus !== 'archived') pages.push(`/product/${encodeURIComponent(product.id)}`);
-      }
+      for (const product of visibleCatalogueProducts()) pages.push(`/product/${encodeURIComponent(product.id)}`);
       const escapeXml = value => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\"','&quot;').replaceAll("'",'&apos;');
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(item => `  <url><loc>${escapeXml(`${baseUrl}${item}`)}</loc></url>`).join('\n')}\n</urlset>\n`;
       return sendText(res, 200, xml, 'application/xml; charset=utf-8');
     }
+    if (pathname.startsWith('/product-media/')) {
+      if (await v19.handle(req, res, url, req.method || 'GET', pathname)) return;
+      return sendNotFound(req, res, pathname);
+    }
+    if (pathname === '/assets/product-image-map.js') {
+      const visibleImages = Object.fromEntries(Object.entries(productImages).filter(([id]) => isPubliclyVisible(id)));
+      const script = `/* Generated by the server (v18): photo overrides for publicly visible products only. */\n(() => {\n  'use strict';\n  const images = Object.freeze(${JSON.stringify(visibleImages)});\n  window.VerapepeProductImages = Object.freeze({\n    images,\n    get(productOrId) {\n      const id = typeof productOrId === 'string' ? productOrId : productOrId?.id;\n      return id ? images[id] || '' : '';\n    }\n  });\n})();\n`;
+      return sendText(res, 200, script, 'text/javascript; charset=utf-8', { 'Cache-Control': 'no-cache' });
+    }
+    if (productIdByImagePath.has(pathname) && !isPubliclyVisible(productIdByImagePath.get(pathname))) return sendNotFound(req, res, pathname);
     const productRoute = pathname.match(/^\/product\/([^/]+)\/?$/) || pathname.match(/^\/shop\/([^/]+)\.html$/);
     const dynamicProductId = productRoute ? decodeURIComponent(productRoute[1]) : null;
     if (pathname === '/') pathname = '/index.html';
     if (dynamicProductId) pathname = '/product.html';
     if (pathname.endsWith('/')) pathname += 'index.html';
-    const relative = pathname.replace(/^\/+/, '');
-    const resolved = path.resolve(rootDir, relative);
+    const resolved = path.resolve(rootDir, pathname.replace(/^\/+/, ''));
     if (!resolved.startsWith(`${rootDir}${path.sep}`) && resolved !== rootDir) return sendText(res, 403, 'Forbidden');
+    // v20: every check below uses the path relative to the root *after* resolution.
+    const relative = path.relative(rootDir, resolved).split(path.sep).join('/');
     const extension = path.extname(resolved).toLowerCase();
     const firstSegment = relative.split(/[\\/]/)[0];
+    if (!MIME_TYPES[extension] && !extension) return sendNotFound(req, res, pathname);
     if (!MIME_TYPES[extension] || firstSegment === 'data' || firstSegment === 'outbox' || path.basename(resolved).startsWith('.')) return sendText(res, 404, 'Not found');
+    // v17: explicit public surface. Only top-level pages and /assets are web content; server code,
+    // scripts, tests, SQL, internal reports (*.md, *.csv) and package metadata are never served.
+    const isPublicPage = !relative.includes('/') && extension === '.html';
+    if (!isPublicPage && firstSegment !== 'assets') return sendNotFound(req, res, pathname);
     try {
       const stat = await fsp.stat(resolved);
-      if (!stat.isFile()) return sendText(res, 404, 'Not found');
+      if (!stat.isFile()) return sendNotFound(req, res, pathname);
       let body = await fsp.readFile(resolved);
       if (dynamicProductId && path.basename(resolved) === 'product.html') {
         const product = productsById.get(dynamicProductId);
         const publicProduct = product ? productPublic(product) : null;
-        if (!publicProduct || publicProduct.content?.published === false || publicProduct.content?.stockStatus === 'archived') return sendText(res, 404, 'Product not found');
+        if (!publicProduct || !isPubliclyVisible(product)) return sendNotFound(req, res, '/product.html', 'Product not found');
         const name = publicProduct.content?.displayName || publicProduct.name;
         const description = publicProduct.content?.shortDescription || `View ${name} variants and published product information.`;
         const canonicalPath = `/product/${encodeURIComponent(publicProduct.id)}`;
@@ -2205,29 +2821,37 @@ export function createVerapepServer(options = {}) {
       }
       res.writeHead(200, {
         ...securityHeaders(MIME_TYPES[extension]),
-        'Cache-Control': isAsset ? 'public, max-age=3600, immutable' : 'no-cache',
+        // Versioned assets (?v=) never change at that URL; unversioned ones are cached for at most an hour.
+        'Cache-Control': isAsset ? (url.searchParams.has('v') ? 'public, max-age=31536000, immutable' : 'public, max-age=3600, must-revalidate') : 'no-cache',
         ...(compressible ? { Vary: 'Accept-Encoding' } : {}),
         ...(contentEncoding ? { 'Content-Encoding': contentEncoding } : {}),
         'Content-Length': responseBody.length
       });
       if (req.method === 'HEAD') res.end(); else res.end(responseBody);
     } catch (error) {
-      if (error.code === 'ENOENT') return sendText(res, 404, 'Not found');
+      if (error.code === 'ENOENT') return sendNotFound(req, res, pathname);
       throw error;
     }
   }
 
   const server = http.createServer(async (req, res) => {
+    res.vpAcceptEncoding = req.headers['accept-encoding'] || '';
     try {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
       else if (['GET', 'HEAD'].includes(req.method || 'GET')) await serveStatic(req, res, url);
       else sendJson(res, 405, { error: 'method_not_allowed', message: 'Method not allowed.' }, { Allow: 'GET, HEAD' });
     } catch (error) {
+      // v20: malformed %-escapes and requests the client aborted are client-side problems; they no
+      // longer count as server errors (they filled the error log and the owner overview).
+      if (error instanceof URIError) Object.assign(error, { status: 400, code: 'bad_request', message: 'The address or a header contains invalid encoding.' });
+      if (error.code === 'ECONNRESET' || error.code === 'ERR_STREAM_PREMATURE_CLOSE' || error.message === 'aborted') Object.assign(error, { status: 400, code: 'request_aborted' });
       const status = Number(error.status) || 500;
       if (status >= 500) {
         console.error(error);
         void notifyMonitoring({ type: 'server_error', method: req.method || 'GET', path: String(req.url || '').split('?')[0], status, code: error.code || 'request_failed' });
+        recentErrors.unshift({ at: nowIso(), method: req.method || 'GET', path: String(req.url || '').split('?')[0].slice(0, 200), status, code: error.code || 'request_failed' });
+        recentErrors.length = Math.min(recentErrors.length, 50);
       }
       if (!res.headersSent) sendJson(res, status, errorPayload(error));
       else res.end();
@@ -2242,7 +2866,8 @@ export function createVerapepServer(options = {}) {
     getMode: () => getMode(),
     resetSessions: () => sessions.clear()
   };
-  server.on('close', () => { try { database.close(); } catch {} });
+  server.on('listening', () => writeServerLock(dataDir));
+  server.on('close', () => { removeServerLock(dataDir); try { database.close(); } catch {} });
   return server;
 }
 

@@ -38,9 +38,12 @@ test('VERAPEP V11 complete storefront and admin regression', async t => {
     assert.equal(response.status, 200);
     const html = await response.text();
     assert.match(html, /theme-v11/);
-    assert.match(html, /assets\/v11\.css/);
+    // v16 serves the layered stylesheets as one ordered bundle; v11 must be part of it.
+    assert.match(html, /assets\/bundle-storefront\.css/);
+    const bundle = await fsp.readFile(path.join(root, 'assets', 'bundle-storefront.css'), 'utf8');
+    assert.match(bundle, /\/\* v11\.css \*\//);
     assert.match(html, /assets\/v11-ui\.js/);
-    assert.match(html, /Precision peptides/);
+    assert.match(html, /A catalogue built<br\/>on transparency\./);
     const appSource = await fsp.readFile(path.join(root, 'assets', 'app.js'), 'utf8');
     assert.match(appSource, /state\.focuses\].*every/s);
   });
@@ -48,10 +51,13 @@ test('VERAPEP V11 complete storefront and admin regression', async t => {
   const storefront = (await jsonRequest(baseUrl, '/api/storefront')).payload;
 
   await t.test('all public products and every legacy product URL open', async () => {
-    assert.equal(storefront.products.length, 84);
-    assert.equal(storefront.products.flatMap(product => product.variants).length, 170);
+    // v17: 84 products in the catalogue; the preview publication gate lists the 40 that are not
+    // flagged high-risk. Hidden products are covered in v17.test.mjs.
+    const publicVariants = storefront.products.flatMap(product => product.variants).length;
+    assert.equal(storefront.products.length, 40);
+    assert.equal(storefront.variantCount, publicVariants);
     assert.equal(new Set(storefront.products.map(product => product.id)).size, storefront.products.length);
-    assert.equal(new Set(storefront.products.flatMap(product => product.variants.map(variant => variant.variantId))).size, 170);
+    assert.equal(new Set(storefront.products.flatMap(product => product.variants.map(variant => variant.variantId))).size, publicVariants);
 
     for (const product of storefront.products) {
       assert.ok(product.name, `${product.id} is missing a name`);
@@ -89,7 +95,7 @@ test('VERAPEP V11 complete storefront and admin regression', async t => {
       const response = await fetch(`${baseUrl}${pathname}`);
       assert.equal(response.status, 200, pathname);
     }
-    for (const asset of ['/assets/v11.css','/assets/v11-ui.js','/assets/app.js','/assets/cart.js','/assets/product-commerce.js','/assets/media/liquid-hero-poster.webp','/assets/media/vera-guide.svg']) {
+    for (const asset of ['/assets/v11.css','/assets/v11-ui.js','/assets/app.js','/assets/cart.js','/assets/product-commerce.js','/assets/media/bubbles-hero-v15-1280.webp','/assets/media/vera-guide.svg']) {
       const response = await fetch(`${baseUrl}${asset}`);
       assert.equal(response.status, 200, asset);
     }

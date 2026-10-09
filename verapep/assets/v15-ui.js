@@ -14,10 +14,12 @@
     if (!header) return;
     const bottom = Math.max(0, Math.round(header.getBoundingClientRect().bottom));
     document.documentElement.style.setProperty('--vp-header-bottom', `${bottom}px`);
+    document.documentElement.style.setProperty('--vp-sticky-top', `${Math.round(header.getBoundingClientRect().height)}px`);
   };
   syncHeaderOffset();
   addEventListener('resize', syncHeaderOffset, { passive: true });
-  addEventListener('scroll', () => { if (nav?.classList.contains('is-open')) syncHeaderOffset(); }, { passive: true });
+  // Re-measure only when the header changes size (compact state) — not on every scroll frame.
+  if (header) new MutationObserver(() => requestAnimationFrame(syncHeaderOffset)).observe(header, { attributes: true, attributeFilter: ['class'] });
 
   const isMenuOpen = () => menuButton?.getAttribute('aria-expanded') === 'true';
   const closeMenu = ({ restoreFocus = false } = {}) => {
@@ -55,6 +57,19 @@
     });
     mobileQuery.addEventListener?.('change', event => { if (!event.matches) closeMenu(); });
     nav.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
+    // v17: searching from the open mobile menu on the home page filters the catalogue
+    // behind the menu — close the sheet so the results are actually visible.
+    const menuSearch = document.getElementById('header-product-search');
+    if (menuSearch && document.getElementById('catalogue-search')) {
+      const closeForResults = () => {
+        if (!isMenuOpen()) return;
+        closeMenu();
+        menuSearch.blur();
+        requestAnimationFrame(() => document.getElementById('catalogue')?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' }));
+      };
+      menuSearch.addEventListener('keydown', event => { if (event.key === 'Enter') closeForResults(); });
+      menuSearch.addEventListener('search', () => { if (menuSearch.value.trim()) closeForResults(); });
+    }
   }
 
   /* Hide "0" count badges; animate when a count changes. */
@@ -120,6 +135,14 @@
       search.focus();
     });
   }
+
+  /* Empty catalogue state: one click back to the full catalogue. */
+  document.querySelector('[data-empty-reset]')?.addEventListener('click', () => {
+    const headerSearch = document.getElementById('header-product-search');
+    if (headerSearch) headerSearch.value = '';
+    document.getElementById('reset-filters')?.click();
+    document.getElementById('catalogue')?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+  });
 
   /* Back to top: smooth (unless reduced motion) and moves focus to the page start. */
   document.querySelectorAll('[data-back-to-top]').forEach(link => {

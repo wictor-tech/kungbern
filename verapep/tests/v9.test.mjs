@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createVerapepServer } from '../server.mjs';
+import { approveForSale } from './support/compliance.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dataFiles = ['catalogue.json','commerce-policy.json','inventory.json','store-config.json','orders.json','returns.json','product-content.json','reviews.json','guide-config.json','support-kb.json','customers.json'];
@@ -29,7 +30,7 @@ test('VERAPEP V9 database, dynamic products, permissions and resilient checkout'
   let { server, baseUrl } = running;
 
   const health = await jsonRequest(baseUrl, '/api/health');
-  assert.equal(health.payload.version, '14.1.0');
+  assert.equal(health.payload.version, '20.0.0');
   assert.equal(health.payload.database, 'SQLite');
   await fsp.stat(path.join(tempDir,'verapep.sqlite'));
 
@@ -70,6 +71,7 @@ test('VERAPEP V9 database, dynamic products, permissions and resilient checkout'
   });
 
   await t.test('order creation is idempotent and inventory is reserved before payment', async()=>{
+    await approveForSale(baseUrl,ownerHeaders,product.id);
     const enabled=await jsonRequest(baseUrl,`/api/admin/products/${encodeURIComponent(product.id)}/webshop`,{method:'POST',headers:ownerHeaders,body:JSON.stringify({enabled:true})});
     assert.equal(enabled.response.status,200);
     const refreshed=(await jsonRequest(baseUrl,'/api/storefront')).payload;

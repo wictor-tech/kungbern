@@ -35,7 +35,9 @@
   const pageSize = matchMedia('(max-width:700px)').matches ? 6 : 12;
   const state = { focuses: new Set(), needs: new Set(), priorities: new Set() };
   let visibleLimit = pageSize;
-  let products = embedded.products.map(product => ({ ...product, reviews: { count: 0, average: 0 }, content: {} }));
+  // v17: products come only from /api/storefront (publication and compliance rules are applied there).
+  let products = [];
+  let catalogueState = 'loading'; // loading | ready | failed
   let guide = window.VERAPEP_GUIDE_FALLBACK || { focusAreas: [], priorities: [], disclaimer: '' };
   let saved = new Set(JSON.parse(localStorage.getItem('vp-saved-products') || '[]'));
   let compared = new Set(JSON.parse(localStorage.getItem('vp-compare-products') || '[]'));
@@ -98,6 +100,9 @@
     return name.length > 18 ? `${name.slice(0, 18)}…` : name;
   };
   function vialMarkup(product, instance = 'card') {
+    // v19: an approved product photograph (applied through the content workflow) takes precedence
+    // over the generated vial illustration.
+    if (product.content?.imageUrl) return `<img class="product-photo" src="${escapeHtml(product.content.imageUrl)}" ${product.content.imageSrcset?`srcset="${escapeHtml(product.content.imageSrcset)}"`:''} sizes="${escapeHtml(product.content.imageSizes||'(max-width:700px) 80vw, 260px')}" alt="${escapeHtml(product.content.imageAlt || productName(product))}" loading="lazy" decoding="async">`;
     const unifiedVial = window.VerapepeVialRenderer?.render(product, { instance, mode: 'card' });
     if (unifiedVial) return unifiedVial;
     const mappedImage = window.VerapepeProductImages?.get(product);
@@ -336,14 +341,9 @@
   function renderFeatured() {
     if (!els.featuredGrid) return;
     const filtersActive = state.focuses.size || state.needs.size || state.priorities.size || els.search.value.trim() || els.category.value !== 'all' || els.rating.value !== '0' || els.report.value !== 'all';
-    const preferred = [
-      'semaglutide-003',
-      'bpc-157-009',
-      'cjc-1295-with-dac-032',
-      'tb500-thymosin-b4-acetate-013',
-      'mt-2-melanotan-2-acetate-007',
-      'nad-064'
-    ];
+    // v18: no hard-coded product ids in public code. Products with a photo (the server only lists
+    // visible ones) are featured first; the rest is filled from the visible catalogue.
+    const preferred = Object.keys(window.VerapepeProductImages?.images || {});
     let featured;
     if (!filtersActive) {
       const preferredIds = new Set(preferred);
@@ -365,7 +365,22 @@
       : '<div class="catalogue-empty-inline"><strong>No matching peptides yet</strong><p>Try removing one goal or one interest to widen the results.</p></div>';
   }
 
+  function renderCatalogueStatus() {
+    if (catalogueState === 'ready') return false;
+    els.grid.setAttribute('aria-busy', String(catalogueState === 'loading'));
+    els.grid.innerHTML = catalogueState === 'loading'
+      ? Array.from({ length: Math.min(pageSize, 8) }, () => '<div class="product-card product-card--skeleton" aria-hidden="true"><span></span><span></span><span></span></div>').join('')
+      : '<div class="catalogue-load-error" role="alert"><strong>The catalogue could not be loaded.</strong><p>Check your connection and try again. Nothing in your saved products or cart has been lost.</p><button class="button button--primary" type="button" data-catalogue-retry>Try again</button></div>';
+    els.count.textContent = catalogueState === 'loading' ? 'Loading products…' : 'Catalogue unavailable';
+    els.empty.hidden = true;
+    els.load.hidden = true;
+    if (els.featuredGrid) els.featuredGrid.innerHTML = '';
+    return true;
+  }
+
   function render() {
+    if (renderCatalogueStatus()) { renderActiveFilters(); renderFinder(); return; }
+    els.grid.setAttribute('aria-busy', 'false');
     const matches = filteredProducts();
     const shown = matches.slice(0, visibleLimit);
     els.grid.classList.add('is-updating');
@@ -377,10 +392,41 @@
     renderFeatured(); renderActiveFilters(); renderSaved(); renderCompareBar(); renderFinder();
   }
 
+  function syncSavedButtons() {
+    document.querySelectorAll('[data-save-product]').forEach(button => {
+      const id = button.dataset.saveProduct;
+      const on = saved.has(id);
+      const product = products.find(item => item.id === id);
+      button.classList.toggle('is-saved', on);
+      button.setAttribute('aria-pressed', String(on));
+      if (product) button.setAttribute('aria-label', `${on ? 'Remove' : 'Save'} ${productName(product)}`);
+      const glyph = button.querySelector('span');
+      if (glyph) glyph.textContent = on ? '♥' : '♡';
+    });
+  }
+
   function renderSaved() {
     const list = products.filter(product => saved.has(product.id));
     els.savedCount.textContent = String(list.length);
     els.savedList.innerHTML = list.length ? list.map(product => `<article><div><span>${escapeHtml(categories[product.category].label)}</span><a href="${productUrl(product)}">${escapeHtml(productName(product))}</a><small>${product.content?.specialistOnly ? 'Specialist information · ' : ''}${hasReports(product) ? 'Lab report available' : 'Information only'}</small></div><button type="button" data-remove-saved="${escapeHtml(product.id)}" aria-label="Remove ${escapeHtml(productName(product))}">×</button></article>`).join('') : '<div class="saved-empty"><strong>No saved products yet</strong><p>Use the heart on any product card to build a separate shortlist.</p></div>';
+  }
+
+  function syncCompareButtons() {
+    document.querySelectorAll('[data-compare-product]').forEach(button => {
+      const on = compared.has(button.dataset.compareProduct);
+      button.setAttribute('aria-pressed', String(on));
+      button.textContent = on ? 'Selected' : 'Compare';
+    });
+  }
+
+  let compareLimitTimer;
+  function flashCompareLimit() {
+    const hint = els.compareBar?.querySelector('span');
+    if (!hint) return;
+    els.compareBar.classList.add('is-limit');
+    hint.textContent = 'Maximum reached — remove a product to add another.';
+    clearTimeout(compareLimitTimer);
+    compareLimitTimer = setTimeout(() => { els.compareBar.classList.remove('is-limit'); hint.textContent = 'Compare up to three products.'; }, 3200);
   }
 
   function renderCompareBar() {
@@ -461,16 +507,14 @@
     els.veraPanel.hidden = true;
     els.veraLauncher.setAttribute('aria-expanded', 'false');
   }
-  function veraMessage(text, user = false, link = '') {
-    els.veraLog.insertAdjacentHTML('beforeend', `<div class="vera-message${user ? ' vera-message--user' : ''}">${escapeHtml(text)}${link}</div>`);
-    els.veraLog.scrollTop = els.veraLog.scrollHeight;
-  }
-
   function setupMotion() {
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion) document.body.classList.add('motion-ready');
     const ambient = document.getElementById('ambient-liquid');
-    if (ambient && !reduceMotion) {
+    // The scroll-driven variables are only consumed by the v6/v7 liquid shapes. Writing them on :root
+    // restyles the whole document every frame, so skip the work when none of those shapes is rendered.
+    const ambientConsumers = document.querySelector('.ambient-liquid__shape, .ambient-liquid__sheen, .liquid-blob, .liquid-bubble, .fluid-group--front, .fluid-group--back');
+    if (ambient && ambientConsumers && !reduceMotion) {
       let ambientTicking = false;
       const updateAmbient = () => {
         const range = Math.max(1, document.documentElement.scrollHeight - innerHeight);
@@ -588,7 +632,9 @@
     if (save) {
       const id = save.dataset.saveProduct;
       saved.has(id) ? saved.delete(id) : saved.add(id);
-      persist(); render();
+      // Saving does not change which products match, so update in place instead of
+      // re-rendering every card (faster, and keeps keyboard focus on the button).
+      persist(); syncSavedButtons(); renderSaved();
     }
     const unsave = event.target.closest('[data-remove-saved]');
     if (unsave) { saved.delete(unsave.dataset.removeSaved); persist(); render(); }
@@ -598,8 +644,8 @@
       const id = compare.dataset.compareProduct;
       if (compared.has(id)) compared.delete(id);
       else if (compared.size < 3) compared.add(id);
-      else alert('You can compare up to three products.');
-      persist(); render();
+      else { flashCompareLimit(); return; }
+      persist(); syncCompareButtons(); renderCompareBar();
     }
   });
 
@@ -615,33 +661,15 @@
   $('hero-ask-vera-card')?.addEventListener('click', openVera);
   $('section-ask-vera')?.addEventListener('click', openVera);
   $('info-ask-vera')?.addEventListener('click', openVera);
+  // v17: the panel uses the shared Vera client (pending state, links, suggestions, plain-language errors).
+  // Quick buttons ask common questions instead of applying health-area filters.
+  const veraChat = window.VeraClient?.attach({ form: els.veraForm, input: els.veraQuestion, log: els.veraLog, submit: els.veraForm.querySelector('button[type="submit"]') });
   els.veraQuick.addEventListener('click', event => {
-    const focus = event.target.closest('[data-vera-focus]');
-    const priority = event.target.closest('[data-vera-priority]');
-    if (focus) {
-      applyFocus(focus.dataset.veraFocus, false);
-      veraMessage(`I filtered the catalogue for ${focus.textContent.trim()}.`);
-    }
-    if (priority) {
-      state.priorities.add(priority.dataset.veraPriority);
-      persist(); render();
-      veraMessage(`I applied the ${priority.textContent.trim()} priority.`);
-    }
-    $('catalogue').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const quick = event.target.closest('[data-vera-ask]');
+    if (quick) veraChat?.send(quick.dataset.veraAsk);
   });
-  els.veraForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const question = els.veraQuestion.value.trim();
-    if (!question) return;
-    veraMessage(question, true);
-    els.veraQuestion.value = '';
-    try {
-      const response = await fetch('/api/support/ask', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question }) });
-      const payload = await response.json();
-      veraMessage(payload.answer, false, payload.url ? ` <a href="${escapeHtml(payload.url)}">Open information →</a>` : payload.liveSupport ? ' <a href="mailto:hello@verapep.eu">Contact support →</a>' : '');
-    } catch {
-      veraMessage('I could not connect to the approved information service. Please contact live support.');
-    }
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !els.veraPanel.hidden) { closeVera(); els.veraLauncher.focus(); }
   });
   els.menu.addEventListener('click', () => {
     const expanded = els.menu.getAttribute('aria-expanded') === 'true';
@@ -661,12 +689,13 @@
     if (!response.ok) throw new Error('Storefront API unavailable.');
     const storefront = await response.json();
     products = storefront.products; guide = storefront.guide || guide;
+    catalogueState = 'ready';
     const publicVariantCount = products.reduce((sum, product) => sum + (product.variants?.length || 0), 0);
     const purchasableProducts = products.filter(product => product.commerce?.checkoutEnabled && product.variants?.some(variant => variant.checkoutEnabled)).length;
     const heroCount = $('hero-catalogue-count');
     if (heroCount) heroCount.textContent = `${products.length} products · ${publicVariantCount} catalogue variants`;
     const catalogueSummary = $('catalogue-summary');
-    if (catalogueSummary) catalogueSummary.textContent = `${products.length} products · ${publicVariantCount} variants · Lab reports where available`;
+    if (catalogueSummary) catalogueSummary.textContent = `${products.length} products · ${publicVariantCount} variants`;
     const orbitCount = $('orbit-product-count');
     if (orbitCount) orbitCount.textContent = String(products.length);
     const commerceStatus = $('hero-commerce-status');
@@ -680,7 +709,10 @@
       node.textContent = `${categoryProducts.length} product${categoryProducts.length === 1 ? '' : 's'} · ${categoryVariants} variant${categoryVariants === 1 ? '' : 's'}`;
     });
     const signals = storefront.config?.trustSignals || [];
-    if (signals.length) { const trustMarkup = signals.map(signal => `<span><i aria-hidden="true">✓</i> ${escapeHtml(signal)}</span>`).join(''); els.trustSignals.innerHTML = trustMarkup; }
+    const currentSignals = [...els.trustSignals.querySelectorAll('span')].map(node => node.textContent.trim());
+    if (signals.length && signals.join('|') !== currentSignals.join('|')) { const trustMarkup = signals.map(signal => `<span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></svg> ${escapeHtml(signal)}</span>`).join(''); els.trustSignals.innerHTML = trustMarkup; }
+    const stat = (key, value) => document.querySelectorAll(`[data-stat="${key}"]`).forEach(node => { node.textContent = String(value); });
+    stat('products', products.length); stat('variants', publicVariantCount); stat('countries', (storefront.config?.allowedCountries || []).length);
     document.querySelectorAll('.brand > span:last-child').forEach(node => { node.textContent = storefront.config?.storeName || 'VERAPEP'; });
     const assistantName = storefront.config?.assistantName || 'Ask Vera';
     if (els.veraLauncher) els.veraLauncher.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4z"/></svg> ${escapeHtml(assistantName)}`;
@@ -692,7 +724,12 @@
   }
 
   async function init() {
-    try { await refreshStorefront(); } catch (error) { console.warn('Using embedded catalogue data.', error); }
+    try { await refreshStorefront(); } catch (error) { catalogueState = 'failed'; console.warn('Storefront could not be loaded.', error); }
+    els.grid.addEventListener('click', async event => {
+      if (!event.target.closest('[data-catalogue-retry]')) return;
+      catalogueState = 'loading'; render();
+      try { await refreshStorefront(); } catch { catalogueState = 'failed'; render(); }
+    });
 
     const previous = JSON.parse(localStorage.getItem('vp-guide-selection') || '{}');
     const previousFocuses = previous.focuses || (previous.focus ? [previous.focus] : []);

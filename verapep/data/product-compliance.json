@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "note": "Human compliance decisions per product. A product without an entry is \"not_reviewed\". Statuses are set in admin (Products → Compliance review); approval for publication is an owner decision with an external review reference.",
+  "products": {}
+}

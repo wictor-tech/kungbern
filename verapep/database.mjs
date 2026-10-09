@@ -24,7 +24,8 @@ export class VerapepDatabase {
   constructor({ dataDir, seedFiles = {}, defaultAdmin }) {
     fs.mkdirSync(dataDir, { recursive: true });
     this.filePath = path.join(dataDir, 'verapep.sqlite');
-    this.db = new DatabaseSync(this.filePath);
+    // v20: wait up to 5 s for a lock held by a maintenance script instead of failing at once.
+    this.db = new DatabaseSync(this.filePath, { timeout: 5000 });
     this.db.exec(`
       PRAGMA journal_mode = WAL;
       PRAGMA foreign_keys = ON;
@@ -136,6 +137,22 @@ export class VerapepDatabase {
     }));
   }
 
+  /* v19: audit entries for one entity (product history in the admin workspace). */
+  listAuditFor(entityType, entityId, limit = 100) {
+    return this.db.prepare('SELECT id, actor_email, actor_role, action, created_at, after_json FROM audit_log WHERE entity_type = ? AND entity_id = ? ORDER BY id DESC LIMIT ?')
+      .all(entityType, entityId, Math.max(1, Math.min(500, Number(limit) || 100)))
+      .map(row => ({ id: row.id, actorEmail: row.actor_email, actorRole: row.actor_role, action: row.action, createdAt: row.created_at }));
+  }
+
+  /* v19: health information for the owner overview. */
+  health() {
+    const check = this.db.prepare('PRAGMA quick_check').all().map(row => Object.values(row)[0]);
+    const pageCount = Number(this.db.prepare('PRAGMA page_count').get().page_count || 0);
+    const pageSize = Number(this.db.prepare('PRAGMA page_size').get().page_size || 0);
+    const auditRows = Number(this.db.prepare('SELECT COUNT(*) AS count FROM audit_log').get().count || 0);
+    return { integrity: check.length === 1 && check[0] === 'ok' ? 'ok' : check.slice(0, 3).join('; '), bytes: pageCount * pageSize, auditRows };
+  }
+
   listUsers() {
     return this.db.prepare('SELECT email, display_name, role, enabled, mfa_enabled, created_at, updated_at FROM admin_users ORDER BY email').all().map(row => ({
       email: row.email,
@@ -205,6 +222,13 @@ export class VerapepDatabase {
     const result = this.db.prepare('INSERT OR IGNORE INTO payment_events(provider, event_id, payload_json, created_at) VALUES (?, ?, ?, ?)')
       .run(provider, eventId, json(payload), nowIso());
     return Number(result.changes || 0) > 0;
+  }
+
+  /* v17: consistent online copy of the whole database (used before bulk changes). */
+  backupTo(file) {
+    this.db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
+    this.db.exec(`VACUUM INTO '${String(file).replaceAll("'", "''")}'`);
+    return file;
   }
 
   close() { this.db.close(); }

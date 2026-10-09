@@ -30,7 +30,10 @@
     hero.style.setProperty('--liquid-scroll-y', `${(visibleProgress * 24).toFixed(2)}px`);
     scrollFrame = 0;
   };
-  window.addEventListener('scroll', () => {
+  // Only animate on scroll when the current design actually applies the scroll offset.
+  const media = hero.querySelector('.hero-liquid-media');
+  const scrollDriven = media && getComputedStyle(media).transform !== 'none';
+  if (scrollDriven) window.addEventListener('scroll', () => {
     if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll);
   }, { passive: true });
 

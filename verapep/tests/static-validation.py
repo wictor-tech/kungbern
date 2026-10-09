@@ -17,6 +17,9 @@ class Parser(HTMLParser):
         for key in ('href','src'):
             if key in d: self.refs.append((tag,key,d[key]))
 
+# Served by server.mjs, not stored as files (v18: generated per request from data/ so hidden
+# products never appear in public assets).
+GENERATED={'assets/product-image-map.js'}
 errors=[]
 for path in HTML_FILES:
     parser=Parser()
@@ -27,7 +30,7 @@ for path in HTML_FILES:
     for tag,key,ref in parser.refs:
         if not ref or ref.startswith(('#','mailto:','tel:','http://','https://','data:','javascript:','/api/')): continue
         target=urlsplit(ref).path
-        if not target: continue
+        if not target or target.lstrip('/') in GENERATED: continue
         resolved=((ROOT / unquote(target).lstrip('/')) if target.startswith('/') else (path.parent / unquote(target))).resolve()
         try: resolved.relative_to(ROOT.resolve())
         except ValueError:
