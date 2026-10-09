@@ -147,7 +147,8 @@
     document.getElementById('mobile-cart-button')?.setAttribute('aria-expanded','false');
     document.body.classList.remove('cart-open');
     window.setTimeout(() => { overlay.hidden = true; }, 180);
-    (document.getElementById('mobile-cart-button') || button)?.focus();
+    const mobileButton = document.getElementById('mobile-cart-button');
+    ((mobileButton && mobileButton.offsetParent !== null) ? mobileButton : button)?.focus();
   }
 
   function showToast(message) {

@@ -39,6 +39,8 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
+  '.avif': 'image/avif',
+  '.woff2': 'font/woff2',
   '.webm': 'video/webm',
   '.mp4': 'video/mp4',
   '.ico': 'image/x-icon',

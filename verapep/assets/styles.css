@@ -1717,8 +1717,8 @@ textarea { font: inherit; }
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  -webkit-mask: url('/assets/images/vial-bases/premium-glass-vial-neutral.png?v=12.4') center / 100% 100% no-repeat;
-  mask: url('/assets/images/vial-bases/premium-glass-vial-neutral.png?v=12.4') center / 100% 100% no-repeat;
+  -webkit-mask: url('/assets/images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
+  mask: url('/assets/images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
 }
 .premium-vial-photo__cap-tint {
   background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 48%,var(--vial-secondary));

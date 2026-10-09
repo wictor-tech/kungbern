@@ -310,9 +310,9 @@
     const inStock = enabled.filter(variant => Number(variant.sandboxStock || 0) > 0);
     const cheapest = inStock.slice().sort((a, b) => a.retailPriceCents - b.retailPriceCents)[0];
     const totalStock = inStock.reduce((sum, variant) => sum + Number(variant.sandboxStock || 0), 0);
-    const price = cheapest ? `<strong class="product-price">From ${new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR'}).format(cheapest.retailPriceCents/100)}</strong>` : '<strong class="product-price product-price--muted">Product details</strong>';
+    const price = cheapest ? `<strong class="product-price">From ${new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR'}).format(cheapest.retailPriceCents/100)}</strong>` : '';
     const stockClass = cheapest ? 'is-in-stock' : enabled.length ? 'is-out-of-stock' : 'is-info-only';
-    const stockCopy = cheapest ? `${totalStock} in stock` : enabled.length ? 'Currently unavailable' : 'Information page';
+    const stockCopy = cheapest ? `${totalStock} in stock` : enabled.length ? 'Currently unavailable' : 'Information only';
     const deliveryCopy = cheapest ? `<small>${escapeHtml(product.content?.deliveryEstimate || '7–10 days')}</small>` : '';
     const primaryAction = cheapest ? `<button type="button" class="card-cart-button" data-add-variant="${escapeHtml(cheapest.variantId)}">Add to cart</button>` : `<a href="${productUrl(product)}">View product</a>`;
     return `<article class="product-card product-card--${tones[product.category]}${featured ? ' product-card--featured' : ''}" data-product-id="${escapeHtml(product.id)}">
@@ -320,11 +320,11 @@
       <a class="product-card__link" href="${productUrl(product)}">
         <div class="product-card__visual">${vialMarkup(product, featured ? 'featured' : 'catalogue')}</div>
         <div class="product-card__content">
-          <span class="product-category product-category--compact">${escapeHtml(categories[product.category].short)}</span>
+          <span class="product-category product-category--compact">${escapeHtml(categories[product.category].label)}</span>
           <h3>${escapeHtml(productName(product))}</h3>
           ${ratingMarkup(product)}
           <div class="product-card__status"><span class="stock-status ${stockClass}">${escapeHtml(stockCopy)}</span>${deliveryCopy}</div>
-          <div class="product-card__badges">${hasReports(product) ? '<span>Lab report</span>' : '<span>Product information</span>'}${product.content?.specialistOnly ? '<span>Specialist</span>' : ''}</div>
+          ${hasReports(product) || product.content?.specialistOnly ? `<div class="product-card__badges">${hasReports(product) ? '<span>Lab report</span>' : ''}${product.content?.specialistOnly ? '<span>Specialist</span>' : ''}</div>` : ''}
           ${matchReason(product) ? `<div class="product-card__match-reason">${escapeHtml(matchReason(product))}</div>` : ''}
           <div class="product-card__bottom"><span>${price}</span><span class="variant-count">${enabled.length || product.variants.length} variant${(enabled.length || product.variants.length) === 1 ? '' : 's'}</span></div>
         </div>
@@ -666,7 +666,7 @@
     const heroCount = $('hero-catalogue-count');
     if (heroCount) heroCount.textContent = `${products.length} products · ${publicVariantCount} catalogue variants`;
     const catalogueSummary = $('catalogue-summary');
-    if (catalogueSummary) catalogueSummary.textContent = `${products.length} products · ${publicVariantCount}+ variants · Lab reports where available`;
+    if (catalogueSummary) catalogueSummary.textContent = `${products.length} products · ${publicVariantCount} variants · Lab reports where available`;
     const orbitCount = $('orbit-product-count');
     if (orbitCount) orbitCount.textContent = String(products.length);
     const commerceStatus = $('hero-commerce-status');

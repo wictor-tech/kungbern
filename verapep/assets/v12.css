@@ -210,8 +210,8 @@ body.theme-v12 .premium-vial-photo__liquid-tint {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  -webkit-mask: url('/assets/images/vial-bases/premium-glass-vial-neutral.png?v=12.4') center / 100% 100% no-repeat;
-  mask: url('/assets/images/vial-bases/premium-glass-vial-neutral.png?v=12.4') center / 100% 100% no-repeat;
+  -webkit-mask: url('/assets/images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
+  mask: url('/assets/images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
 }
 body.theme-v12 .premium-vial-photo__cap-tint {
   background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 48%,var(--vial-secondary));
@@ -358,7 +358,7 @@ body.theme-v12 .premium-vial-photo__bottle {
   height: 100%;
   border: 0;
   border-radius: 0;
-  background: url('images/vial-bases/premium-glass-vial-neutral.png?v=12.5') center / 100% 100% no-repeat;
+  background: url('images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
   box-shadow: none;
   pointer-events: none;
 }
@@ -380,8 +380,8 @@ body.theme-v12 .premium-vial-photo__liquid-tint {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  -webkit-mask: url('images/vial-bases/premium-glass-vial-neutral.png?v=12.5') center / 100% 100% no-repeat;
-  mask: url('images/vial-bases/premium-glass-vial-neutral.png?v=12.5') center / 100% 100% no-repeat;
+  -webkit-mask: url('images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
+  mask: url('images/vial-bases/premium-glass-vial-neutral-720.webp') center / 100% 100% no-repeat;
 }
 body.theme-v12 .premium-vial-photo__cap-tint {
   background: linear-gradient(90deg,var(--vial-primary),var(--vial-primary-soft) 48%,var(--vial-secondary));
@@ -502,12 +502,12 @@ body.theme-v12 .product-card__visual .premium-vial-photo--card .premium-vial-pho
 
 /* VERAPEP v12.6 — visual QA corrections for homepage imagery and product labels. */
 body.theme-v12 .premium-vial-photo__bottle{
-  background-image:url('images/vial-bases/premium-glass-vial-neutral.png?v=12.6');
+  background-image:url('images/vial-bases/premium-glass-vial-neutral-720.webp');
 }
 body.theme-v12 .premium-vial-photo__cap-tint,
 body.theme-v12 .premium-vial-photo__liquid-tint{
-  -webkit-mask-image:url('images/vial-bases/premium-glass-vial-neutral.png?v=12.6');
-  mask-image:url('images/vial-bases/premium-glass-vial-neutral.png?v=12.6');
+  -webkit-mask-image:url('images/vial-bases/premium-glass-vial-neutral-720.webp');
+  mask-image:url('images/vial-bases/premium-glass-vial-neutral-720.webp');
 }
 /* One dominant effect colour per vial. Secondary goals are only a narrow accent in the label band. */
 body.theme-v12 .premium-vial-photo__cap-tint{
