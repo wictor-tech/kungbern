@@ -267,3 +267,21 @@ test('v20 I1: an import row for an unknown product reports only that problem', a
     assert.deepEqual(preview.payload.rows[0].errors, ['Missing productId.']);
   } finally { await stop(server); }
 });
+
+test('v20 H1: public deployments never accept the built-in admin password; Vercel gets no live stream', async () => {
+  const dataDir = await tempData();
+  const saved = { VERCEL: process.env.VERCEL, ADMIN_PASSWORD: process.env.ADMIN_PASSWORD };
+  process.env.VERCEL = '1';
+  delete process.env.ADMIN_PASSWORD;
+  const { server, baseUrl } = await start(dataDir);
+  try {
+    const login = await request(baseUrl, '/api/admin/login', { method: 'POST', body: JSON.stringify({ email: 'admin@verapep.local', password: 'ChangeMe-123!' }) });
+    assert.equal(login.status, 503);
+    assert.equal(login.payload.error, 'admin_password_not_configured');
+    assert.equal((await fetch(`${baseUrl}/api/storefront/events`)).status, 204);
+    assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'strict', 'hosted previews only list approved products');
+  } finally {
+    await stop(server);
+    for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }
+  }
+});

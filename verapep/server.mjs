@@ -1610,6 +1610,8 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'GET' && pathname === '/api/storefront/events') {
+      // Serverless hosting (Vercel) cannot keep a stream open; 204 tells EventSource not to reconnect.
+      if (process.env.VERCEL) { res.writeHead(204, { 'Cache-Control': 'no-store' }); res.end(); return; }
       res.writeHead(200, { ...securityHeaders('text/event-stream; charset=utf-8'), 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive', 'X-Accel-Buffering': 'no' });
       res.write(`event: storefront\ndata: ${JSON.stringify({ revision: storefrontRevision, reason: 'connected', at: nowIso() })}\n\n`);
       storefrontClients.add(res);
@@ -1886,6 +1888,8 @@ export function createVerapepServer(options = {}) {
     }
 
     if (method === 'POST' && pathname === '/api/admin/login') {
+      // A public deployment must never accept the built-in local test password.
+      if (isHostedEnvironment() && !process.env.ADMIN_PASSWORD) return sendJson(res, 503, { error: 'admin_password_not_configured', message: 'Admin sign-in is disabled on this public deployment until ADMIN_PASSWORD is set in the hosting settings.' });
       // v20: browsers cannot send application/json cross-site without a CORS preflight, so requiring it
       // stops another website from logging a visitor into an attacker's admin account (login CSRF).
       if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return sendJson(res, 415, { error: 'json_required', message: 'Send the login as application/json.' });
