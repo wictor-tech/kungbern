@@ -58,7 +58,7 @@ export function createV19(ctx) {
       contentTotal: required.filter(item => item.group !== 'legal').length,
       legalDone: required.filter(item => item.group === 'legal' && item.done).length,
       legalTotal: required.filter(item => item.group === 'legal').length,
-      nextStep: open.find(draft => draft.status === 'approved') ? 'Apply the approved draft.' : open.find(draft => ['internal_review', 'external_review'].includes(draft.status)) ? 'A draft is waiting for review.' : remaining[0]?.next || 'Everything on the checklist is done.',
+      nextStep: open.find(draft => draft.status === 'approved') ? 'Apply the approved draft.' : open.find(draft => ['internal_review', 'external_review'].includes(draft.status)) ? 'A draft is waiting under Changes to review.' : remaining[0]?.next || 'Everything on the checklist is done.',
       openDrafts: open.length,
       needsReReview: (entry?.drafts || []).some(draft => draft.requiresReReview)
     };

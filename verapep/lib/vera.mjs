@@ -13,6 +13,13 @@ const SAFETY_ANSWER = 'I can\'t help with dosing, administration, medical effect
 const PRIVACY_NOTICE = 'Please don\'t share personal details such as email addresses, phone numbers or health information here. I don\'t need them, and questions are not stored.';
 const GREETING = 'Hello! I can help with delivery, returns, payment, lab reports, product information, privacy, contact details and finding your way around the site. What would you like to know?';
 
+const THANKS = 'You\'re welcome. Is there anything else I can help you find?';
+const UNKNOWN_PRODUCT = 'I don\'t have published information about that product. I can only answer about products that are listed in the catalogue.';
+const EMPTY = 'Type a question, for example "How long does delivery take?"';
+const DEFAULT_FALLBACK = 'I don\'t have a published answer to that question. You can contact support at {supportEmail}.';
+/* v19: fixed engine texts, exported so reviewed translations can be checked against them. */
+export const ENGINE_STRINGS = Object.freeze({ safety: SAFETY_ANSWER, privacy: PRIVACY_NOTICE, greeting: GREETING, thanks: THANKS, unknownProduct: UNKNOWN_PRODUCT, empty: EMPTY, fallback: DEFAULT_FALLBACK });
+
 // Swedish (and a few colloquial English) words → the English vocabulary used by the knowledge base.
 const SYNONYMS = [
   [/\b(kontakt\w*|mejl\w*|e-?post|maila)\b/g, 'contact email'],
@@ -252,7 +259,7 @@ export function answerQuestion(rawQuestion, ctx) {
   const notice = containsPersonalData(raw) ? PRIVACY_NOTICE : null;
   const base = { notice, links: [], suggestions: [] };
 
-  if (text.length < 2) return { ...base, answered: false, kind: 'empty', answer: 'Type a question, for example "How long does delivery take?"', suggestions: defaultSuggestions(ctx.kb) };
+  if (text.length < 2) return { ...base, answered: false, kind: 'empty', answer: EMPTY, suggestions: defaultSuggestions(ctx.kb) };
 
   // 1. Safety first — before any product or knowledge match.
   if (isSafetyQuestion(text)) {
@@ -267,7 +274,7 @@ export function answerQuestion(rawQuestion, ctx) {
     return { ...base, answered: true, kind: 'greeting', source: 'greeting', answer: GREETING, suggestions: defaultSuggestions(ctx.kb) };
   }
   if (words.has('thanks') || words.has('thank')) {
-    return { ...base, answered: true, kind: 'greeting', source: 'thanks', answer: 'You\'re welcome. Is there anything else I can help you find?', suggestions: defaultSuggestions(ctx.kb) };
+    return { ...base, answered: true, kind: 'greeting', source: 'thanks', answer: THANKS, suggestions: defaultSuggestions(ctx.kb) };
   }
 
   // 2. Named products (only publicly visible ones are known to Vera).
@@ -291,7 +298,7 @@ export function answerQuestion(rawQuestion, ctx) {
       };
     }
   } else if (hiddenMentioned) {
-    return { ...base, answered: false, kind: 'unknown_product', source: 'unknown_product', answer: 'I don\'t have published information about that product. I can only answer about products that are listed in the catalogue.', links: [{ label: 'Browse the catalogue', url: '/index.html#catalogue' }] };
+    return { ...base, answered: false, kind: 'unknown_product', source: 'unknown_product', answer: UNKNOWN_PRODUCT, links: [{ label: 'Browse the catalogue', url: '/index.html#catalogue' }] };
   }
 
   // 3. Approved knowledge-base answers.
@@ -315,7 +322,7 @@ export function answerQuestion(rawQuestion, ctx) {
   // 4. Honest fallback.
   return {
     ...base, answered: false, kind: 'fallback', source: 'fallback',
-    answer: fillTemplate(ctx.kb?.fallback || 'I don\'t have a published answer to that question. You can contact support at {supportEmail}.', vars),
+    answer: fillTemplate(ctx.kb?.fallback || DEFAULT_FALLBACK, vars),
     links: contact,
     suggestions: defaultSuggestions(ctx.kb)
   };

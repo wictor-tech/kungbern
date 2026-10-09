@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const state = { csrf: null, dashboard: null, activeTab: 'orders', orderQueue: 'all' };
+  const state = { csrf: null, dashboard: null, activeTab: 'overview', orderQueue: 'all' };
   const message = document.getElementById('admin-message');
   const loginSection = document.getElementById('admin-login');
   const dashboardSection = document.getElementById('admin-dashboard');
@@ -117,6 +117,8 @@
   }
 
   function renderProducts(query = '') {
+    // v19: the product workspace (admin-v19.js) renders the list with checklist progress and filters.
+    if (window.VerapepAdmin?.renderProductList?.(query)) return;
     const needle = query.trim().toLowerCase();
     const rows = state.dashboard.products.filter(item => !needle || [item.name, item.category, item.content?.shortDescription, item.content?.stockStatus].join(' ').toLowerCase().includes(needle));
     const container = document.getElementById('admin-products');
@@ -448,7 +450,7 @@
 
   function applyPermissions() {
     const permissions = new Set(state.dashboard.permissions || []);
-    const mapping = { settings:'settings', products:'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
+    const mapping = { settings:'settings', products:'products', 'review-queue':'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
     const tabs = [...document.querySelectorAll('[data-admin-tab]')];
     tabs.forEach(button => {
       const needed = mapping[button.dataset.adminTab];
@@ -491,6 +493,7 @@
     loginSection.hidden = true;
     dashboardSection.hidden = false;
     showMessage('');
+    document.dispatchEvent(new CustomEvent('verapep:dashboard', { detail: payload }));
   }
 
   async function checkSession() {
@@ -535,14 +538,22 @@
   document.querySelector('.admin-tabs').addEventListener('click', event => {
     const button = event.target.closest('[data-admin-tab]');
     if (!button) return;
-    state.activeTab = button.dataset.adminTab;
-    document.querySelectorAll('[data-admin-tab]').forEach(item => item.classList.toggle('is-active', item === button));
+    showTab(button.dataset.adminTab);
+  });
+
+  function showTab(tab) {
+    const button = document.querySelector(`[data-admin-tab="${tab}"]`);
+    if (!button || button.hidden) return;
+    state.activeTab = tab;
+    document.querySelectorAll('[data-admin-tab]').forEach(item => { item.classList.toggle('is-active', item === button); item.setAttribute('aria-current', item === button ? 'page' : 'false'); });
     document.querySelectorAll('[data-admin-panel]').forEach(panel => {
       const active = panel.dataset.adminPanel === state.activeTab;
       panel.hidden = !active;
       panel.classList.toggle('is-active', active);
     });
-  });
+    button.scrollIntoView?.({ block: 'nearest', inline: 'center' });
+    document.dispatchEvent(new CustomEvent('verapep:tab', { detail: tab }));
+  }
 
   document.getElementById('order-search').addEventListener('input', event => renderOrders(event.target.value));
   document.getElementById('order-queue-filter')?.addEventListener('change', event => { state.orderQueue = event.target.value; renderOrderQueues(); renderOrders(document.getElementById('order-search').value); });
@@ -857,4 +868,6 @@
   });
 
   checkSession().catch(error => showMessage(error.message));
+  // v19: shared helpers for the Owner Control Center and product workspace (assets/admin-v19.js).
+  window.VerapepAdmin = Object.assign(window.VerapepAdmin || {}, { state, requestJson, escapeHtml, formatDate, label, showMessage, showTab, loadDashboard, openProductEditor, renderProducts });
 })();

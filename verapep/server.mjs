@@ -7,10 +7,11 @@ import zlib from 'node:zlib';
 import net from 'node:net';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { VerapepDatabase, verifyPassword } from './database.mjs';
-import { answerQuestion } from './lib/vera.mjs';
+import { answerQuestion, ENGINE_STRINGS } from './lib/vera.mjs';
 import { classifyBlocker } from './lib/readiness.mjs';
 import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
 import { createV19 } from './lib/admin-v19.mjs';
+import { detectLanguage, localise, translationStatus, sourceHash, englishSources } from './lib/vera-language.mjs';
 import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
 const APP_ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -476,7 +477,9 @@ export function createVerapepServer(options = {}) {
     guide: path.join(dataDir, 'guide-config.json'),
     supportKb: path.join(dataDir, 'support-kb.json'),
     customers: path.join(dataDir, 'customers.json'),
-    productCompliance: path.join(dataDir, 'product-compliance.json')
+    productCompliance: path.join(dataDir, 'product-compliance.json'),
+    // v19: proposed/approved translations of Ask Vera answers (the shipped copy seeds new installs).
+    veraTranslations: fs.existsSync(path.join(dataDir, 'vera-translations.json')) ? path.join(dataDir, 'vera-translations.json') : path.join(rootDir, 'data', 'vera-translations.json')
   };
 
   const database = new VerapepDatabase({
@@ -494,7 +497,8 @@ export function createVerapepServer(options = {}) {
       guide: paths.guide,
       supportKb: paths.supportKb,
       customers: paths.customers,
-      productCompliance: paths.productCompliance
+      productCompliance: paths.productCompliance,
+      veraTranslations: paths.veraTranslations
     },
     defaultAdmin: {
       email: process.env.ADMIN_EMAIL || 'admin@verapep.local',
@@ -518,6 +522,7 @@ export function createVerapepServer(options = {}) {
   let customers = database.readDocument('customers', { version: 1, customers: [] });
   // v17: human compliance decisions per product. Absent record = "not reviewed".
   let compliance = database.readDocument('productCompliance', { version: 1, products: {} });
+  let veraTranslations = database.readDocument('veraTranslations', { version: 1, languages: {} });
   if (!compliance.products) compliance.products = {};
   const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: process.env.PUBLICATION_GATE, hosted: isHostedEnvironment() });
   // v17: shipped knowledge base (for migration status) and privacy-preserving Vera counters (no question text).
@@ -699,7 +704,9 @@ export function createVerapepServer(options = {}) {
         deliveryCountries: countries.map(country => country.name || country.code).join(', '),
         orderingStatus: orderable === 0 ? 'No products can be ordered at the moment.' : `${orderable} product${orderable === 1 ? '' : 's'} can currently be ordered.`,
         labReportStatus: withReports === 0 ? 'No lab reports have been published yet.' : `${withReports} product${withReports === 1 ? ' has' : 's have'} a published lab report.`
-      }
+      },
+      // v19: the same facts as plain values, so reviewed translations can phrase them in the visitor's language.
+      facts: { orderable, withReports, countryCodes: countries.map(country => country.code).filter(Boolean), companyName: process.env.COMPANY_LEGAL_NAME || '', companyRegistration: process.env.COMPANY_REGISTRATION_NUMBER || '' }
     };
   }
 
@@ -1584,7 +1591,10 @@ export function createVerapepServer(options = {}) {
       if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'You are asking very quickly. Please wait a few seconds and try again.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
       const body = await readJsonBody(req);
       // v17: the question is processed in memory only and never stored or logged.
-      const result = answerQuestion(cleanText(body.question, 500), veraContext(cleanText(body.productId, 160)));
+      const question = cleanText(body.question, 500);
+      const context = veraContext(cleanText(body.productId, 160));
+      // v19: answer in the visitor's language only where an approved translation exists.
+      const result = localise(answerQuestion(question, context), { lang: detectLanguage(question, cleanText(body.lang, 5)), store: veraTranslations, kb: context.kb, engineStrings: ENGINE_STRINGS, vars: context.vars, facts: context.facts });
       veraStats.total += 1;
       veraStats.byKind[result.kind] = (veraStats.byKind[result.kind] || 0) + 1;
       const liveSupport = `mailto:${legalInfo().supportEmail}`;
@@ -2044,6 +2054,45 @@ export function createVerapepServer(options = {}) {
       await persistConfig();
       audit(session, 'settings.updated', 'store', 'store-config', before, config);
       return sendJson(res, 200, { config });
+    }
+
+    if (method === 'GET' && pathname === '/api/admin/vera-translations') {
+      const session = requireAdmin(req); requireRole(session, 'guide');
+      return sendJson(res, 200, { language: 'sv', items: translationStatus(veraTranslations, supportKb, ENGINE_STRINGS, 'sv'), canApprove: ['owner', 'admin'].includes(session.role) });
+    }
+
+    const translationMatch = pathname.match(/^\/api\/admin\/vera-translations\/sv\/((?:string|entry):[a-zA-Z0-9_-]{1,60})$/);
+    if (method === 'PATCH' && translationMatch) {
+      const session = requireAdmin(req); requireCsrf(req, session); requireRole(session, 'guide');
+      const key = translationMatch[1];
+      const sources = englishSources(supportKb, ENGINE_STRINGS);
+      if (!sources[key]) return sendJson(res, 404, { error: 'translation_not_found', message: 'Unknown text.' });
+      const body = await readJsonBody(req);
+      const language = (veraTranslations.languages ||= {}).sv ||= { items: {} };
+      const before = structuredClone(language.items[key] || null);
+      const item = language.items[key] || {};
+      if (body.action === 'save') {
+        const text = cleanText(body.text, 2000);
+        if (text.length < 2) return sendJson(res, 400, { error: 'translation_empty', message: 'Write the translation first.' });
+        const placeholders = value => [...String(value).matchAll(/\{(\w+)\}/g)].map(match => match[1]).sort().join(',');
+        if (placeholders(text) !== placeholders(sources[key].text)) return sendJson(res, 400, { error: 'translation_placeholders', message: 'Keep the same {placeholders} as the English text.' });
+        language.items[key] = { text, status: 'proposed', sourceHash: sourceHash(sources[key].text), proposedBy: session.email, proposedAt: nowIso(), note: cleanText(body.note, 300) };
+      } else if (body.action === 'approve' || body.action === 'revoke') {
+        if (!['owner', 'admin'].includes(session.role)) return sendJson(res, 403, { error: 'reviewer_role_required', message: 'Only an owner or admin can approve translations.' });
+        if (body.action === 'approve') {
+          if (body.confirm !== true) return sendJson(res, 400, { error: 'approval_confirmation_required', message: 'Confirm that the translation says the same as the English text.' });
+          if (!item.text) return sendJson(res, 409, { error: 'translation_empty', message: 'There is no translation to approve.' });
+          if (item.sourceHash !== sourceHash(sources[key].text)) return sendJson(res, 409, { error: 'translation_outdated', message: 'The English text changed after this translation was written. Update the translation first.' });
+          language.items[key] = { ...item, status: 'approved', approvedBy: session.email, approvedAt: nowIso() };
+        } else {
+          language.items[key] = { ...item, status: 'proposed', approvedBy: null, approvedAt: null };
+        }
+      } else {
+        return sendJson(res, 400, { error: 'invalid_action', message: 'Choose save, approve or revoke.' });
+      }
+      database.writeDocument('veraTranslations', veraTranslations);
+      audit(session, `vera.translation_${body.action}`, 'vera_translation', `sv:${key}`, before, language.items[key]);
+      return sendJson(res, 200, { item: translationStatus(veraTranslations, supportKb, ENGINE_STRINGS, 'sv').find(entry => entry.key === key) });
     }
 
     if (await v19.handle(req, res, url, method, pathname)) return;

@@ -312,3 +312,55 @@ test('v19 image audit report is current', () => {
   const result = spawnSync(process.execPath, [path.join(root, 'scripts', 'audit-site-images.mjs'), '--check'], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 });
+
+test('v19 Ask Vera answers in Swedish only with an approved, current translation', async () => {
+  const { detectLanguage } = await import('../lib/vera-language.mjs');
+  assert.equal(detectLanguage('Hur lång är leveranstiden?'), 'sv');
+  assert.equal(detectLanguage('Vad kostar frakten till Sverige'), 'sv');
+  assert.equal(detectLanguage('How long does delivery take?'), 'en');
+  assert.equal(detectLanguage('BPC-157'), 'en');
+  assert.equal(detectLanguage('delivery', 'sv'), 'sv', 'an explicit choice wins');
+
+  const shipped = JSON.parse(fs.readFileSync(path.join(root, 'data', 'vera-translations.json'), 'utf8'));
+  assert.ok(Object.values(shipped.languages.sv.items).every(item => item.status === 'proposed'), 'shipped translations are proposals, not approvals');
+
+  const dataDir = await tempData();
+  const { server, baseUrl } = await start(dataDir);
+  try {
+    const ask = (question, extra = {}) => jsonRequest(baseUrl, '/api/support/ask', { method: 'POST', body: JSON.stringify({ question, ...extra }) }).then(result => result.payload);
+    const before = await ask('Hur lång är leveranstiden?');
+    assert.equal(before.language, 'en');
+    assert.match(before.languageNotice, /granskad svensk översättning/);
+    assert.equal(before.source, 'delivery');
+
+    const owner = await login(baseUrl);
+    const list = await jsonRequest(baseUrl, '/api/admin/vera-translations', { headers: owner });
+    assert.equal(list.payload.items.find(item => item.key === 'entry:delivery').status, 'proposed');
+    assert.equal((await patch(baseUrl, owner, '/api/admin/vera-translations/sv/entry:delivery', { action: 'approve' })).payload.error, 'approval_confirmation_required');
+    const editor = await addUser(baseUrl, owner, 'kb-editor@example.com', 'editor');
+    assert.equal((await patch(baseUrl, editor, '/api/admin/vera-translations/sv/entry:delivery', { action: 'approve', confirm: true })).status, 403, 'editors cannot approve');
+    assert.equal((await patch(baseUrl, editor, '/api/admin/vera-translations/sv/entry:delivery', { action: 'save', text: 'Leverans tar {deliveryEstimate}.' })).payload.error, 'translation_placeholders', 'placeholders must match the source');
+    assert.equal((await patch(baseUrl, owner, '/api/admin/vera-translations/sv/entry:delivery', { action: 'approve', confirm: true })).status, 200);
+
+    const after = await ask('Hur lång är leveranstiden?');
+    assert.equal(after.language, 'sv');
+    assert.match(after.answer, /EU-länder/);
+    assert.doesNotMatch(after.answer, /\b(No products can be ordered|days)\b/, 'placeholders are filled in Swedish');
+    assert.equal(after.languageNotice, undefined);
+    assert.equal((await ask('How long does delivery take?')).language, 'en', 'English questions stay English');
+
+    // Safety refusals stay refusals in every language; unapproved safety text falls back to English.
+    const safety = await ask('Hur mycket ska jag injicera per dag?');
+    assert.equal(safety.kind, 'safety');
+    assert.match(safety.answer, /medical advice/);
+
+    // When the English source changes, the old approval is no longer used.
+    const kb = await jsonRequest(baseUrl, '/api/admin/dashboard', { headers: owner });
+    const entries = kb.payload.supportKb.entries.map(entry => entry.id === 'delivery' ? { ...entry, answer: `${entry.answer} Tracking is provided by the carrier.` } : entry);
+    const saved = await patch(baseUrl, owner, '/api/admin/support-kb', { entries, fallback: kb.payload.supportKb.fallback });
+    assert.equal(saved.status, 200, JSON.stringify(saved.payload));
+    assert.equal((await ask('Hur lång är leveranstiden?')).language, 'en');
+    const outdated = await jsonRequest(baseUrl, '/api/admin/vera-translations', { headers: owner });
+    assert.equal(outdated.payload.items.find(item => item.key === 'entry:delivery').status, 'outdated');
+  } finally { await stop(server); }
+});

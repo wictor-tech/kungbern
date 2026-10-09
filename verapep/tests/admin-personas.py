@@ -29,6 +29,8 @@ from playwright.sync_api import Page, sync_playwright  # noqa: E402
 ADMIN = {'email': 'admin@verapep.local', 'password': 'ChangeMe-123!'}
 
 # Administrators work inside the admin area: the public site header and footer are not candidates.
+# Stale markers from an earlier scan can sit on elements that are now hidden; clear them first.
+base.CANDIDATES_JS = base.CANDIDATES_JS.replace("const out = [];", "document.querySelectorAll('[data-persona-idx]').forEach(n => n.removeAttribute('data-persona-idx'));\n  const out = [];", 1)
 base.CANDIDATES_JS = base.CANDIDATES_JS.replace("document.querySelectorAll('a[href], button, summary, [role=\"button\"]')", "(document.getElementById('admin-dashboard') || document).querySelectorAll('a[href], button, summary, [role=\"button\"], [role=\"tab\"]')")
 
 

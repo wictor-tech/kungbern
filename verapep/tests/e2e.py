@@ -341,8 +341,17 @@ class Suite:
         expect(page.locator('#admin-dashboard')).to_be_visible()
         page.locator('[data-admin-tab="products"]').click()
         page.locator('[data-edit-product]').first.click()
+        # v19: customer-visible text is changed through a draft that is reviewed before it goes live.
+        expect(page.locator('#product-workspace')).to_be_visible()
+        page.locator('#workspace-new-draft').click()
+        page.locator('[data-draft-field="shortDescription"]').fill('Approved catalogue summary.')
+        page.locator('#draft-form button[data-then="submit"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('sent for review')
+        # The advanced form still saves operational fields; claim text there is read-only.
+        page.locator('#product-advanced summary').click()
         expect(page.locator('#product-editor')).to_be_visible()
-        page.locator('#editor-short-description').fill('Approved catalogue summary.')
+        expect(page.locator('#editor-short-description')).not_to_be_editable()
+        page.locator('#editor-delivery').fill('5–8 days')
         page.locator('#product-editor button[type="submit"]').click()
         expect(page.locator('#admin-message')).to_contain_text('saved')
         page.context.close()
@@ -453,6 +462,79 @@ class Suite:
         expect(page.locator('#kb-migration')).to_contain_text('Up to date')
         expect(page.locator('#kb-entries .kb-entry')).to_have_count(21)
         self.shot(page, 'admin-compliance')
+        page.context.close()
+
+    # ------------------------------------------------------------------ v19
+
+    def login_admin(self, page: Page) -> None:
+        page.goto(self.base + '/admin.html', wait_until='domcontentloaded')
+        page.locator('#admin-email').fill('admin@verapep.local')
+        page.locator('#admin-password').fill('ChangeMe-123!')
+        page.locator('#admin-login-form button').click()
+        expect(page.locator('#admin-dashboard')).to_be_visible()
+
+    def test_admin_overview(self):
+        page = self.page()
+        self.login_admin(page)
+        overview = page.locator('#owner-overview')
+        expect(overview.locator('.overview-headline--technical')).to_contain_text('checks OK')
+        expect(overview.locator('.overview-headline--legal')).to_contain_text('Not approved for launch')
+        expect(overview).to_contain_text('of 84 products are missing documentation')
+        expect(overview).to_contain_text('hidden by the publication gate')
+        assert '%' not in overview.locator('.overview-split').inner_text(), 'no combined percentage'
+        overview.locator('[data-filter-missing="lab"]').click()
+        expect(page.locator('[data-admin-panel="products"]')).to_be_visible()
+        expect(page.locator('#product-filter-count')).to_contain_text('84 of 84')
+        self.shot(page, 'v19-admin-overview')
+        page.context.close()
+
+    def test_admin_workflow(self):
+        page = self.page()
+        self.login_admin(page)
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('#product-filter-visible').select_option('no')
+        expect(page.locator('#product-filter-count')).to_contain_text(f'{84 - VISIBLE_PRODUCTS} of 84')
+        page.locator('#product-filter-visible').select_option('')
+        page.locator('#product-search').fill('kpv')
+        page.locator('[data-edit-product="kpv-071"]').click()
+        workspace = page.locator('#product-workspace')
+        expect(workspace).to_contain_text('Checklist')
+        expect(workspace).to_contain_text('finished content is not a legal approval')
+        page.locator('#workspace-new-draft').click()
+        page.locator('[data-draft-field="storage"]').fill('Store at -20 °C, protected from light.')
+        page.locator('#draft-form button[data-then="submit"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('sent for review')
+        page.locator('[data-admin-tab="review-queue"]').click()
+        item = page.locator('.queue-item', has_text='KPV').filter(has_text='Storage').first
+        item.locator('[data-review-draft]').click()
+        expect(item.locator('.content-diff ins')).to_contain_text('protected from light')
+        page.on('dialog', lambda dialog: dialog.accept(''))  # confirmations and optional notes
+        item.locator('[data-decision="approve"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('approved')
+        item = page.locator('.queue-item', has_text='KPV').filter(has_text='Storage').first
+        item.locator('[data-review-draft]').click()
+        item.locator('[data-draft-apply]').click()
+        expect(page.locator('#admin-message')).to_contain_text('now live')
+        # Applying text did not publish anything: KPV is still governed by its legal status.
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('[data-edit-product="kpv-071"]').click()
+        expect(workspace).to_contain_text('Version 2')
+        expect(workspace.locator('.workspace-pills')).not_to_contain_text('Approved')
+        self.shot(page, 'v19-product-workspace')
+        page.context.close()
+
+    def test_admin_mobile(self):
+        page = self.page(390, 844, is_mobile=True, has_touch=True)
+        self.login_admin(page)
+        expect(page.locator('#owner-overview .overview-headline--legal')).to_be_visible()
+        assert page.evaluate('document.documentElement.scrollWidth') <= 390, 'no sideways scrolling on a phone'
+        page.locator('[data-admin-tab="compliance"]').click()
+        expect(page.locator('#compliance-rows tr').first).to_be_visible()
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('[data-edit-product]').first.click()
+        expect(page.locator('#product-workspace')).to_be_visible()
+        assert page.evaluate('document.documentElement.scrollWidth') <= 390
+        self.shot(page, 'v19-admin-mobile')
         page.context.close()
 
 

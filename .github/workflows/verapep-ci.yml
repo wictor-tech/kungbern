@@ -1,4 +1,4 @@
-# VERAPEP continuous integration (v18).
+# VERAPEP continuous integration (v18, extended in v19).
 # Runs only for changes under verapep/ (this repository also hosts unrelated projects).
 # No secrets are used: every job runs the server against temporary copies of verapep/data/
 # with APP_ENV=test, no Stripe keys, sandbox commerce and no outbound payment calls.
@@ -95,6 +95,8 @@ jobs:
         run: python tests/e2e.py
       - name: Simulated persona navigation (informational, not real user research)
         run: python tests/personas.py
+      - name: Simulated admin personas (informational, not real user research)
+        run: python tests/admin-personas.py
 
   release-gate:
     name: Release gate
