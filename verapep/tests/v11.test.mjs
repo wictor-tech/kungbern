@@ -38,9 +38,12 @@ test('VERAPEP V11 complete storefront and admin regression', async t => {
     assert.equal(response.status, 200);
     const html = await response.text();
     assert.match(html, /theme-v11/);
-    assert.match(html, /assets\/v11\.css/);
+    // v16 serves the layered stylesheets as one ordered bundle; v11 must be part of it.
+    assert.match(html, /assets\/bundle-storefront\.css/);
+    const bundle = await fsp.readFile(path.join(root, 'assets', 'bundle-storefront.css'), 'utf8');
+    assert.match(bundle, /\/\* v11\.css \*\//);
     assert.match(html, /assets\/v11-ui\.js/);
-    assert.match(html, /Precision peptides/);
+    assert.match(html, /A catalogue built<br\/>on transparency\./);
     const appSource = await fsp.readFile(path.join(root, 'assets', 'app.js'), 'utf8');
     assert.match(appSource, /state\.focuses\].*every/s);
   });

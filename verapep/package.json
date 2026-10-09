@@ -1,9 +1,9 @@
 {
   "name": "verapep-information-platform",
-  "version": "14.1.0",
+  "version": "16.0.0",
   "private": true,
   "type": "module",
-  "description": "VERAPEP production-readiness storefront with guarded commerce, per-admin MFA enrollment, operational order queues, privacy export tooling, resilient transactional-email retries and mobile-first UX.",
+  "description": "VERAPEP information platform: guarded commerce, structured product information, legal information pages, bundled styles and a release E2E suite.",
   "scripts": {
     "start": "node --env-file-if-exists=.env server.mjs",
     "build:data": "node scripts/build-store-data.mjs",
@@ -14,7 +14,8 @@
     "audit:images": "node scripts/audit-product-images.mjs",
     "import:v8": "node scripts/import-v8-data.mjs",
     "backup:sqlite": "node scripts/backup-sqlite.mjs",
-    "email:retry": "node scripts/retry-email-outbox.mjs"
+    "email:retry": "node scripts/retry-email-outbox.mjs",
+    "build:css": "node scripts/build-css.mjs"
   },
   "engines": {
     "node": ">=22"

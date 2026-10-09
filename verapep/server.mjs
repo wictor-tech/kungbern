@@ -251,13 +251,24 @@ function securityHeaders(contentType = '', requestIsHttps = false) {
 
 function sendJson(res, status, payload, extraHeaders = {}) {
   const body = JSON.stringify(payload);
+  // Transport compression for larger responses (the storefront payload is ~150 KB).
+  // The JSON contract is unchanged; clients negotiate via Accept-Encoding.
+  const accepted = String(res.vpAcceptEncoding || '');
+  let responseBody = body;
+  let encoding = null;
+  if (Buffer.byteLength(body) > 2048 && !extraHeaders['Content-Encoding']) {
+    if (accepted.includes('br')) { responseBody = zlib.brotliCompressSync(body, { params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); encoding = 'br'; }
+    else if (accepted.includes('gzip')) { responseBody = zlib.gzipSync(body, { level: 6 }); encoding = 'gzip'; }
+  }
   res.writeHead(status, {
     ...securityHeaders('application/json; charset=utf-8'),
     'Cache-Control': 'no-store',
-    'Content-Length': Buffer.byteLength(body),
+    'Content-Length': Buffer.byteLength(responseBody),
+    Vary: 'Accept-Encoding',
+    ...(encoding ? { 'Content-Encoding': encoding } : {}),
     ...extraHeaders
   });
-  res.end(body);
+  res.end(responseBody);
 }
 
 function sendText(res, status, body, contentType = 'text/plain; charset=utf-8', extraHeaders = {}) {
@@ -1282,7 +1293,7 @@ export function createVerapepServer(options = {}) {
     const ip = req.socket.remoteAddress || 'unknown';
 
     if (method === 'GET' && pathname === '/api/health') {
-      return sendJson(res, 200, { ok: true, version: '14.1.0', mode: getMode(), environment: APP_ENV, database: 'SQLite', products: catalogue.productCount, variants: catalogue.variantCount, timestamp: nowIso() });
+      return sendJson(res, 200, { ok: true, version: '16.0.0', mode: getMode(), environment: APP_ENV, database: 'SQLite', products: catalogue.productCount, variants: catalogue.variantCount, timestamp: nowIso() });
     }
 
     if (method === 'GET' && pathname === '/api/ready') {
@@ -2231,6 +2242,7 @@ export function createVerapepServer(options = {}) {
   }
 
   const server = http.createServer(async (req, res) => {
+    res.vpAcceptEncoding = req.headers['accept-encoding'] || '';
     try {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
