@@ -1,6 +1,6 @@
 {
   "name": "verapep-information-platform",
-  "version": "19.0.0",
+  "version": "20.0.0",
   "private": true,
   "type": "module",
   "description": "VERAPEP information platform: compliance-gated publication, guarded commerce, Ask Vera with safety rules and versioned knowledge, legal information pages, bundled styles and release test suites.",

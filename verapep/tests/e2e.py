@@ -75,6 +75,23 @@ def http_status(url: str) -> int:
         return error.code
 
 
+def api_call(base: str, path: str, body=None, cookie=None, csrf=None, method=None):
+    data = json.dumps(body).encode() if body is not None else None
+    request = urllib.request.Request(base + path, data=data, method=method or ('POST' if data else 'GET'))
+    request.add_header('Content-Type', 'application/json')
+    if cookie:
+        request.add_header('Cookie', cookie)
+    if csrf:
+        request.add_header('X-CSRF-Token', csrf)
+    with urllib.request.urlopen(request, timeout=8) as response:
+        return response.status, json.loads(response.read() or b'{}'), response.headers
+
+
+def api_login(base: str):
+    status, payload, headers = api_call(base, '/api/admin/login', {'email': 'admin@verapep.local', 'password': 'ChangeMe-123!'})
+    return headers.get('Set-Cookie', '').split(';')[0], payload.get('csrf')
+
+
 class Suite:
     def __init__(self, browser, base: str):
         self.browser = browser
@@ -536,6 +553,44 @@ class Suite:
         expect(page.locator('#product-workspace')).to_be_visible()
         assert page.evaluate('document.documentElement.scrollWidth') <= 390
         self.shot(page, 'v19-admin-mobile')
+        page.context.close()
+
+    # ------------------------------------------------------------------ v20
+
+    def test_session_expiry(self):
+        """v20: when the session ends mid-task, signing in again keeps the unsaved draft text."""
+        page = self.page()
+        self.login_admin(page)
+        page.locator('[data-admin-tab="products"]').click()
+        page.locator('#product-search').fill('kpv')
+        page.locator('[data-edit-product="kpv-071"]').click()
+        page.locator('#workspace-new-draft').click()
+        page.locator('[data-draft-field="storage"]').fill('Typed before the session ended.')
+        page.context.clear_cookies()
+        page.locator('#draft-form button[data-then="save"]').click()
+        expect(page.locator('#admin-login')).to_be_visible()
+        expect(page.locator('#admin-message')).to_contain_text('Sign in again')
+        page.locator('#admin-password').fill('ChangeMe-123!')
+        page.locator('#admin-login-form button').click()
+        expect(page.locator('#admin-dashboard')).to_be_visible()
+        expect(page.locator('[data-draft-field="storage"]')).to_have_value('Typed before the session ended.')
+        page.locator('#draft-form button[data-then="save"]').click()
+        expect(page.locator('#admin-message')).to_contain_text('Draft saved')
+        page.context.close()
+
+    def test_product_live_updates(self):
+        """v20: a product page is not reloaded by changes to other products; a change to it is offered."""
+        page = self.page()
+        self.product(page, 'aicar-025')
+        page.evaluate('window.__v20Marker = true; window.scrollTo(0, 600)')
+        cookie, csrf = api_login(self.base)
+        api_call(self.base, '/api/admin/product-content/kpv-071', {'searchAliases': ['v20 unrelated change']}, cookie, csrf, 'PATCH')
+        page.wait_for_timeout(2000)
+        assert page.evaluate('window.__v20Marker === true'), 'page reloaded for an unrelated product'
+        expect(page.locator('#product-refresh-notice')).to_have_count(0)
+        api_call(self.base, '/api/admin/product-content/aicar-025', {'searchAliases': ['v20 change to this product']}, cookie, csrf, 'PATCH')
+        expect(page.locator('#product-refresh-notice')).to_be_visible()
+        assert page.evaluate('window.__v20Marker === true'), 'the visitor decides when to refresh'
         page.context.close()
 
 

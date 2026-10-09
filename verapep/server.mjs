@@ -59,7 +59,7 @@ const MIME_TYPES = {
 const ORDER_STATUSES = new Set(['awaiting_payment', 'processing', 'packed', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled', 'refunded']);
 const RETURN_STATUSES = new Set(['requested', 'approved', 'rejected', 'received', 'refunded']);
 const MAX_BODY_BYTES = 1_000_000;
-const VERSION = '19.0.0';
+const VERSION = '20.0.0';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const SESSION_ABSOLUTE_MS = 12 * 60 * 60 * 1000;
 const DUMMY_PASSWORD_HASH = hashPassword('verapep-timing-equaliser-not-a-real-password');
@@ -76,12 +76,6 @@ function readJsonSync(filePath, fallback) {
     if (error.code === 'ENOENT' && fallback !== undefined) return fallback;
     throw new Error(`Could not read ${filePath}: ${error.message}`);
   }
-}
-
-async function writeJsonAtomic(filePath, value) {
-  const temp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
-  await fsp.writeFile(temp, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-  await fsp.rename(temp, filePath);
 }
 
 function sha256(value) {

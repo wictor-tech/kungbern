@@ -18,7 +18,7 @@ async function startServer() {
   const dataDir = await fsp.mkdtemp(path.join(os.tmpdir(), 'verapep-load-'));
   for (const name of fs.readdirSync(path.join(root, 'data')).filter(file => file.endsWith('.json'))) await fsp.copyFile(path.join(root, 'data', name), path.join(dataDir, name));
   const port = 46000 + Math.floor(Math.random() * 1000);
-  const child = spawn(process.execPath, ['--no-warnings', 'server.mjs'], { cwd: root, env: { ...process.env, PORT: String(port), DATA_DIR: dataDir, APP_ENV: 'test', ADMIN_PASSWORD: 'ChangeMe-123!' }, stdio: ['ignore', 'pipe', 'pipe'] });
+  const child = spawn(process.execPath, ['--no-warnings', 'server.mjs'], { cwd: root, env: { ...process.env, PORT: String(port), DATA_DIR: dataDir, APP_ENV: 'test', ADMIN_PASSWORD: 'ChangeMe-123!', TRUST_PROXY: '1' }, stdio: ['ignore', 'pipe', 'pipe'] });
   const base = `http://127.0.0.1:${port}`;
   for (let i = 0; i < 100; i += 1) { try { if ((await fetch(`${base}/api/health`)).ok) break; } catch { /* starting */ } await new Promise(resolve => setTimeout(resolve, 100)); }
   return { child, base, dataDir };
@@ -58,7 +58,8 @@ try {
   await scenario('Public storefront (/api/storefront)', 400 * n, 40, () => fetch(`${base}/api/storefront`, { headers: { 'Accept-Encoding': 'br' } }));
   await scenario('Product page HTML', 400 * n, 40, () => fetch(`${base}/product/aicar-025`));
   const questions = ['How long does delivery take?', 'hur lång är leveranstiden', 'what is kpv', 'do you ship to sweden', 'how do I dose bpc', 'leverns tid', 'Tell me about AICAR', 'privacy'];
-  await scenario('Ask Vera, parallel visitors (distinct IPs)', 400 * n, 50, index => fetch(`${base}/api/support/ask`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: questions[index % questions.length] }) }));
+  // TRUST_PROXY=1 and one X-Forwarded-For address per simulated visitor (5 questions each).
+  await scenario('Ask Vera, 80 parallel visitors', 400 * n, 50, index => fetch(`${base}/api/support/ask`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': `10.20.${Math.floor(index / 5) % 250}.${index % 5 + 1}` }, body: JSON.stringify({ question: questions[index % questions.length] }) }));
   await scenario('Ask Vera, one visitor flooding (rate limit)', 60, 10, () => fetch(`${base}/api/support/ask`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: 'delivery' }) }));
   await scenario('Admin overview (84 products)', 100 * n, 10, () => fetch(`${base}/api/admin/overview`, { headers: session }));
   await scenario('Admin product list (84 summaries)', 100 * n, 10, () => fetch(`${base}/api/admin/workspace/products`, { headers: session }));
