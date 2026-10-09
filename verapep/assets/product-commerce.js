@@ -327,13 +327,30 @@
   }
 
   if (window.VerapepeCart?.ready) window.VerapepeCart.ready.then(renderPage).catch(renderPage); else renderPage();
+  /* Live updates: reload when the catalogue changes, but never throw away what the
+     visitor is typing, and never react to the visitor's own review submission. */
+  let ownReviewAt = 0;
+  document.addEventListener('submit', event => { if (event.target?.id === 'product-review-form') ownReviewAt = Date.now(); }, true);
+  const formIsDirty = () => [...document.querySelectorAll('#product-review-form input, #product-review-form textarea')].some(field => field.value.trim());
+  function offerRefresh() {
+    if (document.getElementById('product-refresh-notice')) return;
+    const notice = document.createElement('div');
+    notice.id = 'product-refresh-notice';
+    notice.className = 'product-toast is-visible product-toast--action';
+    notice.setAttribute('role', 'status');
+    notice.innerHTML = '<span>This product was just updated.</span> <button type="button">Refresh</button>';
+    notice.querySelector('button').addEventListener('click', () => location.reload());
+    document.body.appendChild(notice);
+  }
   if ('EventSource' in window) {
     const events = new EventSource('/api/storefront/events');
     let connected = false;
     events.addEventListener('storefront', event => {
       const data = JSON.parse(event.data || '{}');
       if (data.reason === 'connected') { connected = true; return; }
-      if (connected) location.reload();
+      if (!connected) return;
+      if (data.reason === 'reviews' && Date.now() - ownReviewAt < 15000) return;
+      if (formIsDirty()) offerRefresh(); else location.reload();
     });
   }
 })();

@@ -65,7 +65,13 @@ npm run test:static
 npm run test:e2e
 ```
 
-The source/static regression suite passes in the packaged build. Browser E2E must also be run against a deployed staging URL before live launch.
+The source/static regression suite passes in the packaged build.
+
+`npm run test:e2e` starts the server on a temporary copy of `data/` and drives Chromium (requires Python 3 with `pip install playwright==1.56.0` and `python3 -m playwright install chromium`). It waits for application state instead of network idleness, so the open Server-Sent Events stream does not stall it. It covers navigation, search, catalogue, all 84 product pages, cart states, mobile menu, forms, legal pages, broken links, accessibility (axe-core, vendored under `tests/vendor`) and administration. `E2E_ONLY=search,legal` runs selected tests.
+
+## CSS
+
+Stylesheets are edited in `assets/*.css` and served as three ordered bundles (`bundle-storefront.css`, `bundle-pages.css`, `bundle-admin.css`). After editing a stylesheet run `npm run build:css`; `npm test` fails if a bundle is out of date.
 
 ## Payments
 
