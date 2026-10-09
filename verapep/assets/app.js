@@ -377,10 +377,41 @@
     renderFeatured(); renderActiveFilters(); renderSaved(); renderCompareBar(); renderFinder();
   }
 
+  function syncSavedButtons() {
+    document.querySelectorAll('[data-save-product]').forEach(button => {
+      const id = button.dataset.saveProduct;
+      const on = saved.has(id);
+      const product = products.find(item => item.id === id);
+      button.classList.toggle('is-saved', on);
+      button.setAttribute('aria-pressed', String(on));
+      if (product) button.setAttribute('aria-label', `${on ? 'Remove' : 'Save'} ${productName(product)}`);
+      const glyph = button.querySelector('span');
+      if (glyph) glyph.textContent = on ? '♥' : '♡';
+    });
+  }
+
   function renderSaved() {
     const list = products.filter(product => saved.has(product.id));
     els.savedCount.textContent = String(list.length);
     els.savedList.innerHTML = list.length ? list.map(product => `<article><div><span>${escapeHtml(categories[product.category].label)}</span><a href="${productUrl(product)}">${escapeHtml(productName(product))}</a><small>${product.content?.specialistOnly ? 'Specialist information · ' : ''}${hasReports(product) ? 'Lab report available' : 'Information only'}</small></div><button type="button" data-remove-saved="${escapeHtml(product.id)}" aria-label="Remove ${escapeHtml(productName(product))}">×</button></article>`).join('') : '<div class="saved-empty"><strong>No saved products yet</strong><p>Use the heart on any product card to build a separate shortlist.</p></div>';
+  }
+
+  function syncCompareButtons() {
+    document.querySelectorAll('[data-compare-product]').forEach(button => {
+      const on = compared.has(button.dataset.compareProduct);
+      button.setAttribute('aria-pressed', String(on));
+      button.textContent = on ? 'Selected' : 'Compare';
+    });
+  }
+
+  let compareLimitTimer;
+  function flashCompareLimit() {
+    const hint = els.compareBar?.querySelector('span');
+    if (!hint) return;
+    els.compareBar.classList.add('is-limit');
+    hint.textContent = 'Maximum reached — remove a product to add another.';
+    clearTimeout(compareLimitTimer);
+    compareLimitTimer = setTimeout(() => { els.compareBar.classList.remove('is-limit'); hint.textContent = 'Compare up to three products.'; }, 3200);
   }
 
   function renderCompareBar() {
@@ -470,7 +501,10 @@
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion) document.body.classList.add('motion-ready');
     const ambient = document.getElementById('ambient-liquid');
-    if (ambient && !reduceMotion) {
+    // The scroll-driven variables are only consumed by the v6/v7 liquid shapes. Writing them on :root
+    // restyles the whole document every frame, so skip the work when none of those shapes is rendered.
+    const ambientConsumers = document.querySelector('.ambient-liquid__shape, .ambient-liquid__sheen, .liquid-blob, .liquid-bubble, .fluid-group--front, .fluid-group--back');
+    if (ambient && ambientConsumers && !reduceMotion) {
       let ambientTicking = false;
       const updateAmbient = () => {
         const range = Math.max(1, document.documentElement.scrollHeight - innerHeight);
@@ -588,7 +622,9 @@
     if (save) {
       const id = save.dataset.saveProduct;
       saved.has(id) ? saved.delete(id) : saved.add(id);
-      persist(); render();
+      // Saving does not change which products match, so update in place instead of
+      // re-rendering every card (faster, and keeps keyboard focus on the button).
+      persist(); syncSavedButtons(); renderSaved();
     }
     const unsave = event.target.closest('[data-remove-saved]');
     if (unsave) { saved.delete(unsave.dataset.removeSaved); persist(); render(); }
@@ -598,8 +634,8 @@
       const id = compare.dataset.compareProduct;
       if (compared.has(id)) compared.delete(id);
       else if (compared.size < 3) compared.add(id);
-      else alert('You can compare up to three products.');
-      persist(); render();
+      else { flashCompareLimit(); return; }
+      persist(); syncCompareButtons(); renderCompareBar();
     }
   });
 

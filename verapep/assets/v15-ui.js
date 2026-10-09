@@ -18,8 +18,8 @@
   };
   syncHeaderOffset();
   addEventListener('resize', syncHeaderOffset, { passive: true });
-  let headerFrame = 0;
-  addEventListener('scroll', () => { cancelAnimationFrame(headerFrame); headerFrame = requestAnimationFrame(syncHeaderOffset); }, { passive: true });
+  // Re-measure only when the header changes size (compact state) — not on every scroll frame.
+  if (header) new MutationObserver(() => requestAnimationFrame(syncHeaderOffset)).observe(header, { attributes: true, attributeFilter: ['class'] });
 
   const isMenuOpen = () => menuButton?.getAttribute('aria-expanded') === 'true';
   const closeMenu = ({ restoreFocus = false } = {}) => {

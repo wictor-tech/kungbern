@@ -2229,7 +2229,8 @@ export function createVerapepServer(options = {}) {
       }
       res.writeHead(200, {
         ...securityHeaders(MIME_TYPES[extension]),
-        'Cache-Control': isAsset ? 'public, max-age=3600, immutable' : 'no-cache',
+        // Versioned assets (?v=) never change at that URL; unversioned ones are cached for at most an hour.
+        'Cache-Control': isAsset ? (url.searchParams.has('v') ? 'public, max-age=31536000, immutable' : 'public, max-age=3600, must-revalidate') : 'no-cache',
         ...(compressible ? { Vary: 'Accept-Encoding' } : {}),
         ...(contentEncoding ? { 'Content-Encoding': contentEncoding } : {}),
         'Content-Length': responseBody.length
