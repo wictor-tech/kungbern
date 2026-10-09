@@ -4,13 +4,13 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const source = fs.readFileSync(path.join(root, 'assets', 'catalogue-data.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'scripts', 'source', 'catalogue-data.js'), 'utf8');
 const sandbox = { window: {} };
 vm.createContext(sandbox);
 vm.runInContext(source, sandbox, { filename: 'catalogue-data.js' });
 const catalogue = sandbox.window.VERAPEP_CATALOGUE;
 if (!catalogue || !Array.isArray(catalogue.products)) {
-  throw new Error('Could not parse VERAPEP_CATALOGUE from assets/catalogue-data.js');
+  throw new Error('Could not parse VERAPEP_CATALOGUE from scripts/source/catalogue-data.js');
 }
 
 const normalised = {

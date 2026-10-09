@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createVerapepServer } from '../server.mjs';
+import { approveForSale } from './support/compliance.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dataFiles = ['catalogue.json','commerce-policy.json','inventory.json','store-config.json','orders.json','returns.json','product-content.json','reviews.json','guide-config.json','support-kb.json','customers.json'];
@@ -18,8 +19,9 @@ test('VERAPEP V8 webshop, liquid frontend and admin synchronisation', async t =>
 
   let store=(await jsonRequest(baseUrl,'/api/storefront')).payload;
   await t.test('storefront starts in admin-controlled test webshop mode', async()=>{
-    const health=await jsonRequest(baseUrl,'/api/health'); assert.equal(health.response.status,200); assert.equal(health.payload.mode,'sandbox'); assert.equal(health.payload.products,84); assert.equal(health.payload.variants,170);
-    assert.equal(store.config.currency,'EUR'); assert.equal(store.config.checkoutMode,'sandbox'); assert.equal(store.products.length,84); assert.equal(store.products.flatMap(p=>p.variants).length,170);
+    const health=await jsonRequest(baseUrl,'/api/health'); assert.equal(health.response.status,200); assert.equal(health.payload.mode,'sandbox'); // v17: the preview publication gate hides 44 high-risk products until reviewed (84 in the catalogue).
+    assert.equal(health.payload.products,40); assert.equal(health.payload.variants,store.products.flatMap(p=>p.variants).length);
+    assert.equal(store.config.currency,'EUR'); assert.equal(store.config.checkoutMode,'sandbox'); assert.equal(store.products.length,40); assert.equal(store.productCount,40);
     assert.ok(store.products.every(p=>p.commerce.checkoutEnabled===false)); assert.ok(Number.isInteger(store.revision));
   });
 
@@ -37,6 +39,7 @@ test('VERAPEP V8 webshop, liquid frontend and admin synchronisation', async t =>
 
   await t.test('one-click admin action enables and disables an eligible product', async()=>{
     const quickProduct=store.products[1];
+    await approveForSale(baseUrl,auth,quickProduct.id);
     const enabled=await jsonRequest(baseUrl,`/api/admin/products/${encodeURIComponent(quickProduct.id)}/webshop`,{method:'POST',headers:auth,body:JSON.stringify({enabled:true})});
     assert.equal(enabled.response.status,200); assert.equal(enabled.payload.enabled,true); assert.ok(enabled.payload.enabledVariants.length>0);
     let current=(await jsonRequest(baseUrl,'/api/storefront')).payload; const publicProduct=current.products.find(p=>p.id===quickProduct.id);
@@ -48,6 +51,7 @@ test('VERAPEP V8 webshop, liquid frontend and admin synchronisation', async t =>
 
   await t.test('admin enables a product and variant for checkout', async()=>{
     const before=store.revision;
+    await approveForSale(baseUrl,auth,product.id,['SE']);
     const content=await jsonRequest(baseUrl,`/api/admin/product-content/${encodeURIComponent(product.id)}`,{method:'PATCH',headers:auth,body:JSON.stringify({published:true,archived:false,informationOnly:false,availableForSale:true,stockStatus:'available',allowedCountries:['SE'],displayName:'Admin synced product',shortDescription:'Changed in admin and shown on the homepage.'})});
     assert.equal(content.response.status,200); assert.equal(content.payload.content.availableForSale,true);
     const stock=await jsonRequest(baseUrl,'/api/admin/inventory',{method:'PATCH',headers:auth,body:JSON.stringify({variantId:variant.variantId,onHand:9,retailPrice:49.95,saleEnabled:true})});

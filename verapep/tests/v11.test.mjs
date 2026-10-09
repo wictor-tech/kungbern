@@ -51,10 +51,13 @@ test('VERAPEP V11 complete storefront and admin regression', async t => {
   const storefront = (await jsonRequest(baseUrl, '/api/storefront')).payload;
 
   await t.test('all public products and every legacy product URL open', async () => {
-    assert.equal(storefront.products.length, 84);
-    assert.equal(storefront.products.flatMap(product => product.variants).length, 170);
+    // v17: 84 products in the catalogue; the preview publication gate lists the 40 that are not
+    // flagged high-risk. Hidden products are covered in v17.test.mjs.
+    const publicVariants = storefront.products.flatMap(product => product.variants).length;
+    assert.equal(storefront.products.length, 40);
+    assert.equal(storefront.variantCount, publicVariants);
     assert.equal(new Set(storefront.products.map(product => product.id)).size, storefront.products.length);
-    assert.equal(new Set(storefront.products.flatMap(product => product.variants.map(variant => variant.variantId))).size, 170);
+    assert.equal(new Set(storefront.products.flatMap(product => product.variants.map(variant => variant.variantId))).size, publicVariants);
 
     for (const product of storefront.products) {
       assert.ok(product.name, `${product.id} is missing a name`);

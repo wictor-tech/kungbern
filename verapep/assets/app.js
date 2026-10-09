@@ -35,7 +35,9 @@
   const pageSize = matchMedia('(max-width:700px)').matches ? 6 : 12;
   const state = { focuses: new Set(), needs: new Set(), priorities: new Set() };
   let visibleLimit = pageSize;
-  let products = embedded.products.map(product => ({ ...product, reviews: { count: 0, average: 0 }, content: {} }));
+  // v17: products come only from /api/storefront (publication and compliance rules are applied there).
+  let products = [];
+  let catalogueState = 'loading'; // loading | ready | failed
   let guide = window.VERAPEP_GUIDE_FALLBACK || { focusAreas: [], priorities: [], disclaimer: '' };
   let saved = new Set(JSON.parse(localStorage.getItem('vp-saved-products') || '[]'));
   let compared = new Set(JSON.parse(localStorage.getItem('vp-compare-products') || '[]'));
@@ -365,7 +367,22 @@
       : '<div class="catalogue-empty-inline"><strong>No matching peptides yet</strong><p>Try removing one goal or one interest to widen the results.</p></div>';
   }
 
+  function renderCatalogueStatus() {
+    if (catalogueState === 'ready') return false;
+    els.grid.setAttribute('aria-busy', String(catalogueState === 'loading'));
+    els.grid.innerHTML = catalogueState === 'loading'
+      ? Array.from({ length: Math.min(pageSize, 8) }, () => '<div class="product-card product-card--skeleton" aria-hidden="true"><span></span><span></span><span></span></div>').join('')
+      : '<div class="catalogue-load-error" role="alert"><strong>The catalogue could not be loaded.</strong><p>Check your connection and try again. Nothing in your saved products or cart has been lost.</p><button class="button button--primary" type="button" data-catalogue-retry>Try again</button></div>';
+    els.count.textContent = catalogueState === 'loading' ? 'Loading products…' : 'Catalogue unavailable';
+    els.empty.hidden = true;
+    els.load.hidden = true;
+    if (els.featuredGrid) els.featuredGrid.innerHTML = '';
+    return true;
+  }
+
   function render() {
+    if (renderCatalogueStatus()) { renderActiveFilters(); renderFinder(); return; }
+    els.grid.setAttribute('aria-busy', 'false');
     const matches = filteredProducts();
     const shown = matches.slice(0, visibleLimit);
     els.grid.classList.add('is-updating');
@@ -697,12 +714,13 @@
     if (!response.ok) throw new Error('Storefront API unavailable.');
     const storefront = await response.json();
     products = storefront.products; guide = storefront.guide || guide;
+    catalogueState = 'ready';
     const publicVariantCount = products.reduce((sum, product) => sum + (product.variants?.length || 0), 0);
     const purchasableProducts = products.filter(product => product.commerce?.checkoutEnabled && product.variants?.some(variant => variant.checkoutEnabled)).length;
     const heroCount = $('hero-catalogue-count');
     if (heroCount) heroCount.textContent = `${products.length} products · ${publicVariantCount} catalogue variants`;
     const catalogueSummary = $('catalogue-summary');
-    if (catalogueSummary) catalogueSummary.textContent = `${products.length} products · ${publicVariantCount} variants · Lab reports where available`;
+    if (catalogueSummary) catalogueSummary.textContent = `${products.length} products · ${publicVariantCount} variants`;
     const orbitCount = $('orbit-product-count');
     if (orbitCount) orbitCount.textContent = String(products.length);
     const commerceStatus = $('hero-commerce-status');
@@ -731,7 +749,12 @@
   }
 
   async function init() {
-    try { await refreshStorefront(); } catch (error) { console.warn('Using embedded catalogue data.', error); }
+    try { await refreshStorefront(); } catch (error) { catalogueState = 'failed'; console.warn('Storefront could not be loaded.', error); }
+    els.grid.addEventListener('click', async event => {
+      if (!event.target.closest('[data-catalogue-retry]')) return;
+      catalogueState = 'loading'; render();
+      try { await refreshStorefront(); } catch { catalogueState = 'failed'; render(); }
+    });
 
     const previous = JSON.parse(localStorage.getItem('vp-guide-selection') || '{}');
     const previousFocuses = previous.focuses || (previous.focus ? [previous.focus] : []);

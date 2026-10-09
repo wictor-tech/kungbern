@@ -1,0 +1,39 @@
+/* VERAPEP v17 — targeted fixes found in testing. No general redesign.
+   Loaded last in every bundle (scripts/build-css.mjs). Uses the v15 tokens. */
+
+/* Catalogue loading and failure states (products now come only from the API). */
+.product-card--skeleton {
+  min-height: 300px;
+  border: 1px solid var(--vp-line);
+  border-radius: var(--vp-radius-lg);
+  background: var(--vp-surface);
+  padding: 18px;
+  display: grid;
+  align-content: end;
+  gap: 10px;
+}
+.product-card--skeleton span {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--vp-teal-tint), var(--vp-teal-soft), var(--vp-teal-tint));
+  background-size: 200% 100%;
+  animation: vp-skeleton 1.4s ease-in-out infinite;
+}
+.product-card--skeleton span:first-child { height: 150px; border-radius: var(--vp-radius); margin-bottom: 8px; }
+.product-card--skeleton span:last-child { width: 55%; }
+@keyframes vp-skeleton { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .product-card--skeleton span { animation: none; } }
+@media (max-width: 700px) { .product-card--skeleton { min-height: 120px; } .product-card--skeleton span:first-child { height: 60px; } }
+
+.catalogue-load-error {
+  grid-column: 1 / -1;
+  padding: 28px;
+  border: 1px solid var(--vp-line-strong);
+  border-radius: var(--vp-radius-lg);
+  background: var(--vp-surface);
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.catalogue-load-error p { margin: 0; color: var(--vp-muted); }
