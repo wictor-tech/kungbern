@@ -1,13 +1,24 @@
 {
   "version": 3,
-  "contentVersion": "17.0",
+  "contentVersion": "18.0",
   "note": "Approved Ask Vera answers. {placeholders} are filled at answer time from configuration (support email, delivery settings, company details, counts), so answers never state values that are not configured. Medical, dosing and treatment questions are refused by the engine and are not editable here.",
   "entries": [
     {
       "id": "delivery",
       "revision": 3,
       "title": "Delivery time",
-      "keywords": ["delivery", "delivery time", "shipping", "ship", "deliver", "how long", "arrive", "when will", "dispatch", "transit"],
+      "keywords": [
+        "delivery",
+        "delivery time",
+        "shipping",
+        "ship",
+        "deliver",
+        "how long",
+        "arrive",
+        "when will",
+        "dispatch",
+        "transit"
+      ],
       "answer": "The configured estimate is {deliveryEstimate} to {deliveryCountryCount} EU countries. {orderingStatus} Final delivery terms will be published on the Shipping & returns page before sales open.",
       "url": "/shipping-returns.html"
     },
@@ -15,15 +26,41 @@
       "id": "europe",
       "revision": 3,
       "title": "Delivery countries",
-      "keywords": ["countries", "country", "europe", "eu", "which countries", "deliver to", "outside eu", "sweden", "germany", "international"],
+      "keywords": [
+        "countries",
+        "country",
+        "europe",
+        "eu",
+        "which countries",
+        "deliver to",
+        "outside eu",
+        "sweden",
+        "germany",
+        "international"
+      ],
       "answer": "Delivery is configured for {deliveryCountryCount} EU countries: {deliveryCountries}. Whether a specific product could be delivered to your country is shown on its product page.",
       "url": "/shipping-returns.html"
     },
     {
       "id": "returns",
-      "revision": 1,
+      "revision": 2,
       "title": "Returns and cancellation",
-      "keywords": ["return", "returns", "refund", "withdraw", "withdrawal", "cancel", "cancellation", "regret", "send back", "money back"],
+      "keywords": [
+        "return",
+        "returns",
+        "refund",
+        "withdraw",
+        "withdrawal",
+        "cancel",
+        "cancellation",
+        "regret",
+        "send back",
+        "money back",
+        "return my order",
+        "return an order",
+        "cancel order",
+        "cancel my order"
+      ],
       "answer": "A return can be requested for a paid order from the Track an order page. The full returns and withdrawal terms are still being prepared and will be published on the Shipping & returns page.",
       "url": "/shipping-returns.html"
     },
@@ -31,7 +68,19 @@
       "id": "pricing",
       "revision": 3,
       "title": "Prices",
-      "keywords": ["price", "prices", "pricing", "cost", "costs", "how much does", "vat", "tax", "expensive", "cheap", "discount"],
+      "keywords": [
+        "price",
+        "prices",
+        "pricing",
+        "cost",
+        "costs",
+        "how much does",
+        "vat",
+        "tax",
+        "expensive",
+        "cheap",
+        "discount"
+      ],
       "answer": "A product's EUR price is shown when it can be ordered, and VAT and delivery costs are confirmed at checkout before you pay. {orderingStatus}",
       "url": "/index.html#catalogue"
     },
@@ -39,7 +88,19 @@
       "id": "payment",
       "revision": 1,
       "title": "Payment",
-      "keywords": ["pay", "payment", "payments", "card", "credit card", "klarna", "swish", "paypal", "invoice", "checkout", "secure"],
+      "keywords": [
+        "pay",
+        "payment",
+        "payments",
+        "card",
+        "credit card",
+        "klarna",
+        "swish",
+        "paypal",
+        "invoice",
+        "checkout",
+        "secure"
+      ],
       "answer": "No real payments can be made on this site at the moment. It is a preview, and live checkout stays switched off until products, terms and payments have been approved.",
       "url": "/terms.html"
     },
@@ -47,7 +108,19 @@
       "id": "reports",
       "revision": 3,
       "title": "Lab reports",
-      "keywords": ["lab report", "lab reports", "lab", "coa", "certificate", "certificate of analysis", "analysis", "purity", "test results", "hplc", "tested"],
+      "keywords": [
+        "lab report",
+        "lab reports",
+        "lab",
+        "coa",
+        "certificate",
+        "certificate of analysis",
+        "analysis",
+        "purity",
+        "test results",
+        "hplc",
+        "tested"
+      ],
       "answer": "Lab reports are published on a product's page only after they have been verified for that product. {labReportStatus} Vera cannot provide test results that are not published.",
       "url": "/index.html?reports=yes#catalogue"
     },
@@ -55,7 +128,19 @@
       "id": "missing-information",
       "revision": 1,
       "title": "Why information is missing",
-      "keywords": ["why missing", "missing", "no description", "not published", "missing information", "empty", "documentation", "documents", "datasheet", "no information", "not yet published"],
+      "keywords": [
+        "why missing",
+        "missing",
+        "no description",
+        "not published",
+        "missing information",
+        "empty",
+        "documentation",
+        "documents",
+        "datasheet",
+        "no information",
+        "not yet published"
+      ],
       "answer": "Descriptions, intended use, documentation and lab reports are published only once they have been verified and reviewed. Many products do not have this yet, so their pages say \"Not yet published\" instead of showing placeholder text.",
       "url": "/index.html#quality"
     },
@@ -63,7 +148,18 @@
       "id": "availability",
       "revision": 1,
       "title": "Availability",
-      "keywords": ["available", "availability", "in stock", "stock", "buy", "order", "purchase", "can i buy", "sold out", "when can i"],
+      "keywords": [
+        "available",
+        "availability",
+        "in stock",
+        "stock",
+        "buy",
+        "order",
+        "purchase",
+        "can i buy",
+        "sold out",
+        "when can i"
+      ],
       "answer": "{orderingStatus} A product can only be ordered after it has been reviewed and approved for sale; each product page shows its current status.",
       "url": "/index.html#catalogue"
     },
@@ -71,7 +167,16 @@
       "id": "account",
       "revision": 3,
       "title": "My pages and accounts",
-      "keywords": ["account", "login", "log in", "sign in", "password", "my pages", "register", "profile"],
+      "keywords": [
+        "account",
+        "login",
+        "log in",
+        "sign in",
+        "password",
+        "my pages",
+        "register",
+        "profile"
+      ],
       "answer": "My pages keeps your saved products and finder choices in this browser. Customer accounts with sign-in are not available yet.",
       "url": "/my-pages.html"
     },
@@ -79,7 +184,17 @@
       "id": "saved",
       "revision": 3,
       "title": "Saved products",
-      "keywords": ["saved", "save", "favourites", "favorites", "favourite", "favorite", "heart", "shortlist", "wishlist"],
+      "keywords": [
+        "saved",
+        "save",
+        "favourites",
+        "favorites",
+        "favourite",
+        "favorite",
+        "heart",
+        "shortlist",
+        "wishlist"
+      ],
       "answer": "Use the heart on a product card or product page to save it. Saved products are kept in this browser, separately from the cart, and appear under My pages.",
       "url": "/my-pages.html#saved-products"
     },
@@ -87,7 +202,12 @@
       "id": "compare",
       "revision": 1,
       "title": "Comparing products",
-      "keywords": ["compare", "comparison", "side by side", "difference between"],
+      "keywords": [
+        "compare",
+        "comparison",
+        "side by side",
+        "difference between"
+      ],
       "answer": "Choose Compare on up to three product cards, then open the comparison bar at the bottom of the catalogue to see them side by side.",
       "url": "/index.html#catalogue"
     },
@@ -95,7 +215,17 @@
       "id": "finder",
       "revision": 3,
       "title": "Product finder",
-      "keywords": ["finder", "product finder", "guide", "product guide", "filter", "filters", "browse", "category", "categories"],
+      "keywords": [
+        "finder",
+        "product finder",
+        "guide",
+        "product guide",
+        "filter",
+        "filters",
+        "browse",
+        "category",
+        "categories"
+      ],
       "answer": "The product finder and product guide group the catalogue by research area and let you narrow it with filters. The areas are not health recommendations, and VERAPEP does not give medical advice.",
       "url": "/index.html#finder"
     },
@@ -103,7 +233,14 @@
       "id": "search",
       "revision": 1,
       "title": "Searching",
-      "keywords": ["search", "find a product", "look for", "where is", "find product", "catalogue number"],
+      "keywords": [
+        "search",
+        "find a product",
+        "look for",
+        "where is",
+        "find product",
+        "catalogue number"
+      ],
       "answer": "Use the search field at the top of every page to search product names and catalogue numbers. On a computer you can press / to jump to it.",
       "url": "/index.html#catalogue"
     },
@@ -111,15 +248,40 @@
       "id": "ratings",
       "revision": 3,
       "title": "Ratings and reviews",
-      "keywords": ["rating", "ratings", "review", "reviews", "stars", "feedback", "opinion"],
+      "keywords": [
+        "rating",
+        "ratings",
+        "review",
+        "reviews",
+        "stars",
+        "feedback",
+        "opinion"
+      ],
       "answer": "Reviews are checked before they are published. Products without published reviews show \"No ratings yet\". Please don't include health details or contact information in a review.",
       "url": "/index.html#catalogue"
     },
     {
       "id": "contact",
-      "revision": 1,
+      "revision": 2,
       "title": "Contact",
-      "keywords": ["contact", "contact us", "email", "e-mail", "mail", "support", "help", "customer service", "talk to", "human", "person", "phone", "reach"],
+      "keywords": [
+        "contact",
+        "contact us",
+        "email",
+        "e-mail",
+        "mail",
+        "support",
+        "help",
+        "customer service",
+        "talk to",
+        "human",
+        "person",
+        "phone",
+        "reach",
+        "complaint",
+        "complain",
+        "problem with"
+      ],
       "answer": "You can contact support by email at {supportEmail}. Please don't include health information in your message.",
       "url": "/support.html#contact"
     },
@@ -127,7 +289,22 @@
       "id": "company",
       "revision": 1,
       "title": "Who operates VERAPEP",
-      "keywords": ["who", "company", "operator", "operates", "behind", "owner", "about", "run by", "registered", "business", "legit", "legitimate", "imprint", "address"],
+      "keywords": [
+        "who",
+        "company",
+        "operator",
+        "operates",
+        "behind",
+        "owner",
+        "about",
+        "run by",
+        "registered",
+        "business",
+        "legit",
+        "legitimate",
+        "imprint",
+        "address"
+      ],
       "answer": "{companyLine} The operator details are listed on the Terms page.",
       "url": "/terms.html"
     },
@@ -135,7 +312,17 @@
       "id": "privacy",
       "revision": 1,
       "title": "Privacy",
-      "keywords": ["privacy", "personal data", "data", "gdpr", "cookies", "cookie", "tracking", "delete my data", "store my"],
+      "keywords": [
+        "privacy",
+        "personal data",
+        "data",
+        "gdpr",
+        "cookies",
+        "cookie",
+        "tracking",
+        "delete my data",
+        "store my"
+      ],
       "answer": "Saved products, comparisons and the cart are kept in your browser. Orders, once ordering is available, store only what is needed to deliver them. The site uses no advertising or analytics trackers, and questions you ask Vera are not stored. Privacy contact: {privacyEmail}.",
       "url": "/privacy.html"
     },
@@ -143,7 +330,14 @@
       "id": "terms",
       "revision": 1,
       "title": "Terms",
-      "keywords": ["terms", "conditions", "terms and conditions", "legal", "agreement", "rules"],
+      "keywords": [
+        "terms",
+        "conditions",
+        "terms and conditions",
+        "legal",
+        "agreement",
+        "rules"
+      ],
       "answer": "The final terms of sale have not been approved and published yet. Until they are, no products can be ordered. The Terms page shows the current status.",
       "url": "/terms.html"
     },
@@ -151,7 +345,16 @@
       "id": "track-order",
       "revision": 1,
       "title": "Track an order",
-      "keywords": ["track", "tracking", "order status", "where is my order", "my order", "order number", "parcel", "package"],
+      "keywords": [
+        "track",
+        "tracking",
+        "order status",
+        "where is my order",
+        "my order",
+        "order number",
+        "parcel",
+        "package"
+      ],
       "answer": "If you have placed an order, follow it on the Track an order page with your order number and email address.",
       "url": "/order.html"
     },
@@ -159,16 +362,40 @@
       "id": "verification",
       "revision": 1,
       "title": "How information is checked",
-      "keywords": ["verified", "verify", "verification", "trust", "reliable", "credible", "quality", "accurate", "source", "sources", "checked"],
+      "keywords": [
+        "verified",
+        "verify",
+        "verification",
+        "trust",
+        "reliable",
+        "credible",
+        "quality",
+        "accurate",
+        "source",
+        "sources",
+        "checked"
+      ],
       "answer": "Product information, lab reports and reviews are published only after they have been checked. Where nothing has been verified yet, the page says so instead of showing placeholder text. VERAPEP does not give medical advice.",
       "url": "/index.html#quality"
     },
     {
       "id": "about-vera",
-      "revision": 1,
+      "revision": 2,
       "title": "About Vera",
-      "keywords": ["vera", "who are you", "ai", "bot", "robot", "how do you work", "chatbot", "assistant"],
-      "answer": "I answer from a fixed set of approved answers and the information published on product pages. I don't create new facts, I don't give medical advice, and your questions are not stored.",
+      "keywords": [
+        "vera",
+        "who are you",
+        "ai",
+        "bot",
+        "robot",
+        "how do you work",
+        "chatbot",
+        "assistant",
+        "are you human",
+        "are you real",
+        "generative"
+      ],
+      "answer": "I'm an automated help tool, not a generative AI. I pick the matching answer from a fixed set written and approved by VERAPEP and read the facts published on product pages. I don't create new facts, I don't give medical advice, and your questions are not stored.",
       "url": "/support.html"
     }
   ],

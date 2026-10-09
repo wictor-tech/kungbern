@@ -4,11 +4,12 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import net from 'node:net';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { VerapepDatabase, verifyPassword } from './database.mjs';
 import { answerQuestion } from './lib/vera.mjs';
 import { loadShipped, planMigration, applyPlan, writeSnapshot, listSnapshots, readSnapshot, snapshotDir } from './lib/support-kb-migration.mjs';
-import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
+import { REVIEW_STATUSES, NON_APPROVAL_STATUSES, APPROVAL_SCOPES, APPROVAL_CONFIRMATION, recordFor, resolveGateMode, isHostedEnvironment, publicVisibility, saleApproved, inventoryRow, suggestRisk } from './lib/compliance.mjs';
 
 const APP_ROOT = path.dirname(fileURLToPath(import.meta.url));
 
@@ -141,14 +142,31 @@ function sanitiseAdminUser(user) {
   return { ...safe, recoveryCodesRemaining: Array.isArray(recoveryCodeHashes) ? recoveryCodeHashes.length : 0 };
 }
 
-/* v17: behind a reverse proxy (Render, nginx) every request arrives from the proxy address,
-   which made per-IP rate limits global. Trust X-Forwarded-For only when explicitly configured. */
+/* Behind a reverse proxy (Render, nginx) every request arrives from the proxy address, which
+   makes per-IP rate limits global. TRUST_PROXY is the number of trusted proxy hops in front of
+   the server ("true" = 1). v18: the client address is taken from the RIGHT of X-Forwarded-For —
+   entries further left are written by the client itself and can be forged to evade rate limits
+   (v17 used the leftmost entry). Without TRUST_PROXY the header is ignored entirely. */
+export function trustedProxyHops(value = process.env.TRUST_PROXY) {
+  const setting = String(value ?? '').trim().toLowerCase();
+  if (setting === 'true') return 1;
+  if (/^\d{1,2}$/.test(setting)) return Math.min(10, Number(setting));
+  return 0;
+}
+
+export function resolveClientIp(socketAddress, forwardedFor, hops = trustedProxyHops()) {
+  const direct = socketAddress || 'unknown';
+  if (!hops) return direct;
+  const chain = String(forwardedFor || '').split(',').map(part => part.trim()).filter(Boolean);
+  const addresses = [...chain, direct];
+  const candidate = addresses[addresses.length - 1 - hops];
+  // Fewer entries than trusted hops means the request did not pass through the expected proxies.
+  if (!candidate || !net.isIP(candidate)) return direct;
+  return candidate;
+}
+
 function clientIp(req) {
-  if (String(process.env.TRUST_PROXY || '').toLowerCase() === 'true') {
-    const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
-    if (forwarded) return forwarded;
-  }
-  return req.socket.remoteAddress || 'unknown';
+  return resolveClientIp(req.socket.remoteAddress, req.headers['x-forwarded-for']);
 }
 
 export function containsContactDetails(value) {
@@ -493,7 +511,7 @@ export function createVerapepServer(options = {}) {
   // v17: human compliance decisions per product. Absent record = "not reviewed".
   let compliance = database.readDocument('productCompliance', { version: 1, products: {} });
   if (!compliance.products) compliance.products = {};
-  const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: process.env.PUBLICATION_GATE });
+  const gateMode = resolveGateMode({ isProduction: IS_PRODUCTION, configured: process.env.PUBLICATION_GATE, hosted: isHostedEnvironment() });
   // v17: shipped knowledge base (for migration status) and privacy-preserving Vera counters (no question text).
   let shippedKb = null;
   try { shippedKb = loadShipped(rootDir); } catch { shippedKb = null; }
@@ -504,6 +522,10 @@ export function createVerapepServer(options = {}) {
   const serverStartedAt = nowIso();
 
   const productsById = new Map(catalogue.products.map(product => [product.id, product]));
+  // v18: product photo overrides live server-side; browsers only receive entries for visible products,
+  // and the photo files of hidden products are not served.
+  const productImages = readJsonSync(path.join(rootDir, 'data', 'product-images.json'), { images: {} }).images || {};
+  const productIdByImagePath = new Map(Object.entries(productImages).map(([id, url]) => [String(url).split('?')[0], id]));
   const variantsById = new Map();
   for (const product of catalogue.products) {
     for (const variant of product.variants) variantsById.set(variant.variantId, { product, variant });
@@ -1479,7 +1501,7 @@ export function createVerapepServer(options = {}) {
     const ip = clientIp(req);
 
     if (method === 'GET' && pathname === '/api/health') {
-      return sendJson(res, 200, { ok: true, version: '17.0.0', mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
+      return sendJson(res, 200, { ok: true, version: '18.0.0', mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
     }
 
     if (method === 'GET' && pathname === '/api/ready') {
@@ -1608,15 +1630,16 @@ export function createVerapepServer(options = {}) {
     const orderMatch = pathname.match(/^\/api\/orders\/([^/]+)$/);
     if (method === 'GET' && orderMatch) {
       const order = findOrder(decodeURIComponent(orderMatch[1]));
-      const token = url.searchParams.get('token') || req.headers['x-order-token'];
-      const email = url.searchParams.get('email');
+      const token = req.headers['x-order-token'] || url.searchParams.get('token');
       const isAdmin = Boolean(adminSession(req));
-      // v17: order-number + email access is rate limited like the lookup form (guessing protection).
-      if (!isAdmin && email) {
-        const limit = rateLimit(`order-email:${ip}`, 30, 15 * 60 * 1000);
-        if (!limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many order lookups from this address.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
+      // v18: email-based access moved to POST /api/orders/lookup so personal data never travels in
+      // URLs (access logs, browser history, referrers). Old links are handled by the order page.
+      if (url.searchParams.has('email')) {
+        return sendJson(res, 400, { error: 'order_lookup_requires_post', message: 'Look up orders by email with POST /api/orders/lookup.' }, { Deprecation: 'true', Link: '</api/orders/lookup>; rel="alternate"' });
       }
-      if (!order || (!isAdmin && !verifyOrderAccess(order, token, email))) return sendJson(res, 404, { error: 'order_not_found', message: 'The order could not be found or accessed.' });
+      const limit = rateLimit(`order-get:${ip}`, 60, 15 * 60 * 1000);
+      if (!isAdmin && !limit.allowed) return sendJson(res, 429, { error: 'rate_limited', message: 'Too many order requests from this address.' }, { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) });
+      if (!order || (!isAdmin && !verifyOrderAccess(order, token, null))) return sendJson(res, 404, { error: 'order_not_found', message: 'The order could not be found or accessed.' });
       return sendJson(res, 200, { order: publicOrder(order, true) });
     }
 
@@ -2556,6 +2579,12 @@ export function createVerapepServer(options = {}) {
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(item => `  <url><loc>${escapeXml(`${baseUrl}${item}`)}</loc></url>`).join('\n')}\n</urlset>\n`;
       return sendText(res, 200, xml, 'application/xml; charset=utf-8');
     }
+    if (pathname === '/assets/product-image-map.js') {
+      const visibleImages = Object.fromEntries(Object.entries(productImages).filter(([id]) => isPubliclyVisible(id)));
+      const script = `/* Generated by the server (v18): photo overrides for publicly visible products only. */\n(() => {\n  'use strict';\n  const images = Object.freeze(${JSON.stringify(visibleImages)});\n  window.VerapepeProductImages = Object.freeze({\n    images,\n    get(productOrId) {\n      const id = typeof productOrId === 'string' ? productOrId : productOrId?.id;\n      return id ? images[id] || '' : '';\n    }\n  });\n})();\n`;
+      return sendText(res, 200, script, 'text/javascript; charset=utf-8', { 'Cache-Control': 'no-cache' });
+    }
+    if (productIdByImagePath.has(pathname) && !isPubliclyVisible(productIdByImagePath.get(pathname))) return sendNotFound(req, res, pathname);
     const productRoute = pathname.match(/^\/product\/([^/]+)\/?$/) || pathname.match(/^\/shop\/([^/]+)\.html$/);
     const dynamicProductId = productRoute ? decodeURIComponent(productRoute[1]) : null;
     if (pathname === '/') pathname = '/index.html';

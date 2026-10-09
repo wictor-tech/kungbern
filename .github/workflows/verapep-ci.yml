@@ -1,0 +1,113 @@
+# VERAPEP continuous integration (v18).
+# Runs only for changes under verapep/ (this repository also hosts unrelated projects).
+# No secrets are used: every job runs the server against temporary copies of verapep/data/
+# with APP_ENV=test, no Stripe keys, sandbox commerce and no outbound payment calls.
+name: VERAPEP CI
+
+on:
+  pull_request:
+    paths:
+      - 'verapep/**'
+      - '.github/workflows/verapep-ci.yml'
+  push:
+    branches:
+      - 'claude/verapep-**'
+    paths:
+      - 'verapep/**'
+      - '.github/workflows/verapep-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verapep-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_ENV: test
+  TEST_COMMERCE_MODE: 'true'
+  FORCE_COLOR: '0'
+
+defaults:
+  run:
+    working-directory: verapep
+
+jobs:
+  checks:
+    name: Unit, static, CSS, security, release package
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history for the secret scan
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Guard — no production credentials in this job
+        run: |
+          for name in STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET ADMIN_PASSWORD MFA_ENCRYPTION_KEY DATABASE_URL ENABLE_LIVE_COMMERCE; do
+            if [ -n "${!name:-}" ]; then echo "::error::$name must not be set in CI"; exit 1; fi
+          done
+      - name: Dependency check (the server has no npm dependencies by design)
+        run: node -e "const p=require('./package.json'); const d=Object.keys({...p.dependencies,...p.optionalDependencies}); if(d.length){console.error('Unexpected runtime dependencies:',d.join(', '));process.exit(1)} console.log('0 runtime dependencies — nothing for npm audit to report.')"
+      - name: Unit and API tests
+        run: npm test
+      - name: Static validation
+        run: npm run test:static
+      - name: CSS bundles are current
+        run: npm run build:css -- --check
+      - name: Secret scan (working tree and full git history)
+        run: node scripts/secret-scan.mjs --history
+      - name: Release manifest, ZIP build and clean-directory verification
+        run: node scripts/verify-release.mjs --zip "$RUNNER_TEMP/VERAPEP-ci.zip" --run-tests
+      - name: Upload release package
+        uses: actions/upload-artifact@v4
+        with:
+          name: verapep-release-zip
+          path: ${{ runner.temp }}/VERAPEP-ci.zip
+          retention-days: 7
+
+  e2e:
+    name: Browser journeys and accessibility (axe)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright and Chromium
+        run: |
+          python -m pip install --quiet playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: End-to-end tests (includes axe WCAG 2.2 AA)
+        run: python tests/e2e.py
+      - name: Simulated persona navigation (informational, not real user research)
+        run: python tests/personas.py
+
+  release-gate:
+    name: Release gate
+    needs: [checks, e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail unless every check passed
+        working-directory: .
+        run: |
+          echo "checks: ${{ needs.checks.result }} · e2e: ${{ needs.e2e.result }}"
+          if [ "${{ needs.checks.result }}" != "success" ] || [ "${{ needs.e2e.result }}" != "success" ]; then
+            echo "::error::VERAPEP must not be reported as approved: a test or security check failed."
+            exit 1
+          fi
+          echo "All VERAPEP checks passed. Note: this is a technical gate only; the site is NOT launch-approved (see verapep/V17-LAUNCH-READINESS.md)."

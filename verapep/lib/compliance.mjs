@@ -97,9 +97,20 @@ export function recordFor(complianceDoc, productId) {
 }
 
 /* gateMode: 'strict' (production, or PUBLICATION_GATE=strict) or 'preview'. */
-export function resolveGateMode({ isProduction, configured }) {
+/* v18: a hosted environment (Render, Vercel, Fly, Cloud Run, or any https BASE_URL) is treated as
+   reachable by the public, so it defaults to the strict gate even when it is not "production".
+   Only an explicit PUBLICATION_GATE=preview opts a hosted preview back into showing unreviewed
+   lower-risk products; production can never opt out. */
+export function isHostedEnvironment(env = process.env) {
+  return Boolean(env.RENDER || env.VERCEL || env.FLY_APP_NAME || env.K_SERVICE || String(env.BASE_URL || '').startsWith('https://'));
+}
+
+export function resolveGateMode({ isProduction, configured, hosted = false }) {
   if (isProduction) return 'strict';
-  return String(configured || '').toLowerCase() === 'strict' ? 'strict' : 'preview';
+  const value = String(configured || '').trim().toLowerCase();
+  if (value === 'strict') return 'strict';
+  if (value === 'preview') return 'preview';
+  return hosted ? 'strict' : 'preview';
 }
 
 export function publicVisibility(product, content, record, gateMode) {

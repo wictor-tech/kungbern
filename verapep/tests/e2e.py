@@ -403,6 +403,15 @@ class Suite:
         desk.context.close()
         page.context.close()
 
+    def test_order_privacy(self):
+        # v18: an old link with an email address in the URL still works (POST lookup), and the
+        # address is removed from the address bar so it does not stay in history or referrers.
+        page = self.page()
+        page.goto(self.base + '/order.html?order=VP-20260101-UNKNOWN&email=person%40example.com', wait_until='domcontentloaded')
+        expect(page.locator('#order-message')).to_be_visible()
+        assert 'email=' not in page.url and 'person' not in page.url, page.url
+        page.context.close()
+
     def test_mobile_search(self):
         page = self.page(375, 800, is_mobile=True, has_touch=True)
         self.home(page)

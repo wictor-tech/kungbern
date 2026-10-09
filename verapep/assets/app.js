@@ -338,14 +338,9 @@
   function renderFeatured() {
     if (!els.featuredGrid) return;
     const filtersActive = state.focuses.size || state.needs.size || state.priorities.size || els.search.value.trim() || els.category.value !== 'all' || els.rating.value !== '0' || els.report.value !== 'all';
-    const preferred = [
-      'semaglutide-003',
-      'bpc-157-009',
-      'cjc-1295-with-dac-032',
-      'tb500-thymosin-b4-acetate-013',
-      'mt-2-melanotan-2-acetate-007',
-      'nad-064'
-    ];
+    // v18: no hard-coded product ids in public code. Products with a photo (the server only lists
+    // visible ones) are featured first; the rest is filled from the visible catalogue.
+    const preferred = Object.keys(window.VerapepeProductImages?.images || {});
     let featured;
     if (!filtersActive) {
       const preferredIds = new Set(preferred);

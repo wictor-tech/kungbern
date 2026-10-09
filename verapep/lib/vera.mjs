@@ -17,6 +17,7 @@ const GREETING = 'Hello! I can help with delivery, returns, payment, lab reports
 const SYNONYMS = [
   [/\b(kontakt\w*|mejl\w*|e-?post|maila)\b/g, 'contact email'],
   [/\b(kundtjanst|kundservice|support)\b/g, 'customer service support'],
+  [/\b(klagomal\w*|klaga\w*|reklamation\w*)\b/g, 'complaint contact'],
   [/\b(leverans\w*|levereras|leverera\w*|frakt\w*|skicka\w*|postn\w*)\b/g, 'delivery shipping'],
   [/\b(hur lang tid|hur lange|nar kommer)\b/g, 'how long'],
   [/\b(retur\w*|returnera\w*|angra\w*|angerratt\w*|aterbetal\w*|pengarna tillbaka)\b/g, 'returns refund withdrawal'],
@@ -57,9 +58,12 @@ const SAFETY_PATTERNS = [
   /\b(treat\w*|cure|cures|curing|heal|heals|healing|therap\w*|prescri\w*|diagnos\w*|symptom\w*|disease\w*|illness|diabet\w*|cancer|tumou?r|obes\w*|insulin resistance|injur\w*|pain|arthritis|alzheimer\w*|depress\w*|anxiety|infertil\w*|erectile)\b/,
   /\b(lose weight|weight loss|losing weight|burn fat|fat loss|build muscle|muscle growth|gain muscle|bulking|cutting|anti ?aging|anti ?ageing|tanning|libido)\b/,
   /\b(recommend|suggest|best)\b.*\b(for (me|my)|to help|to lose|to gain|to improve|to treat)\b/,
+  // v18: effect questions ("does X help wrinkles", "what are the benefits of X") are medical claims too.
+  /\b(help|helps|work|works|effective|good|benefit\w*|improve\w*|reduce\w*|boost\w*|increase\w*)\b.*\b(wrinkle\w*|skin|acne|hair|sleep|anxiety|stress|recover\w*|fat|weight|muscle\w*|libido|energy|memory|focus|immun\w*|inflamm\w*|joint\w*|tendon\w*|ageing|aging|longevity|testosterone|hormone\w*)\b/,
+  /\b(used for|effect|effects|benefit|benefits|results|how (does|do) it work|mechanism)\b/,
   /\b(which|what) (peptide|product|one)\b.*\b(should i|for (me|my)|to (take|use|lose|gain|improve))\b/,
   // Swedish
-  /\b(dos|doser|dosering\w*|spruta|sprutor|injicera\w*|injektion\w*|biverkning\w*|behandl\w*|bota|botar|gravid|amma\w*|ammar|recept\w*|lakare|sjukdom\w*|symtom\w*|ont i|smarta|diabetes|cancer|ga ner i vikt|gar ner i vikt|banta\w*|forbranna fett|bygga muskler|muskelmassa|hur mycket ska jag|hur ofta ska jag|ar det farligt|ar det sakert)\b/
+  /\b(dos|doser|dosering\w*|spruta|sprutor|injicera\w*|injektion\w*|biverkning\w*|behandl\w*|bota|botar|gravid|amma\w*|ammar|recept\w*|lakare|sjukdom\w*|symtom\w*|ont i|smarta|diabetes|cancer|ga ner i vikt|gar ner i vikt|banta\w*|forbranna fett|bygga muskler|muskelmassa|hur mycket ska jag|hur ofta ska jag|ar det farligt|ar det sakert|hjalper\b.*\b(mot|for|med)|effekt\w*|anvands\b.*\b(till|for)|rynk\w*|somnen|angest)\b/
 ];
 
 const PERSONAL_DATA_PATTERNS = [
@@ -118,6 +122,38 @@ export function entryKeywords(entry) {
   return normalise(entry.question).split(' ').filter(Boolean); // legacy v2 entries: space-separated keywords
 }
 
+/* v18: small typo tolerance. Bounded edit distance; only for words of 5+ letters so short words
+   never match by accident (1 edit up to 7 letters, 2 edits from 8 letters). */
+export function editDistance(a, b, limit = 2) {
+  if (Math.abs(a.length - b.length) > limit) return limit + 1;
+  let previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  let before = previous;
+  for (let i = 1; i <= a.length; i += 1) {
+    const current = [i];
+    let rowMin = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      current[j] = Math.min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      // Swapped neighbouring letters ("retrun", "contcat") count as one edit.
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) current[j] = Math.min(current[j], before[j - 2] + 1);
+      rowMin = Math.min(rowMin, current[j]);
+    }
+    if (rowMin > limit) return limit + 1;
+    before = previous;
+    previous = current;
+  }
+  return previous[b.length];
+}
+
+function isTypoOf(word, target, minLength = 5) {
+  if (target.length < minLength || word.length < minLength - 1 || word === target) return false;
+  const allowed = target.length >= 8 ? 2 : 1;
+  return editDistance(word, target, allowed) <= allowed;
+}
+
+// Brand names of medicines whose active substances are not publicly listed. Vera treats them as
+// unknown products instead of answering generic questions (e.g. price) as if they were sold here.
+const MEDICINE_BRANDS = ['ozempic', 'wegovy', 'rybelsus', 'mounjaro', 'zepbound', 'saxenda', 'victoza', 'trulicity', 'botox', 'dysport', 'genotropin', 'norditropin', 'omnitrope', 'humatrope', 'egrifta', 'vyleesi', 'scenesse', 'pregnyl', 'ovitrelle', 'menopur', 'decapeptyl', 'eprex', 'aranesp', 'circadin', 'lantus', 'novorapid', 'humalog'];
+
 function scoreEntry(entry, expandedText, wordSet, stemSet) {
   let score = 0;
   const matched = new Set();
@@ -128,6 +164,9 @@ function scoreEntry(entry, expandedText, wordSet, stemSet) {
       score += 2; matched.add(keyword);
     } else if (keyword.length > 4 && stemSet.has(stem(keyword))) {
       score += 1; matched.add(keyword);
+    } else if (keyword.length >= 5 && [...wordSet].some(word => isTypoOf(word, keyword))) {
+      // A misspelt distinctive word ("contcat", "delivry") counts nearly like the real word.
+      score += keyword.length >= 6 ? 2 : 1; matched.add(keyword);
     }
   }
   return { score, matched: matched.size };
@@ -151,13 +190,28 @@ function findProducts(expandedText, products) {
   return found.sort((a, b) => b.length - a.length).map(item => item.product);
 }
 
+/* v18: misspelled product names ("glutation", "epitalon"). Single words and adjacent word pairs are
+   compared with names of 6+ letters; the answer then says which product it assumed. */
+function findProductsFuzzy(expandedText, products) {
+  const words = expandedText.split(' ').filter(Boolean);
+  const candidates = new Set([...words, ...words.slice(1).map((word, index) => `${words[index]}${word}`)].map(word => word.replace(/[^a-z0-9]/g, '')));
+  const found = [];
+  for (const product of products) {
+    const names = [product.displayName, product.name, ...(product.aliases || [])].map(name => normalise(name).replace(/[^a-z0-9]/g, '')).filter(name => name.length >= 6);
+    if (names.some(name => [...candidates].some(word => isTypoOf(word, name, 6)))) found.push(product);
+  }
+  return found.length === 1 ? found : [];
+}
+
 function mentionsHidden(expandedText, hiddenNames) {
   const compact = expandedText.replace(/[^a-z0-9]/g, '');
-  const words = new Set(expandedText.split(' '));
+  const words = new Set(expandedText.split(' ').map(word => word.replace(/[^a-z0-9]/g, '')));
+  if (MEDICINE_BRANDS.some(brand => words.has(brand) || [...words].some(word => isTypoOf(word, brand, 6)))) return true;
   return hiddenNames.some(name => {
     const compactName = normalise(name).replace(/[^a-z0-9]/g, '');
     if (compactName.length < 3) return false;
-    return compactName.length <= 4 ? words.has(compactName) : compact.includes(compactName);
+    if (compactName.length <= 4) return words.has(compactName);
+    return compact.includes(compactName) || [...words].some(word => isTypoOf(word, compactName, 6));
   });
 }
 
@@ -217,7 +271,11 @@ export function answerQuestion(rawQuestion, ctx) {
   }
 
   // 2. Named products (only publicly visible ones are known to Vera).
-  const productsNamed = findProducts(expanded, ctx.products || []);
+  const exactNamed = findProducts(expanded, ctx.products || []);
+  const hiddenMentioned = mentionsHidden(expanded, ctx.hiddenNames || []);
+  // A misspelling is only resolved to a visible product when no hidden product could be meant.
+  const fuzzyNamed = !exactNamed.length && !hiddenMentioned ? findProductsFuzzy(expanded, ctx.products || []) : [];
+  const productsNamed = exactNamed.length ? exactNamed : fuzzyNamed;
   const contextProduct = !productsNamed.length && ctx.contextProductId ? (ctx.products || []).find(product => product.id === ctx.contextProductId) : null;
   const product = productsNamed[0] || contextProduct;
   if (product) {
@@ -226,13 +284,13 @@ export function answerQuestion(rawQuestion, ctx) {
     if (productIsSubject) {
       return {
         ...base, answered: true, kind: 'product', source: `product:${product.id}`,
-        answer: productAnswer(product, facet),
+        answer: `${fuzzyNamed.includes(product) ? `I assume you mean ${product.displayName}. ` : ''}${productAnswer(product, facet)}`,
         url: `/product/${encodeURIComponent(product.id)}`,
         links: [{ label: `Open ${product.displayName}`, url: `/product/${encodeURIComponent(product.id)}` }, ...(facet === 'reports' ? [{ label: 'Documentation section', url: `/product/${encodeURIComponent(product.id)}#documentation` }] : [])],
         suggestions: productsNamed.length > 1 ? productsNamed.slice(1, 3).map(item => `Tell me about ${item.displayName}`) : []
       };
     }
-  } else if (mentionsHidden(expanded, ctx.hiddenNames || [])) {
+  } else if (hiddenMentioned) {
     return { ...base, answered: false, kind: 'unknown_product', source: 'unknown_product', answer: 'I don\'t have published information about that product. I can only answer about products that are listed in the catalogue.', links: [{ label: 'Browse the catalogue', url: '/index.html#catalogue' }] };
   }
 

@@ -96,7 +96,7 @@
         <td><strong>${escapeHtml(formatMoney(order.totalCents / 100, order.currency))}</strong><small>${order.items.length} line${order.items.length === 1 ? '' : 's'}</small></td>
         <td><span class="admin-badge admin-badge--${escapeHtml(order.paymentStatus)}">${escapeHtml(label(order.paymentStatus))}</span><small>${escapeHtml(order.paymentProvider || 'No provider')}</small></td>
         <td><select data-order-status>${statusOptions(ORDER_STATUSES, order.orderStatus)}</select><input data-order-carrier value="${escapeHtml(order.carrier || '')}" placeholder="Carrier"><input data-order-tracking value="${escapeHtml(order.trackingNumber || '')}" placeholder="Tracking number"></td>
-        <td><div class="admin-actions"><button type="button" data-save-order>Save status</button><a href="order.html?order=${encodeURIComponent(order.id)}&email=${encodeURIComponent(order.customer?.email || '')}" target="_blank" rel="noopener">Open</a>${order.paymentStatus === 'paid' ? `<button class="danger-button" type="button" data-refund-order>${refundLabel}</button>` : ''}</div></td>
+        <td><div class="admin-actions"><button type="button" data-save-order>Save status</button><a href="order.html?order=${encodeURIComponent(order.id)}" target="_blank" rel="noopener">Open</a>${order.paymentStatus === 'paid' ? `<button class="danger-button" type="button" data-refund-order>${refundLabel}</button>` : ''}</div></td>
       </tr>`).join('') : '<tr><td colspan="6">No orders match this queue/filter.</td></tr>';
   }
 

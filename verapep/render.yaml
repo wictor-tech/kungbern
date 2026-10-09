@@ -11,3 +11,9 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
+      # v18: a Render web service is publicly reachable — never list unreviewed products there.
+      - key: PUBLICATION_GATE
+        value: strict
+      # Render terminates TLS in front of the service; trust exactly one proxy hop.
+      - key: TRUST_PROXY
+        value: "1"

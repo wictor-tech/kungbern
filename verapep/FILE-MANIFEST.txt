@@ -1,8 +1,8 @@
-# VERAPEP v17 file manifest
+# VERAPEP v18 file manifest
 
 Generated: 2026-10-09
 
-Files listed: 220 (manifest excludes itself and runtime database/outbox/backup files)
+Files listed: 226 (manifest excludes itself and runtime database/outbox/backup files)
 
 Path | Bytes | SHA-256 (first 16)
 .env.example | 2803 | b6d46a13706f32bb
@@ -68,15 +68,15 @@ V7-CHANGES.md | 1352 | 3caae789f168b05d
 V8-CHANGES.md | 1342 | f12843aa36f7b3a9
 V8.1-CHANGES.md | 566 | 0a9da45f23da7e02
 V9-CHANGES.md | 1818 | 2bbcd9a24eeff30e
-admin.html | 25063 | 519f27adfb46c738
-assets/admin.js | 62695 | c37fd7b56458afba
-assets/app.js | 53602 | ff44464510c41612
+admin.html | 25067 | d7a9409ee489bafe
+assets/admin.js | 62638 | 742d8895314d70be
+assets/app.js | 53667 | 3e141647ecba9ce0
 assets/bundle-admin.css | 297431 | 656808449bb9153a
 assets/bundle-pages.css | 287635 | 1f532d5d8bdfccdf
 assets/bundle-storefront.css | 350848 | bf6e2f4caace86fc
 assets/cart.js | 14560 | a508bba5ade05d99
 assets/catalogue-data.js | 1044 | 82f54f9dd6142f73
-assets/checkout.js | 13207 | e01e3a5b064ab4ad
+assets/checkout.js | 13377 | f0cea26bb42e639b
 assets/favicon.svg | 313 | a78404e3cd89db22
 assets/fonts/LICENSE-Inter-OFL.txt | 4477 | 3b0a5fca3d17942c
 assets/fonts/LICENSE-Newsreader-OFL.txt | 4520 | 26028ec4e13b6500
@@ -111,10 +111,9 @@ assets/media/product-vials/semaglutide.png | 1910580 | ea988ac035fd0e67
 assets/media/quality-lab.svg | 2943 | e9b4bd635b9353f5
 assets/media/vera-guide.svg | 4055 | 746173fb1b3c91ac
 assets/media/world-network.svg | 1405 | 07450ead3f566315
-assets/my-pages.js | 7487 | 8ad06e03911d1201
-assets/order.js | 8732 | 69fed11312c41ed2
+assets/my-pages.js | 7561 | c4a030d0aee5c7a6
+assets/order.js | 10219 | 2be91b0b4601d044
 assets/product-commerce.js | 26482 | 0083b896e44bc405
-assets/product-image-map.js | 683 | da579902c9a80712
 assets/site.js | 2791 | 245e9018a8d5845e
 assets/styles.css | 122372 | 155762c45360c43b
 assets/support.js | 1729 | 421bd1caf320ed6c
@@ -148,11 +147,13 @@ data/inventory.json | 57138 | ec62c25ea120a1ef
 data/orders.json | 3 | 37517e5f3dc66819
 data/product-compliance.json | 279 | 05410557415b5b6d
 data/product-content.json | 67502 | cf92e08dd1147623
+data/product-images.json | 583 | 43305f452427b742
+data/retention-policy.json | 567 | fe3660fa11bc695a
 data/returns.json | 3 | 37517e5f3dc66819
 data/reviews.json | 36 | 553a4f749e67f0d2
 data/store-config.json | 2288 | dd29a4b0a868f019
-data/support-kb-history.json | 9068 | 04a44ec516c2a615
-data/support-kb.json | 9750 | cbf7861738599174
+data/support-kb-history.json | 9725 | d32665c54d98f925
+data/support-kb.json | 11805 | c9a29421736fa67b
 data/withdrawals.json | 3 | 37517e5f3dc66819
 database.mjs | 10007 | 78ce8954eb44c8f1
 docker-compose.yml | 253 | af38f2f827778d41
@@ -181,17 +182,17 @@ docs/v17/PRODUCT-COMPLIANCE-INVENTORY.csv | 49556 | 8a54c9793d8bbdcd
 docs/v17/PRODUCT-COMPLIANCE-INVENTORY.md | 14048 | bc803c5448d00164
 guide.html | 6519 | f381ac1ee145799c
 homepage-image-audit-v12.6.csv | 11294 | 56e8032b839ae31e
-index.html | 19861 | f0e04f3c387e471c
-lib/compliance.mjs | 9613 | f03cefdeed96c0ba
+index.html | 19941 | c2bbe1b1ffff296c
+lib/compliance.mjs | 10277 | 4d3e31205d63bf5f
 lib/support-kb-migration.mjs | 10751 | 311f72070c0008cf
-lib/vera.mjs | 16456 | 12b8b25c79facade
+lib/vera.mjs | 20652 | c6c3cb7f112b5cf5
 my-pages.html | 8343 | 8217e8331df3ad44
 order.html | 8499 | 90cb71f659b40cd3
-package.json | 1250 | 2eb09158bb12007b
+package.json | 1250 | 9565102e85ac03ba
 privacy.html | 8475 | 09c1dceee0147ad5
 product-image-audit.csv | 5944 | 3d2df53340c8473d
 product.html | 6991 | b1bcf316e468248f
-render.yaml | 285 | 06124bd0c4d76a23
+render.yaml | 563 | 9e470541e8515d4c
 robots.txt | 26 | 331ea9090db0c9f6
 scripts/audit-product-images.mjs | 1261 | 0e0296ede4d09e11
 scripts/backup-sqlite.mjs | 1934 | 372f14449752f8d5
@@ -202,26 +203,31 @@ scripts/import-v8-data.mjs | 1967 | 369baf6b0113552f
 scripts/migrate-support-kb.mjs | 6235 | c4340c2104177e82
 scripts/record-kb-release.mjs | 2485 | 21dd13622691905d
 scripts/restore-sqlite.mjs | 3174 | 37ae986fe72070c2
+scripts/retention.mjs | 7659 | 088a03e876592148
 scripts/retry-email-outbox.mjs | 3033 | a49c5e61b0150793
+scripts/scrub-audit-log.mjs | 8895 | bdab7f3fdf0b5c3a
+scripts/secret-scan.mjs | 5364 | 85d266d881c0ca90
 scripts/source/catalogue-data.js | 27296 | 7a1536b945504f11
-scripts/write-manifest.mjs | 1817 | 0b0c41ac9d2af86b
-server.mjs | 160383 | e90e6f1830c718fd
+scripts/verify-release.mjs | 5106 | d58575db5f791958
+scripts/write-manifest.mjs | 1817 | 8b3f3b43e8889bc1
+server.mjs | 162921 | 08933e113af9bf58
 shipping-returns.html | 7121 | db3df9c949e7987e
 sql/postgres-schema.sql | 8461 | 4adb726f2d822500
 start-webshop.cmd | 2638 | 32e49d091ab17e06
 start-webshop.sh | 158 | 0d03f5a98187672c
-support.html | 7603 | d90b7f54803f683b
+support.html | 7680 | 8d47f34c9813d357
 terms.html | 7301 | 5f08bda448637023
 tests/api.test.mjs | 9975 | 1eb82f8cde4d2d4b
-tests/e2e.py | 27077 | 9951af0095f70480
+tests/e2e.py | 27629 | ce2b663895da5242
 tests/personas.py | 17480 | 8134e960b8199522
-tests/static-validation.py | 4528 | 18b2dc4a5658753e
+tests/static-validation.py | 4741 | 1935bcfc52a549b9
 tests/support/compliance.mjs | 1116 | 10c08360786e36a6
 tests/v11.test.mjs | 7384 | eb35746448d15010
-tests/v14.test.mjs | 5776 | c96f64a62245741d
+tests/v14.test.mjs | 5776 | ceb87febd393cdbc
 tests/v141.test.mjs | 7449 | 556973b582ab1c9e
 tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
 tests/v17.test.mjs | 34219 | 8e647c8cbe3b7e8d
-tests/v9.test.mjs | 7478 | fe97e721f762052b
+tests/v18.test.mjs | 19573 | 2d275ab61a8205cf
+tests/v9.test.mjs | 7478 | 6eb6faa257dab498
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
 tests/vendor/axe.min.js | 553290 | b511cd9dec01c76f
