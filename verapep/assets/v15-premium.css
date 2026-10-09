@@ -523,3 +523,25 @@ body.theme-v15 .guide-card .need-grid button { min-height: 42px !important; font
 body.theme-v15 :is(.finder-summary, .guide-summary) small,
 body.theme-v15 :is(.finder-summary, .guide-summary) p { color: var(--vp-muted) !important; opacity: 1 !important; }
 body.theme-v15 :is(.finder-summary, .guide-status) span:not(.sr-only) { color: var(--vp-muted) !important; opacity: 1 !important; }
+
+/* Contrast (WCAG AA) for small meta text */
+body.theme-v15 .variant-card__title small,
+body.theme-v15 .variant-card__price small { color: #56727a !important; }
+body.theme-v15 .product-accordion__content p { color: #4d6a71 !important; }
+body.theme-v15 .checkout-steps li:not(.is-active) strong { color: #4f6b72 !important; }
+
+/* Layout stability: reserve space while product and guide data load (CLS was 0.65 / 0.28 on phones). */
+body.theme-v15 .product-hero[aria-busy="true"] .product-hero__copy--v10 { min-height: 650px; }
+body.theme-v15 .product-hero[aria-busy="true"] .product-summary { min-height: 540px; }
+body.theme-v15 #guide-focus-options:empty { min-height: 373px; }
+@media (max-width: 1080px) {
+  body.theme-v15 .product-hero[aria-busy="true"] .product-hero__copy--v10 { min-height: 513px; }
+  body.theme-v15 .product-hero[aria-busy="true"] .product-summary { min-height: 389px; }
+  body.theme-v15 #guide-focus-options:empty { min-height: 756px; }
+}
+@media (max-width: 620px) {
+  body.theme-v15 .product-hero[aria-busy="true"] .product-hero__copy--v10 { min-height: 626px; }
+  body.theme-v15 .product-hero[aria-busy="true"] .product-summary { min-height: 363px; }
+  body.theme-v15 #guide-focus-options:empty { min-height: 1252px; }
+}
+body.theme-v15 .checkout-summary-details > summary small { color: #56727a !important; font-size: 12px !important; }

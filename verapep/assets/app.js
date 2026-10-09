@@ -683,7 +683,7 @@
     if (signals.length) { const trustMarkup = signals.map(signal => `<span><i aria-hidden="true">✓</i> ${escapeHtml(signal)}</span>`).join(''); els.trustSignals.innerHTML = trustMarkup; }
     document.querySelectorAll('.brand > span:last-child').forEach(node => { node.textContent = storefront.config?.storeName || 'VERAPEP'; });
     const assistantName = storefront.config?.assistantName || 'Ask Vera';
-    if (els.veraLauncher) els.veraLauncher.innerHTML = `<span aria-hidden="true">✦</span> ${escapeHtml(assistantName)}`;
+    if (els.veraLauncher) els.veraLauncher.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4z"/></svg> ${escapeHtml(assistantName)}`;
     const veraTitle = els.veraPanel?.querySelector('.vera-panel__header strong'); if (veraTitle) veraTitle.textContent = assistantName;
     saved = new Set([...saved].filter(id => products.some(product => product.id === id)));
     compared = new Set([...compared].filter(id => products.some(product => product.id === id)));
