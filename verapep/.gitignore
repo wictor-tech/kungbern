@@ -14,3 +14,4 @@ data/verapep.sqlite
 data/verapep.sqlite-shm
 data/verapep.sqlite-wal
 __pycache__/
+data/backups/

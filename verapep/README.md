@@ -1,4 +1,4 @@
-# VERAPEP Information Platform v14.1
+# VERAPEP Information Platform v16
 
 VERAPEP V14.1 is the production-readiness and operational-hardening release built on top of the V13 mobile-conversion storefront. The friend-test experience remains available, while live commerce is now protected by explicit infrastructure, legal, product, payment and security gates.
 
@@ -11,12 +11,12 @@ VERAPEP V14.1 is the production-readiness and operational-hardening release buil
 
 Read these first:
 
-- `PRODUCTION-READINESS-AUDIT-V14.md`
+- `V16-IMPROVEMENT-REPORT.md` (latest release notes)
 - `PRODUCTION-CHECKLIST-V14.md`
-- `V14-PRODUCTION-READINESS.md`
 - `V14.1-OPERATIONAL-HARDENING.md`
-- `POSTGRES-MIGRATION-PLAN-V14.md`
 - `SECURITY.md`
+
+Not included in any delivered package or in the GitHub history (listed in the v14.1 `FILE-MANIFEST.txt` but never shipped): `PRODUCTION-READINESS-AUDIT-V14.md`, `V14-PRODUCTION-READINESS.md`, `POSTGRES-MIGRATION-PLAN-V14.md`. Obtain them from the original author if they are needed.
 
 ## Requirements
 
@@ -46,7 +46,6 @@ Preview/staging can use SQLite. The first runtime start creates the SQLite sourc
 For production, V14.1 deliberately blocks SQLite by default and provides:
 
 - `sql/postgres-schema.sql`
-- `POSTGRES-MIGRATION-PLAN-V14.md`
 
 A managed PostgreSQL runtime migration still requires an actual database instance and cutover testing.
 
