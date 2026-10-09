@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const state = { csrf: null, dashboard: null, activeTab: 'orders', orderQueue: 'all' };
+  const state = { csrf: null, dashboard: null, activeTab: 'overview', orderQueue: 'all' };
   const message = document.getElementById('admin-message');
   const loginSection = document.getElementById('admin-login');
   const dashboardSection = document.getElementById('admin-dashboard');
@@ -42,8 +42,20 @@
     if (state.csrf && ['POST', 'PATCH', 'DELETE'].includes(options.method || 'GET') && !url.endsWith('/login') && !url.endsWith('/logout')) headers['X-CSRF-Token'] = state.csrf;
     const response = await fetch(url, { ...options, headers, credentials: 'same-origin' });
     const payload = await response.json().catch(() => ({}));
+    if (response.status === 401 && !/\/(login|session|auth-config)$/.test(url)) sessionExpired();
     if (!response.ok) throw Object.assign(new Error(payload.message || 'The request could not be completed.'), { status: response.status, payload });
     return payload;
+  }
+
+  /* v20: when the session ends mid-task, show the sign-in form in place. The dashboard (and any
+     unsaved text in it) is only hidden, so signing in again returns to exactly where you were. */
+  function sessionExpired() {
+    if (dashboardSection.hidden) return;
+    state.csrf = null;
+    dashboardSection.hidden = true;
+    loginSection.hidden = false;
+    document.getElementById('admin-password').value = '';
+    document.getElementById('admin-password').focus();
   }
 
   function renderStats(stats) {
@@ -96,7 +108,7 @@
         <td><strong>${escapeHtml(formatMoney(order.totalCents / 100, order.currency))}</strong><small>${order.items.length} line${order.items.length === 1 ? '' : 's'}</small></td>
         <td><span class="admin-badge admin-badge--${escapeHtml(order.paymentStatus)}">${escapeHtml(label(order.paymentStatus))}</span><small>${escapeHtml(order.paymentProvider || 'No provider')}</small></td>
         <td><select data-order-status>${statusOptions(ORDER_STATUSES, order.orderStatus)}</select><input data-order-carrier value="${escapeHtml(order.carrier || '')}" placeholder="Carrier"><input data-order-tracking value="${escapeHtml(order.trackingNumber || '')}" placeholder="Tracking number"></td>
-        <td><div class="admin-actions"><button type="button" data-save-order>Save status</button><a href="order.html?order=${encodeURIComponent(order.id)}&email=${encodeURIComponent(order.customer?.email || '')}" target="_blank" rel="noopener">Open</a>${order.paymentStatus === 'paid' ? `<button class="danger-button" type="button" data-refund-order>${refundLabel}</button>` : ''}</div></td>
+        <td><div class="admin-actions"><button type="button" data-save-order>Save status</button><a href="order.html?order=${encodeURIComponent(order.id)}" target="_blank" rel="noopener">Open</a>${order.paymentStatus === 'paid' ? `<button class="danger-button" type="button" data-refund-order>${refundLabel}</button>` : ''}</div></td>
       </tr>`).join('') : '<tr><td colspan="6">No orders match this queue/filter.</td></tr>';
   }
 
@@ -117,6 +129,8 @@
   }
 
   function renderProducts(query = '') {
+    // v19: the product workspace (admin-v19.js) renders the list with checklist progress and filters.
+    if (window.VerapepAdmin?.renderProductList?.(query)) return;
     const needle = query.trim().toLowerCase();
     const rows = state.dashboard.products.filter(item => !needle || [item.name, item.category, item.content?.shortDescription, item.content?.stockStatus].join(' ').toLowerCase().includes(needle));
     const container = document.getElementById('admin-products');
@@ -397,7 +411,10 @@
       <article><span>Public products</span><strong>${escapeHtml(dash.publication?.visibleProducts)} / ${escapeHtml(dash.publication?.totalProducts)}</strong></article>
       <article><span>Ask Vera knowledge</span><strong>${dash.supportKbStatus ? (dash.supportKbStatus.upToDate ? 'Up to date' : `${dash.supportKbStatus.pendingWrites} update(s) available`) : '—'}</strong></article>
       <article><span>Server started</span><strong>${escapeHtml(formatDate(dash.startedAt))}</strong></article>`;
-    document.getElementById('status-blockers').innerHTML = (readiness.blockers || []).map(item => `<li>${escapeHtml(item)}</li>`).join('') || '<li>None</li>';
+    // v18: grouped by who can resolve each blocker; the list itself is unchanged.
+    const groups = {};
+    for (const item of readiness.blockerDetails || (readiness.blockers || []).map(text => ({ text, categoryLabel: 'Blockers', action: '' }))) (groups[item.categoryLabel] ||= []).push(item);
+    document.getElementById('status-blockers').innerHTML = Object.entries(groups).map(([group, items]) => `<li class="status-group"><strong>${escapeHtml(group)} (${items.length})</strong><ul>${items.map(item => `<li>${escapeHtml(item.text)}${item.action ? `<br/><small>${escapeHtml(item.action)}</small>` : ''}</li>`).join('')}</ul></li>`).join('') || '<li>None</li>';
     document.getElementById('status-warnings').innerHTML = (readiness.warnings || []).map(item => `<li>${escapeHtml(item)}</li>`).join('') || '<li>None</li>';
     document.getElementById('status-errors').innerHTML = (dash.recentErrors || []).map(item => `<li>${escapeHtml(formatDate(item.at))} · ${escapeHtml(item.method)} ${escapeHtml(item.path)} · ${escapeHtml(item.status)} ${escapeHtml(item.code)}</li>`).join('') || '<li>No server errors since the last restart.</li>';
   }
@@ -445,7 +462,7 @@
 
   function applyPermissions() {
     const permissions = new Set(state.dashboard.permissions || []);
-    const mapping = { settings:'settings', products:'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
+    const mapping = { overview:'products', settings:'settings', products:'products', 'review-queue':'products', compliance:'products', inventory:'inventory', orders:'orders', returns:'returns', reviews:'reviews', guide:'guide', audit:'audit', team:'users', outbox:'orders', privacy:'privacy' };
     const tabs = [...document.querySelectorAll('[data-admin-tab]')];
     tabs.forEach(button => {
       const needed = mapping[button.dataset.adminTab];
@@ -488,6 +505,7 @@
     loginSection.hidden = true;
     dashboardSection.hidden = false;
     showMessage('');
+    document.dispatchEvent(new CustomEvent('verapep:dashboard', { detail: payload }));
   }
 
   async function checkSession() {
@@ -532,14 +550,22 @@
   document.querySelector('.admin-tabs').addEventListener('click', event => {
     const button = event.target.closest('[data-admin-tab]');
     if (!button) return;
-    state.activeTab = button.dataset.adminTab;
-    document.querySelectorAll('[data-admin-tab]').forEach(item => item.classList.toggle('is-active', item === button));
+    showTab(button.dataset.adminTab);
+  });
+
+  function showTab(tab) {
+    const button = document.querySelector(`[data-admin-tab="${tab}"]`);
+    if (!button || button.hidden) return;
+    state.activeTab = tab;
+    document.querySelectorAll('[data-admin-tab]').forEach(item => { item.classList.toggle('is-active', item === button); item.setAttribute('aria-current', item === button ? 'page' : 'false'); });
     document.querySelectorAll('[data-admin-panel]').forEach(panel => {
       const active = panel.dataset.adminPanel === state.activeTab;
       panel.hidden = !active;
       panel.classList.toggle('is-active', active);
     });
-  });
+    button.scrollIntoView?.({ block: 'nearest', inline: 'center' });
+    document.dispatchEvent(new CustomEvent('verapep:tab', { detail: tab }));
+  }
 
   document.getElementById('order-search').addEventListener('input', event => renderOrders(event.target.value));
   document.getElementById('order-queue-filter')?.addEventListener('change', event => { state.orderQueue = event.target.value; renderOrderQueues(); renderOrders(document.getElementById('order-search').value); });
@@ -854,4 +880,6 @@
   });
 
   checkSession().catch(error => showMessage(error.message));
+  // v19: shared helpers for the Owner Control Center and product workspace (assets/admin-v19.js).
+  window.VerapepAdmin = Object.assign(window.VerapepAdmin || {}, { state, requestJson, sessionExpired, escapeHtml, formatDate, label, showMessage, showTab, loadDashboard, openProductEditor, renderProducts });
 })();

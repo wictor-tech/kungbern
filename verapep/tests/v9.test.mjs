@@ -30,7 +30,7 @@ test('VERAPEP V9 database, dynamic products, permissions and resilient checkout'
   let { server, baseUrl } = running;
 
   const health = await jsonRequest(baseUrl, '/api/health');
-  assert.equal(health.payload.version, '17.0.0');
+  assert.equal(health.payload.version, '20.0.0');
   assert.equal(health.payload.database, 'SQLite');
   await fsp.stat(path.join(tempDir,'verapep.sqlite'));
 

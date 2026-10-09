@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "approved": false,
+  "approvedBy": null,
+  "approvedAt": null,
+  "note": "PROPOSED retention periods. Not legally approved. scripts/retention.mjs only reports while approved is false. The owner sets approved=true (with approvedBy and approvedAt) after legal review; orders are never deleted automatically because accounting law may require them to be kept.",
+  "rules": {
+    "outboxDays": 90,
+    "backupDays": 30,
+    "rejectedReviewDays": 90,
+    "auditPersonalDataDays": 730,
+    "unpaidCancelledOrderDays": 365,
+    "paidOrderYears": 7
+  }
+}

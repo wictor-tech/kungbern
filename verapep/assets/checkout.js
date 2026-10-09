@@ -204,7 +204,9 @@
       window.VerapepeCart.clear();
       showStep(5);
       document.getElementById('checkout-complete-copy').textContent = `Test order ${order.id} is confirmed. Opening its tracking page.`;
-      window.setTimeout(() => location.assign(`/order.html?order=${encodeURIComponent(order.id)}&token=${encodeURIComponent(accessToken)}`), 600);
+      // v18: the order access token stays out of the URL (history, referrers, logs).
+      try { sessionStorage.setItem('vp-order-access', JSON.stringify({ orderId: order.id, token: accessToken })); } catch {}
+      window.setTimeout(() => location.assign(`/order.html?order=${encodeURIComponent(order.id)}`), 600);
     } catch (error) {
       showMessage(error.message);
       state.busy = false;

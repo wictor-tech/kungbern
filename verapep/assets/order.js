@@ -109,22 +109,43 @@
     returnCard.hidden = !['paid', 'refunded'].includes(order.paymentStatus);
   }
 
+  /* v18: personal data and access tokens never go in request URLs. A token is sent as a header;
+     an email lookup uses POST. Tokens/emails that arrive in the page URL (payment redirect, old
+     links) are moved to this tab's sessionStorage and removed from the address bar. */
   async function fetchOrder(orderId, token = null, email = null) {
     loading.hidden = false;
     detail.hidden = true;
-    const query = new URLSearchParams();
-    if (token) query.set('token', token);
-    if (email) query.set('email', email);
-    const payload = await requestJson(`/api/orders/${encodeURIComponent(orderId)}?${query}`);
+    const payload = email && !token
+      ? await requestJson('/api/orders/lookup', { method: 'POST', body: JSON.stringify({ orderId, email }) })
+      // With a token: header. Without token or email: works only for a signed-in admin (cookie).
+      : await requestJson(`/api/orders/${encodeURIComponent(orderId)}`, { headers: token ? { 'X-Order-Token': token } : {} });
     renderOrder(payload.order);
   }
 
+  function takeAccessFromUrl() {
+    let stored = {};
+    try { stored = JSON.parse(sessionStorage.getItem('vp-order-access') || '{}'); } catch {}
+    const orderId = params.get('order') || stored.orderId || null;
+    const access = { orderId, token: params.get('token') || (stored.orderId === orderId ? stored.token : null), email: params.get('email') || (stored.orderId === orderId ? stored.email : null) };
+    if (params.has('token') || params.has('email')) {
+      try { sessionStorage.setItem('vp-order-access', JSON.stringify(access)); } catch {}
+      const clean = new URL(location.href);
+      clean.searchParams.delete('token');
+      clean.searchParams.delete('email');
+      history.replaceState(null, '', `${clean.pathname}${clean.search}${clean.hash}`);
+    }
+    return access;
+  }
+
   async function initialise() {
-    const orderId = params.get('order');
-    const token = params.get('token');
-    const email = params.get('email');
+    const { orderId, token, email } = takeAccessFromUrl();
     const stripeSessionId = params.get('stripe_session_id');
-    if (!orderId || (!token && !email)) return;
+    if (!orderId) return;
+    if (!token && !email) {
+      // Admin "Open" links carry only the order number; customers get the lookup form, prefilled.
+      try { await fetchOrder(orderId); lookupCard.hidden = true; } catch { loading.hidden = true; const field = document.getElementById('lookup-order'); if (field) field.value = orderId; }
+      return;
+    }
     state.token = token;
     state.email = email;
     lookupCard.hidden = true;

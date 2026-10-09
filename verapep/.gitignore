@@ -1,7 +1,5 @@
 .env
 node_modules/
-data/orders.json
-data/returns.json
 data/outbox/
 *.log
 .DS_Store
@@ -15,3 +13,8 @@ data/verapep.sqlite-shm
 data/verapep.sqlite-wal
 __pycache__/
 data/backups/
+
+# data/*.json are seed files only (runtime data lives in SQLite). They are tracked so a clean
+# checkout is complete; tests/v18.test.mjs asserts that order/customer seeds stay empty.
+# v19: private product documents uploaded in admin (lab reports, supplier sheets, photos). Never commit.
+data/documents/

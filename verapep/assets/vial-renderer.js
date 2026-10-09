@@ -198,7 +198,6 @@
         <div class="premium-vial-photo__brand">VERAPEP</div>
         <strong class="premium-vial-photo__name ${longClass}">${nameMarkup}</strong>
         <div class="premium-vial-photo__dose">${esc(dose)}</div>
-        <small class="premium-vial-photo__research">Research Use Only</small>
       </div>
     </div>`;
   }

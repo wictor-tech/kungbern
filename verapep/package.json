@@ -1,6 +1,6 @@
 {
   "name": "verapep-information-platform",
-  "version": "17.0.0",
+  "version": "20.0.0",
   "private": true,
   "type": "module",
   "description": "VERAPEP information platform: compliance-gated publication, guarded commerce, Ask Vera with safety rules and versioned knowledge, legal information pages, bundled styles and release test suites.",
@@ -12,14 +12,21 @@
     "test:all": "node --test tests/*.test.mjs && python3 tests/static-validation.py && python3 tests/e2e.py",
     "test:static": "python3 tests/static-validation.py",
     "audit:images": "node scripts/audit-product-images.mjs",
+    "audit:site-images": "node scripts/audit-site-images.mjs",
+    "test:admin-personas": "python3 tests/admin-personas.py",
     "import:v8": "node scripts/import-v8-data.mjs",
     "backup:sqlite": "node scripts/backup-sqlite.mjs",
     "email:retry": "node scripts/retry-email-outbox.mjs",
     "build:css": "node scripts/build-css.mjs",
+    "assets:versions": "node scripts/asset-versions.mjs",
     "test:personas": "python3 tests/personas.py",
     "restore:sqlite": "node scripts/restore-sqlite.mjs",
     "migrate:kb": "node scripts/migrate-support-kb.mjs",
-    "inventory:compliance": "node scripts/compliance-inventory.mjs"
+    "inventory:compliance": "node scripts/compliance-inventory.mjs",
+    "scan:secrets": "node scripts/secret-scan.mjs --history",
+    "verify:release": "node scripts/verify-release.mjs",
+    "audit-log:scrub": "node scripts/scrub-audit-log.mjs",
+    "retention": "node scripts/retention.mjs"
   },
   "engines": {
     "node": ">=22"

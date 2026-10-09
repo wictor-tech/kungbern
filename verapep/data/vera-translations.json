@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "note": "Swedish translations of Ask Vera answers. Only items with status \"approved\" whose sourceHash matches the current English text are shown to visitors. Approved by the owner on 2026-10-09.",
+  "languages": {
+    "sv": {
+      "items": {
+        "string:safety": {
+          "text": "Jag kan inte hjälpa till med dosering, administrering, medicinska effekter eller behandling, och jag kan inte rekommendera produkter för ett hälsomål. VERAPEP ger inte medicinsk rådgivning. Prata med en läkare eller farmaceut om läkemedel och hälsofrågor.",
+          "status": "approved",
+          "sourceHash": "c4728cb6aa6b16c7",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "string:privacy": {
+          "text": "Dela inte personuppgifter som e-postadresser, telefonnummer eller hälsoinformation här. Jag behöver dem inte, och frågorna sparas inte.",
+          "status": "approved",
+          "sourceHash": "84106118ad60d204",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "string:greeting": {
+          "text": "Hej! Jag kan hjälpa till med leverans, returer, betalning, labbrapporter, produktinformation, integritet, kontaktuppgifter och att hitta rätt på webbplatsen. Vad vill du veta?",
+          "status": "approved",
+          "sourceHash": "93202061286802de",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "string:thanks": {
+          "text": "Varsågod. Är det något mer jag kan hjälpa dig att hitta?",
+          "status": "approved",
+          "sourceHash": "f0e5c6fa335fe022",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "string:fallback": {
+          "text": "Jag har inget publicerat svar på den frågan. Du kan kontakta supporten på {supportEmail}.",
+          "status": "approved",
+          "sourceHash": "dc2c1e3ff485ee0f",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "string:unknownProduct": {
+          "text": "Jag har ingen publicerad information om den produkten. Jag kan bara svara om produkter som finns i katalogen.",
+          "status": "approved",
+          "sourceHash": "66792569c031b89a",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "string:empty": {
+          "text": "Skriv en fråga, till exempel \"Hur lång är leveranstiden?\"",
+          "status": "approved",
+          "sourceHash": "e26c76c6bf2a8a79",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:delivery": {
+          "text": "Den angivna uppskattningen är {deliveryEstimate} till {deliveryCountryCount} EU-länder. {orderingStatus} De slutliga leveransvillkoren publiceras på sidan Leverans och returer innan försäljningen öppnar.",
+          "status": "approved",
+          "sourceHash": "9e1699eed2fc7be3",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:europe": {
+          "text": "Leverans är inställd för {deliveryCountryCount} EU-länder: {deliveryCountries}. Om en viss produkt skulle kunna levereras till ditt land framgår av produktsidan.",
+          "status": "approved",
+          "sourceHash": "53127a65bbdd5069",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:returns": {
+          "text": "En retur kan begäras för en betald beställning via sidan Spåra en beställning. De fullständiga villkoren för returer och ångerrätt håller på att tas fram och publiceras på sidan Leverans och returer.",
+          "status": "approved",
+          "sourceHash": "c8b80ec39ee79c60",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:pricing": {
+          "text": "En produkts pris i euro visas när den kan beställas, och moms och fraktkostnad bekräftas i kassan innan du betalar. {orderingStatus}",
+          "status": "approved",
+          "sourceHash": "d4835027b679033d",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:payment": {
+          "text": "Det går inte att göra riktiga betalningar på webbplatsen just nu. Det är en förhandsversion, och kassan förblir avstängd tills produkter, villkor och betalningar har godkänts.",
+          "status": "approved",
+          "sourceHash": "8de96318989163e7",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:reports": {
+          "text": "Labbrapporter publiceras på en produktsida först när de har verifierats för just den produkten. {labReportStatus} Vera kan inte lämna testresultat som inte är publicerade.",
+          "status": "approved",
+          "sourceHash": "5e071d8a91bc2fcf",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:missing-information": {
+          "text": "Beskrivningar, avsedd användning, dokumentation och labbrapporter publiceras först när de har verifierats och granskats. Många produkter saknar detta ännu, så deras sidor visar \"Not yet published\" i stället för platshållartext.",
+          "status": "approved",
+          "sourceHash": "1f8e664a98e0e100",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:availability": {
+          "text": "{orderingStatus} En produkt kan beställas först när den har granskats och godkänts för försäljning; varje produktsida visar aktuell status.",
+          "status": "approved",
+          "sourceHash": "eef4dc8a99b00f91",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:account": {
+          "text": "Mina sidor sparar dina sparade produkter och val i produktguiden i den här webbläsaren. Kundkonton med inloggning finns inte ännu.",
+          "status": "approved",
+          "sourceHash": "5f301ca4ac4dc699",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:saved": {
+          "text": "Använd hjärtat på ett produktkort eller en produktsida för att spara produkten. Sparade produkter lagras i den här webbläsaren, separat från varukorgen, och visas under Mina sidor.",
+          "status": "approved",
+          "sourceHash": "dbd35e25091bd161",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:compare": {
+          "text": "Välj Compare på upp till tre produktkort och öppna sedan jämförelsefältet längst ned i katalogen för att se dem sida vid sida.",
+          "status": "approved",
+          "sourceHash": "6d0fbcc2a3cb3c93",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:finder": {
+          "text": "Produktguiden grupperar katalogen efter forskningsområde och låter dig avgränsa med filter. Områdena är inte hälsorekommendationer, och VERAPEP ger inte medicinsk rådgivning.",
+          "status": "approved",
+          "sourceHash": "65f77567991a5c8d",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:search": {
+          "text": "Använd sökfältet högst upp på varje sida för att söka på produktnamn och katalognummer. På en dator kan du trycka på / för att hoppa dit.",
+          "status": "approved",
+          "sourceHash": "fa816d71d6c4f7ef",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:ratings": {
+          "text": "Recensioner granskas innan de publiceras. Produkter utan publicerade recensioner visar \"No ratings yet\". Skriv inte hälsouppgifter eller kontaktuppgifter i en recension.",
+          "status": "approved",
+          "sourceHash": "4437eb6c5656dd86",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:contact": {
+          "text": "Du kan kontakta supporten via e-post på {supportEmail}. Skriv inte hälsoinformation i ditt meddelande.",
+          "status": "approved",
+          "sourceHash": "35631d109fcd5aff",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:company": {
+          "text": "{companyLine} Operatörens uppgifter finns på sidan Villkor.",
+          "status": "approved",
+          "sourceHash": "cda847dd45a244a0",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:privacy": {
+          "text": "Sparade produkter, jämförelser och varukorgen lagras i din webbläsare. Beställningar sparar, när beställning blir möjlig, bara det som behövs för att leverera dem. Webbplatsen använder inga spårare för annonsering eller analys, och frågor du ställer till Vera sparas inte. Kontakt för integritetsfrågor: {privacyEmail}.",
+          "status": "approved",
+          "sourceHash": "c95a493293ebc6d3",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:terms": {
+          "text": "De slutliga köpvillkoren har ännu inte godkänts och publicerats. Till dess kan inga produkter beställas. Sidan Villkor visar aktuell status.",
+          "status": "approved",
+          "sourceHash": "4de1b6682a10f201",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:track-order": {
+          "text": "Om du har gjort en beställning kan du följa den på sidan Spåra en beställning med ditt ordernummer och din e-postadress.",
+          "status": "approved",
+          "sourceHash": "ccd9fb5ad1a0929d",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:verification": {
+          "text": "Produktinformation, labbrapporter och recensioner publiceras först när de har kontrollerats. Där inget har verifierats ännu står det så på sidan i stället för platshållartext. VERAPEP ger inte medicinsk rådgivning.",
+          "status": "approved",
+          "sourceHash": "768069080b7ef4f9",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        },
+        "entry:about-vera": {
+          "text": "Jag är ett automatiskt hjälpverktyg, inte en generativ AI. Jag väljer det matchande svaret ur en fast uppsättning som VERAPEP har skrivit och godkänt, och läser fakta som publicerats på produktsidor. Jag skapar inga nya fakta, ger inte medicinsk rådgivning och dina frågor sparas inte.",
+          "status": "approved",
+          "sourceHash": "225bec26c67e27b6",
+          "proposedBy": "VERAPEP v19 (machine-assisted draft; not reviewed)",
+          "note": "Approved by the owner. Machine-assisted translation; changes go through Admin → Guide & Ask Vera.",
+          "approvedBy": "Owner (approved in chat, 2026-10-09)",
+          "approvedAt": "2026-10-09T11:10:00.000Z"
+        }
+      }
+    }
+  }
+}

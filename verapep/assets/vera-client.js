@@ -42,8 +42,9 @@
     const suggestions = (result.suggestions || []).slice(0, 3);
     return `
       ${result.kind === 'safety' ? '<span class="vera-answer__badge">Not medical advice</span>' : ''}
-      <p>${escapeHtml(result.answer)}</p>
+      <p lang="${result.language === 'sv' ? 'sv' : 'en'}">${escapeHtml(result.answer)}</p>
       ${result.notice ? `<p class="vera-answer__notice">${escapeHtml(result.notice)}</p>` : ''}
+      ${result.languageNotice ? `<p class="vera-answer__notice" lang="sv">${escapeHtml(result.languageNotice)}</p>` : ''}
       ${links.length ? `<p class="vera-answer__links">${links.map(link => `<a href="${escapeHtml(link.href)}">${escapeHtml(link.label)} <span aria-hidden="true">→</span></a>`).join('')}</p>` : ''}
       ${suggestions.length ? `<div class="vera-answer__suggestions" role="group" aria-label="Related questions">${suggestions.map(text => `<button type="button" data-vera-suggestion="${escapeHtml(text)}">${escapeHtml(text)}</button>`).join('')}</div>` : ''}`;
   }

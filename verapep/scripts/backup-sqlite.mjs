@@ -46,3 +46,12 @@ if (result.length !== 1 || result[0] !== 'ok') {
 }
 const size = fs.statSync(targetPath).size;
 console.log(`Backup written: ${targetPath} (${(size / 1024).toFixed(1)} KB, integrity_check: ok)`);
+
+// v19: private product documents live next to the database; copy them with the same timestamp.
+const documentsDir = path.join(dataDir, 'documents');
+if (fs.existsSync(documentsDir)) {
+  const target = path.join(backupDir, `verapep-${stamp}-documents`);
+  fs.cpSync(documentsDir, target, { recursive: true, preserveTimestamps: true });
+  fs.chmodSync(target, 0o700);
+  console.log(`Documents copied: ${target} (${fs.readdirSync(target).length} files)`);
+}

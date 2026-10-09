@@ -100,6 +100,9 @@
     return name.length > 18 ? `${name.slice(0, 18)}…` : name;
   };
   function vialMarkup(product, instance = 'card') {
+    // v19: an approved product photograph (applied through the content workflow) takes precedence
+    // over the generated vial illustration.
+    if (product.content?.imageUrl) return `<img class="product-photo" src="${escapeHtml(product.content.imageUrl)}" ${product.content.imageSrcset?`srcset="${escapeHtml(product.content.imageSrcset)}"`:''} sizes="${escapeHtml(product.content.imageSizes||'(max-width:700px) 80vw, 260px')}" alt="${escapeHtml(product.content.imageAlt || productName(product))}" loading="lazy" decoding="async">`;
     const unifiedVial = window.VerapepeVialRenderer?.render(product, { instance, mode: 'card' });
     if (unifiedVial) return unifiedVial;
     const mappedImage = window.VerapepeProductImages?.get(product);
@@ -338,14 +341,9 @@
   function renderFeatured() {
     if (!els.featuredGrid) return;
     const filtersActive = state.focuses.size || state.needs.size || state.priorities.size || els.search.value.trim() || els.category.value !== 'all' || els.rating.value !== '0' || els.report.value !== 'all';
-    const preferred = [
-      'semaglutide-003',
-      'bpc-157-009',
-      'cjc-1295-with-dac-032',
-      'tb500-thymosin-b4-acetate-013',
-      'mt-2-melanotan-2-acetate-007',
-      'nad-064'
-    ];
+    // v18: no hard-coded product ids in public code. Products with a photo (the server only lists
+    // visible ones) are featured first; the rest is filled from the visible catalogue.
+    const preferred = Object.keys(window.VerapepeProductImages?.images || {});
     let featured;
     if (!filtersActive) {
       const preferredIds = new Set(preferred);

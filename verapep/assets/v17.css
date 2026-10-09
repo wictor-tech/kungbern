@@ -165,3 +165,7 @@ form[aria-busy="true"] button[type="submit"] { opacity: .6; cursor: progress; }
 .kb-entry > summary small { color: var(--vp-muted); flex-basis: 100%; }
 .kb-entry[open] > summary { margin-bottom: 12px; }
 .assistant-contact__facts a { text-decoration: underline; text-underline-offset: 3px; }
+/* v18: grouped launch blockers */
+.status-list--blockers .status-group { list-style: none; margin-left: -18px; color: var(--vp-ink); }
+.status-list--blockers .status-group > ul { margin: 6px 0 10px; padding-left: 18px; display: grid; gap: 6px; }
+.status-list--blockers .status-group small { color: var(--vp-muted); }
