@@ -390,8 +390,12 @@
 
   async function applyDraft(id) {
     if (!window.confirm('Replace the live product text with this approved draft?\n\nThe current text is kept as an earlier version. This does not publish a hidden product or change its legal status.')) return;
-    const done = await run(() => requestJson(`/api/admin/drafts/${id}/apply`, { method: 'POST', body: JSON.stringify({ confirm: true }) }), 'The approved text is now live. The previous text is saved under History.');
-    if (done) { await refreshAfterChange(); await A.loadDashboard().catch(() => {}); }
+    const done = await run(() => requestJson(`/api/admin/drafts/${id}/apply`, { method: 'POST', body: JSON.stringify({ confirm: true }) }));
+    if (!done) return;
+    await refreshAfterChange();
+    // v21: reloading the dashboard clears the message area, so the confirmation is shown afterwards.
+    await A.loadDashboard().catch(() => {});
+    showMessage('The approved text is now live. The previous text is saved under History.', 'success');
   }
 
   async function withdrawDraft(id) {

@@ -144,3 +144,6 @@
 .translation-item + .translation-item { margin-top: 6px; }
 .translation-item summary { display: flex; justify-content: space-between; gap: 10px; cursor: pointer; font-weight: 700; }
 .translation-item textarea { width: 100%; }
+
+/* v21: payment issues that need a person */
+.admin-alert { display: block; margin-top: 6px; padding: 4px 8px; border-radius: 8px; background: #fbe9e9; color: #8a2b2b; font-size: 0.78rem; }

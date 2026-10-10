@@ -17,3 +17,6 @@ services:
       # Render terminates TLS in front of the service; trust exactly one proxy hop.
       - key: TRUST_PROXY
         value: "1"
+      # v21: run the same Node line as CI and the Dockerfile (Render otherwise picks its latest).
+      - key: NODE_VERSION
+        value: "22"

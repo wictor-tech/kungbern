@@ -2,11 +2,12 @@
 
 Generated: 2026-10-10
 
-Files listed: 253 (manifest excludes itself and runtime database/outbox/backup files)
+Files listed: 256 (manifest excludes itself and runtime database/outbox/backup files)
 
 Path | Bytes | SHA-256 (first 16)
 .env.example | 2889 | 3cb7a2922ef163b7
 .gitignore | 549 | e0f0ec3a9efef7ba
+.node-version | 3 | f14b4987904bcb58
 404.html | 5861 | d76476f38bf6f95b
 DEPLOYMENT.md | 1385 | dd7e4f6f3606f404
 DESIGN-QA-V12.6.md | 3637 | 56fb46e8130aaff9
@@ -75,6 +76,7 @@ V20-INDEPENDENT-AUDIT.md | 15707 | 38384d485d584c74
 V20-LAUNCH-BLOCKERS.md | 3366 | a19e8421640bc74f
 V20-PERFORMANCE-REPORT.md | 3397 | 97c80814ef3021dd
 V20-SECURITY-REPORT.md | 3790 | e049a37d6a944718
+V21-LAUNCH-AUDIT.md | 13546 | 39986772dfcc4f2b
 V3-CHANGES.md | 1279 | 32459b11fdd55dd2
 V4-CHANGES.md | 2851 | fb95572778fa983a
 V5-CHANGES.md | 1109 | de2d6eaeb69d1d07
@@ -84,12 +86,12 @@ V7-CHANGES.md | 1352 | 3caae789f168b05d
 V8-CHANGES.md | 1342 | f12843aa36f7b3a9
 V8.1-CHANGES.md | 566 | 0a9da45f23da7e02
 V9-CHANGES.md | 1818 | 2bbcd9a24eeff30e
-admin.html | 29931 | 82667ede762dea59
+admin.html | 29931 | 13d79df2513ceb41
 api/index.mjs | 827 | d3515175586232d5
-assets/admin-v19.js | 52870 | eaf9f24d981dd3ce
-assets/admin.js | 64754 | a89468a7677dcfe0
+assets/admin-v19.js | 53013 | 95cb5a4b66d7dc66
+assets/admin.js | 64910 | 657651b4fd361902
 assets/app.js | 54203 | 03dfb6a05a0cb026
-assets/bundle-admin.css | 307525 | 140fbdac4db49dda
+assets/bundle-admin.css | 307659 | 59b32677043e8be5
 assets/bundle-pages.css | 287896 | b74b8ef8958be6e2
 assets/bundle-storefront.css | 351109 | 8e3c4a560a574a0b
 assets/cart.js | 14562 | 079bafa0b4f50606
@@ -140,7 +142,7 @@ assets/v14-production-readiness.css | 3079 | b8ca4c6d91753833
 assets/v15-premium.css | 75246 | 37558de87dd3e6d8
 assets/v15-ui.js | 9007 | 27fab6f6f1523789
 assets/v17.css | 10445 | cd1ce8d0f3ebc5b7
-assets/v19.css | 11247 | fac9ec057c1bdab1
+assets/v19.css | 11438 | 6be750f2af7724c5
 assets/v7-ui.js | 1909 | df7c7d6247b2fe62
 assets/v7.css | 17343 | 6e8f7e2aa345e502
 assets/v8-1.css | 11158 | d0d1341abe6fccc8
@@ -208,11 +210,11 @@ lib/vera-language.mjs | 7125 | 8c65954b271931d0
 lib/vera.mjs | 23786 | e74bf4296005bd6e
 my-pages.html | 8373 | 6abe53b21bb62f54
 order.html | 8523 | 56b5d9ae07eedf60
-package.json | 1658 | 669cd62b4d22a509
+package.json | 1658 | 29ff9c8269343bcf
 privacy.html | 8505 | 6aa0d2477b6958b7
 product-image-audit.csv | 5944 | 3d2df53340c8473d
 product.html | 7021 | 8dd1c64fd0211dd5
-render.yaml | 563 | 9e470541e8515d4c
+render.yaml | 707 | 609332b819379afb
 robots.txt | 26 | 331ea9090db0c9f6
 scripts/asset-versions.mjs | 2683 | 458f834f11a2e65b
 scripts/audit-product-images.mjs | 1261 | 0e0296ede4d09e11
@@ -232,7 +234,7 @@ scripts/secret-scan.mjs | 5364 | 85d266d881c0ca90
 scripts/source/catalogue-data.js | 27296 | 7a1536b945504f11
 scripts/verify-release.mjs | 5610 | c87d38b55ab359ed
 scripts/write-manifest.mjs | 1817 | 8b3f3b43e8889bc1
-server.mjs | 182656 | 907ec5676a1cf212
+server.mjs | 194444 | d39f2261fb2d0984
 shipping-returns.html | 7151 | d322186c0bbbee2a
 sql/postgres-schema.sql | 8461 | 4adb726f2d822500
 start-webshop.cmd | 2638 | 32e49d091ab17e06
@@ -247,14 +249,15 @@ tests/personas.py | 17480 | 8134e960b8199522
 tests/static-validation.py | 4741 | 1935bcfc52a549b9
 tests/support/compliance.mjs | 1116 | 10c08360786e36a6
 tests/v11.test.mjs | 7387 | 88305f911f965c09
-tests/v14.test.mjs | 5776 | 62d8bc726f82cd28
+tests/v14.test.mjs | 5776 | 5df3aef01dc2e6dc
 tests/v141.test.mjs | 7984 | 09bf6137cb33d65c
 tests/v16.test.mjs | 6146 | f1e03e6964e1f54a
 tests/v17.test.mjs | 34305 | 74ca53f9578c3632
-tests/v18.test.mjs | 20939 | 594d6ad9f9b016a6
+tests/v18.test.mjs | 20939 | 53bd7d4a7939e830
 tests/v19.test.mjs | 27587 | 2bab3c7fcc9466a6
 tests/v20.test.mjs | 29282 | 4dccd1ccf787abce
-tests/v9.test.mjs | 7478 | f3346083784e4d67
+tests/v21-payments.test.mjs | 20323 | fff897d4417ac579
+tests/v9.test.mjs | 7478 | a701755f0fe2f1e3
 tests/vendor/LICENSE-axe-core-MPL-2.0.txt | 15921 | af175b9d96ee93c2
 tests/vendor/axe.min.js | 553290 | b511cd9dec01c76f
 vercel.json | 269 | 4545abfb19167d8a

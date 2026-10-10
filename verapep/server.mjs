@@ -59,7 +59,7 @@ const MIME_TYPES = {
 const ORDER_STATUSES = new Set(['awaiting_payment', 'processing', 'packed', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled', 'refunded']);
 const RETURN_STATUSES = new Set(['requested', 'approved', 'rejected', 'received', 'refunded']);
 const MAX_BODY_BYTES = 1_000_000;
-const VERSION = '20.0.0';
+const VERSION = '21.0.0';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const SESSION_ABSOLUTE_MS = 12 * 60 * 60 * 1000;
 const PRIVATE_HTML_PAGES = new Set(['admin.html', 'checkout.html', 'order.html', 'my-pages.html', '404.html']);
@@ -282,9 +282,11 @@ function parseCookies(header = '') {
   }));
 }
 
-function publicOrder(order, includeCustomer = true) {
+function publicOrder(order, includeCustomer = true, internal = false) {
   const copy = structuredClone(order);
   delete copy.accessTokenHash;
+  // v21: payment review details and the stored Stripe session link are for the admin only.
+  if (!internal) { delete copy.paymentIssues; delete copy.stripeSessionUrl; }
   if (!includeCustomer) {
     delete copy.customer;
     delete copy.shippingAddress;
@@ -572,6 +574,21 @@ export function createVerapepServer(options = {}) {
     for (const response of [...storefrontClients]) {
       try { response.write(event); } catch { storefrontClients.delete(response); }
     }
+  }
+
+  const stripeSessionsInFlight = new Set();
+  const orderCreatesInFlight = new Map();
+
+  /* v21: a paid Stripe session must match the order it claims: same amount, currency and mode. */
+  function stripeSessionMismatch(order, session) {
+    const expectedLive = getMode() === 'live';
+    if (typeof session.livemode === 'boolean' && session.livemode !== expectedLive) return `Stripe session ${session.id} is ${session.livemode ? 'live' : 'test'} mode but the store is in ${expectedLive ? 'live' : 'test'} mode.`;
+    if (session.currency && String(session.currency).toLowerCase() !== String(order.currency || '').toLowerCase()) return `Stripe session ${session.id} was paid in ${String(session.currency).toUpperCase()}, the order is in ${order.currency}.`;
+    if (session.amount_total !== undefined && session.amount_total !== null) {
+      const expected = order.items.reduce((sum, item) => sum + item.unitPriceCents * item.quantity, 0) + Number(order.shippingCents || 0) + Number(order.taxCents || 0);
+      if (Number(session.amount_total) !== expected) return `Stripe session ${session.id} amount ${session.amount_total} does not match the order total ${expected}.`;
+    }
+    return null;
   }
 
   function enqueueWrite(operation) {
@@ -1380,23 +1397,49 @@ export function createVerapepServer(options = {}) {
     if (persist) await persistInventory();
   }
 
-  async function settleReservation(order, persist = true) {
-    if (order.inventoryApplied) return;
+  /* v21: every line is checked before any stock changes, so a shortfall never leaves inventory
+     half-updated. When the customer has already been charged (allowShortfall), the order is settled
+     anyway and the shortfall is returned so it can be flagged for manual follow-up. */
+  function inventoryShortfall(order) {
+    return order.items.filter(item => {
+      const stock = inventory.variants[item.variantId];
+      return stock && Number(stock.onHand || 0) < item.quantity;
+    }).map(item => ({ variantId: item.variantId, productName: item.productName, quantity: item.quantity, onHand: Number(inventory.variants[item.variantId].onHand || 0) }));
+  }
+
+  async function settleReservation(order, persist = true, { allowShortfall = false } = {}) {
+    if (order.inventoryApplied) return [];
+    const shortfall = inventoryShortfall(order);
+    if (shortfall.length && !allowShortfall) {
+      const error = new Error(`Inventory changed and no longer covers ${shortfall[0].productName}.`);
+      error.status = 409;
+      error.code = 'inventory_changed';
+      throw error;
+    }
     for (const item of order.items) {
       const stock = inventory.variants[item.variantId];
       if (!stock) continue;
       if (order.inventoryReserved) stock.reserved = Math.max(0, Number(stock.reserved || 0) - item.quantity);
-      if (Number(stock.onHand || 0) < item.quantity) {
-        const error = new Error(`Inventory changed and no longer covers ${item.productName}.`);
-        error.status = 409;
-        error.code = 'inventory_changed';
-        throw error;
-      }
       stock.onHand = Math.max(0, Number(stock.onHand || 0) - item.quantity);
     }
     order.inventoryReserved = false;
     order.inventoryApplied = true;
     if (persist) await persistInventory();
+    return shortfall;
+  }
+
+  /* v21: payment problems that need a person (paid after cancellation, a second payment, amount
+     mismatch, oversold stock) are recorded on the order and sent to monitoring instead of failing the
+     provider callback, which would otherwise be retried for days while the customer is charged. */
+  async function flagPaymentIssue(order, issue) {
+    const at = nowIso();
+    order.paymentIssues = Array.isArray(order.paymentIssues) ? order.paymentIssues : [];
+    order.paymentIssues.push({ ...issue, at });
+    order.updatedAt = at;
+    order.timeline.push({ status: 'payment_review', label: 'Payment under review', at, note: 'Our team is checking this payment and will contact you.' });
+    await persistOrdersAndInventory('payment_review');
+    database.addAudit({ actorEmail: 'system', actorRole: 'system', action: 'order.payment_issue', entityType: 'order', entityId: order.id, after: { code: issue.code, reference: issue.reference || null } });
+    void notifyMonitoring({ type: 'payment_issue', orderId: order.id, code: issue.code });
   }
 
   async function restockOrder(order, persist = true) {
@@ -1413,7 +1456,11 @@ export function createVerapepServer(options = {}) {
     const cutoff = Date.now() - 30 * 60 * 1000;
     let changed = false;
     for (const order of orders) {
-      if (order.paymentStatus === 'unpaid' && order.inventoryReserved && Date.parse(order.createdAt) < cutoff) {
+      // v21: a Stripe checkout whose session expired over two hours ago (the expiry webhook was lost)
+      // also gives its stock back. A payment that still arrives later is flagged for a refund.
+      const stalePending = order.paymentStatus === 'pending' && order.stripeSessionExpiresAt && Date.parse(order.stripeSessionExpiresAt) < Date.now() - 2 * 60 * 60 * 1000;
+      if ((order.paymentStatus === 'unpaid' || stalePending) && order.orderStatus === 'awaiting_payment' && order.inventoryReserved && Date.parse(order.createdAt) < cutoff) {
+        if (stalePending) order.paymentStatus = 'expired';
         await releaseReservation(order, false);
         order.orderStatus = 'cancelled';
         order.updatedAt = nowIso();
@@ -1425,9 +1472,35 @@ export function createVerapepServer(options = {}) {
   }
 
   async function markOrderPaid(order, provider, reference) {
-    if (order.paymentStatus === 'paid') return order;
-    if (order.orderStatus === 'cancelled') { const error = new Error('This order reservation has expired or was cancelled.'); error.status = 409; error.code = 'order_cancelled'; throw error; }
-    if (!order.inventoryApplied) await settleReservation(order, false);
+    if (order.paymentStatus === 'paid') {
+      // v21: a second, different provider payment for an order that is already paid needs a refund.
+      if (provider !== 'mock' && reference && order.paymentReference !== reference && !(order.paymentIssues || []).some(issue => issue.reference === reference)) {
+        await flagPaymentIssue(order, { code: 'duplicate_payment', reference, message: `A second payment (${reference}) was received for an order that is already paid. Refund it in the payment provider.` });
+      }
+      return order;
+    }
+    const charged = provider !== 'mock';
+    if (order.orderStatus === 'cancelled' || order.orderStatus === 'refunded') {
+      if (!charged) { const error = new Error('This order reservation has expired or was cancelled.'); error.status = 409; error.code = 'order_cancelled'; throw error; }
+      // The customer has been charged for an order that was already cancelled: keep it cancelled,
+      // record the payment so the refund action can be used, and alert.
+      order.paymentStatus = 'paid';
+      order.paymentProvider = provider;
+      order.paymentReference = reference;
+      await flagPaymentIssue(order, { code: 'paid_after_cancel', reference, message: `Payment ${reference} arrived after the order was cancelled. Refund the customer; no stock was taken.` });
+      return order;
+    }
+    // Claim the order before the first await so a webhook and the redirect confirmation (or a
+    // double click) cannot both confirm it.
+    const previousStatus = order.paymentStatus;
+    order.paymentStatus = 'paid';
+    let shortfall = [];
+    try {
+      if (!order.inventoryApplied) shortfall = await settleReservation(order, false, { allowShortfall: charged });
+    } catch (error) {
+      order.paymentStatus = previousStatus;
+      throw error;
+    }
     const at = nowIso();
     order.paymentStatus = 'paid';
     order.paymentProvider = provider;
@@ -1437,6 +1510,7 @@ export function createVerapepServer(options = {}) {
     order.timeline.push({ status: 'payment_confirmed', label: order.testMode ? 'Preview payment confirmed' : 'Payment confirmed', at, note: `${provider} payment reference: ${reference}` });
     order.timeline.push({ status: 'processing', label: order.testMode ? 'Preparing preview order' : 'Preparing order', at, note: order.testMode ? 'Preview inventory has been adjusted.' : 'Inventory has been adjusted.' });
     await persistOrdersAndInventory('payment_confirmed');
+    if (shortfall.length) await flagPaymentIssue(order, { code: 'oversold', reference, message: `Paid order exceeds stock on hand for ${shortfall.map(line => line.productName).join(', ')}. Restock or refund.` });
     database.addAudit({ actorEmail: order.customer.email, actorRole: 'customer', action: 'order.payment_confirmed', entityType: 'order', entityId: order.id, after: publicOrder(order) });
     await queueEmail({
       to: order.customer.email,
@@ -1608,6 +1682,8 @@ export function createVerapepServer(options = {}) {
     const ip = clientIp(req);
 
     if (method === 'GET' && pathname === '/api/health') {
+      // v21: the health check also proves the database answers, so a host can restart a broken instance.
+      try { database.db.prepare('SELECT 1').get(); } catch { return sendJson(res, 503, { ok: false, version: VERSION, error: 'database_unavailable' }); }
       // v21: behind the demo lock, outsiders only learn that the service is up.
       if (!siteLockPassed(req)) return sendJson(res, 200, { ok: true, version: VERSION, locked: true });
       return sendJson(res, 200, { ok: true, version: VERSION, mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
@@ -1722,14 +1798,37 @@ export function createVerapepServer(options = {}) {
       await releaseExpiredReservations();
       const body = await readJsonBody(req);
       const idempotencyKey = cleanText(req.headers['idempotency-key'] || body.idempotencyKey, 120);
-      if (idempotencyKey) {
-        const existing = database.getIdempotent('create_order', idempotencyKey);
-        if (existing) return sendJson(res, 200, existing);
+      if (!idempotencyKey) {
+        const { order, accessToken } = await createOrder(body);
+        return sendJson(res, 201, { order: publicOrder(order), accessToken });
       }
-      const { order, accessToken } = await createOrder(body);
-      const response = { order: publicOrder(order), accessToken };
-      if (idempotencyKey) database.putIdempotent('create_order', idempotencyKey, response);
-      return sendJson(res, 201, response);
+      // v21: the same key with a different basket is refused, and two concurrent requests with the
+      // same key create one order (the second waits for the first).
+      const bodyHash = sha256(JSON.stringify({ items: body.items, customer: body.customer, shippingAddress: body.shippingAddress, shippingMethodId: body.shippingMethodId }));
+      const replay = stored => {
+        if (stored.requestHash && stored.requestHash !== bodyHash) return sendJson(res, 422, { error: 'idempotency_key_reused', message: 'This idempotency key was already used for a different order.' });
+        const { requestHash, ...response } = stored;
+        return sendJson(res, 200, response);
+      };
+      const existing = database.getIdempotent('create_order', idempotencyKey);
+      if (existing) return replay(existing);
+      if (orderCreatesInFlight.has(idempotencyKey)) {
+        const stored = await orderCreatesInFlight.get(idempotencyKey).catch(() => null);
+        if (stored) return replay(stored);
+      }
+      const pending = (async () => {
+        const { order, accessToken } = await createOrder(body);
+        const stored = { order: publicOrder(order), accessToken, requestHash: bodyHash };
+        database.putIdempotent('create_order', idempotencyKey, stored);
+        return stored;
+      })();
+      orderCreatesInFlight.set(idempotencyKey, pending);
+      try {
+        const { requestHash, ...response } = await pending;
+        return sendJson(res, 201, response);
+      } finally {
+        orderCreatesInFlight.delete(idempotencyKey);
+      }
     }
 
     if (method === 'POST' && pathname === '/api/orders/lookup') {
@@ -1829,6 +1928,15 @@ export function createVerapepServer(options = {}) {
       if (!order || !verifyOrderAccess(order, body.token, null)) return sendJson(res, 404, { error: 'order_not_found', message: 'The order could not be found or accessed.' });
       if (!stripeConfigured()) return sendJson(res, 503, { error: 'stripe_not_configured', message: getMode() === 'live' ? 'Stripe live mode is not configured.' : 'Stripe test mode is not configured. Use mock payment or add an sk_test_ key.' });
       if (!order.items.every(stripeEligibility)) return sendJson(res, 403, { error: 'stripe_product_blocked', message: getMode() === 'live' ? 'Live checkout is blocked until every variant is explicitly allowlisted and legally/commercially approved.' : 'Stripe test checkout is blocked until every variant is explicitly allowlisted and legally reviewed.' });
+      // v21: only an open, unpaid order can be sent to Stripe, and an open session is reused so a
+      // double click or a second tab cannot create two payable sessions for one order.
+      if (order.orderStatus !== 'awaiting_payment' || !['unpaid', 'pending'].includes(order.paymentStatus)) return sendJson(res, 409, { error: 'order_not_payable', message: 'This order is already paid, cancelled or expired. Start a new checkout.' });
+      if (order.paymentStatus === 'pending' && order.stripeSessionUrl && Date.parse(order.stripeSessionExpiresAt || 0) > Date.now() + 60 * 1000) {
+        return sendJson(res, 200, { url: order.stripeSessionUrl, sessionId: order.paymentReference, reused: true });
+      }
+      if (stripeSessionsInFlight.has(order.id)) return sendJson(res, 409, { error: 'payment_session_in_progress', message: 'A payment page is already being opened for this order.' });
+      stripeSessionsInFlight.add(order.id);
+      try {
       const token = body.token;
       order.accessTokenForRedirect = token;
       const baseUrl = String(process.env.BASE_URL || `http://${req.headers.host || 'localhost:3000'}`).replace(/\/$/, '');
@@ -1839,17 +1947,21 @@ export function createVerapepServer(options = {}) {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: buildStripeForm(order, baseUrl)
-      });
-      delete order.accessTokenForRedirect;
+      }).finally(() => { delete order.accessTokenForRedirect; });
       const stripePayload = await stripeResponse.json();
       if (!stripeResponse.ok) return sendJson(res, 502, { error: 'stripe_error', message: stripePayload.error?.message || 'Stripe checkout session could not be created.' });
       order.paymentProvider = getMode() === 'live' ? 'stripe_live' : 'stripe_test';
       order.paymentStatus = 'pending';
       order.paymentReference = stripePayload.id;
+      order.stripeSessionUrl = stripePayload.url || null;
+      order.stripeSessionExpiresAt = new Date((Number(stripePayload.expires_at) || Math.floor(Date.now() / 1000) + 30 * 60) * 1000).toISOString();
       order.updatedAt = nowIso();
       order.timeline.push({ status: 'payment_pending', label: getMode() === 'live' ? 'Stripe checkout opened' : 'Stripe test checkout opened', at: order.updatedAt, note: stripePayload.id });
       await persistOrders();
       return sendJson(res, 200, { url: stripePayload.url, sessionId: stripePayload.id });
+      } finally {
+        stripeSessionsInFlight.delete(order.id);
+      }
     }
 
     if (method === 'POST' && pathname === '/api/payments/stripe/confirm') {
@@ -1863,6 +1975,11 @@ export function createVerapepServer(options = {}) {
       const stripePayload = await stripeResponse.json();
       if (!stripeResponse.ok) return sendJson(res, 502, { error: 'stripe_error', message: stripePayload.error?.message || 'Stripe checkout session could not be verified.' });
       if (stripePayload.client_reference_id !== order.id || stripePayload.payment_status !== 'paid') return sendJson(res, 409, { error: 'stripe_not_paid', message: 'Stripe has not confirmed this payment.' });
+      const mismatch = stripeSessionMismatch(order, stripePayload);
+      if (mismatch) {
+        await flagPaymentIssue(order, { code: 'payment_mismatch', reference: sessionId, message: mismatch });
+        return sendJson(res, 409, { error: 'payment_mismatch', message: 'The payment could not be matched to this order. Our team has been notified.' });
+      }
       await markOrderPaid(order, stripePayload.livemode ? 'stripe_live' : 'stripe_test', sessionId);
       return sendJson(res, 200, { order: publicOrder(order) });
     }
@@ -1878,8 +1995,11 @@ export function createVerapepServer(options = {}) {
       const orderId = session?.metadata?.order_id || session?.client_reference_id;
       const order = findOrder(orderId);
       if (order && ['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(event.type) && session.payment_status === 'paid') {
-        await markOrderPaid(order, session.livemode ? 'stripe_live' : 'stripe_test', session.id);
-      } else if (order && event.type === 'checkout.session.expired' && order.paymentStatus !== 'paid') {
+        const mismatch = stripeSessionMismatch(order, session);
+        if (mismatch) await flagPaymentIssue(order, { code: 'payment_mismatch', reference: session.id, message: mismatch });
+        else await markOrderPaid(order, session.livemode ? 'stripe_live' : 'stripe_test', session.id);
+      } else if (order && event.type === 'checkout.session.expired' && order.paymentStatus !== 'paid' && session.id === order.paymentReference) {
+        // v21: only the order's current session may cancel it; an old session expiring must not.
         const at = nowIso();
         if (order.inventoryReserved) await releaseReservation(order, false);
         order.paymentStatus = order.paymentStatus === 'pending' ? 'expired' : order.paymentStatus;
@@ -1887,7 +2007,7 @@ export function createVerapepServer(options = {}) {
         order.updatedAt = at;
         order.timeline.push({ status: 'cancelled', label: 'Checkout expired', at, note: 'The payment session expired and reserved stock was released.' });
         await persistOrdersAndInventory('checkout_expired');
-      } else if (order && event.type === 'checkout.session.async_payment_failed' && order.paymentStatus !== 'paid') {
+      } else if (order && event.type === 'checkout.session.async_payment_failed' && order.paymentStatus !== 'paid' && session.id === order.paymentReference) {
         const at = nowIso();
         if (order.inventoryReserved) await releaseReservation(order, false);
         order.paymentStatus = 'failed';
@@ -1976,7 +2096,7 @@ export function createVerapepServer(options = {}) {
           pendingReviews: reviews.reviews.filter(review => review.status === 'pending').length,
           approvedReviews: reviews.reviews.filter(review => review.status === 'approved').length
         },
-        orders: ROLE_ACCESS[session.role]?.has('orders') ? orders.map(order => publicOrder(order, true)) : [],
+        orders: ROLE_ACCESS[session.role]?.has('orders') ? orders.map(order => publicOrder(order, true, true)) : [],
         returns: ROLE_ACCESS[session.role]?.has('returns') ? returns : [],
         withdrawals: ROLE_ACCESS[session.role]?.has('returns') ? withdrawals : [],
         inventory: ROLE_ACCESS[session.role]?.has('inventory') ? Object.entries(inventory.variants).map(([variantId, item]) => ({ variantId, ...item })) : [],
@@ -2075,7 +2195,7 @@ export function createVerapepServer(options = {}) {
         generatedAt: nowIso(),
         subject: email,
         customerRecords,
-        orders: matchingOrders.map(order => publicOrder(order, true)),
+        orders: matchingOrders.map(order => publicOrder(order, true, true)),
         returns: matchingReturns,
         withdrawals: matchingWithdrawals,
         transactionalMessages: outbox
@@ -2467,10 +2587,22 @@ export function createVerapepServer(options = {}) {
       if (status === 'refunded' && order.paymentStatus !== 'refunded') {
         return sendJson(res, 409, { error: 'refund_action_required', message: 'Use the dedicated refund action so inventory and payment state stay consistent.' });
       }
+      // v21: status changes follow the payment state. Fulfilment needs a paid order, a paid order is
+      // cancelled through the refund action, and cancelled or refunded orders are final.
+      if (status !== order.orderStatus) {
+        const paid = order.paymentStatus === 'paid';
+        let blocked = null;
+        if (['cancelled', 'refunded'].includes(order.orderStatus)) blocked = 'This order is closed and its status can no longer change.';
+        else if (status === 'awaiting_payment') blocked = 'An order cannot be moved back to awaiting payment.';
+        else if (status === 'cancelled' && paid) blocked = 'This order is paid. Use the refund action to cancel it so the payment is returned.';
+        else if (status !== 'cancelled' && !paid) blocked = 'Fulfilment statuses need a paid order.';
+        if (blocked) return sendJson(res, 409, { error: 'invalid_status_transition', message: blocked });
+      }
       const before = structuredClone(order);
       const at = nowIso();
-      const releasedReservation = status === 'cancelled' && order.paymentStatus === 'unpaid' && order.inventoryReserved;
+      const releasedReservation = status === 'cancelled' && order.orderStatus !== 'cancelled' && order.paymentStatus !== 'paid' && order.inventoryReserved;
       if (releasedReservation) await releaseReservation(order, false);
+      if (status === 'cancelled' && order.paymentStatus === 'pending') order.paymentStatus = 'cancelled';
       order.orderStatus = status;
       order.updatedAt = at;
       if (body.trackingNumber !== undefined) order.trackingNumber = cleanText(body.trackingNumber, 100) || null;
@@ -2479,7 +2611,7 @@ export function createVerapepServer(options = {}) {
       if (releasedReservation) await persistOrdersAndInventory('order_cancelled'); else await persistOrders();
       audit(session, 'order.status_updated', 'order', order.id, before, order);
       await queueEmail({ to: order.customer.email, subject: `${order.id} — status updated`, type: 'status_updated', orderId: order.id, content: order.testMode ? `Preview order status: ${status.replaceAll('_', ' ')}.` : `Order status: ${status.replaceAll('_', ' ')}.` });
-      return sendJson(res, 200, { order: publicOrder(order) });
+      return sendJson(res, 200, { order: publicOrder(order, true, true) });
     }
 
     const adminRefundMatch = pathname.match(/^\/api\/admin\/orders\/([^/]+)\/refund$/);
@@ -2492,7 +2624,7 @@ export function createVerapepServer(options = {}) {
       const before = structuredClone(order);
       await refundOrder(order, body.reason);
       audit(session, 'order.refunded', 'order', order.id, before, order);
-      return sendJson(res, 200, { order: publicOrder(order) });
+      return sendJson(res, 200, { order: publicOrder(order, true, true) });
     }
 
     if (method === 'PATCH' && pathname === '/api/admin/inventory') {
@@ -2503,7 +2635,12 @@ export function createVerapepServer(options = {}) {
       const record = inventory.variants[variantId];
       if (!record) return sendJson(res, 404, { error: 'variant_not_found', message: 'Inventory variant not found.' });
       const before = structuredClone(record);
-      if (body.onHand !== undefined) record.onHand = clampInt(body.onHand, 0, 1_000_000);
+      if (body.onHand !== undefined) {
+        const onHand = clampInt(body.onHand, 0, 1_000_000);
+        // v21: stock reserved by open checkouts must stay covered, or a customer can pay for stock that is gone.
+        if (onHand < Number(record.reserved || 0)) return sendJson(res, 409, { error: 'below_reserved', message: `${record.reserved} units are reserved by open checkouts. Set stock on hand to at least ${record.reserved}, or wait for those checkouts to finish.` });
+        record.onHand = onHand;
+      }
       if (body.retailPrice !== undefined) { const cents = moneyToCents(body.retailPrice); record.retailPriceCents = cents > 0 ? cents : null; }
       if (typeof body.saleEnabled === 'boolean') record.saleEnabled = body.saleEnabled;
       await persistInventory();
@@ -2891,7 +3028,8 @@ export function createVerapepServer(options = {}) {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       // Private demo lock: the whole site (pages, API, admin) asks for a shared password. The health
       // check stays open for the hosting platform. Not used for production (it is not a login).
-      if (siteAccessPassword && url.pathname !== '/api/health' && !siteLockPassed(req)) {
+      // v21: Stripe webhooks authenticate with their own signature, so a Stripe rehearsal works behind the lock.
+      if (siteAccessPassword && url.pathname !== '/api/health' && url.pathname !== '/api/webhooks/stripe' && !siteLockPassed(req)) {
         // v21: failed attempts are rate limited per address (brute-force protection).
         const limit = rateLimit(`site-lock:${clientIp(req)}`, 30, 15 * 60 * 1000);
         if (!limit.allowed) { res.writeHead(429, { ...securityHeaders('text/plain; charset=utf-8'), 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)), 'Cache-Control': 'no-store' }); return res.end('Too many attempts. Try again later.'); }
@@ -2924,10 +3062,27 @@ export function createVerapepServer(options = {}) {
     databasePath: database.filePath,
     getState: () => ({ catalogue, config, policy, inventory, orders, returns, withdrawals }),
     getMode: () => getMode(),
-    resetSessions: () => sessions.clear()
+    resetSessions: () => sessions.clear(),
+    /* v21: graceful stop for SIGTERM (Render and most hosts send it on every deploy). New requests
+       are refused, open live-update streams are ended, queued writes finish, and the database is
+       checkpointed and closed before the process exits. */
+    shutdown: async (graceMs = 10_000) => {
+      const closed = new Promise(resolve => server.close(() => resolve()));
+      for (const response of [...storefrontClients]) { try { response.end(); } catch {} }
+      storefrontClients.clear();
+      server.closeIdleConnections?.();
+      const timer = setTimeout(() => server.closeAllConnections?.(), graceMs);
+      await closed;
+      clearTimeout(timer);
+      await writeChain.catch(() => {});
+    }
   };
   server.on('listening', () => writeServerLock(dataDir));
-  server.on('close', () => { removeServerLock(dataDir); try { database.close(); } catch {} });
+  server.on('close', () => {
+    removeServerLock(dataDir);
+    try { database.db.exec('PRAGMA wal_checkpoint(TRUNCATE)'); } catch {}
+    try { database.close(); } catch {}
+  });
   return server;
 }
 
@@ -2944,4 +3099,13 @@ if (isMain) {
     console.log(`Storage: SQLite (${server.verapep.databasePath})`);
     console.log('Product publication, prices, inventory and commerce approvals are controlled server-side. Live checkout remains blocked until production readiness requirements pass.');
   });
+  let stopping = false;
+  for (const signal of ['SIGTERM', 'SIGINT']) {
+    process.on(signal, () => {
+      if (stopping) return;
+      stopping = true;
+      console.log(`${signal} received: finishing open requests and closing the database.`);
+      server.verapep.shutdown().then(() => process.exit(0), error => { console.error(error); process.exit(1); });
+    });
+  }
 }
