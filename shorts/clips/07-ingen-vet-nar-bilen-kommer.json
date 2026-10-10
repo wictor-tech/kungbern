@@ -1,0 +1,27 @@
+{
+  "slug": "07-ingen-vet-nar-bilen-kommer",
+  "episode": 7,
+  "title": "Ingen vet när bilen kommer",
+  "scene": "eta",
+  "icon": "calendar",
+  "hook": { "text": "Tre bilar.\nSamtidigt.", "sub": "Sen ingen på två timmar." },
+  "problem": {
+    "title": "Lastningen kan\ninte planeras.",
+    "pains": ["Alla kommer klockan sju", "Tomma portar på eftermiddagen", "Övertid och stress"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER vet du när.",
+    "steps": [
+      { "icon": "calendar", "label": "Boka slot", "sub": "I förväg" },
+      { "icon": "clock", "label": "Se ankomster", "sub": "Per port" },
+      { "icon": "truck", "label": "Lasta jämnt", "sub": "Hela dagen" }
+    ],
+    "kicker": "Jämnt *flöde.*"
+  },
+  "voiceover": {
+    "hook": "Tre bilar. Samtidigt.",
+    "problem": "Alla kommer klockan sju, portarna står tomma på eftermiddagen och lastningen går inte att planera.",
+    "solution": "Med LUPNUMBER bokar transportörerna slot i förväg. Du ser dagens ankomster per port och fördelar arbetet jämnt.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}

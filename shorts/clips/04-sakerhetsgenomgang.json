@@ -1,0 +1,27 @@
+{
+  "slug": "04-sakerhetsgenomgang",
+  "episode": 4,
+  "title": "Säkerhetsgenomgång på papper",
+  "scene": "sakerhet",
+  "icon": "shield",
+  "hook": { "text": "Säkerhetsgenomgång\npå papper.", "sub": "Läst? Förstått? Ingen vet." },
+  "problem": {
+    "title": "Regler som ingen\nkan intyga.",
+    "pains": ["Tio minuter vid grinden", "Lapp på svenska", "Ingen spårbarhet"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER är det kvitterat.",
+    "steps": [
+      { "icon": "shield", "label": "Läs reglerna", "sub": "På sitt språk" },
+      { "icon": "check", "label": "Kvittera", "sub": "I mobilen" },
+      { "icon": "gate", "label": "Kör in", "sub": "Vid grinden" }
+    ],
+    "kicker": "Säkerheten *först.*"
+  },
+  "voiceover": {
+    "hook": "Säkerhetsgenomgång på papper.",
+    "problem": "Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst.",
+    "solution": "Med LUPNUMBER läser chauffören reglerna på sitt språk, kvitterar i mobilen och är spårbar innan grinden går upp.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}

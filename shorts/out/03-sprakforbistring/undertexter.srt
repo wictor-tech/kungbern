@@ -1,0 +1,39 @@
+1
+00:00:02,250 --> 00:00:04,330
+Kör till port fyra.
+
+2
+00:00:04,330 --> 00:00:04,850
+Eller?
+
+3
+00:00:05,250 --> 00:00:06,714
+Fem språk vid grinden och
+
+4
+00:00:06,714 --> 00:00:08,179
+instruktioner som inte går fram.
+
+5
+00:00:08,179 --> 00:00:09,350
+Fel port, fel lastning.
+
+6
+00:00:09,750 --> 00:00:11,903
+Med LUPNUMBER väljer chauffören sitt språk
+
+7
+00:00:11,903 --> 00:00:14,056
+i mobilen, får instruktionerna på sitt
+
+8
+00:00:14,056 --> 00:00:15,850
+språk och kvitterar innan infart.
+
+9
+00:00:16,250 --> 00:00:18,833
+Boka en demo på lupnumber.
+
+10
+00:00:18,833 --> 00:00:19,350
+com.

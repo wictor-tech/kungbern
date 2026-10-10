@@ -17,6 +17,11 @@
     return Math.min(a, b);
   };
 
+  // Färgblandning mellan två hexfärger, p = 0..1 (används för problem→lösning-toning)
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mix = (a, b, p) => { const A = hex(a), B = hex(b), q = clamp(p, 0, 1); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], q))).join(',')})`; };
+  const stagger = (t, start, i, step, dur, ease) => prog(t, start + i * step, dur, ease);
+
   const el = (tag, cls, html) => {
     const e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -69,5 +74,5 @@
     });
   };
 
-  LUP.util = { clamp, lerp, easeOut, easeIn, easeInOut, back, prog, window: window_, el, css, enter, hide, words, wordmark, animateWordmark };
+  LUP.util = { clamp, lerp, easeOut, easeIn, easeInOut, back, prog, window: window_, mix, stagger, el, css, enter, hide, words, wordmark, animateWordmark };
 })();

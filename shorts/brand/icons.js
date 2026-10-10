@@ -22,6 +22,11 @@
     cloud: wrap('<path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4.5 4.5 0 0 1 .4 9z"/>'),
     arrow: wrap('<path d="M5 12h14M13 6l6 6-6 6"/>', 'stroke-width="2.4"'),
     bolt: wrap('<path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12z"/>'),
+    search: wrap('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'),
+    handset: wrap('<path d="M5 3.5h3.5l1.8 4.5-2.3 1.6a11 11 0 0 0 6.4 6.4l1.6-2.3 4.5 1.8V19a2 2 0 0 1-2 2A15.5 15.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>'),
+    flag: wrap('<path d="M5 21V4"/><path d="M5 4h13l-3 4.5 3 4.5H5"/>'),
+    pen: wrap('<path d="m4 20 4-1 10.5-10.5a2.1 2.1 0 0 0-3-3L5 16z"/><path d="m13.5 7.5 3 3"/>'),
+    list: wrap('<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor"/><circle cx="3.5" cy="12" r="1" fill="currentColor"/><circle cx="3.5" cy="18" r="1" fill="currentColor"/>'),
     shield: wrap('<path d="M12 2.5 4.5 5.5v5.5c0 4.8 3.2 8.4 7.5 10.5 4.3-2.1 7.5-5.7 7.5-10.5V5.5z"/><path d="m9 12 2 2 4-4"/>'),
   };
   LUP.icon = (name) => LUP.icons[name] || LUP.icons.check;

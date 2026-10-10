@@ -1,0 +1,35 @@
+1
+00:00:02,250 --> 00:00:04,850
+Vem är på siten just nu?
+
+2
+00:00:05,250 --> 00:00:07,072
+Radio, rundor och gissningar.
+
+3
+00:00:07,072 --> 00:00:09,350
+Ingen har en aktuell lista.
+
+4
+00:00:09,750 --> 00:00:11,341
+Med LUPNUMBER checkar varje chaufför in
+
+5
+00:00:11,341 --> 00:00:12,933
+vid grinden och ut vid utfarten.
+
+6
+00:00:12,933 --> 00:00:14,524
+Du ser hela yarden i realtid,
+
+7
+00:00:14,524 --> 00:00:15,850
+från vilken skärm som helst.
+
+8
+00:00:16,250 --> 00:00:18,833
+Boka en demo på lupnumber.
+
+9
+00:00:18,833 --> 00:00:19,350
+com.

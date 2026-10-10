@@ -1,0 +1,27 @@
+{
+  "slug": "02-vem-ar-pa-siten",
+  "episode": 2,
+  "title": "Vem är på siten just nu?",
+  "scene": "yard-overblick",
+  "icon": "eye",
+  "hook": { "text": "Vem är på siten\njust nu?", "sub": "Ingen vet säkert." },
+  "problem": {
+    "title": "Radio. Rundor.\nGissningar.",
+    "pains": ["Sju bilar? Eller nio?", "Ingen aktuell lista", "Vakten ringer runt"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER ser du allt.",
+    "steps": [
+      { "icon": "phone", "label": "Checka in", "sub": "Vid grinden" },
+      { "icon": "map", "label": "Se yarden", "sub": "I realtid" },
+      { "icon": "check", "label": "Checka ut", "sub": "Vid utfart" }
+    ],
+    "kicker": "Full *koll.*"
+  },
+  "voiceover": {
+    "hook": "Vem är på siten just nu?",
+    "problem": "Radio, rundor och gissningar. Ingen har en aktuell lista.",
+    "solution": "Med LUPNUMBER checkar varje chaufför in vid grinden och ut vid utfarten. Du ser hela yarden i realtid, från vilken skärm som helst.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}

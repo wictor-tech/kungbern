@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8">
+<title>LUPNUMBER – Språkförbistring med chaufförer</title>
+<style>/* LUPNUMBER – LÅSTA varumärkestokens. Ändra inte per klipp. */
+/* Inter levereras med repot (OFL) så att alla klipp renderas med exakt samma typsnitt. file:///home/user/kungbern/shorts/brand/fonts byts ut av build. */
+@font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-Medium.otf") format("opentype"), local("Inter Medium"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-SemiBold.otf") format("opentype"), local("Inter SemiBold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-Bold.otf") format("opentype"), local("Inter Bold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 800; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-ExtraBold.otf") format("opentype"), local("Inter ExtraBold"), local("Inter"); }
+:root {
+  --bg: #F5FAFE;
+  --card: #FFFFFF;
+  --border: #BAE6FD;
+  --accent: #0EA5E9;
+  --heading: #0C4A6E;
+  --text: #334155;
+  --muted: #64748B;
+  --tint-1: #E0F2FE;
+  --tint-2: #F0F9FF;
+  --tint-3: #ECFDF5;
+  --font: "Inter", "Inter Display", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --radius: 28px;
+  --radius-sm: 18px;
+  --shadow: 0 18px 40px rgba(14, 165, 233, 0.10), 0 2px 6px rgba(12, 74, 110, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #0b1220; font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+/* ---- Stage ---- */
+.stage {
+  position: relative;
+  width: 1080px; height: 1350px;
+  background: var(--bg);
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--text);
+}
+.stage * { will-change: transform, opacity; }
+
+.blob { position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
+.blob-1 { width: 820px; height: 820px; left: -300px; top: -260px; background: radial-gradient(circle, var(--tint-1) 0%, rgba(224,242,254,0) 70%); }
+.blob-2 { width: 760px; height: 760px; right: -300px; bottom: -220px; background: radial-gradient(circle, var(--tint-3) 0%, rgba(236,253,245,0) 70%); }
+.blob-3 { width: 520px; height: 520px; right: -120px; top: 180px; background: radial-gradient(circle, var(--tint-2) 0%, rgba(240,249,255,0) 70%); }
+
+.phase { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+
+/* ---- Wordmark ---- */
+.wordmark { display: inline-flex; align-items: baseline; font-weight: 800; letter-spacing: -0.04em; line-height: 1; white-space: nowrap; }
+.wordmark .wm-lup { color: var(--accent); }
+.wordmark .wm-number { color: var(--heading); }
+.wordmark i { display: inline-block; font-style: normal; }
+.wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+
+/* ---- Episode badge (top). Wordmarken morfar hit från intron, sep + ep positioneras i shell.js ---- */
+.badge { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 18px; }
+.badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
+.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; }
+.wm-layer { position: absolute; left: 0; top: 0; transform-origin: top left; }
+
+/* ---- Typography ---- */
+.hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
+.hook-text .w { display: inline-block; }
+.hook-sub { color: var(--muted); font-weight: 600; font-size: 34px; text-align: center; margin-top: 28px; }
+.h1 { color: var(--heading); font-weight: 800; font-size: 58px; line-height: 1.08; letter-spacing: -0.03em; }
+.lead { color: var(--text); font-weight: 500; font-size: 30px; line-height: 1.35; }
+.kicker { color: var(--heading); font-weight: 800; font-size: 54px; letter-spacing: -0.03em; line-height: 1.1; }
+.kicker em { font-style: normal; color: var(--accent); }
+
+/* ---- Icon circle ---- */
+.icon-circle { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--card); border: 3px solid var(--border); color: var(--accent); box-shadow: var(--shadow); }
+.icon-circle svg { width: 52%; height: 52%; }
+
+/* ---- Cards ---- */
+.card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.chip { display: inline-flex; align-items: center; gap: 16px; background: var(--card); border: 2px solid var(--border); border-radius: 999px; padding: 18px 30px 18px 20px; color: var(--text); font-weight: 600; font-size: 29px; white-space: nowrap; }
+.chip .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--tint-1); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: 0 0 auto; }
+.chip .dot svg { width: 24px; height: 24px; }
+
+/* ---- Flow: numrerade accent-cirklar + linje + kort ---- */
+.flow { position: relative; display: flex; gap: 24px; align-items: stretch; }
+.flow-line { position: absolute; left: 148px; right: 148px; top: 0; height: 6px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.flow-line.ghost { background: var(--border); }
+.step { position: relative; flex: 1 1 0; padding: 68px 24px 34px; text-align: center; }
+.step .num { position: absolute; left: 50%; top: 0; width: 64px; height: 64px; margin-left: -32px; margin-top: -32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(14,165,233,0.35); }
+.step .ico { color: var(--accent); height: 72px; display: flex; align-items: center; justify-content: center; }
+.step .ico svg { width: 64px; height: 64px; }
+.step .label { color: var(--heading); font-weight: 800; font-size: 32px; letter-spacing: -0.02em; margin-top: 10px; line-height: 1.1; }
+.step .sub { color: var(--muted); font-weight: 600; font-size: 22px; margin-top: 8px; }
+
+/* ---- CTA ---- */
+.cta-pill { display: inline-flex; align-items: center; gap: 18px; background: var(--accent); color: #fff; font-weight: 800; font-size: 40px; padding: 28px 56px; border-radius: 999px; box-shadow: 0 22px 44px rgba(14,165,233,0.35); }
+.cta-pill svg { width: 40px; height: 40px; }
+.url { color: var(--heading); font-weight: 700; font-size: 36px; letter-spacing: -0.01em; }
+.company { color: var(--muted); font-weight: 600; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ---- Hero (scenvisuals) ---- */
+.hero { position: absolute; left: 72px; right: 72px; }
+.hero svg { overflow: visible; }
+.hero-road { fill: var(--border); }
+.hero-dash { stroke: #fff; stroke-width: 4; stroke-dasharray: 26 22; }
+.hero-muted { color: var(--muted); }
+.hero-accent { color: var(--accent); }
+
+/* ---- Inbrända undertexter (valfritt, --captions) ---- */
+.captions { position: absolute; left: 72px; right: 72px; top: 1196px; display: flex; justify-content: center; pointer-events: none; }
+.captions .cue { background: rgba(255,255,255,0.92); border: 2px solid var(--border); border-radius: 20px; padding: 14px 28px; color: var(--heading); font-weight: 700; font-size: 31px; line-height: 1.25; text-align: center; max-width: 936px; box-shadow: var(--shadow); }
+
+/* ---- Preview-kontroller (döljs vid rendering) ---- */
+.controls { font: 14px/1.4 var(--font); color: #cbd5e1; display: flex; gap: 12px; align-items: center; padding: 12px 16px; }
+.controls input[type=range] { flex: 1; }
+.controls button { background: #0EA5E9; color: #fff; border: 0; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
+body.render .controls { display: none; }
+body.render .viewport { transform: none !important; }
+
+.viewport{transform-origin:top left;position:absolute;left:0;top:0}
+</style></head>
+<body>
+<div class="viewport"><div class="stage"></div></div>
+<div class="controls" style="position:fixed;left:0;right:0;bottom:0;background:#0b1220">
+  <button id="play">Spela</button>
+  <input id="scrub" type="range" min="0" max="0" value="0" step="1">
+  <span id="time">0.00 s · frame 0</span>
+</div>
+<script>/* LUPNUMBER shorts – animationsmotor. Allt styrs av tiden t (sekunder), inget beror på klockan. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+  const easeIn = (p) => p * p * p;
+  const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+  const back = (p) => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+  // 0..1 mellan start och start+dur, valfri easing
+  const prog = (t, start, dur, ease) => { const p = clamp((t - start) / dur, 0, 1); return ease ? ease(p) : p; };
+  // in/ut-kurva: tonar in över inDur, håller, tonar ut över outDur innan end
+  const window_ = (t, start, end, inDur, outDur) => {
+    if (t < start || t > end) return 0;
+    const a = prog(t, start, inDur, easeOut);
+    const b = 1 - prog(t, end - outDur, outDur, easeIn);
+    return Math.min(a, b);
+  };
+
+  // Färgblandning mellan två hexfärger, p = 0..1 (används för problem→lösning-toning)
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mix = (a, b, p) => { const A = hex(a), B = hex(b), q = clamp(p, 0, 1); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], q))).join(',')})`; };
+  const stagger = (t, start, i, step, dur, ease) => prog(t, start + i * step, dur, ease);
+
+  const el = (tag, cls, html) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  };
+  const css = (e, obj) => { for (const k in obj) e.style[k] = obj[k]; return e; };
+
+  // Standardentré: fade + slide upp (+ liten skala). p = 0..1
+  const enter = (e, p, opts = {}) => {
+    const dy = opts.dy ?? 28, s0 = opts.scale ?? 1, dx = opts.dx ?? 0;
+    e.style.opacity = clamp(p, 0, 1);
+    e.style.transform = `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px) scale(${lerp(s0, 1, p)})`;
+  };
+  const hide = (e) => { e.style.opacity = 0; };
+
+  // Splittar text i rader (\n) och ord, returnerar array av ord-spans
+  const words = (container, text, cls = 'w') => {
+    container.innerHTML = '';
+    const out = [];
+    text.split('\n').forEach((line, li) => {
+      if (li) container.appendChild(el('br'));
+      line.split(/\s+/).filter(Boolean).forEach((w, wi, arr) => {
+        const s = el('span', cls, w);
+        container.appendChild(s);
+        if (wi < arr.length - 1) container.appendChild(document.createTextNode(' '));
+        out.push(s);
+      });
+    });
+    return out;
+  };
+
+  // Wordmark: LUP (accent) + NUMBER (heading), bokstav för bokstav
+  const wordmark = (size, brand) => {
+    const w = el('div', 'wordmark');
+    w.style.fontSize = size + 'px';
+    const a = el('span', 'wm-lup'), b = el('span', 'wm-number');
+    [...brand.wordmark.accent].forEach((ch) => a.appendChild(el('i', null, ch)));
+    [...brand.wordmark.heading].forEach((ch) => b.appendChild(el('i', null, ch)));
+    w.appendChild(a); w.appendChild(b);
+    w._letters = [...w.querySelectorAll('i')];
+    return w;
+  };
+  // Bygger upp wordmark: start = när första bokstaven kommer, stagger per bokstav
+  const animateWordmark = (w, t, start, stagger = 0.07, dur = 0.5) => {
+    w._letters.forEach((L, i) => {
+      const p = prog(t, start + i * stagger, dur, back);
+      L.style.opacity = clamp(p * 1.5, 0, 1);
+      L.style.transform = `translateY(${(1 - p) * 0.35}em) scale(${lerp(0.7, 1, p)})`;
+    });
+  };
+
+  LUP.util = { clamp, lerp, easeOut, easeIn, easeInOut, back, prog, window: window_, mix, stagger, el, css, enter, hide, words, wordmark, animateWordmark };
+})();
+
+/* Ikonbibliotek – stroke-ikoner, 24x24, currentColor. Lägg till här, referera med namn i klipp-JSON. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const wrap = (inner, extra = '') =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${extra}>${inner}</svg>`;
+  LUP.icons = {
+    clock: wrap('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>'),
+    calendar: wrap('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9.5 15 1.8 1.8L15 13"/>'),
+    phone: wrap('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/><path d="m9.5 10.5 1.8 1.8L15 8.8"/>'),
+    gate: wrap('<path d="M4 21V9"/><path d="M2.5 21h3"/><path d="M4 11h16"/><circle cx="4" cy="11" r="1.6" fill="currentColor"/><path d="M9 11v-1.5M14 11v-1.5M19 11v-1.5"/>'),
+    truck: wrap('<path d="M2 6h11v10H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/>'),
+    check: wrap('<path d="m5 12.5 4.5 4.5L19 7.5"/>', 'stroke-width="2.6"'),
+    users: wrap('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.8"/><path d="M15.5 14.5a5 5 0 0 1 6 5"/>'),
+    globe: wrap('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
+    chat: wrap('<path d="M4 5.5h16v10H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>'),
+    map: wrap('<path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z"/><path d="M9 4v13.5M15 6.5V20"/>'),
+    clipboard: wrap('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4"/><path d="M8.5 10h7M8.5 14h4.5"/>'),
+    eye: wrap('<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.8"/>'),
+    bell: wrap('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
+    qr: wrap('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v1M17 20h4M20 17.5v.5"/>'),
+    warning: wrap('<path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4M12 17v.5"/>'),
+    cloud: wrap('<path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4.5 4.5 0 0 1 .4 9z"/>'),
+    arrow: wrap('<path d="M5 12h14M13 6l6 6-6 6"/>', 'stroke-width="2.4"'),
+    bolt: wrap('<path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12z"/>'),
+    search: wrap('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'),
+    handset: wrap('<path d="M5 3.5h3.5l1.8 4.5-2.3 1.6a11 11 0 0 0 6.4 6.4l1.6-2.3 4.5 1.8V19a2 2 0 0 1-2 2A15.5 15.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>'),
+    flag: wrap('<path d="M5 21V4"/><path d="M5 4h13l-3 4.5 3 4.5H5"/>'),
+    pen: wrap('<path d="m4 20 4-1 10.5-10.5a2.1 2.1 0 0 0-3-3L5 16z"/><path d="m13.5 7.5 3 3"/>'),
+    list: wrap('<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor"/><circle cx="3.5" cy="12" r="1" fill="currentColor"/><circle cx="3.5" cy="18" r="1" fill="currentColor"/>'),
+    shield: wrap('<path d="M12 2.5 4.5 5.5v5.5c0 4.8 3.2 8.4 7.5 10.5 4.3-2.1 7.5-5.7 7.5-10.5V5.5z"/><path d="m9 12 2 2 4-4"/>'),
+  };
+  LUP.icon = (name) => LUP.icons[name] || LUP.icons.check;
+})();
+
+/* Undertexts-cues ur voiceover + tidslinje. Körs både i Node (SRT) och i webbläsaren (inbrända undertexter). */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else (root.LUP = root.LUP || {}).captions = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  const ORDER = ['intro', 'hook', 'problem', 'solution', 'outro'];
+  function phases(brand) {
+    const T = brand.timeline; const list = []; let t = 0;
+    for (const k of ORDER) { list.push({ key: k, start: t, end: t + T[k] }); t += T[k]; }
+    return { list, total: t, byKey: Object.fromEntries(list.map((p) => [p.key, p])) };
+  }
+  const words = (s) => (String(s).trim().match(/\S+/g) || []);
+  // Dela text i cues: först per mening, sedan i jämna bitar om max maxWords ord.
+  function splitCue(text, maxWords) {
+    const sentences = String(text).replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*/g) || [text];
+    const out = [];
+    for (const s of sentences) {
+      const w = words(s); if (!w.length) continue;
+      const parts = Math.ceil(w.length / maxWords), per = Math.ceil(w.length / parts);
+      for (let i = 0; i < w.length; i += per) out.push(w.slice(i, i + per).join(' '));
+    }
+    // slå ihop mycket korta cues (≤2 ord) med nästa om det ryms
+    const merged = [];
+    for (const c of out) {
+      const prev = merged[merged.length - 1];
+      if (prev && words(prev).length <= 2 && words(prev).length + words(c).length <= maxWords) merged[merged.length - 1] = prev + ' ' + c;
+      else merged.push(c);
+    }
+    return merged;
+  }
+  function cues(brand, clip) {
+    const cfg = Object.assign({ maxWordsPerCue: 7, minCueSeconds: 0.9 }, brand.captions || {});
+    const { byKey } = phases(brand);
+    const all = [];
+    for (const k of ['hook', 'problem', 'solution', 'outro']) {
+      const text = clip.voiceover && clip.voiceover[k]; if (!text) continue;
+      const ph = byKey[k];
+      const parts = splitCue(text, cfg.maxWordsPerCue);
+      const total = parts.reduce((a, p) => a + words(p).length, 0);
+      const w0 = ph.start + 0.25, w1 = ph.end - 0.15, span = w1 - w0;
+      let t = w0;
+      parts.forEach((p, i) => {
+        let d = Math.max(cfg.minCueSeconds, (words(p).length / total) * span);
+        if (i === parts.length - 1) d = w1 - t; // sista cuen fyller ut beaten
+        all.push({ beat: k, start: +t.toFixed(3), end: +Math.min(w1, t + d).toFixed(3), text: p });
+        t += d;
+      });
+    }
+    return all;
+  }
+  return { ORDER, phases, splitCue, cues, words };
+});
+
+/* Yard-primitiver: färdiga delar att komponera scenvisualer av. Hero-ytan är 936×400 px.
+   Alla primitiver returnerar ett Item med .set({x,y,scale,rotate,opacity,color}) och .tone(p) (muted→accent). */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+  const C = { muted: '#64748B', accent: '#0EA5E9', heading: '#0C4A6E', border: '#BAE6FD', tint: '#E0F2FE', tint2: '#F0F9FF', tint3: '#ECFDF5', card: '#FFFFFF', text: '#334155', bg: '#F5FAFE' };
+  const FONT = 'Inter, system-ui, sans-serif';
+  const add = (parent, str) => { parent.insertAdjacentHTML('beforeend', str); return parent.lastElementChild; };
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const tone = (p) => U.mix(C.muted, C.accent, p);
+  const toneBg = (p) => U.mix(C.card, C.tint, p);
+  const fo = (inner, w, h, x = -w / 2, y = -h / 2) => `<foreignObject x="${x}" y="${y}" width="${w}" height="${h}"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;height:${h}px;display:flex;align-items:center;justify-content:center;color:inherit">${inner}</div></foreignObject>`;
+
+  class Item {
+    constructor(el, o = {}) { this.el = el; this.s = Object.assign({ x: 0, y: 0, scale: 1, rotate: 0, opacity: 1, color: null }, o); this.apply(); }
+    set(o) { Object.assign(this.s, o); this.apply(); return this; }
+    apply() { const s = this.s; this.el.setAttribute('transform', `translate(${s.x} ${s.y}) rotate(${s.rotate}) scale(${s.scale})`); this.el.style.opacity = U.clamp(s.opacity, 0, 1); if (s.color) this.el.style.color = s.color; }
+    tone(p) { return this.set({ color: tone(p) }); }
+    // "poppar" in med back-easing från start; returnerar progress
+    pop(t, start, dur = 0.5) { const p = U.prog(t, start, dur, U.back); this.set({ scale: Math.max(0.001, p) * (this.base || 1), opacity: U.clamp(p * 2, 0, 1) }); return p; }
+    fadeIn(t, start, dur = 0.4, dy = 14) { const p = U.prog(t, start, dur, U.easeOut); this.set({ opacity: p, y: (this.y0 ?? this.s.y) + (1 - p) * dy }); if (this.y0 == null) this.y0 = this.s.y; return p; }
+    q(sel) { return this.el.querySelector(sel); }
+  }
+  const item = (svg, inner, o) => new Item(add(svg, `<g>${inner}</g>`), o);
+
+  const Y = {
+    C, tone, toneBg, Item, FONT,
+    svg(root, w = 936, h = 400) { const s = add(root, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible"></svg>`); return s; },
+
+    // Väg: rundad bana med streckad mittlinje. Origin uppe till vänster.
+    road(svg, { x = 0, y = 300, w = 936, h = 16 } = {}) {
+      return item(svg, `<rect x="0" y="0" width="${w}" height="${h}" rx="${h / 2}" fill="${C.border}"/><line x1="20" y1="${h / 2}" x2="${w - 20}" y2="${h / 2}" stroke="#fff" stroke-width="4" stroke-dasharray="26 22"/>`, { x, y });
+    },
+
+    // Lastbil, sidovy. 132 bred, marken vid y=63 (origin uppe till vänster).
+    truck(svg, o = {}) {
+      return item(svg, `
+        <rect x="0" y="4" width="92" height="46" rx="8" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <path d="M92 20h24l16 16v14H92z" fill="#fff" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="99" y="24" width="12" height="11" rx="2" fill="currentColor" opacity=".35"/>
+        <circle cx="24" cy="54" r="9" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <circle cx="112" cy="54" r="9" fill="#fff" stroke="currentColor" stroke-width="4"/>`, Object.assign({ color: C.muted }, o));
+    },
+    // Lastbil uppifrån (för kartor). 64×30, origin i mitten, pekar åt höger.
+    truckTop(svg, o = {}) {
+      return item(svg, `<rect x="-32" y="-15" width="44" height="30" rx="5" fill="#fff" stroke="currentColor" stroke-width="3.5"/><rect x="14" y="-12" width="18" height="24" rx="4" fill="currentColor" opacity=".9"/>`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Bom. Stolpe 22×120, pivot (11,24). .open(p) fäller upp armen.
+    gate(svg, { len = 160, ...o } = {}) {
+      const it = item(svg, `
+        <rect x="0" y="0" width="22" height="120" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <g class="arm" transform-origin="11 24">
+          <rect x="11" y="18" width="${len}" height="12" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/>
+          <rect x="36" y="20" width="22" height="8" fill="currentColor"/><rect x="${36 + (len - 40) / 3}" y="20" width="22" height="8" fill="currentColor"/><rect x="${36 + (2 * (len - 40)) / 3}" y="20" width="22" height="8" fill="currentColor"/>
+        </g>
+        <circle cx="11" cy="24" r="7" fill="currentColor"/>`, Object.assign({ color: C.muted }, o));
+      it.arm = it.q('.arm');
+      it.open = (p) => { it.arm.setAttribute('transform', `rotate(${-82 * U.clamp(p, 0, 1)})`); return it; };
+      return it;
+    },
+
+    // Klocka, origin i mitten. .time(sek) snurrar visarna.
+    clock(svg, { r = 50, ...o } = {}) {
+      const it = item(svg, `<circle r="${r}" fill="#fff" stroke="currentColor" stroke-width="5"/><line class="h" y2="${-r * 0.5}" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><line class="m" y2="${-r * 0.74}" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle r="5" fill="currentColor"/>`, Object.assign({ color: C.muted }, o));
+      const h = it.q('.h'), m = it.q('.m');
+      it.time = (s) => { m.setAttribute('transform', `rotate(${s * 150})`); h.setAttribute('transform', `rotate(${s * 12 + 60})`); return it; };
+      return it;
+    },
+
+    // Ikon ur biblioteket, centrerad i origin.
+    icon(svg, { name, size = 64, ...o }) {
+      return item(svg, fo(`<div style="width:${size}px;height:${size}px">${LUP.icon(name)}</div>`, size, size), Object.assign({ color: C.muted }, o));
+    },
+
+    // Piller med valfri ikon och text, origin uppe till vänster. .text(str) byter text.
+    pill(svg, { text, icon = null, fontSize = 26, h = 52, bg = C.card, border = C.border, fg = C.heading, w = null, ...o }) {
+      const pad = 22, ic = icon ? 34 : 0;
+      const approx = (s) => s.length * fontSize * 0.58;
+      const width = w || Math.round(pad * 2 + ic + (icon ? 10 : 0) + approx(text));
+      const it = item(svg, `
+        <rect class="bg" width="${width}" height="${h}" rx="${h / 2}" fill="${bg}" stroke="${border}" stroke-width="3"/>
+        ${icon ? `<g class="ic" style="color:${fg}" transform="translate(${pad + ic / 2} ${h / 2})">${fo(`<div style="width:${ic - 6}px;height:${ic - 6}px">${LUP.icon(icon)}</div>`, ic, ic)}</g>` : ''}
+        <text class="tx" x="${pad + ic + (icon ? 10 : 0)}" y="${h / 2 + fontSize * 0.36}" font-family="${FONT}" font-weight="700" font-size="${fontSize}" fill="${fg}">${esc(text)}</text>`, o);
+      it.w = width; it.h = h;
+      const tx = it.q('.tx'), bgEl = it.q('.bg');
+      try { const real = tx.getComputedTextLength(); if (real > 0 && !w) { it.w = Math.round(pad * 2 + ic + (icon ? 10 : 0) + real); bgEl.setAttribute('width', it.w); } } catch (e) {}
+      it.text = (s, extra = 0) => { tx.textContent = s; try { const real = tx.getComputedTextLength(); it.w = Math.round(pad * 2 + ic + (icon ? 10 : 0) + real + extra); bgEl.setAttribute('width', it.w); } catch (e) {} return it; };
+      it.style = ({ bg: b, border: bd, fg: f }) => { if (b) bgEl.setAttribute('fill', b); if (bd) bgEl.setAttribute('stroke', bd); if (f) { tx.setAttribute('fill', f); const ic2 = it.q('.ic'); if (ic2) ic2.style.color = f; } return it; };
+      it.icon = (name) => { const d = it.q('.ic div div'); if (d) d.innerHTML = LUP.icon(name); return it; };
+      // Byt text/ikon när p passerar 0.5 (problem→lösning), utan att skriva om DOM varje frame
+      it.swap = (p, a, b) => { const want = p > 0.5 ? 1 : 0; if (it._sw !== want) { it._sw = want; const v = want ? b : a; if (v.text != null) it.text(v.text, v.extra || 0); if (v.icon) it.icon(v.icon); } return it; };
+      // problem→lösning: vit/muted → tint/heading
+      it.toneStyle = (p) => it.style({ bg: U.mix(C.card, C.tint, p), border: U.mix(C.border, C.tint, p), fg: U.mix(C.muted, C.heading, p) });
+      return it;
+    },
+
+    // Pratbubbla. Origin uppe till vänster, svans åt 'left' eller 'right'.
+    bubble(svg, { w = 300, h = 86, text, side = 'left', fontSize = 26, bg = C.card, border = C.border, fg = C.text, ...o }) {
+      const tail = side === 'left' ? `M26 ${h} l-14 22 l34 -22z` : `M${w - 26} ${h} l14 22 l-34 -22z`;
+      const it = item(svg, `
+        <path class="bg" d="M20 0 h${w - 40} a20 20 0 0 1 20 20 v${h - 40} a20 20 0 0 1 -20 20 h-${w - 40} a20 20 0 0 1 -20 -20 v-${h - 40} a20 20 0 0 1 20 -20z ${tail}" fill="${bg}" stroke="${border}" stroke-width="3" stroke-linejoin="round"/>
+        <text class="tx" x="${w / 2}" y="${h / 2 + fontSize * 0.36}" text-anchor="middle" font-family="${FONT}" font-weight="600" font-size="${fontSize}" fill="${fg}">${esc(text)}</text>`, o);
+      it.w = w; it.h = h;
+      it.text = (s) => { it.q('.tx').textContent = s; return it; };
+      it.style = ({ bg: b, border: bd, fg: f }) => { const e = it.q('.bg'); if (b) e.setAttribute('fill', b); if (bd) e.setAttribute('stroke', bd); if (f) it.q('.tx').setAttribute('fill', f); return it; };
+      it.toneStyle = (p) => it.style({ bg: U.mix(C.card, C.tint, p), border: U.mix(C.border, C.tint, p), fg: U.mix(C.muted, C.heading, p) });
+      it.swap = (p, a, b) => { const want = p > 0.5 ? 1 : 0; if (it._sw !== want) { it._sw = want; it.text(want ? b : a); } return it; };
+      return it;
+    },
+
+    // Kort (vit yta med kant). Origin uppe till vänster.
+    card(svg, { w, h, r = 24, bg = C.card, border = C.border, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="${r}" fill="${bg}" stroke="${border}" stroke-width="3"/>`, o);
+      it.style = ({ bg: b, border: bd }) => { const e = it.q('.bg'); if (b) e.setAttribute('fill', b); if (bd) e.setAttribute('stroke', bd); return it; };
+      return it;
+    },
+
+    // Text. anchor: start|middle|end
+    label(svg, { text, size = 24, weight = 700, fill = C.heading, anchor = 'start', ...o }) {
+      const it = item(svg, `<text class="tx" text-anchor="${anchor}" font-family="${FONT}" font-weight="${weight}" font-size="${size}" fill="${fill}" y="${size * 0.36}">${esc(text)}</text>`, o);
+      it.text = (s) => { it.q('.tx').textContent = s; return it; };
+      it.fill = (f) => { it.q('.tx').setAttribute('fill', f); return it; };
+      return it;
+    },
+
+    // Frågetecken, origin i mitten.
+    qmark(svg, { size = 56, ...o } = {}) {
+      return item(svg, `<text text-anchor="middle" y="${size * 0.36}" font-family="${FONT}" font-weight="800" font-size="${size}" fill="currentColor">?</text>`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Checkmärke i cirkel, origin i mitten.
+    check(svg, { r = 22, ...o } = {}) {
+      return item(svg, `<circle r="${r}" fill="currentColor"/><path d="M${-r * 0.42} ${r * 0.05} l${r * 0.3} ${r * 0.3} l${r * 0.55} -${r * 0.6}" fill="none" stroke="#fff" stroke-width="${r * 0.2}" stroke-linecap="round" stroke-linejoin="round"/>`, Object.assign({ color: C.accent }, o));
+    },
+
+    // Lastport (sedd uppifrån): docka med öppning nedåt och etikett. Origin uppe till vänster.
+    dock(svg, { w = 110, h = 64, text = '', ...o }) {
+      const it = item(svg, `
+        <rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>
+        <rect x="${w * 0.2}" y="${h - 8}" width="${w * 0.6}" height="10" rx="3" fill="currentColor" opacity=".9"/>
+        <text x="${w / 2}" y="${h / 2 + 2}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="22" fill="currentColor">${esc(text)}</text>`, Object.assign({ color: C.muted }, o));
+      return it;
+    },
+
+    // Kart-rutnät (ljust). Origin uppe till vänster.
+    grid(svg, { w, h, cell = 48, ...o }) {
+      let d = '';
+      for (let x = cell; x < w; x += cell) d += `M${x} 0 V${h} `;
+      for (let y = cell; y < h; y += cell) d += `M0 ${y} H${w} `;
+      return item(svg, `<path d="${d}" stroke="${C.tint}" stroke-width="2" fill="none"/>`, o);
+    },
+
+    // Sträcka (väg på karta eller kopplingslinje). .draw(p) ritar fram den, .at(p) ger punkt längs den.
+    path(svg, { d, width = 10, dash = null, ...o }) {
+      const it = item(svg, `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" ${dash ? `stroke-dasharray="${dash}"` : ''}/>`, Object.assign({ color: C.muted }, o));
+      const p = it.q('path'); const L = p.getTotalLength();
+      it.len = L;
+      if (!dash) { p.setAttribute('stroke-dasharray', L); p.setAttribute('stroke-dashoffset', L); }
+      it.draw = (q) => { if (!dash) p.setAttribute('stroke-dashoffset', L * (1 - U.clamp(q, 0, 1))); else it.set({ opacity: U.clamp(q * 2, 0, 1) }); return it; };
+      it.at = (q) => p.getPointAtLength(L * U.clamp(q, 0, 1));
+      it.angleAt = (q) => { const a = p.getPointAtLength(L * U.clamp(q, 0, 1)), b = p.getPointAtLength(L * U.clamp(q + 0.01, 0, 1)); return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI; };
+      return it;
+    },
+
+    // Kartnål, spetsen i origin.
+    pin(svg, o = {}) {
+      return item(svg, `<path d="M0 0 C-16 -22 -22 -30 -22 -42 a22 22 0 0 1 44 0 c0 12 -6 20 -22 42z" fill="currentColor"/><circle cy="-42" r="9" fill="#fff"/>`, Object.assign({ color: C.accent }, o));
+    },
+
+    // Telefon med skärm. Origin uppe till vänster. .screen är en <g> för eget innehåll (0,0 = skärmens övre vänstra hörn).
+    phone(svg, { w = 150, h = 270, ...o } = {}) {
+      const it = item(svg, `
+        <rect width="${w}" height="${h}" rx="22" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <rect x="${w / 2 - 22}" y="12" width="44" height="6" rx="3" fill="currentColor" opacity=".5"/>
+        <rect x="${w / 2 - 28}" y="${h - 16}" width="56" height="5" rx="2.5" fill="currentColor" opacity=".5"/>
+        <g class="screen" transform="translate(14 32)"></g>`, Object.assign({ color: C.muted }, o));
+      it.screen = it.q('.screen'); it.sw = w - 28; it.sh = h - 60;
+      return it;
+    },
+
+    // Pappersark med textrader. Origin uppe till vänster.
+    sheet(svg, { w = 200, h = 250, lines = 6, title = true, ...o } = {}) {
+      let rows = '';
+      const top = title ? 54 : 26;
+      if (title) rows += `<rect x="20" y="22" width="${w * 0.55}" height="12" rx="6" fill="currentColor" opacity=".7"/>`;
+      for (let i = 0; i < lines; i++) rows += `<rect x="20" y="${top + i * 26}" width="${w - 40 - (i % 3) * 22}" height="8" rx="4" fill="currentColor" opacity=".35"/>`;
+      return item(svg, `<rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>${rows}`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Pulserande punkt ("live"). .pulse(t)
+    dot(svg, { r = 8, ...o } = {}) {
+      const it = item(svg, `<circle class="ring" r="${r}" fill="currentColor" opacity=".3"/><circle r="${r}" fill="currentColor"/>`, Object.assign({ color: C.accent }, o));
+      const ring = it.q('.ring');
+      it.pulse = (t) => { const q = (t % 1.4) / 1.4; ring.setAttribute('r', r * (1 + q * 2.2)); ring.setAttribute('opacity', (1 - q) * 0.45); return it; };
+      return it;
+    },
+
+    // Enkel rad i en lista/tabell: origin uppe till vänster, w bred, 50 hög. cols = [{x, text, weight?}]
+    row(svg, { w, cols, h = 50, bg = 'transparent', fg = C.text, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="12" fill="${bg}"/>${cols.map((c) => `<text x="${c.x}" y="${h / 2 + 8}" font-family="${FONT}" font-weight="${c.weight || 600}" font-size="22" fill="${c.fill || fg}">${esc(c.text)}</text>`).join('')}`, o);
+      it.bg = (f) => { it.q('.bg').setAttribute('fill', f); return it; };
+      return it;
+    },
+  };
+  LUP.yard = Y;
+})();
+
+/* LUPNUMBER shorts – LÅST MALL.
+   Intro (wordmark byggs upp och morfar in i badgen) → Hook → Problem → Lösning → Outro.
+   Problem och lösning delar EN hero-visual ("samma kamera") som tonar från grått till sky.
+   Ett klipp byter bara text + ikon + (valfri) scenvisual. Rör inte tider/layout här per klipp. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+
+  LUP.init = function (brand, clip, opts = {}) {
+    const T = brand.timeline;
+    const fps = brand.format.fps;
+    const W = brand.format.width, H = brand.format.height;
+    const starts = {}; let acc = 0;
+    for (const k of ['intro', 'hook', 'problem', 'solution', 'outro']) { starts[k] = acc; acc += T[k]; }
+    const total = acc;
+    const IN = 0.4, OUT = 0.3; // fasövergång (sek)
+    const HERO = { left: 72, top: 320, width: 936, height: 400 };
+    const BADGE = { left: 72, top: 64, size: 34 };
+    const INTRO_WM = 132;
+
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = '';
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
+
+    // ---- Bakgrund ----
+    const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
+
+    const layer = (name) => { const p = U.el('div', 'phase phase-' + name); stage.appendChild(p); return p; };
+    const P = { hook: layer('hook'), problem: layer('problem'), solution: layer('solution'), outro: layer('outro') };
+    const introLayer = layer('intro');
+
+    // ---- INTRO: accentlinje + tagline (wordmarken ligger i ett eget lager som morfar till badgen) ----
+    const introBar = U.css(U.el('div', 'wm-bar'), { position: 'absolute', width: '220px', left: (W - 220) / 2 + 'px' });
+    const introTag = U.css(U.el('div', 'tagline', brand.tagline), { position: 'absolute', left: 0, right: 0, textAlign: 'center', fontSize: '30px' });
+    introLayer.append(introBar, introTag);
+
+    // ---- Wordmark-lager (intro → badge) ----
+    const wmLayer = U.el('div', 'wm-layer');
+    const wm = U.wordmark(INTRO_WM, brand);
+    wmLayer.appendChild(wm);
+    stage.appendChild(wmLayer);
+    const badge = U.el('div', 'badge');
+    const badgeSep = U.el('div', 'sep');
+    const badgeEp = U.el('div', 'ep', `${brand.seriesLabel} ${String(clip.episode).padStart(2, '0')}`);
+    badge.append(badgeSep, badgeEp);
+    stage.appendChild(badge);
+    const geo = { wmW: 0, wmH: 0, x0: 0, y0: 0, scale: BADGE.size / INTRO_WM };
+    const layout = () => {
+      wmLayer.style.transform = 'none';
+      geo.wmW = wm.offsetWidth; geo.wmH = wm.offsetHeight;
+      geo.x0 = (W - geo.wmW) / 2; geo.y0 = H / 2 - geo.wmH / 2 - 60;
+      introBar.style.top = geo.y0 + geo.wmH + 28 + 'px';
+      introTag.style.top = geo.y0 + geo.wmH + 66 + 'px';
+      const smallH = geo.wmH * geo.scale, smallW = geo.wmW * geo.scale;
+      badge.style.left = BADGE.left + smallW + 18 + 'px';
+      badge.style.top = BADGE.top + (smallH - 26) / 2 + 'px';
+    };
+    layout();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+
+    // ---- HOOK ----
+    const hookWrap = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' });
+    const hookIcon = U.css(U.el('div', 'icon-circle', LUP.icon(clip.icon)), { width: '180px', height: '180px', marginBottom: '56px' });
+    const hookText = U.el('div', 'hook-text');
+    const hookWords = U.words(hookText, clip.hook.text);
+    const hookSub = U.el('div', 'hook-sub', clip.hook.sub || '');
+    hookWrap.append(hookIcon, hookText, hookSub); P.hook.appendChild(hookWrap);
+
+    // ---- HERO (delas av problem + lösning) ----
+    const scene = (clip.scene && LUP.scenes && LUP.scenes[clip.scene]) || null;
+    const hero = U.css(U.el('div', 'hero'), { top: HERO.top + 'px', left: HERO.left + 'px', width: HERO.width + 'px', height: HERO.height + 'px', right: 'auto', opacity: 0, visibility: 'hidden' });
+    stage.appendChild(hero);
+    const heroSeek = scene ? scene.mount(hero, clip, brand) : null;
+    if (!heroSeek) hero.remove();
+    const hasHero = !!heroSeek;
+
+    // ---- PROBLEM ----
+    const probTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', right: '72px', top: '170px' });
+    U.words(probTitle, clip.problem.title, 'w');
+    const probTitleWords = [...probTitle.querySelectorAll('.w')];
+    const probChips = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: hasHero ? '850px' : '480px', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'flex-start' });
+    const chipEls = (clip.problem.pains || []).map((txt) => {
+      const c = U.el('div', 'chip');
+      c.appendChild(U.el('span', 'dot', LUP.icon('warning')));
+      c.appendChild(U.el('span', null, txt));
+      probChips.appendChild(c); return c;
+    });
+    P.problem.append(probTitle, probChips);
+
+    // ---- LÖSNING ----
+    const solTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', right: '72px', top: '170px' });
+    U.words(solTitle, clip.solution.title, 'w');
+    const solTitleWords = [...solTitle.querySelectorAll('.w')];
+    const flowTop = hasHero ? 800 : 520;
+    const flow = U.css(U.el('div', 'flow'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 'px' });
+    const flowGhost = U.el('div', 'flow-line ghost');
+    const flowLine = U.el('div', 'flow-line');
+    flow.append(flowGhost, flowLine);
+    const stepEls = clip.solution.steps.map((s, i) => {
+      const st = U.el('div', 'card step');
+      st.appendChild(U.el('div', 'num', String(i + 1)));
+      st.appendChild(U.el('div', 'ico', LUP.icon(s.icon)));
+      st.appendChild(U.el('div', 'label', s.label));
+      st.appendChild(U.el('div', 'sub', s.sub || ''));
+      flow.appendChild(st); return st;
+    });
+    const kicker = U.css(U.el('div', 'kicker'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 316 + 'px', textAlign: 'center' });
+    kicker.innerHTML = (clip.solution.kicker || '').replace(/\*(.+?)\*/g, '<em>$1</em>');
+    P.solution.append(solTitle, flow, kicker);
+
+    // ---- OUTRO (identisk varje gång) ----
+    const outWrap = U.css(U.el('div'), { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '26px' });
+    const outWm = U.wordmark(120, brand);
+    const outTag = U.el('div', 'tagline', brand.tagline); outTag.style.fontSize = '26px';
+    const outCta = U.css(U.el('div', 'cta-pill', `<span>${brand.cta.label}</span>${LUP.icon('arrow')}`), { marginTop: '34px' });
+    const outUrl = U.el('div', 'url', brand.cta.url);
+    const outCo = U.css(U.el('div', 'company', brand.company), { position: 'absolute', bottom: '72px', left: 0, right: 0, textAlign: 'center' });
+    outWrap.append(outWm, outTag, outCta, outUrl); P.outro.append(outWrap, outCo);
+
+    // ---- Undertexter (valfritt) ----
+    let cueList = null, cueBox = null, cueEl = null;
+    if (opts.captions && LUP.captions) {
+      cueList = LUP.captions.cues(brand, clip);
+      cueBox = U.el('div', 'captions'); cueEl = U.el('div', 'cue', '');
+      cueBox.appendChild(cueEl); stage.appendChild(cueBox);
+    }
+
+    // ---- Per-frame ----
+    // Faserna överlappar med LAP sekunder så att nästa fas börjar tona in innan den förra är helt borta (inget tomt hål).
+    const LAP = 0.2;
+    const setPhase = (ph, name, t) => {
+      const s = starts[name] - (name === 'intro' ? 0 : LAP), e = starts[name] + T[name];
+      const v = U.window(t, s, e, IN, OUT);
+      const vis = t >= s && t < e + 0.001;
+      ph.style.visibility = vis ? 'visible' : 'hidden';
+      ph.style.opacity = vis ? v : 0;
+      ph.style.transform = `translateY(${(1 - U.prog(t, s, IN, U.easeOut)) * 30}px)`;
+      return vis ? t - starts[name] : null; // l kan vara svagt negativt under överlappet; prog() klampar till 0
+    };
+
+    function seek(frame) {
+      LUP._lastFrame = frame;
+      const t = frame / fps;
+      blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
+      blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
+      blobs[2].style.transform = `translate(${Math.sin(t * 0.3) * 18}px, ${Math.cos(t * 0.26) * 16}px)`;
+
+      // Wordmark: byggs upp, morfar till badge-position, tonar ut vid outro
+      U.animateWordmark(wm, t, 0.15, 0.06, 0.5);
+      const m = U.prog(t, T.intro - 0.55, 0.7, U.easeInOut);
+      const sc = U.lerp(1, geo.scale, m);
+      wmLayer.style.transform = `translate(${U.lerp(geo.x0, BADGE.left, m)}px, ${U.lerp(geo.y0, BADGE.top, m)}px) scale(${sc})`;
+      wmLayer.style.opacity = 1 - U.prog(t, starts.outro - 0.3, 0.3);
+      // Badge-sep + avsnitt: in när morfen landat
+      const bp = U.prog(t, T.intro + 0.05, 0.4, U.easeOut);
+      badge.style.opacity = Math.min(bp, 1 - U.prog(t, starts.outro - 0.3, 0.3));
+      badge.style.transform = `translateX(${(1 - bp) * -16}px)`;
+
+      // INTRO (bar + tagline)
+      let l = setPhase(introLayer, 'intro', t);
+      if (l !== null) {
+        const barP = U.prog(l, 0.8, 0.45, U.easeInOut);
+        introBar.style.transform = `scaleX(${barP})`;
+        const outP = U.prog(l, T.intro - 0.6, 0.3, U.easeIn);
+        introBar.style.opacity = (barP > 0 ? 1 : 0) * (1 - outP);
+        U.enter(introTag, U.prog(l, 0.95, 0.45, U.easeOut), { dy: 14 });
+        introTag.style.opacity = U.prog(l, 0.95, 0.45) * (1 - outP);
+      }
+
+      // HOOK
+      l = setPhase(P.hook, 'hook', t);
+      if (l !== null) {
+        U.enter(hookIcon, U.prog(l, 0.1, 0.6, U.back), { dy: 0, scale: 0.4 });
+        hookWords.forEach((w, i) => U.enter(w, U.prog(l, 0.3 + i * 0.09, 0.5, U.easeOut), { dy: 40 }));
+        U.enter(hookSub, U.prog(l, 0.3 + hookWords.length * 0.09 + 0.25, 0.5, U.easeOut), { dy: 18 });
+      }
+
+      // HERO (problem + lösning, samma kamera)
+      if (hasHero) {
+        const hs = starts.problem - LAP, he = starts.solution + T.solution;
+        const vis = t >= hs && t < he;
+        hero.style.visibility = vis ? 'visible' : 'hidden';
+        hero.style.opacity = U.window(t, hs, he, IN, OUT);
+        hero.style.transform = `translateY(${(1 - U.prog(t, hs, IN, U.easeOut)) * 30}px)`;
+        if (vis) {
+          const inSol = t >= starts.solution;
+          heroSeek({
+            t: t - starts.problem,                       // sek sedan problemfasen började (svagt negativt under intoningen)
+            phase: inSol ? 'solution' : 'problem',
+            l: inSol ? t - starts.solution : t - starts.problem, // sek in i aktuell fas
+            p: U.prog(t, starts.solution - 0.1, 0.9, U.easeInOut), // 0 = problem (grått), 1 = lösning (sky)
+            P: T.problem, S: T.solution,
+          });
+        }
+      }
+
+      // PROBLEM
+      l = setPhase(P.problem, 'problem', t);
+      if (l !== null) {
+        probTitleWords.forEach((w, i) => U.enter(w, U.prog(l, 0.1 + i * 0.06, 0.45, U.easeOut), { dy: 24 }));
+        const chipStart = hasHero ? 1.5 : 0.8;
+        chipEls.forEach((c, i) => U.enter(c, U.prog(l, chipStart + i * 0.35, 0.5, U.back), { dy: 0, dx: -40, scale: 0.9 }));
+      }
+
+      // LÖSNING
+      l = setPhase(P.solution, 'solution', t);
+      if (l !== null) {
+        solTitleWords.forEach((w, i) => U.enter(w, U.prog(l, 0.1 + i * 0.06, 0.45, U.easeOut), { dy: 24 }));
+        const f0 = hasHero ? 1.2 : 0.6;
+        flowGhost.style.opacity = U.prog(l, f0, 0.3);
+        flowLine.style.transform = `scaleX(${U.prog(l, f0 + 0.2, 1.2, U.easeInOut)})`;
+        stepEls.forEach((s, i) => U.enter(s, U.prog(l, f0 + 0.25 + i * 0.45, 0.6, U.back), { dy: 36, scale: 0.92 }));
+        U.enter(kicker, U.prog(l, f0 + 1.9, 0.6, U.easeOut), { dy: 22 });
+      }
+
+      // OUTRO
+      l = setPhase(P.outro, 'outro', t);
+      if (l !== null) {
+        U.animateWordmark(outWm, l, 0.1, 0.045, 0.5);
+        U.enter(outTag, U.prog(l, 0.6, 0.45, U.easeOut), { dy: 14 });
+        U.enter(outCta, U.prog(l, 0.95, 0.6, U.back), { dy: 0, scale: 0.7 });
+        U.enter(outUrl, U.prog(l, 1.3, 0.45, U.easeOut), { dy: 14 });
+        U.enter(outCo, U.prog(l, 1.6, 0.5, U.easeOut), { dy: 10 });
+      }
+
+      // UNDERTEXTER
+      if (cueList) {
+        const c = cueList.find((q) => t >= q.start && t < q.end);
+        if (c) { if (cueEl.textContent !== c.text) cueEl.textContent = c.text; cueBox.style.opacity = Math.min(U.prog(t, c.start, 0.15), 1 - U.prog(t, c.end - 0.15, 0.15)); }
+        else cueBox.style.opacity = 0;
+      }
+    }
+
+    LUP.timeline = { starts, durations: T, total, fps, frames: Math.round(total * fps) };
+    window.__seek = seek;
+    window.__setRenderMode = () => document.body.classList.add('render');
+    seek(0);
+    return LUP.timeline;
+  };
+})();
+</script>
+<script>/* Scen: Språkförbistring → instruktioner på chaufförens språk.
+   Samma kamera: telefon i mitten, pratbubbla från siten till vänster, från chauffören till höger. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util, Y = LUP.yard;
+  LUP.scenes = LUP.scenes || {};
+
+  LUP.scenes['sprak'] = {
+    mount(root) {
+      const svg = Y.svg(root);
+      const site = Y.bubble(svg, { x: 24, y: 70, w: 330, h: 90, text: 'Kör till port 4', side: 'right', fontSize: 28 });
+      const driver = Y.bubble(svg, { x: 582, y: 190, w: 330, h: 90, text: '???', side: 'left', fontSize: 30 });
+      const phone = Y.phone(svg, { x: 393, y: 40 });
+      // skärm (problem)
+      const noChat = Y.icon(phone.screen, { name: 'chat', x: 61, y: 70, size: 60 });
+      const noQ = Y.qmark(phone.screen, { x: 61, y: 150, size: 64 });
+      // skärm (lösning)
+      const lang = Y.pill(phone.screen, { x: 8, y: 6, text: 'PL', icon: 'globe', fontSize: 20, h: 38, w: 106 });
+      const l1 = Y.label(phone.screen, { x: 61, y: 90, text: 'Jedź do', size: 24, weight: 700, anchor: 'middle' });
+      const l2 = Y.label(phone.screen, { x: 61, y: 122, text: 'bramy 4', size: 24, weight: 700, anchor: 'middle' });
+      const ok = Y.check(phone.screen, { x: 61, y: 176, r: 22 });
+      const floats = [0, 1, 2].map(() => Y.qmark(svg, { size: 44 }));
+      const langs = ['PL', 'RO', 'LT', 'DE', 'UA'].map((c, i) => Y.pill(svg, { x: 130 + i * 140, y: 338, text: c, icon: 'globe', fontSize: 22, h: 46, w: 112 }));
+      const checks = langs.map((pl) => Y.check(svg, { x: pl.s.x + 100, y: pl.s.y + 2, r: 13 }));
+      return (s) => {
+        const { t, p } = s;
+        site.fadeIn(t, 0.2); site.toneStyle(p); site.style({ fg: U.mix(Y.C.muted, Y.C.heading, p) });
+        driver.fadeIn(t, 0.9); driver.swap(p, '???', 'OK ✓'); driver.toneStyle(p);
+        phone.pop(t, 0.5); phone.tone(p);
+        noChat.set({ opacity: 1 - p }); noQ.set({ opacity: (1 - p) * (0.6 + 0.4 * Math.abs(Math.sin(t * 3))), scale: 1 + Math.sin(t * 3) * 0.06 });
+        lang.set({ opacity: p }).toneStyle(1); lang.style({ fg: Y.C.accent });
+        [l1, l2].forEach((L, i) => { const q = U.prog(s.l, 0.3 + i * 0.2, 0.4, U.easeOut) * p; L.set({ opacity: q, y: (i ? 122 : 90) + (1 - q) * 8 }); });
+        ok.pop(s.phase === 'solution' ? s.l : -1, 0.9); ok.set({ opacity: Math.min(ok.s.opacity, p) });
+        floats.forEach((q, i) => { const lf = ((t - 1.3 - i * 0.5) % 1.8 + 1.8) % 1.8; const on = t > 1.3 + i * 0.5; q.set({ x: 700 + i * 50, y: 180 - lf * 60, opacity: on ? (1 - lf / 1.8) * (1 - p) : 0, scale: 0.8 + lf * 0.3 }); });
+        langs.forEach((pl, i) => { pl.fadeIn(t, 1.6 + i * 0.15); pl.toneStyle(p); const c = checks[i]; c.pop(s.phase === 'solution' ? s.l : -1, 0.5 + i * 0.12); });
+      };
+    },
+  };
+})();
+</script>
+<script>
+(function(){
+  const brand = {"company":"LUP Technologies","product":"LUPNUMBER","wordmark":{"accent":"LUP","heading":"NUMBER"},"tagline":"Molnbaserad yard management","seriesLabel":"KLIPP","cta":{"label":"Boka en demo","url":"lupnumber.com"},"format":{"width":1080,"height":1350,"fps":30},"timeline":{"intro":2,"hook":3,"problem":4.5,"solution":6.5,"outro":3.5},"voiceoverMaxWords":45,"captions":{"maxWordsPerCue":7,"minCueSeconds":0.9}};
+  const clip = {"slug":"03-sprakforbistring","episode":3,"title":"Språkförbistring med chaufförer","scene":"sprak","icon":"globe","hook":{"text":"Kör till port fyra.\nEller?","sub":"Fem språk vid grinden."},"problem":{"title":"Instruktioner som\ninte går fram.","pains":["Pekande och gissande","Fel port, fel lastning","Säkerhetsregler på svenska"]},"solution":{"title":"Med LUPNUMBER förstår alla.","steps":[{"icon":"globe","label":"Välj språk","sub":"I mobilen"},{"icon":"chat","label":"Få instruktioner","sub":"På sitt språk"},{"icon":"check","label":"Kvittera","sub":"Och kör"}],"kicker":"Noll *missförstånd.*"},"voiceover":{"hook":"Kör till port fyra. Eller?","problem":"Fem språk vid grinden och instruktioner som inte går fram. Fel port, fel lastning.","solution":"Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart.","outro":"Boka en demo på lupnumber.com."}};
+  const tl = LUP.init(brand, clip, {"captions":false});
+  // Preview-kontroller (döljs i render-läge)
+  const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
+  scrub.max = tl.frames - 1;
+  let frame = 0, playing = false, t0 = 0, f0 = 0;
+  const show = (f) => { frame = Math.max(0, Math.min(tl.frames - 1, Math.round(f))); window.__seek(frame); scrub.value = frame; time.textContent = (frame / tl.fps).toFixed(2) + ' s · frame ' + frame; };
+  scrub.addEventListener('input', () => { playing = false; play.textContent = 'Spela'; show(+scrub.value); });
+  play.addEventListener('click', () => { playing = !playing; play.textContent = playing ? 'Paus' : 'Spela'; t0 = performance.now(); f0 = frame >= tl.frames - 1 ? 0 : frame; });
+  const loop = (now) => { if (playing) { const f = f0 + (now - t0) / 1000 * tl.fps; if (f >= tl.frames) { playing = false; play.textContent = 'Spela'; show(tl.frames - 1); } else show(f); } requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+  const fit = () => { if (document.body.classList.contains('render')) return; const s = Math.min(window.innerWidth / 1080, (window.innerHeight - 60) / 1350); document.querySelector('.viewport').style.transform = 'scale(' + s + ')'; };
+  window.addEventListener('resize', fit); fit();
+  document.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); play.click(); } if (e.key === 'ArrowRight') show(frame + 1); if (e.key === 'ArrowLeft') show(frame - 1); });
+  show(0);
+})();
+</script>
+</body></html>

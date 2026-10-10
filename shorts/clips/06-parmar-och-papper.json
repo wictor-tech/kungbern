@@ -1,0 +1,27 @@
+{
+  "slug": "06-parmar-och-papper",
+  "episode": 6,
+  "title": "Pärmar och papperslogg",
+  "scene": "papper",
+  "icon": "search",
+  "hook": { "text": "Vem var här\ni tisdags?", "sub": "Pärmen vet. Kanske." },
+  "problem": {
+    "title": "Besöksliggare,\nblock och pärmar.",
+    "pains": ["Oläsliga rader", "Timmar att leta", "Noll statistik"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER finns svaret.",
+    "steps": [
+      { "icon": "phone", "label": "Checka in", "sub": "Digitalt" },
+      { "icon": "list", "label": "Loggas", "sub": "Automatiskt" },
+      { "icon": "search", "label": "Sök", "sub": "På sekunder" }
+    ],
+    "kicker": "Allt *spårbart.*"
+  },
+  "voiceover": {
+    "hook": "Vem var här i tisdags?",
+    "problem": "Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande.",
+    "solution": "Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}

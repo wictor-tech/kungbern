@@ -1,0 +1,27 @@
+{
+  "slug": "09-larmet-gar",
+  "episode": 9,
+  "title": "Larmet går – är alla ute?",
+  "scene": "utrymning",
+  "icon": "bell",
+  "hook": { "text": "Larmet går.\nÄr alla ute?", "sub": "Listan ligger i vakten." },
+  "problem": {
+    "title": "Vem är kvar\npå området?",
+    "pains": ["Pappersliggare vid grinden", "Okända på området", "Minuter som räknas"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER vet du vilka.",
+    "steps": [
+      { "icon": "users", "label": "Incheckade", "sub": "I realtid" },
+      { "icon": "bell", "label": "Larma", "sub": "Alla på siten" },
+      { "icon": "check", "label": "Räkna in", "sub": "Vid samlingsplats" }
+    ],
+    "kicker": "Alla *räknade.*"
+  },
+  "voiceover": {
+    "hook": "Larmet går. Är alla ute?",
+    "problem": "Listan ligger i vakten, chaufförerna är inte med på den, och minuterna räknas.",
+    "solution": "Med LUPNUMBER vet du exakt vilka som är på området, kan larma alla direkt och räkna in vid samlingsplatsen.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}

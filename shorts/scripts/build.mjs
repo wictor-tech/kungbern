@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Bygger ett klipp: preview.html + MANUS.md + undertexter.srt + poster.jpg + <slug>.mp4
-// Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--square]
+// Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--captions]
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -12,10 +12,10 @@ const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? (args.splice(i, 1), true) : false; };
 const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 2)[1] : null; };
 const noVideo = flag('--no-video');
-const square = flag('--square');
+const withCaptions = flag('--captions');
 const audio = opt('--audio');
 const target = args[0];
-if (!target) { console.error('Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--square]'); process.exit(1); }
+if (!target) { console.error('Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--captions]'); process.exit(1); }
 
 const require = createRequire(import.meta.url);
 function loadPlaywright() {
@@ -28,7 +28,7 @@ async function renderVideo(brand, clip, html, outDir) {
   const { chromium } = loadPlaywright();
   const { width, height, fps } = brand.format;
   const htmlPath = join(outDir, 'preview.html');
-  const mp4 = join(outDir, `${clip.slug}.mp4`);
+  const mp4 = join(outDir, `${clip.slug}${withCaptions ? '-undertextad' : ''}.mp4`);
   const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu', '--font-render-hinting=none', '--hide-scrollbars'] });
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   await page.goto(pathToFileURL(htmlPath).href);
@@ -38,6 +38,7 @@ async function renderVideo(brand, clip, html, outDir) {
   const cdp = await page.context().newCDPSession(page);
 
   const ffArgs = ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-'];
+  // mp4-namn: <slug>.mp4, eller <slug>-undertextad.mp4 med inbrända undertexter
   if (audio) ffArgs.push('-i', audio);
   ffArgs.push('-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', '-r', String(fps), '-movflags', '+faststart');
   if (audio) ffArgs.push('-af', 'apad', '-shortest', '-c:a', 'aac', '-b:a', '160k');
@@ -67,11 +68,10 @@ const LUPposter = (b) => b.timeline.intro + b.timeline.hook + b.timeline.problem
 
 async function build(slug) {
   const brand = loadBrand();
-  if (square) { brand.format = { ...brand.format, height: brand.format.width }; }
   const clip = loadClip(slug);
   const outDir = join(OUT_DIR, clip.slug);
   mkdirSync(outDir, { recursive: true });
-  const html = bundleHtml(brand, clip);
+  const html = bundleHtml(brand, clip, { captions: withCaptions });
   writeFileSync(join(outDir, 'preview.html'), html);
   writeFileSync(join(outDir, 'MANUS.md'), manusMarkdown(brand, clip));
   writeFileSync(join(outDir, 'undertexter.srt'), srt(brand, clip));

@@ -1,4 +1,9 @@
 /* LUPNUMBER – LÅSTA varumärkestokens. Ändra inte per klipp. */
+/* Inter levereras med repot (OFL) så att alla klipp renderas med exakt samma typsnitt. __FONTS__ byts ut av build. */
+@font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("__FONTS__/Inter-Medium.otf") format("opentype"), local("Inter Medium"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; src: url("__FONTS__/Inter-SemiBold.otf") format("opentype"), local("Inter SemiBold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("__FONTS__/Inter-Bold.otf") format("opentype"), local("Inter Bold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 800; font-style: normal; src: url("__FONTS__/Inter-ExtraBold.otf") format("opentype"), local("Inter ExtraBold"), local("Inter"); }
 :root {
   --bg: #F5FAFE;
   --card: #FFFFFF;
@@ -46,11 +51,11 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
 .tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
 
-/* ---- Episode badge (top) ---- */
-.badge { position: absolute; left: 72px; top: 64px; display: flex; align-items: center; gap: 18px; }
-.badge .wordmark { font-size: 34px; }
+/* ---- Episode badge (top). Wordmarken morfar hit från intron, sep + ep positioneras i shell.js ---- */
+.badge { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 18px; }
 .badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
 .badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; }
+.wm-layer { position: absolute; left: 0; top: 0; transform-origin: top left; }
 
 /* ---- Typography ---- */
 .hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
@@ -95,6 +100,10 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .hero-dash { stroke: #fff; stroke-width: 4; stroke-dasharray: 26 22; }
 .hero-muted { color: var(--muted); }
 .hero-accent { color: var(--accent); }
+
+/* ---- Inbrända undertexter (valfritt, --captions) ---- */
+.captions { position: absolute; left: 72px; right: 72px; top: 1196px; display: flex; justify-content: center; pointer-events: none; }
+.captions .cue { background: rgba(255,255,255,0.92); border: 2px solid var(--border); border-radius: 20px; padding: 14px 28px; color: var(--heading); font-weight: 700; font-size: 31px; line-height: 1.25; text-align: center; max-width: 936px; box-shadow: var(--shadow); }
 
 /* ---- Preview-kontroller (döljs vid rendering) ---- */
 .controls { font: 14px/1.4 var(--font); color: #cbd5e1; display: flex; gap: 12px; align-items: center; padding: 12px 16px; }

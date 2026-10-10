@@ -1,13 +1,15 @@
 // Gemensamma hjälpfunktioner: läsa brand/klipp, bundla preview.html, generera MANUS.md + SRT.
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const BRAND_DIR = join(ROOT, 'brand');
 export const CLIPS_DIR = join(ROOT, 'clips');
 export const SCENES_DIR = join(ROOT, 'scenes');
 export const OUT_DIR = join(ROOT, 'out');
+export const captions = createRequire(import.meta.url)(join(BRAND_DIR, 'captions.js'));
 
 export const loadBrand = () => JSON.parse(readFileSync(join(BRAND_DIR, 'brand.json'), 'utf8'));
 export const listClips = () => readdirSync(CLIPS_DIR).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')).sort();
@@ -36,17 +38,13 @@ export function validateClip(clip) {
 export const wordCount = (s) => (s.trim().match(/\S+/g) || []).length;
 export const voWords = (clip) => wordCount(Object.values(clip.voiceover).join(' '));
 
-export function phases(brand) {
-  const T = brand.timeline; const out = []; let t = 0;
-  for (const k of ['intro', 'hook', 'problem', 'solution', 'outro']) { out.push({ key: k, start: t, end: t + T[k] }); t += T[k]; }
-  return { list: out, total: t };
-}
+export const phases = (brand) => captions.phases(brand);
 
 // En fil som funkar via file:// utan server: brand.css + motor + ikoner + mall + scen + klipp inlinade.
-export function bundleHtml(brand, clip) {
+export function bundleHtml(brand, clip, opts = {}) {
   const read = (p) => readFileSync(p, 'utf8');
-  const css = read(join(BRAND_DIR, 'brand.css'));
-  const js = ['engine.js', 'icons.js', 'shell.js'].map((f) => read(join(BRAND_DIR, f))).join('\n');
+  const css = read(join(BRAND_DIR, 'brand.css')).replaceAll('__FONTS__', pathToFileURL(join(BRAND_DIR, 'fonts')).href);
+  const js = ['engine.js', 'icons.js', 'captions.js', 'yard.js', 'shell.js'].map((f) => read(join(BRAND_DIR, f))).join('\n');
   const scene = clip.scene ? read(join(SCENES_DIR, clip.scene + '.js')) : '';
   const { width, height } = brand.format;
   return `<!doctype html>
@@ -68,7 +66,7 @@ export function bundleHtml(brand, clip) {
 (function(){
   const brand = ${JSON.stringify(brand)};
   const clip = ${JSON.stringify(clip)};
-  const tl = LUP.init(brand, clip);
+  const tl = LUP.init(brand, clip, ${JSON.stringify({ captions: !!opts.captions })});
   // Preview-kontroller (döljs i render-läge)
   const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
   scrub.max = tl.frames - 1;
@@ -91,8 +89,7 @@ const fmt = (s) => { const m = Math.floor(s / 60), sec = s - m * 60; return `${m
 const srtTime = (s) => { const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = Math.floor(s % 60), ms = Math.round((s - Math.floor(s)) * 1000); return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},${String(ms).padStart(3, '0')}`; };
 
 export function manusMarkdown(brand, clip) {
-  const { list, total } = phases(brand);
-  const P = Object.fromEntries(list.map((p) => [p.key, p]));
+  const { list, total, byKey: P } = phases(brand);
   const nl = (s) => s.replace(/\n/g, ' / ');
   const words = voWords(clip);
   const maxW = brand.voiceoverMaxWords;
@@ -129,14 +126,10 @@ ${['hook', 'problem', 'solution', 'outro'].map((k) => `- **${k[0].toUpperCase() 
 - [ ] Rätt avsnittsnummer i badge (${brand.seriesLabel} ${String(clip.episode).padStart(2, '0')})
 - [ ] "vid grinden", inte "i grinden"
 - [ ] Voiceover ≤ ${maxW} ord och hinner läsas i tempo (~2,3 ord/s)
-- [ ] Undertexter: \`undertexter.srt\` ligger bredvid videon
+- [ ] Undertexter: \`undertexter.srt\` ligger bredvid videon (eller rendera med \`--captions\` för inbrända)
 `;
 }
 
 export function srt(brand, clip) {
-  const { list } = phases(brand);
-  const P = Object.fromEntries(list.map((p) => [p.key, p]));
-  return ['hook', 'problem', 'solution', 'outro']
-    .map((k, i) => `${i + 1}\n${srtTime(P[k].start + 0.3)} --> ${srtTime(P[k].end - 0.2)}\n${clip.voiceover[k]}\n`)
-    .join('\n');
+  return captions.cues(brand, clip).map((c, i) => `${i + 1}\n${srtTime(c.start)} --> ${srtTime(c.end)}\n${c.text}\n`).join('\n');
 }

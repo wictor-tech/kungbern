@@ -1,0 +1,27 @@
+{
+  "slug": "05-fel-port",
+  "episode": 5,
+  "title": "Chauffören hittar inte rätt port",
+  "scene": "hitta-ratt",
+  "icon": "map",
+  "hook": { "text": "Fel port.\nIgen.", "sub": "Tredje gången idag." },
+  "problem": {
+    "title": "Chauffören letar.\nTruckarna väntar.",
+    "pains": ["Rundor på området", "Backning i trängsel", "Lastningen står still"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER hittar alla rätt.",
+    "steps": [
+      { "icon": "phone", "label": "Checka in", "sub": "Vid grinden" },
+      { "icon": "map", "label": "Få vägen", "sub": "Till rätt port" },
+      { "icon": "check", "label": "Lasta", "sub": "Direkt" }
+    ],
+    "kicker": "Rätt port. *Första gången.*"
+  },
+  "voiceover": {
+    "hook": "Fel port. Igen.",
+    "problem": "Chauffören letar, truckarna väntar och trängseln på området ökar.",
+    "solution": "Med LUPNUMBER får chauffören vägen till rätt port i mobilen redan vid incheckningen. Lastningen kan börja direkt.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}

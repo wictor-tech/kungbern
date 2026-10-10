@@ -1,0 +1,27 @@
+{
+  "slug": "08-telefonen-i-vakten",
+  "episode": 8,
+  "title": "Telefonen i vakten ringer hela dagen",
+  "scene": "telefon",
+  "icon": "handset",
+  "hook": { "text": "Telefonen i vakten.\nIgen.", "sub": "Var ska jag? Vilken port?" },
+  "problem": {
+    "title": "Samma frågor.\nHela dagen.",
+    "pains": ["Tolv missade samtal", "Chaufförer som gissar", "Vakten hinner inget annat"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER får alla besked.",
+    "steps": [
+      { "icon": "phone", "label": "Checka in", "sub": "Vid grinden" },
+      { "icon": "bell", "label": "Få besked", "sub": "Direkt i mobilen" },
+      { "icon": "gate", "label": "Kör fram", "sub": "Till rätt port" }
+    ],
+    "kicker": "Tyst i *vakten.*"
+  },
+  "voiceover": {
+    "hook": "Telefonen i vakten. Igen.",
+    "problem": "Var ska jag? Är det min tur? Samma frågor hela dagen, tolv missade samtal.",
+    "solution": "Med LUPNUMBER får chauffören besked direkt i mobilen: när det är dags och vilken port. Vakten kan göra annat.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}
