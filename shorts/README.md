@@ -164,6 +164,10 @@ npm run verify                            # ffprobe på alla mp4 → tabell i QU
 
 Ljudet är en **prototyp**: `audio/synth.py` syntetiserar originalmusik och ljudeffekter (inga licenser), mixar efter filmens händelser och normaliserar till −16 LUFS. Ingen röst finns i miljön; speakertexterna på svenska och engelska ligger tidkodade i `MANUS.md`. Kvalitetsrapporten med granskning, red team och verifierade filer: [`QUALITY.md`](QUALITY.md).
 
+## Manus: "This is Sten." (`manus/this-is-sten.md`)
+
+Komplett produktionsmanus för en 60-sekunders komisk film med deadpan-speaker: kreativ analys, 14 scener med bild, kamera, speaker, text, ljud, humor och övergång, speakertext för inläsning, storyboard, tre alternativa slut och en Creative Director-granskning. Bygger på samma anläggning som hero-filmen och kan produceras i pipelinen när en karaktärsrigg för Sten finns.
+
 ## Flödesfilm: idag överst, med LUPNUMBER nederst
 
 `films/<slug>.json` listar steg i sitens flöde. Varje steg pekar på ett klipp (scenen hämtas därifrån) och har en rad för "idag" och en för "med LUPNUMBER", egen längd (`duration`) och voiceover.
