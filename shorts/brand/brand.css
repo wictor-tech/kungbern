@@ -1,0 +1,104 @@
+/* LUPNUMBER – LÅSTA varumärkestokens. Ändra inte per klipp. */
+:root {
+  --bg: #F5FAFE;
+  --card: #FFFFFF;
+  --border: #BAE6FD;
+  --accent: #0EA5E9;
+  --heading: #0C4A6E;
+  --text: #334155;
+  --muted: #64748B;
+  --tint-1: #E0F2FE;
+  --tint-2: #F0F9FF;
+  --tint-3: #ECFDF5;
+  --font: "Inter", "Inter Display", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --radius: 28px;
+  --radius-sm: 18px;
+  --shadow: 0 18px 40px rgba(14, 165, 233, 0.10), 0 2px 6px rgba(12, 74, 110, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #0b1220; font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+/* ---- Stage ---- */
+.stage {
+  position: relative;
+  width: 1080px; height: 1350px;
+  background: var(--bg);
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--text);
+}
+.stage * { will-change: transform, opacity; }
+
+.blob { position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
+.blob-1 { width: 820px; height: 820px; left: -300px; top: -260px; background: radial-gradient(circle, var(--tint-1) 0%, rgba(224,242,254,0) 70%); }
+.blob-2 { width: 760px; height: 760px; right: -300px; bottom: -220px; background: radial-gradient(circle, var(--tint-3) 0%, rgba(236,253,245,0) 70%); }
+.blob-3 { width: 520px; height: 520px; right: -120px; top: 180px; background: radial-gradient(circle, var(--tint-2) 0%, rgba(240,249,255,0) 70%); }
+
+.phase { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+
+/* ---- Wordmark ---- */
+.wordmark { display: inline-flex; align-items: baseline; font-weight: 800; letter-spacing: -0.04em; line-height: 1; white-space: nowrap; }
+.wordmark .wm-lup { color: var(--accent); }
+.wordmark .wm-number { color: var(--heading); }
+.wordmark i { display: inline-block; font-style: normal; }
+.wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+
+/* ---- Episode badge (top) ---- */
+.badge { position: absolute; left: 72px; top: 64px; display: flex; align-items: center; gap: 18px; }
+.badge .wordmark { font-size: 34px; }
+.badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
+.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; }
+
+/* ---- Typography ---- */
+.hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
+.hook-text .w { display: inline-block; }
+.hook-sub { color: var(--muted); font-weight: 600; font-size: 34px; text-align: center; margin-top: 28px; }
+.h1 { color: var(--heading); font-weight: 800; font-size: 58px; line-height: 1.08; letter-spacing: -0.03em; }
+.lead { color: var(--text); font-weight: 500; font-size: 30px; line-height: 1.35; }
+.kicker { color: var(--heading); font-weight: 800; font-size: 54px; letter-spacing: -0.03em; line-height: 1.1; }
+.kicker em { font-style: normal; color: var(--accent); }
+
+/* ---- Icon circle ---- */
+.icon-circle { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--card); border: 3px solid var(--border); color: var(--accent); box-shadow: var(--shadow); }
+.icon-circle svg { width: 52%; height: 52%; }
+
+/* ---- Cards ---- */
+.card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.chip { display: inline-flex; align-items: center; gap: 16px; background: var(--card); border: 2px solid var(--border); border-radius: 999px; padding: 18px 30px 18px 20px; color: var(--text); font-weight: 600; font-size: 29px; white-space: nowrap; }
+.chip .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--tint-1); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: 0 0 auto; }
+.chip .dot svg { width: 24px; height: 24px; }
+
+/* ---- Flow: numrerade accent-cirklar + linje + kort ---- */
+.flow { position: relative; display: flex; gap: 24px; align-items: stretch; }
+.flow-line { position: absolute; left: 148px; right: 148px; top: 0; height: 6px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.flow-line.ghost { background: var(--border); }
+.step { position: relative; flex: 1 1 0; padding: 68px 24px 34px; text-align: center; }
+.step .num { position: absolute; left: 50%; top: 0; width: 64px; height: 64px; margin-left: -32px; margin-top: -32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(14,165,233,0.35); }
+.step .ico { color: var(--accent); height: 72px; display: flex; align-items: center; justify-content: center; }
+.step .ico svg { width: 64px; height: 64px; }
+.step .label { color: var(--heading); font-weight: 800; font-size: 32px; letter-spacing: -0.02em; margin-top: 10px; line-height: 1.1; }
+.step .sub { color: var(--muted); font-weight: 600; font-size: 22px; margin-top: 8px; }
+
+/* ---- CTA ---- */
+.cta-pill { display: inline-flex; align-items: center; gap: 18px; background: var(--accent); color: #fff; font-weight: 800; font-size: 40px; padding: 28px 56px; border-radius: 999px; box-shadow: 0 22px 44px rgba(14,165,233,0.35); }
+.cta-pill svg { width: 40px; height: 40px; }
+.url { color: var(--heading); font-weight: 700; font-size: 36px; letter-spacing: -0.01em; }
+.company { color: var(--muted); font-weight: 600; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ---- Hero (scenvisuals) ---- */
+.hero { position: absolute; left: 72px; right: 72px; }
+.hero svg { overflow: visible; }
+.hero-road { fill: var(--border); }
+.hero-dash { stroke: #fff; stroke-width: 4; stroke-dasharray: 26 22; }
+.hero-muted { color: var(--muted); }
+.hero-accent { color: var(--accent); }
+
+/* ---- Preview-kontroller (döljs vid rendering) ---- */
+.controls { font: 14px/1.4 var(--font); color: #cbd5e1; display: flex; gap: 12px; align-items: center; padding: 12px 16px; }
+.controls input[type=range] { flex: 1; }
+.controls button { background: #0EA5E9; color: #fff; border: 0; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
+body.render .controls { display: none; }
+body.render .viewport { transform: none !important; }

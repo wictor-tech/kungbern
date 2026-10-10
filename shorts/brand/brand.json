@@ -1,0 +1,11 @@
+{
+  "company": "LUP Technologies",
+  "product": "LUPNUMBER",
+  "wordmark": { "accent": "LUP", "heading": "NUMBER" },
+  "tagline": "Molnbaserad yard management",
+  "seriesLabel": "KLIPP",
+  "cta": { "label": "Boka en demo", "url": "lupnumber.com" },
+  "format": { "width": 1080, "height": 1350, "fps": 30 },
+  "timeline": { "intro": 3.0, "hook": 2.5, "problem": 5.0, "solution": 6.0, "outro": 3.5 },
+  "voiceoverMaxWords": 45
+}

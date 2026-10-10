@@ -7,7 +7,10 @@
     "start": "remotion studio",
     "build": "remotion render LupnumberShort out/lupnumber-short.mp4",
     "build:explainer": "remotion render LupnumberExplainer out/lupnumber-explainer.mp4",
-    "upgrade": "remotion upgrade"
+    "upgrade": "remotion upgrade",
+    "klipp": "node shorts/scripts/build.mjs",
+    "klipp:nytt": "node shorts/scripts/new.mjs",
+    "klipp:alla": "node shorts/scripts/build.mjs all"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.200",

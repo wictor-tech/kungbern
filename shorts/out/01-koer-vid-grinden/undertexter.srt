@@ -1,0 +1,15 @@
+1
+00:00:03,300 --> 00:00:05,300
+Kö vid grinden. Igen.
+
+2
+00:00:05,800 --> 00:00:10,300
+Chaufförer väntar, lastningen står still och ingen vet vem som är näst.
+
+3
+00:00:10,800 --> 00:00:16,300
+Med LUPNUMBER bokar chauffören en slot, checkar in i mobilen och kör rakt in vid grinden. Kön försvinner.
+
+4
+00:00:16,800 --> 00:00:19,800
+Boka en demo på lupnumber.com.

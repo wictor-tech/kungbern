@@ -1,0 +1,30 @@
+{
+  "slug": "01-koer-vid-grinden",
+  "episode": 1,
+  "title": "Köer och väntetid vid grinden",
+  "scene": "grind-ko",
+  "icon": "clock",
+  "hook": {
+    "text": "Kö vid grinden.\nIgen.",
+    "sub": "Varje morgon. Varje skift."
+  },
+  "problem": {
+    "title": "Chaufförer väntar.\nSiten står still.",
+    "pains": ["45 minuter i kö", "Papper vid grinden", "Ingen vet vem som är näst"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER rullar det.",
+    "steps": [
+      { "icon": "calendar", "label": "Boka slot", "sub": "Innan avresa" },
+      { "icon": "phone", "label": "Checka in", "sub": "I mobilen" },
+      { "icon": "gate", "label": "Kör in", "sub": "Vid grinden" }
+    ],
+    "kicker": "Kön *försvinner.*"
+  },
+  "voiceover": {
+    "hook": "Kö vid grinden. Igen.",
+    "problem": "Chaufförer väntar, lastningen står still och ingen vet vem som är näst.",
+    "solution": "Med LUPNUMBER bokar chauffören en slot, checkar in i mobilen och kör rakt in vid grinden. Kön försvinner.",
+    "outro": "Boka en demo på lupnumber.com."
+  }
+}
