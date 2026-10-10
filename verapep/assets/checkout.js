@@ -28,7 +28,7 @@
   }
 
   function formatMoney(cents) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: state.storefront?.config.currency || 'USD' }).format((Number(cents) || 0) / 100);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: state.storefront?.config.currency || 'EUR' }).format((Number(cents) || 0) / 100);
   }
 
   function showMessage(text, type = 'error') {

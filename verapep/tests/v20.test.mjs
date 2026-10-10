@@ -358,6 +358,32 @@ test('v20 H4: DEMO_SHOW_ALL_PRODUCTS selects demo-all even when PUBLICATION_GATE
     try { assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'strict'); } finally { await stop(server); }
     process.env.SITE_ACCESS_PASSWORD = 'Demo-lock-password-1';
     ({ server, baseUrl } = await start(await tempData()));
-    try { assert.equal((await request(baseUrl, '/api/health')).payload.publicationGate, 'demo-all'); } finally { await stop(server); }
+    // v21: /api/health only shows details to visitors who passed the lock.
+    const auth = { Authorization: `Basic ${Buffer.from('demo:Demo-lock-password-1').toString('base64')}` };
+    try { assert.equal((await request(baseUrl, '/api/health', { headers: auth })).payload.publicationGate, 'demo-all'); } finally { await stop(server); }
+  } finally { for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; } }
+});
+
+test('v21 L1: the demo lock resists guessing, hides details, and cannot be misconfigured into a public demo', async () => {
+  const keys = ['RENDER', 'APP_ENV', 'SITE_ACCESS_PASSWORD', 'DEMO_SHOW_ALL_PRODUCTS', 'TRUST_PROXY'];
+  const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  try {
+    Object.assign(process.env, { RENDER: 'true', APP_ENV: 'demo', DEMO_SHOW_ALL_PRODUCTS: 'true' });
+    delete process.env.SITE_ACCESS_PASSWORD;
+    await assert.rejects(tempData().then(start), /requires SITE_ACCESS_PASSWORD/, 'a public demo without the lock does not start');
+    process.env.SITE_ACCESS_PASSWORD = ' ';
+    await assert.rejects(tempData().then(start), /at least 10 characters/);
+    process.env.SITE_ACCESS_PASSWORD = 'Demo-lock-password-1';
+    const { server, baseUrl } = await start(await tempData());
+    try {
+      const outside = await request(baseUrl, '/api/health');
+      assert.deepEqual(Object.keys(outside.payload).sort(), ['locked', 'ok', 'version'], 'no catalogue or mode details without the password');
+      const wrong = { Authorization: `Basic ${Buffer.from('x:wrong-guess').toString('base64')}` };
+      let last = 0;
+      for (let attempt = 0; attempt < 32; attempt += 1) last = (await fetch(`${baseUrl}/`, { headers: wrong })).status;
+      assert.equal(last, 429, 'repeated wrong passwords are rate limited');
+      const right = { Authorization: `basic ${Buffer.from('anyone:Demo-lock-password-1').toString('base64')}` };
+      assert.equal((await fetch(`${baseUrl}/api/storefront`, { headers: right })).status, 200, 'the scheme name is case-insensitive');
+    } finally { await stop(server); }
   } finally { for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; } }
 });

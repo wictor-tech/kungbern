@@ -42,7 +42,7 @@
       .replaceAll("'", '&#039;');
   }
 
-  function formatMoney(cents, currency = 'USD') {
+  function formatMoney(cents, currency = 'EUR') {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format((Number(cents) || 0) / 100);
   }
 

@@ -62,6 +62,7 @@ const MAX_BODY_BYTES = 1_000_000;
 const VERSION = '20.0.0';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const SESSION_ABSOLUTE_MS = 12 * 60 * 60 * 1000;
+const PRIVATE_HTML_PAGES = new Set(['admin.html', 'checkout.html', 'order.html', 'my-pages.html', '404.html']);
 const DUMMY_PASSWORD_HASH = hashPassword('verapep-timing-equaliser-not-a-real-password');
 const APP_ENV = String(process.env.APP_ENV || process.env.NODE_ENV || 'development').trim().toLowerCase();
 const IS_PRODUCTION = APP_ENV === 'production';
@@ -83,10 +84,10 @@ function sha256(value) {
 }
 
 function safeEqual(left, right) {
-  const a = Buffer.from(String(left));
-  const b = Buffer.from(String(right));
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
+  // v21: compare fixed-length digests so neither the result nor the timing reveals the length.
+  const a = crypto.createHash('sha256').update(String(left)).digest();
+  const b = crypto.createHash('sha256').update(String(right)).digest();
+  return crypto.timingSafeEqual(a, b) && String(left) === String(right);
 }
 
 function randomToken(bytes = 24) {
@@ -529,6 +530,11 @@ export function createVerapepServer(options = {}) {
   // Private demo mode: on a hosted (public) address the preview gate, which lists unreviewed products,
   // is only honoured while the whole site is locked with SITE_ACCESS_PASSWORD.
   const siteAccessPassword = String(process.env.SITE_ACCESS_PASSWORD || '');
+  // v21: a lock that is trivially guessable does not count as a lock.
+  if (siteAccessPassword && siteAccessPassword.trim().length < 10) throw new Error('SITE_ACCESS_PASSWORD must be at least 10 characters (it protects the whole site).');
+  // v21: APP_ENV=demo switches production protections off; on a public host that is only allowed
+  // while the whole site is locked.
+  if (isHostedEnvironment() && String(process.env.APP_ENV || process.env.NODE_ENV || '').trim().toLowerCase() === 'demo' && !siteAccessPassword) throw new Error('APP_ENV=demo on a public host requires SITE_ACCESS_PASSWORD (otherwise the demo would be public).');
   // DEMO_SHOW_ALL_PRODUCTS=true selects demo-all without touching PUBLICATION_GATE (which a Render
   // blueprint may pin to "strict"). It still only takes effect behind SITE_ACCESS_PASSWORD.
   const configuredGate = String(process.env.DEMO_SHOW_ALL_PRODUCTS || '').trim().toLowerCase() === 'true' ? 'demo-all' : String(process.env.PUBLICATION_GATE || '').trim().toLowerCase();
@@ -1602,6 +1608,8 @@ export function createVerapepServer(options = {}) {
     const ip = clientIp(req);
 
     if (method === 'GET' && pathname === '/api/health') {
+      // v21: behind the demo lock, outsiders only learn that the service is up.
+      if (!siteLockPassed(req)) return sendJson(res, 200, { ok: true, version: VERSION, locked: true });
       return sendJson(res, 200, { ok: true, version: VERSION, mode: getMode(), environment: APP_ENV, database: 'SQLite', publicationGate: gateMode, products: visibleCatalogueProducts().length, variants: visibleCatalogueProducts().reduce((sum, product) => sum + product.variants.length, 0), timestamp: nowIso() });
     }
 
@@ -1934,7 +1942,7 @@ export function createVerapepServer(options = {}) {
       const session = { email: user.email, displayName: user.displayName, role: user.role, csrf: randomToken(24), mfaMethod, expiresAt: Date.now() + SESSION_TTL_MS, createdAt: Date.now(), passwordHash: user.passwordHash };
       sessions.set(token, session);
       audit(session, 'admin.login', 'admin_user', user.email, null, { role: user.role, mfaMethod });
-      const secure = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? '; Secure' : '';
+      const secure = isHostedEnvironment() || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https' ? '; Secure' : '';
       return sendJson(res, 200, { authenticated: true, email: user.email, displayName: user.displayName, role: user.role, mfaEnabled: user.mfaEnabled, mfaMethod, csrf: session.csrf }, {
         'Set-Cookie': `vp_admin=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}${secure}`
       });
@@ -2815,9 +2823,30 @@ export function createVerapepServer(options = {}) {
           .replace('<body class="', `<body data-product-id="${escapeMeta(publicProduct.id)}" class="`);
         body = Buffer.from(html);
       }
-      if (extension === '.html' && searchIndexingEnabled) {
+      // v21: account, checkout, order, admin and error pages are never indexed, even when indexing is
+      // switched on for launch (it used to remove noindex from every page, including admin.html).
+      const privatePage = extension === '.html' && PRIVATE_HTML_PAGES.has(path.basename(resolved));
+      if (extension === '.html') {
         let html = body.toString('utf8');
-        html = html.replace(/<meta\s+name=["']robots["']\s+content=["']noindex, nofollow, noarchive["']\s*\/?>(?:\s*)/i, '');
+        if (searchIndexingEnabled && !privatePage) html = html.replace(/<meta\s+name=["']robots["']\s+content=["']noindex, nofollow, noarchive["']\s*\/?>(?:\s*)/i, '');
+        // v21: link previews (Open Graph) from the page's own title and description.
+        if (!/property=["']og:title/.test(html)) {
+          const baseUrl = String(process.env.BASE_URL || '').replace(/\/$/, '');
+          const meta = value => String(value || '').replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+          const title = (html.match(/<title>([^<]*)<\/title>/i) || [])[1] || 'VERAPEP';
+          const description = (html.match(/<meta\s+content=["']([^"']*)["']\s+name=["']description["']/i) || html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i) || [])[1] || '';
+          const pagePath = dynamicProductId ? `/product/${encodeURIComponent(dynamicProductId)}` : pathname;
+          const og = [
+            '<meta property="og:type" content="website">',
+            '<meta property="og:site_name" content="VERAPEP">',
+            `<meta property="og:title" content="${meta(title.replace(/&amp;/g, '&'))}">`,
+            description ? `<meta property="og:description" content="${meta(description.replace(/&amp;/g, '&'))}">` : '',
+            `<meta property="og:image" content="${baseUrl}/assets/media/bubbles-hero-v16-1600.webp">`,
+            baseUrl ? `<meta property="og:url" content="${baseUrl}${pagePath}">` : '',
+            '<meta name="twitter:card" content="summary_large_image">'
+          ].filter(Boolean).join('');
+          html = html.replace('</head>', `${og}</head>`);
+        }
         body = Buffer.from(html);
       }
       const isAsset = ['/assets/'].some(segment => pathname.startsWith(segment));
@@ -2834,6 +2863,7 @@ export function createVerapepServer(options = {}) {
       }
       res.writeHead(200, {
         ...securityHeaders(MIME_TYPES[extension]),
+        ...(privatePage ? { 'X-Robots-Tag': 'noindex, nofollow, noarchive' } : {}),
         // Versioned assets (?v=) never change at that URL; unversioned ones are cached for at most an hour.
         'Cache-Control': isAsset ? (url.searchParams.has('v') ? 'public, max-age=31536000, immutable' : 'public, max-age=3600, must-revalidate') : 'no-cache',
         ...(compressible ? { Vary: 'Accept-Encoding' } : {}),
@@ -2847,19 +2877,26 @@ export function createVerapepServer(options = {}) {
     }
   }
 
+  function siteLockPassed(req) {
+    if (!siteAccessPassword) return true;
+    const [scheme, encoded] = String(req.headers.authorization || '').trim().split(/\s+/);
+    if (!/^basic$/i.test(scheme || '') || !encoded) return false;
+    const decoded = Buffer.from(encoded, 'base64').toString('utf8');
+    return decoded.includes(':') && safeEqual(decoded.slice(decoded.indexOf(':') + 1), siteAccessPassword);
+  }
+
   const server = http.createServer(async (req, res) => {
     res.vpAcceptEncoding = req.headers['accept-encoding'] || '';
     try {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       // Private demo lock: the whole site (pages, API, admin) asks for a shared password. The health
       // check stays open for the hosting platform. Not used for production (it is not a login).
-      if (siteAccessPassword && url.pathname !== '/api/health') {
-        const [scheme, encoded] = String(req.headers.authorization || '').split(' ');
-        const supplied = scheme === 'Basic' && encoded ? Buffer.from(encoded, 'base64').toString('utf8').split(':').slice(1).join(':') : '';
-        if (!safeEqual(supplied, siteAccessPassword)) {
-          res.writeHead(401, { ...securityHeaders('text/plain; charset=utf-8'), 'WWW-Authenticate': 'Basic realm="VERAPEP demo", charset="UTF-8"', 'Cache-Control': 'no-store' });
-          return res.end('This VERAPEP demo is private. Enter the demo password (any user name).');
-        }
+      if (siteAccessPassword && url.pathname !== '/api/health' && !siteLockPassed(req)) {
+        // v21: failed attempts are rate limited per address (brute-force protection).
+        const limit = rateLimit(`site-lock:${clientIp(req)}`, 30, 15 * 60 * 1000);
+        if (!limit.allowed) { res.writeHead(429, { ...securityHeaders('text/plain; charset=utf-8'), 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)), 'Cache-Control': 'no-store' }); return res.end('Too many attempts. Try again later.'); }
+        res.writeHead(401, { ...securityHeaders('text/plain; charset=utf-8'), 'WWW-Authenticate': 'Basic realm="VERAPEP demo", charset="UTF-8"', 'Cache-Control': 'no-store' });
+        return res.end('This VERAPEP demo is private. Enter the demo password (any user name).');
       }
       if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
       else if (['GET', 'HEAD'].includes(req.method || 'GET')) await serveStatic(req, res, url);

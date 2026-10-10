@@ -41,7 +41,7 @@
   }
 
   function formatMoney(cents) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: state.storefront?.config.currency || 'USD' }).format((Number(cents) || 0) / 100);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: state.storefront?.config.currency || 'EUR' }).format((Number(cents) || 0) / 100);
   }
 
   function createUi() {
@@ -81,7 +81,7 @@
         <div class="sandbox-alert sandbox-alert--compact"><strong>Preview checkout.</strong><span>No live payment is processed.</span></div>
         <div class="cart-drawer__items" id="cart-drawer-items"></div>
         <footer class="cart-drawer__footer">
-          <div class="cart-subtotal"><span>Subtotal</span><strong id="cart-subtotal">$0.00</strong></div>
+          <div class="cart-subtotal"><span>Subtotal</span><strong id="cart-subtotal">€0.00</strong></div>
           <p>Shipping and tax configuration are reviewed at checkout.</p>
           <a class="button button--primary cart-checkout-button" id="cart-checkout-link" href="/checkout.html">Continue to checkout</a>
           <button class="text-button" id="cart-clear" type="button">Clear cart</button>

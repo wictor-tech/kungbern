@@ -19,7 +19,7 @@
       .replaceAll("'", '&#039;');
   }
 
-  function formatMoney(value, currency = 'USD') {
+  function formatMoney(value, currency = state.dashboard?.config?.currency || 'EUR') {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(Number(value || 0));
   }
 
