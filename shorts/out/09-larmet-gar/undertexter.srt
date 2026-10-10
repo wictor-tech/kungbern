@@ -23,9 +23,9 @@ som är på området och kan
 räkna in alla vid samlingsplatsen.
 
 7
-00:00:13,750 --> 00:00:16,270
-Hur räknar ni in chaufförerna vid larm?
+00:00:13,750 --> 00:00:16,550
+Vill du ha vår mall för närvarolista?
 
 8
-00:00:16,270 --> 00:00:17,350
-Skriv i kommentarerna.
+00:00:16,550 --> 00:00:17,350
+Skriv lista.

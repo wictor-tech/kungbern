@@ -2,8 +2,8 @@
 
 - **Format:** 1080×1350 (4:5, LinkedIn-flöde), 17.5 s, 30 fps, undertexter inbrända
 - **Scen:** yard-overblick · **Hook-ikon:** eye
-- **Voiceover:** 44 ord (max 45) ✓
-- **CTA:** Vet ni hur många som är på siten just nu? · Svara i kommentarerna · lupnumber.com
+- **Voiceover:** 41 ord (max 45) ✓
+- **CTA:** Hur vet ni vilka som är på siten? · Svara A, B eller C · lupnumber.com
 - **Dramaturgi:** Hook (från frame 0) → Problemet på siten → LUPNUMBER-lösningen → Outro
 
 ## On-screen-text (det som syns i rutan)
@@ -13,18 +13,18 @@
 | 0:00.0–0:02.5 | Hook (frame 0) | Vem är på siten / just nu? · Ingen vet säkert. | Vem är på siten just nu? |
 | 0:02.5–0:07.0 | Problemet på siten | Radio. Rundor. / Gissningar. · Sju bilar? Eller nio? · Ingen aktuell lista · Vakten ringer runt | Radio, rundor och gissningar. Ingen har en aktuell lista. |
 | 0:07.0–0:13.5 | LUPNUMBER-lösningen | Med LUPNUMBER ser du allt. · 1. Checka in (Vid grinden) · 2. Se yarden (I realtid) · 3. Checka ut (Vid utfart) · Full koll. | Med LUPNUMBER checkar chaufförerna in vid grinden och ut vid utfarten. Du ser yarden i realtid. |
-| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Vet ni hur många som är på siten just nu? · Svara i kommentarerna → lupnumber.com | Vet ni hur många som är på siten just nu? Skriv i kommentarerna. |
+| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Hur vet ni vilka som är på siten? · Svara A, B eller C → lupnumber.com | Papper, app eller ingen aning? Svara A, B eller C. |
 
 ## Voiceover (läs in eller texta)
 
-> Vem är på siten just nu? Radio, rundor och gissningar. Ingen har en aktuell lista. Med LUPNUMBER checkar chaufförerna in vid grinden och ut vid utfarten. Du ser yarden i realtid. Vet ni hur många som är på siten just nu? Skriv i kommentarerna.
+> Vem är på siten just nu? Radio, rundor och gissningar. Ingen har en aktuell lista. Med LUPNUMBER checkar chaufförerna in vid grinden och ut vid utfarten. Du ser yarden i realtid. Papper, app eller ingen aning? Svara A, B eller C.
 
 ### Per beat
 
 - **Hook** (0:00.0–0:02.5): Vem är på siten just nu?
 - **Problem** (0:02.5–0:07.0): Radio, rundor och gissningar. Ingen har en aktuell lista.
 - **Solution** (0:07.0–0:13.5): Med LUPNUMBER checkar chaufförerna in vid grinden och ut vid utfarten. Du ser yarden i realtid.
-- **Outro** (0:13.5–0:17.5): Vet ni hur många som är på siten just nu? Skriv i kommentarerna.
+- **Outro** (0:13.5–0:17.5): Papper, app eller ingen aning? Svara A, B eller C.
 
 ## Hook-varianter (A/B)
 
@@ -41,7 +41,7 @@ Radio, rundor och gissningar. Ingen har en aktuell lista.
 
 Med LUPNUMBER checkar chaufförerna in vid grinden och ut vid utfarten. Du ser yarden i realtid.
 
-Vet ni hur många som är på siten just nu? Skriv i kommentarerna.
+Hur vet ni vilka som är på siten? Skriv i kommentarerna.
 
 ## Checklista innan publicering
 

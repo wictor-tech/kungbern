@@ -49,14 +49,15 @@
     "kicker": "Noll *missförstånd.*"
   },
   "cta": {
-    "question": "Hur många språk hör ni vid grinden en vanlig vecka?",
-    "label": "Svara i kommentarerna",
+    "question": "Tagga den som står vid grinden hos er.",
+    "label": "Tagga i kommentarerna",
+    "icon": "users",
     "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Kör till port fyra. Eller?",
     "problem": "Fem språk vid grinden och instruktioner som inte går fram.",
     "solution": "Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart.",
-    "outro": "Hur många språk hör ni vid grinden? Skriv i kommentarerna."
+    "outro": "Tagga den som står vid grinden hos er."
   }
 }

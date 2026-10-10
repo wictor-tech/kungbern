@@ -4,7 +4,7 @@
 Ett nytt klipp = **en JSON-fil** (text + ikon + voiceover + CTA + hook-variant) och **en scenfil** komponerad av färdiga yard-primitiver.
 Allt annat (badge, outro, färger, wordmark, typografi, flödesstil, tider) är låst i mallen.
 
-Serien just nu: se [`SERIE.md`](SERIE.md) (9 klipp + flödesfilmen, alla manus på ett ställe). Klippen numreras inte i bild, badgen visar bara serienamnet.
+Serien just nu: se [`SERIE.md`](SERIE.md) (10 klipp + flödesfilmen, alla manus på ett ställe). Klippen numreras inte i bild, badgen visar bara serienamnet.
 
 ## Stack och varför
 
@@ -25,6 +25,9 @@ cd shorts && npm install        # pinnad Playwright 1.56.1 + Chromium (engångs)
 cd ..
 npm run klipp -- 01-koer-vid-grinden                  # mp4 (undertexter inbrända) + manus + srt + poster + karusell + preview
 npm run klipp -- 01-koer-vid-grinden --all-variants   # även hook B → <slug>-hook-b.mp4
+npm run klipp -- 01-koer-vid-grinden --overlay        # hook-lagret med alfakanal (WebM + ProRes 4444 + PNG), mörk och ljus variant
+npm run klipp -- 01-koer-vid-grinden --only-overlay   # bara overlayen
+npm run klipp -- 01-koer-vid-grinden --workers 4      # fler parallella arbetare (standard: hälften av kärnorna, max 4)
 npm run klipp -- 01-koer-vid-grinden --no-captions    # utan inbrända undertexter → <slug>-utan-undertexter.mp4
 npm run klipp -- 01-koer-vid-grinden --no-video       # bara manus + preview.html (sekunder)
 npm run klipp -- 01-koer-vid-grinden --audio vo.mp3   # muxa in inläst voiceover
@@ -43,6 +46,7 @@ Per klipp hamnar detta i `shorts/out/<slug>/`:
 | `<slug>.mp4` | Färdigt klipp, 17,5 s, 30 fps, undertexter inbrända, hook i första bildrutan |
 | `<slug>-hook-b.mp4` | Samma klipp med alternativ hook (A/B-test), med `--all-variants` |
 | `carousel.pdf` + `carousel-1..4.png` | Fyra sidor (hook, problem, lösning, CTA) att posta som dokumentinlägg |
+| `hook-overlay.webm/.mov/.png`, `hook-overlay-ljus.*` | Badge + hook på transparent bakgrund (3 s), att lägga ovanpå egen film av er grind i CapCut, Premiere eller DaVinci. Mörk text för ljus film, vit text för mörk film. Med `--overlay`. |
 | `MANUS.md` | On-screen-text per beat, voiceover, hook-varianter, förslag på inläggstext, checklista |
 | `undertexter.srt` | Voiceover som korta cues (max 7 ord), för uppladdning om du använder `--no-captions` |
 | `poster.jpg` | Stillbild ur lösningsfasen (översiktsark) |
@@ -138,6 +142,7 @@ LUP.scenes['min-scen'] = {
 };
 ```
 
+Minsta textstorlek i en hero är 28 px (på en telefon visas videon runt 400 px bred, så 20 px blir 7 px). Tre, fyra stora element per hero, inga mikroetiketter.
 Primitiverna i `brand/yard.js` returnerar `Item` med `.set({x, y, scale, rotate, opacity, color})`, `.tone(p)` (muted→accent), `.pop(t, start)`, `.fadeIn(t, start)`.
 Finns: `road`, `truck`, `truckTop`, `gate`, `clock`, `icon`, `pill` (`.text`, `.icon`, `.swap(p, a, b)`, `.toneStyle(p)`), `bubble`, `card`, `label`, `qmark`, `check`, `dock`, `grid`, `path` (`.draw`, `.at`, `.angleAt`), `pin`, `phone` (`.screen`), `sheet`, `dot` (`.pulse`), `row`.
 Problem-läget håller sig till `--muted`/`--border`, lösningen till `--accent`/`--tint-1`. Allt styrs av `s` – inga CSS-animationer, inga klockberoenden. Se `scenes/grind-ko.js` (kö vid bommen) och `scenes/hitta-ratt.js` (rutt på karta) som mönster.
@@ -146,9 +151,19 @@ Utan scen (`"scene": null`) centreras chips respektive flöde automatiskt.
 
 ## Flödesfilm: idag överst, med LUPNUMBER nederst
 
-`films/<slug>.json` listar steg i sitens flöde. Varje steg pekar på ett klipp (scenen hämtas därifrån) och har en rad för "idag" och en för "med LUPNUMBER" plus voiceover.
-Mallen visar samma scen två gånger samtidigt: överst i problemläge (grått, stillastående), nederst i lösningsläge (sky, rullande), med en stegindikator i brandets flödesstil.
-Nya steg = nya rader i JSON; nya scener skrivs som vanligt i `scenes/`.
+`films/<slug>.json` listar steg i sitens flöde. Varje steg pekar på ett klipp (scenen hämtas därifrån) och har en rad för "idag" och en för "med LUPNUMBER", egen längd (`duration`) och voiceover.
+Mallen visar samma scen två gånger: överst "Idag" i problemläge (grått, stillastående, mindre panel) som spelar ensamt i `stagger` sekunder (2 s), sedan glider den större LUPNUMBER-panelen in underifrån och löser bilden. Stegindikatorn i brandets flödesstil visar var i dagen man är.
+Nya steg = nya rader i JSON; nya scener skrivs som vanligt i `scenes/`. Scenen måste fungera i båda lägena samtidigt: lösningsbeteenden styrs av `s.phase`/`s.l`, aldrig av `s.t` ensamt.
+
+## Räknescen
+
+`scenes/rakna.js` räknar upp kostnaden ur klippets `calc`-block: `trucks × minutes × days / 60` timmar i kö, och i lösningen samma räkning med `minutesAfter`.
+Byt siffrorna i `clips/10-vad-kostar-kon.json` mot kundens egna. Så länge de är antaganden står "Räkneexempel" i bild (fältet `note`).
+
+## CTA-typer
+
+`cta` i klippets JSON styr outron: `question` (frågan), `options` (A/B/C-omröstning), `label` (knappen), `icon` (`chat`, `users` för "tagga", `clipboard` för giveaway), `url`.
+Serien växlar mellan fråga, omröstning, tagga-någon och giveaway så att outron inte blir en vana att scrolla förbi. Giveaway-klippen (04, 09) lovar en checklista respektive en mall, så de filerna måste finnas innan de postas.
 
 ## Säg bara: "gör nästa klipp om [utmaning]"
 

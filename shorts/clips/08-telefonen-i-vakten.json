@@ -49,14 +49,15 @@
     "kicker": "Tyst i *vakten.*"
   },
   "cta": {
-    "question": "Hur många samtal tar vakten på en dag?",
-    "label": "Svara i kommentarerna",
+    "question": "Tagga den som svarar i vakten hos er.",
+    "label": "Tagga i kommentarerna",
+    "icon": "users",
     "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Telefonen i vakten. Igen.",
     "problem": "Var ska jag? Är det min tur? Samma frågor hela dagen.",
     "solution": "Med LUPNUMBER får chauffören besked direkt i mobilen: när det är dags och vilken port. Vakten kan göra annat.",
-    "outro": "Hur många samtal tar er vakt per dag? Skriv i kommentarerna."
+    "outro": "Tagga den som svarar i vakten hos er."
   }
 }

@@ -49,14 +49,20 @@
     "kicker": "Full *koll.*"
   },
   "cta": {
-    "question": "Vet ni hur många som är på siten *just nu*?",
-    "label": "Svara i kommentarerna",
+    "question": "Hur vet ni vilka som är på siten?",
+    "options": [
+      "Papper",
+      "App",
+      "Ingen aning"
+    ],
+    "label": "Svara A, B eller C",
+    "icon": "chat",
     "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Vem är på siten just nu?",
     "problem": "Radio, rundor och gissningar. Ingen har en aktuell lista.",
     "solution": "Med LUPNUMBER checkar chaufförerna in vid grinden och ut vid utfarten. Du ser yarden i realtid.",
-    "outro": "Vet ni hur många som är på siten just nu? Skriv i kommentarerna."
+    "outro": "Papper, app eller ingen aning? Svara A, B eller C."
   }
 }

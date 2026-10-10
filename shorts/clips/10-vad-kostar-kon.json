@@ -1,0 +1,32 @@
+{
+  "slug": "10-vad-kostar-kon",
+  "episode": 10,
+  "title": "Vad kostar kön vid grinden?",
+  "scene": "rakna",
+  "icon": "clock",
+  "calc": { "trucks": 12, "minutes": 35, "days": 22, "minutesAfter": 5, "unit": "timmar i kö", "period": "per månad", "note": "Räkneexempel" },
+  "hook": { "text": "Vad kostar kön\nvid grinden?", "sub": "Räkna med mig." },
+  "variants": {
+    "b": { "hook": { "text": "12 × 35 × 22.\nRäkna själv.", "sub": "Bilar. Minuter. Dagar." }, "voiceover": { "hook": "Tolv gånger trettiofem gånger tjugotvå. Räkna själv." } }
+  },
+  "problem": {
+    "title": "Så här mycket\nstår still.",
+    "pains": ["Tolv bilar om dagen", "35 minuter var vid grinden", "22 arbetsdagar"]
+  },
+  "solution": {
+    "title": "Med LUPNUMBER: fem minuter.",
+    "steps": [
+      { "icon": "calendar", "label": "Boka slot", "sub": "Innan avresa" },
+      { "icon": "phone", "label": "Checka in", "sub": "I mobilen" },
+      { "icon": "gate", "label": "Kör in", "sub": "Vid grinden" }
+    ],
+    "kicker": "132 timmar *tillbaka.*"
+  },
+  "cta": { "question": "Hur ser *er* räkning ut?", "label": "Skriv era siffror", "url": "lupnumber.com", "icon": "chat" },
+  "voiceover": {
+    "hook": "Vad kostar kön vid grinden? Räkna med mig.",
+    "problem": "Säg tolv bilar om dagen, trettiofem minuter var, tjugotvå dagar. Hundrafemtiofyra timmar i kö.",
+    "solution": "Med LUPNUMBER tar incheckningen fem minuter. Tjugotvå timmar. Hundratrettiotvå timmar tillbaka, varje månad.",
+    "outro": "Hur ser er räkning ut? Skriv siffrorna i kommentarerna."
+  }
+}

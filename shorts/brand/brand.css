@@ -134,4 +134,11 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .controls input[type=range] { flex: 1; }
 .controls button { background: #0EA5E9; color: #fff; border: 0; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
 body.render .controls { display: none; }
+body.overlay, body.overlay .stage { background: transparent !important; }
+body.overlay .stage { box-shadow: none; }
+/* Ljus overlay-variant för mörk film: vit text, vit badge, ikonen behåller accentfärgen */
+body.overlay-light .hook-text, body.overlay-light .wm-number, body.overlay-light .ep { color: #fff !important; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
+body.overlay-light .hook-sub { color: #E0F2FE !important; text-shadow: 0 2px 14px rgba(0,0,0,0.35); }
+body.overlay-light .sep { background: rgba(255,255,255,0.6) !important; }
+body.overlay-light .icon-circle { border-color: rgba(255,255,255,0.7); box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
 body.render .viewport { transform: none !important; }

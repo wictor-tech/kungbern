@@ -1,0 +1,35 @@
+1
+00:00:00,250 --> 00:00:01,563
+Vad kostar kön vid grinden?
+
+2
+00:00:01,563 --> 00:00:02,350
+Räkna med mig.
+
+3
+00:00:02,750 --> 00:00:04,214
+Säg tolv bilar om dagen,
+
+4
+00:00:04,214 --> 00:00:05,679
+trettiofem minuter var, tjugotvå dagar.
+
+5
+00:00:05,679 --> 00:00:06,850
+Hundrafemtiofyra timmar i kö.
+
+6
+00:00:07,250 --> 00:00:10,065
+Med LUPNUMBER tar incheckningen fem minuter.
+
+7
+00:00:10,065 --> 00:00:13,350
+Tjugotvå timmar. Hundratrettiotvå timmar tillbaka, varje månad.
+
+8
+00:00:13,750 --> 00:00:15,750
+Hur ser er räkning ut?
+
+9
+00:00:15,750 --> 00:00:17,350
+Skriv siffrorna i kommentarerna.

@@ -27,9 +27,9 @@ sitt språk och kvitterar i mobilen
 innan grinden går upp.
 
 8
-00:00:13,750 --> 00:00:16,000
-Hur kvitterar era chaufförer reglerna?
+00:00:13,750 --> 00:00:15,750
+Vill du ha vår checklista?
 
 9
-00:00:16,000 --> 00:00:17,350
-Skriv i kommentarerna.
+00:00:15,750 --> 00:00:17,350
+Skriv checklista i kommentarerna.

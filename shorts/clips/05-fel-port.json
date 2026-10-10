@@ -51,6 +51,7 @@
   "cta": {
     "question": "Hur ofta hamnar en bil vid *fel port* hos er?",
     "label": "Svara i kommentarerna",
+    "icon": "chat",
     "url": "lupnumber.com"
   },
   "voiceover": {

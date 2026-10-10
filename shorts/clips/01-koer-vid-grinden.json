@@ -51,6 +51,7 @@
   "cta": {
     "question": "Hur lång är kön hos er en måndag?",
     "label": "Svara i kommentarerna",
+    "icon": "chat",
     "url": "lupnumber.com"
   },
   "voiceover": {

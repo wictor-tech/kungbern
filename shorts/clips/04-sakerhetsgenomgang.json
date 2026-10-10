@@ -49,14 +49,15 @@
     "kicker": "Säkerheten *först.*"
   },
   "cta": {
-    "question": "Hur kvitterar era chaufförer säkerhetsreglerna?",
-    "label": "Svara i kommentarerna",
+    "question": "Vill du ha vår checklista för grinden?",
+    "label": "Skriv 'checklista'",
+    "icon": "clipboard",
     "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Säkerhetsgenomgång på papper.",
     "problem": "Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst.",
     "solution": "Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp.",
-    "outro": "Hur kvitterar era chaufförer reglerna? Skriv i kommentarerna."
+    "outro": "Vill du ha vår checklista? Skriv checklista i kommentarerna."
   }
 }

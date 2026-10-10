@@ -35,13 +35,9 @@ direkt i mobilen: när det
 Vakten kan göra annat.
 
 10
-00:00:13,750 --> 00:00:15,059
-Hur många samtal tar
+00:00:13,750 --> 00:00:15,550
+Tagga den som svarar
 
 11
-00:00:15,059 --> 00:00:16,368
-er vakt per dag?
-
-12
-00:00:16,368 --> 00:00:17,350
-Skriv i kommentarerna.
+00:00:15,550 --> 00:00:17,350
+i vakten hos er.

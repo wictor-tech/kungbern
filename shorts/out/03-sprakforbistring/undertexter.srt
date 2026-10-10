@@ -27,9 +27,9 @@ i mobilen, får instruktionerna på sitt
 språk och kvitterar innan infart.
 
 8
-00:00:13,750 --> 00:00:16,270
-Hur många språk hör ni vid grinden?
+00:00:13,750 --> 00:00:15,550
+Tagga den som står
 
 9
-00:00:16,270 --> 00:00:17,350
-Skriv i kommentarerna.
+00:00:15,550 --> 00:00:17,350
+vid grinden hos er.

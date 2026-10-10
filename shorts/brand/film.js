@@ -15,8 +15,9 @@
     starts.outro = acc; const total = acc + OUTRO;
     const IN = 0.4, OUT = 0.3, LAP = 0.2;
     const cta = Object.assign({}, brand.cta, film.cta || {});
-    const HERO_SCALE = 0.84;
-    const PANEL = { top: 238, h: 480, gap: 20 };
+    const STAG = film.stagger ?? 2.0; // sekunder som "idag" spelar ensam innan LUPNUMBER-panelen glider in
+    const PANEL = { top: 238, hTop: 430, hBot: 530, gap: 20 };
+    const scaleFor = (h) => (h - 24 - 44 - 8 - 10 - 40 - 20) / 400;
 
     const stage = document.querySelector('.stage');
     stage.innerHTML = '';
@@ -43,21 +44,21 @@
     flowLayer.append(stepper, stepLabel);
 
     // ---- PANELER ----
-    const mkPanel = (cls, tag, top) => {
-      const p = U.css(U.el('div', 'panel ' + cls), { top: top + 'px', height: PANEL.h + 'px' });
+    const mkPanel = (cls, tag, top, h) => {
+      const p = U.css(U.el('div', 'panel ' + cls), { top: top + 'px', height: h + 'px' });
       p.appendChild(U.el('div', 'tag', tag));
       const line = U.el('div', 'line', '');
       p.appendChild(line);
-      return { el: p, line, slots: [] };
+      return { el: p, line, slots: [], _scale: scaleFor(h) };
     };
-    const topP = mkPanel('today', film.labels?.today || 'Idag', PANEL.top);
-    const botP = mkPanel('lup', film.labels?.lup || 'Med ' + brand.product, PANEL.top + PANEL.h + PANEL.gap);
+    const topP = mkPanel('today', film.labels?.today || 'Idag', PANEL.top, PANEL.hTop);
+    const botP = mkPanel('lup', film.labels?.lup || 'Med ' + brand.product, PANEL.top + PANEL.hTop + PANEL.gap, PANEL.hBot);
     flowLayer.append(topP.el, botP.el);
     const seeks = segs.map((sg) => {
       const scene = LUP.scenes && LUP.scenes[sg.scene];
       const mk = (panel) => {
         const slot = U.el('div', 'hero-slot');
-        slot.style.transform = `translateX(-50%) scale(${HERO_SCALE})`;
+        slot.style.transform = `translateX(-50%) scale(${panel._scale})`;
         const hero = U.css(U.el('div', 'hero'), { left: 0, top: 0, width: '936px', height: '400px', right: 'auto' });
         slot.appendChild(hero); panel.el.appendChild(slot); panel.slots.push(slot);
         return { slot, seek: scene ? scene.mount(hero, sg, brand) : null };
@@ -75,7 +76,7 @@
       segs.forEach((sg, i) => beats.push({ key: 'seg' + i, start: starts.segments[i], end: starts.segments[i] + sg.duration, text: sg.voiceover }));
       beats.push({ key: 'outro', start: starts.outro, end: total, text: film.voiceover?.outro });
       cueList = LUP.captions.cuesFromBeats(beats, brand.captions);
-      cueBox = U.css(U.el('div', 'captions'), { top: PANEL.top + 2 * PANEL.h + PANEL.gap + 16 + 'px' });
+      cueBox = U.css(U.el('div', 'captions'), { top: PANEL.top + PANEL.hTop + PANEL.hBot + PANEL.gap + 16 + 'px' });
       cueEl = U.el('div', 'cue', ''); cueEl.style.fontSize = '27px'; cueEl.style.padding = '10px 24px';
       cueBox.appendChild(cueEl); stage.appendChild(cueBox);
     }
@@ -117,16 +118,20 @@
         dots.forEach((d, i) => { d.className = 'dot' + (i < idx ? ' done' : i === idx ? ' now' : ''); });
         if (currentIdx !== idx) { currentIdx = idx; stepLabel.textContent = sg.label; topP.line.innerHTML = sg.today; botP.line.innerHTML = sg.lup.replace(/\*(.+?)\*/g, '<em style="font-style:normal;color:var(--accent)">$1</em>'); }
         const lp = U.prog(t, s0 - LAP + 0.1, 0.45, U.easeOut) * (1 - U.prog(t, s0 + sg.duration - 0.3, 0.3, U.easeIn));
-        [stepLabel, topP.line, botP.line].forEach((e, k) => { e.style.opacity = lp; e.style.transform = `translateY(${(1 - lp) * (k ? 10 : -10)}px)`; });
+        [stepLabel, topP.line].forEach((e, k) => { e.style.opacity = lp; e.style.transform = `translateY(${(1 - lp) * (k ? 10 : -10)}px)`; });
+        // LUPNUMBER-panelen kommer in efter STAG sekunder och "löser" bilden ovanför
+        const bp = U.prog(t, s0 + STAG, 0.55, U.easeOut) * (1 - U.prog(t, s0 + sg.duration - 0.3, 0.3, U.easeIn));
+        botP.el.style.opacity = bp; botP.el.style.transform = `translateY(${(1 - bp) * 60}px)`;
+        botP.line.style.opacity = U.prog(t, s0 + STAG + 0.3, 0.4, U.easeOut);
         seeks.forEach((pair, i) => {
           const si = starts.segments[i], ei = si + segs[i].duration;
           const vis = t >= si - LAP && t < ei + 0.001;
           const o = vis ? U.window(t, si - LAP, ei, IN, OUT) : 0;
           [pair.top, pair.bot].forEach((h) => { h.slot.style.visibility = vis ? 'visible' : 'hidden'; h.slot.style.opacity = o; });
           if (!vis) return;
-          const lt = Math.max(0, t - si);
-          if (pair.top.seek) pair.top.seek({ t: lt, l: lt, phase: 'problem', p: 0, P: 999, S: 999 });
-          if (pair.bot.seek) pair.bot.seek({ t: lt, l: lt, phase: 'solution', p: 1, P: 0, S: 999 });
+          const lt = Math.max(0, t - si), lb = Math.max(0, lt - STAG), dur = segs[i].duration;
+          if (pair.top.seek) pair.top.seek({ t: lt, l: lt, phase: 'problem', p: 0, P: dur, S: dur });
+          if (pair.bot.seek) pair.bot.seek({ t: lb, l: lb, phase: 'solution', p: 1, P: dur - STAG, S: dur - STAG });
         });
       }
 
@@ -143,7 +148,7 @@
     LUP.timeline = { starts, total, fps, frames: Math.round(total * fps), segments: segs.map((sg, i) => ({ label: sg.label, start: starts.segments[i], end: starts.segments[i] + sg.duration })) };
     window.__seek = seek;
     window.__setRenderMode = () => document.body.classList.add('render');
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { hookText.style.fontSize = ''; LUP.fitText(hookText, 936, 2, 64); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { hookText.style.fontSize = ''; LUP.fitText(hookText, 936, 2, 64); (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
     seek(0);
     return LUP.timeline;
   };

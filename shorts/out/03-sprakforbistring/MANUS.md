@@ -2,8 +2,8 @@
 
 - **Format:** 1080×1350 (4:5, LinkedIn-flöde), 17.5 s, 30 fps, undertexter inbrända
 - **Scen:** sprak · **Hook-ikon:** globe
-- **Voiceover:** 42 ord (max 45) ✓
-- **CTA:** Hur många språk hör ni vid grinden en vanlig vecka? · Svara i kommentarerna · lupnumber.com
+- **Voiceover:** 40 ord (max 45) ✓
+- **CTA:** Tagga den som står vid grinden hos er. · Tagga i kommentarerna · lupnumber.com
 - **Dramaturgi:** Hook (från frame 0) → Problemet på siten → LUPNUMBER-lösningen → Outro
 
 ## On-screen-text (det som syns i rutan)
@@ -13,18 +13,18 @@
 | 0:00.0–0:02.5 | Hook (frame 0) | Kör till port fyra. / Eller? · Fem språk vid grinden. | Kör till port fyra. Eller? |
 | 0:02.5–0:07.0 | Problemet på siten | Instruktioner som / inte går fram. · Pekande och gissande · Fel port, fel lastning · Säkerhetsregler på svenska | Fem språk vid grinden och instruktioner som inte går fram. |
 | 0:07.0–0:13.5 | LUPNUMBER-lösningen | Med LUPNUMBER förstår alla. · 1. Välj språk (I mobilen) · 2. Få instruktioner (På sitt språk) · 3. Kvittera (Och kör) · Noll missförstånd. | Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart. |
-| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Hur många språk hör ni vid grinden en vanlig vecka? · Svara i kommentarerna → lupnumber.com | Hur många språk hör ni vid grinden? Skriv i kommentarerna. |
+| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Tagga den som står vid grinden hos er. · Tagga i kommentarerna → lupnumber.com | Tagga den som står vid grinden hos er. |
 
 ## Voiceover (läs in eller texta)
 
-> Kör till port fyra. Eller? Fem språk vid grinden och instruktioner som inte går fram. Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart. Hur många språk hör ni vid grinden? Skriv i kommentarerna.
+> Kör till port fyra. Eller? Fem språk vid grinden och instruktioner som inte går fram. Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart. Tagga den som står vid grinden hos er.
 
 ### Per beat
 
 - **Hook** (0:00.0–0:02.5): Kör till port fyra. Eller?
 - **Problem** (0:02.5–0:07.0): Fem språk vid grinden och instruktioner som inte går fram.
 - **Solution** (0:07.0–0:13.5): Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart.
-- **Outro** (0:13.5–0:17.5): Hur många språk hör ni vid grinden? Skriv i kommentarerna.
+- **Outro** (0:13.5–0:17.5): Tagga den som står vid grinden hos er.
 
 ## Hook-varianter (A/B)
 
@@ -41,7 +41,7 @@ Fem språk vid grinden och instruktioner som inte går fram.
 
 Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart.
 
-Hur många språk hör ni vid grinden en vanlig vecka? Skriv i kommentarerna.
+Tagga den som står vid grinden hos er. Skriv i kommentarerna.
 
 ## Checklista innan publicering
 

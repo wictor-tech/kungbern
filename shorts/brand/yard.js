@@ -43,7 +43,7 @@
     },
     // Lastbil uppifrån (för kartor). 64×30, origin i mitten, pekar åt höger.
     truckTop(svg, o = {}) {
-      return item(svg, `<rect x="-32" y="-15" width="44" height="30" rx="5" fill="#fff" stroke="currentColor" stroke-width="3.5"/><rect x="14" y="-12" width="18" height="24" rx="4" fill="currentColor" opacity=".9"/>`, Object.assign({ color: C.muted }, o));
+      return item(svg, `<rect x="-40" y="-19" width="54" height="38" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/><rect x="17" y="-15" width="23" height="30" rx="5" fill="currentColor" opacity=".9"/>`, Object.assign({ color: C.muted }, o));
     },
 
     // Bom. Stolpe 22×120, pivot (11,24). .open(p) fäller upp armen.
@@ -74,8 +74,8 @@
     },
 
     // Piller med valfri ikon och text, origin uppe till vänster. .text(str) byter text.
-    pill(svg, { text, icon = null, fontSize = 26, h = 52, bg = C.card, border = C.border, fg = C.heading, w = null, ...o }) {
-      const pad = 22, ic = icon ? 34 : 0;
+    pill(svg, { text, icon = null, fontSize = 30, h = 60, bg = C.card, border = C.border, fg = C.heading, w = null, ...o }) {
+      const pad = 24, ic = icon ? 38 : 0;
       const approx = (s) => s.length * fontSize * 0.58;
       const width = w || Math.round(pad * 2 + ic + (icon ? 10 : 0) + approx(text));
       const it = item(svg, `
@@ -96,7 +96,7 @@
     },
 
     // Pratbubbla. Origin uppe till vänster, svans åt 'left' eller 'right'.
-    bubble(svg, { w = 300, h = 86, text, side = 'left', fontSize = 26, bg = C.card, border = C.border, fg = C.text, ...o }) {
+    bubble(svg, { w = 300, h = 86, text, side = 'left', fontSize = 30, bg = C.card, border = C.border, fg = C.text, ...o }) {
       const tail = side === 'left' ? `M26 ${h} l-14 22 l34 -22z` : `M${w - 26} ${h} l14 22 l-34 -22z`;
       const it = item(svg, `
         <path class="bg" d="M20 0 h${w - 40} a20 20 0 0 1 20 20 v${h - 40} a20 20 0 0 1 -20 20 h-${w - 40} a20 20 0 0 1 -20 -20 v-${h - 40} a20 20 0 0 1 20 -20z ${tail}" fill="${bg}" stroke="${border}" stroke-width="3" stroke-linejoin="round"/>
@@ -117,7 +117,7 @@
     },
 
     // Text. anchor: start|middle|end
-    label(svg, { text, size = 24, weight = 700, fill = C.heading, anchor = 'start', ...o }) {
+    label(svg, { text, size = 28, weight = 700, fill = C.heading, anchor = 'start', ...o }) {
       const it = item(svg, `<text class="tx" text-anchor="${anchor}" font-family="${FONT}" font-weight="${weight}" font-size="${size}" fill="${fill}" y="${size * 0.36}">${esc(text)}</text>`, o);
       it.text = (s) => { it.q('.tx').textContent = s; return it; };
       it.fill = (f) => { it.q('.tx').setAttribute('fill', f); return it; };
@@ -135,11 +135,11 @@
     },
 
     // Lastport (sedd uppifrån): docka med öppning nedåt och etikett. Origin uppe till vänster.
-    dock(svg, { w = 110, h = 64, text = '', ...o }) {
+    dock(svg, { w = 150, h = 68, text = '', fontSize = 28, ...o }) {
       const it = item(svg, `
         <rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>
         <rect x="${w * 0.2}" y="${h - 8}" width="${w * 0.6}" height="10" rx="3" fill="currentColor" opacity=".9"/>
-        <text x="${w / 2}" y="${h / 2 + 2}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="22" fill="currentColor">${esc(text)}</text>`, Object.assign({ color: C.muted }, o));
+        <text x="${w / 2}" y="${h / 2 + fontSize * 0.1}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="${fontSize}" fill="currentColor">${esc(text)}</text>`, Object.assign({ color: C.muted }, o));
       return it;
     },
 
@@ -197,8 +197,8 @@
     },
 
     // Enkel rad i en lista/tabell: origin uppe till vänster, w bred, 50 hög. cols = [{x, text, weight?}]
-    row(svg, { w, cols, h = 50, bg = 'transparent', fg = C.text, ...o }) {
-      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="12" fill="${bg}"/>${cols.map((c) => `<text x="${c.x}" y="${h / 2 + 8}" font-family="${FONT}" font-weight="${c.weight || 600}" font-size="22" fill="${c.fill || fg}">${esc(c.text)}</text>`).join('')}`, o);
+    row(svg, { w, cols, h = 54, bg = 'transparent', fg = C.text, fontSize = 26, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="12" fill="${bg}"/>${cols.map((c) => `<text x="${c.x}" y="${h / 2 + fontSize * 0.36}" font-family="${FONT}" font-weight="${c.weight || 600}" font-size="${fontSize}" fill="${c.fill || fg}">${esc(c.text)}</text>`).join('')}`, o);
       it.bg = (f) => { it.q('.bg').setAttribute('fill', f); return it; };
       return it;
     },

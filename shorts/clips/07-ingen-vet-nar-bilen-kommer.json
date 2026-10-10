@@ -51,6 +51,7 @@
   "cta": {
     "question": "När kommer era bilar? *Alla samtidigt?*",
     "label": "Svara i kommentarerna",
+    "icon": "chat",
     "url": "lupnumber.com"
   },
   "voiceover": {

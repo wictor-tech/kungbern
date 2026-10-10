@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Bygger ett klipp: preview.html + MANUS.md + undertexter.srt + poster.jpg + carousel.pdf + <slug>.mp4 (undertexter inbrända)
-// Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--no-captions] [--no-carousel] [--variant b | --all-variants]
+// Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--no-captions] [--no-carousel] [--variant b | --all-variants] [--overlay | --only-overlay] [--workers N]
 import { mkdirSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { loadBrand, loadClip, listClips, bundleHtml, manusMarkdown, srt, voWords, applyVariant, phases, OUT_DIR } from './lib.mjs';
-import { renderVideo, withPage, seekFrame } from './render.mjs';
+import { renderVideo, renderOverlay, withPage, seekFrame } from './render.mjs';
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? (args.splice(i, 1), true) : false; };
@@ -15,6 +15,10 @@ const withCaptions = !flag('--no-captions');
 const noCarousel = flag('--no-carousel');
 const allVariants = flag('--all-variants');
 const variantKey = opt('--variant');
+const onlyOverlay = flag('--only-overlay');
+const withOverlay = flag('--overlay') || onlyOverlay;
+const workersOpt = opt('--workers');
+const workers = workersOpt ? parseInt(workersOpt, 10) : null;
 const audio = opt('--audio');
 const target = args[0];
 if (!target) { console.error('Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--no-captions] [--no-carousel] [--variant b | --all-variants]'); process.exit(1); }
@@ -61,9 +65,13 @@ async function build(slug) {
     const suffix = (key ? `-hook-${key}` : '') + (withCaptions ? '' : '-utan-undertexter');
     const htmlPath = join(outDir, key ? `preview-hook-${key}.html` : 'preview.html');
     writeFileSync(htmlPath, bundleHtml(brand, clip, { captions: withCaptions }));
-    if (!noVideo) await renderVideo({ brand, htmlPath, mp4: join(outDir, `${base.slug}${suffix}.mp4`), audio, posterFrame: key ? null : Math.round(LUPposter(brand) * brand.format.fps), posterPath: key ? null : join(outDir, 'poster.jpg'), label: base.slug + (key ? '-' + key : '') });
+    if (!noVideo && !onlyOverlay) await renderVideo({ brand, htmlPath, mp4: join(outDir, `${base.slug}${suffix}.mp4`), audio, posterFrame: key ? null : Math.round(LUPposter(brand) * brand.format.fps), posterPath: key ? null : join(outDir, 'poster.jpg'), label: base.slug + (key ? '-' + key : ''), workers });
+    if (!noVideo && withOverlay) {
+      await renderOverlay({ brand, htmlPath, outBase: join(outDir, `hook-overlay${key ? '-' + key : ''}`), label: base.slug });
+      await renderOverlay({ brand, htmlPath, outBase: join(outDir, `hook-overlay-ljus${key ? '-' + key : ''}`), label: base.slug, variant: 'light' });
+    }
   }
-  if (!noVideo && !noCarousel) { await renderCarousel(brand, base, outDir); console.log('  karusell: carousel.pdf + carousel-1..4.png'); }
+  if (!noVideo && !noCarousel && !onlyOverlay) { await renderCarousel(brand, base, outDir); console.log('  karusell: carousel.pdf + carousel-1..4.png'); }
   console.log(`✓ ${outDir}`);
 }
 

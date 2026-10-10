@@ -23,13 +23,9 @@ grinden och ut vid utfarten.
 Du ser yarden i realtid.
 
 7
-00:00:13,750 --> 00:00:15,135
-Vet ni hur många som
+00:00:13,750 --> 00:00:15,550
+Papper, app eller ingen aning?
 
 8
-00:00:15,135 --> 00:00:16,519
-är på siten just nu?
-
-9
-00:00:16,519 --> 00:00:17,350
-Skriv i kommentarerna.
+00:00:15,550 --> 00:00:17,350
+Svara A, B eller C.

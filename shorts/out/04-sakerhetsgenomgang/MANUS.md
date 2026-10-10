@@ -2,8 +2,8 @@
 
 - **Format:** 1080×1350 (4:5, LinkedIn-flöde), 17.5 s, 30 fps, undertexter inbrända
 - **Scen:** sakerhet · **Hook-ikon:** shield
-- **Voiceover:** 42 ord (max 45) ✓
-- **CTA:** Hur kvitterar era chaufförer säkerhetsreglerna? · Svara i kommentarerna · lupnumber.com
+- **Voiceover:** 43 ord (max 45) ✓
+- **CTA:** Vill du ha vår checklista för grinden? · Skriv 'checklista' · lupnumber.com
 - **Dramaturgi:** Hook (från frame 0) → Problemet på siten → LUPNUMBER-lösningen → Outro
 
 ## On-screen-text (det som syns i rutan)
@@ -13,18 +13,18 @@
 | 0:00.0–0:02.5 | Hook (frame 0) | Säkerhetsgenomgång / på papper. · Läst? Förstått? Ingen vet. | Säkerhetsgenomgång på papper. |
 | 0:02.5–0:07.0 | Problemet på siten | Regler som ingen / kan intyga. · Tio minuter vid grinden · Lapp på svenska · Ingen spårbarhet | Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst. |
 | 0:07.0–0:13.5 | LUPNUMBER-lösningen | Med LUPNUMBER är det kvitterat. · 1. Läs reglerna (På sitt språk) · 2. Kvittera (I mobilen) · 3. Kör in (Vid grinden) · Säkerheten först. | Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp. |
-| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Hur kvitterar era chaufförer säkerhetsreglerna? · Svara i kommentarerna → lupnumber.com | Hur kvitterar era chaufförer reglerna? Skriv i kommentarerna. |
+| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Vill du ha vår checklista för grinden? · Skriv 'checklista' → lupnumber.com | Vill du ha vår checklista? Skriv checklista i kommentarerna. |
 
 ## Voiceover (läs in eller texta)
 
-> Säkerhetsgenomgång på papper. Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst. Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp. Hur kvitterar era chaufförer reglerna? Skriv i kommentarerna.
+> Säkerhetsgenomgång på papper. Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst. Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp. Vill du ha vår checklista? Skriv checklista i kommentarerna.
 
 ### Per beat
 
 - **Hook** (0:00.0–0:02.5): Säkerhetsgenomgång på papper.
 - **Problem** (0:02.5–0:07.0): Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst.
 - **Solution** (0:07.0–0:13.5): Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp.
-- **Outro** (0:13.5–0:17.5): Hur kvitterar era chaufförer reglerna? Skriv i kommentarerna.
+- **Outro** (0:13.5–0:17.5): Vill du ha vår checklista? Skriv checklista i kommentarerna.
 
 ## Hook-varianter (A/B)
 
@@ -41,7 +41,7 @@ Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst.
 
 Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp.
 
-Hur kvitterar era chaufförer säkerhetsreglerna? Skriv i kommentarerna.
+Vill du ha vår checklista för grinden? Skriv i kommentarerna.
 
 ## Checklista innan publicering
 

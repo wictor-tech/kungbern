@@ -2,8 +2,8 @@
 
 - **Format:** 1080×1350 (4:5, LinkedIn-flöde), 17.5 s, 30 fps, undertexter inbrända
 - **Scen:** papper · **Hook-ikon:** search
-- **Voiceover:** 42 ord (max 45) ✓
-- **CTA:** Hur lång tid tar det att hitta en incheckning från i tisdags? · Svara i kommentarerna · lupnumber.com
+- **Voiceover:** 41 ord (max 45) ✓
+- **CTA:** Hur loggar ni besök idag? · Svara A, B eller C · lupnumber.com
 - **Dramaturgi:** Hook (från frame 0) → Problemet på siten → LUPNUMBER-lösningen → Outro
 
 ## On-screen-text (det som syns i rutan)
@@ -13,18 +13,18 @@
 | 0:00.0–0:02.5 | Hook (frame 0) | Vem var här / i tisdags? · Pärmen vet. Kanske. | Vem var här i tisdags? |
 | 0:02.5–0:07.0 | Problemet på siten | Besöksliggare, / block och pärmar. · Oläsliga rader · Timmar att leta · Noll statistik | Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande. |
 | 0:07.0–0:13.5 | LUPNUMBER-lösningen | Med LUPNUMBER finns svaret. · 1. Checka in (Digitalt) · 2. Loggas (Automatiskt) · 3. Sök (På sekunder) · Allt spårbart. | Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder. |
-| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Hur lång tid tar det att hitta en incheckning från i tisdags? · Svara i kommentarerna → lupnumber.com | Hur snabbt hittar ni en gammal incheckning? Skriv i kommentarerna. |
+| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Hur loggar ni besök idag? · Svara A, B eller C → lupnumber.com | Pärm, Excel eller system? Svara A, B eller C. |
 
 ## Voiceover (läs in eller texta)
 
-> Vem var här i tisdags? Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande. Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder. Hur snabbt hittar ni en gammal incheckning? Skriv i kommentarerna.
+> Vem var här i tisdags? Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande. Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder. Pärm, Excel eller system? Svara A, B eller C.
 
 ### Per beat
 
 - **Hook** (0:00.0–0:02.5): Vem var här i tisdags?
 - **Problem** (0:02.5–0:07.0): Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande.
 - **Solution** (0:07.0–0:13.5): Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder.
-- **Outro** (0:13.5–0:17.5): Hur snabbt hittar ni en gammal incheckning? Skriv i kommentarerna.
+- **Outro** (0:13.5–0:17.5): Pärm, Excel eller system? Svara A, B eller C.
 
 ## Hook-varianter (A/B)
 
@@ -41,7 +41,7 @@ Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande.
 
 Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder.
 
-Hur lång tid tar det att hitta en incheckning från i tisdags? Skriv i kommentarerna.
+Hur loggar ni besök idag? Skriv i kommentarerna.
 
 ## Checklista innan publicering
 

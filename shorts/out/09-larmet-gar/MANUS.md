@@ -2,8 +2,8 @@
 
 - **Format:** 1080×1350 (4:5, LinkedIn-flöde), 17.5 s, 30 fps, undertexter inbrända
 - **Scen:** utrymning · **Hook-ikon:** bell
-- **Voiceover:** 43 ord (max 45) ✓
-- **CTA:** Hur räknar ni in chaufförerna vid ett larm? · Svara i kommentarerna · lupnumber.com
+- **Voiceover:** 42 ord (max 45) ✓
+- **CTA:** Vill du ha vår mall för närvarolista? · Skriv 'lista' · lupnumber.com
 - **Dramaturgi:** Hook (från frame 0) → Problemet på siten → LUPNUMBER-lösningen → Outro
 
 ## On-screen-text (det som syns i rutan)
@@ -13,18 +13,18 @@
 | 0:00.0–0:02.5 | Hook (frame 0) | Larmet går. / Är alla ute? · Listan ligger i vakten. | Larmet går. Är alla ute? |
 | 0:02.5–0:07.0 | Problemet på siten | Vem är kvar / på området? · Pappersliggare vid grinden · Okända på området · Minuter som räknas | Listan ligger i vakten och chaufförerna är inte med på den. |
 | 0:07.0–0:13.5 | LUPNUMBER-lösningen | Med LUPNUMBER vet du vilka. · 1. Incheckade (I realtid) · 2. Larma (Alla på siten) · 3. Räkna in (Vid samlingsplats) · Alla räknade. | Med LUPNUMBER vet du exakt vilka som är på området och kan räkna in alla vid samlingsplatsen. |
-| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Hur räknar ni in chaufförerna vid ett larm? · Svara i kommentarerna → lupnumber.com | Hur räknar ni in chaufförerna vid larm? Skriv i kommentarerna. |
+| 0:13.5–0:17.5 | Outro (låst layout) | LUPNUMBER · Molnbaserad yard management · Vill du ha vår mall för närvarolista? · Skriv 'lista' → lupnumber.com | Vill du ha vår mall för närvarolista? Skriv lista. |
 
 ## Voiceover (läs in eller texta)
 
-> Larmet går. Är alla ute? Listan ligger i vakten och chaufförerna är inte med på den. Med LUPNUMBER vet du exakt vilka som är på området och kan räkna in alla vid samlingsplatsen. Hur räknar ni in chaufförerna vid larm? Skriv i kommentarerna.
+> Larmet går. Är alla ute? Listan ligger i vakten och chaufförerna är inte med på den. Med LUPNUMBER vet du exakt vilka som är på området och kan räkna in alla vid samlingsplatsen. Vill du ha vår mall för närvarolista? Skriv lista.
 
 ### Per beat
 
 - **Hook** (0:00.0–0:02.5): Larmet går. Är alla ute?
 - **Problem** (0:02.5–0:07.0): Listan ligger i vakten och chaufförerna är inte med på den.
 - **Solution** (0:07.0–0:13.5): Med LUPNUMBER vet du exakt vilka som är på området och kan räkna in alla vid samlingsplatsen.
-- **Outro** (0:13.5–0:17.5): Hur räknar ni in chaufförerna vid larm? Skriv i kommentarerna.
+- **Outro** (0:13.5–0:17.5): Vill du ha vår mall för närvarolista? Skriv lista.
 
 ## Hook-varianter (A/B)
 
@@ -41,7 +41,7 @@ Listan ligger i vakten och chaufförerna är inte med på den.
 
 Med LUPNUMBER vet du exakt vilka som är på området och kan räkna in alla vid samlingsplatsen.
 
-Hur räknar ni in chaufförerna vid ett larm? Skriv i kommentarerna.
+Vill du ha vår mall för närvarolista? Skriv i kommentarerna.
 
 ## Checklista innan publicering
 

@@ -49,14 +49,20 @@
     "kicker": "Allt *spårbart.*"
   },
   "cta": {
-    "question": "Hur lång tid tar det att hitta en incheckning från i tisdags?",
-    "label": "Svara i kommentarerna",
+    "question": "Hur loggar ni besök idag?",
+    "options": [
+      "Pärm",
+      "Excel",
+      "System"
+    ],
+    "label": "Svara A, B eller C",
+    "icon": "chat",
     "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Vem var här i tisdags?",
     "problem": "Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande.",
     "solution": "Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder.",
-    "outro": "Hur snabbt hittar ni en gammal incheckning? Skriv i kommentarerna."
+    "outro": "Pärm, Excel eller system? Svara A, B eller C."
   }
 }

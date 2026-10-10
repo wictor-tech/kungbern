@@ -34,19 +34,24 @@
     const tag = U.el('div', 'tagline', brand.tagline); tag.style.fontSize = '26px';
     const q = U.el('div', 'cta-question', (cta.question || '').replace(/\*(.+?)\*/g, '<em>$1</em>'));
     U.css(q, { marginTop: cta.question ? '44px' : '0', display: cta.question ? 'block' : 'none' });
-    const pill = U.css(U.el('div', 'cta-pill', `<span>${cta.label}</span>${LUP.icon('arrow')}`), { marginTop: cta.question ? '10px' : '34px' });
+    // Omröstning: A/B/C-chips under frågan
+    const opts = U.css(U.el('div'), { display: cta.options ? 'flex' : 'none', gap: '16px', marginTop: '6px' });
+    const optEls = (cta.options || []).map((o, i) => { const c = U.el('div', 'chip', `<span class="dot" style="background:var(--accent);color:#fff">${'ABC'[i]}</span><span>${o}</span>`); opts.appendChild(c); return c; });
+    const pill = U.css(U.el('div', 'cta-pill', `<span>${cta.label}</span>${LUP.icon(cta.icon || 'chat')}`), { marginTop: cta.question ? '10px' : '34px' });
     const url = U.el('div', 'url', cta.url);
     const co = U.css(U.el('div', 'company', brand.company), { marginTop: '30px' });
-    wrap.append(wm, bar, tag, q, pill, url, co); layer.append(wrap);
-    q.style.width = '900px'; LUP.fitText(q, 900, 2, 44);
+    wrap.append(wm, bar, tag, q, opts, pill, url, co); layer.append(wrap);
+    q.style.width = '900px'; LUP.fitText(q, 900, 2, 44); (LUP._refit = LUP._refit || []).push(() => { q.style.fontSize = ''; LUP.fitText(q, 900, 2, 44); });
     return (l) => {
       U.animateWordmark(wm, l, 0.05, 0.045, 0.5);
       const barP = U.prog(l, 0.55, 0.4, U.easeInOut); bar.style.transform = `scaleX(${barP})`; bar.style.opacity = barP > 0 ? 1 : 0;
       U.enter(tag, U.prog(l, 0.8, 0.4, U.easeOut), { dy: 12 });
       U.enter(q, U.prog(l, 1.15, 0.5, U.easeOut), { dy: 22 });
-      U.enter(pill, U.prog(l, cta.question ? 1.75 : 1.2, 0.6, U.back), { dy: 0, scale: 0.7 });
-      U.enter(url, U.prog(l, cta.question ? 2.1 : 1.5, 0.45, U.easeOut), { dy: 12 });
-      U.enter(co, U.prog(l, 2.3, 0.5, U.easeOut), { dy: 10 });
+      optEls.forEach((c, i) => U.enter(c, U.prog(l, 1.5 + i * 0.15, 0.45, U.back), { dy: 0, dx: -20, scale: 0.9 }));
+      const pillAt = cta.question ? (cta.options ? 2.05 : 1.75) : 1.2;
+      U.enter(pill, U.prog(l, pillAt, 0.6, U.back), { dy: 0, scale: 0.7 });
+      U.enter(url, U.prog(l, pillAt + 0.35, 0.45, U.easeOut), { dy: 12 });
+      U.enter(co, U.prog(l, pillAt + 0.55, 0.5, U.easeOut), { dy: 10 });
     };
   };
 
@@ -135,6 +140,7 @@
 
     const setPhase = (ph, name, t) => {
       const s = Math.max(0, starts[name] - LAP), e = starts[name] + T[name];
+      if (LUP._overlay) { const on = name === 'hook'; ph.style.visibility = on ? 'visible' : 'hidden'; ph.style.opacity = on ? 1 : 0; ph.style.transform = 'none'; return on ? t : null; }
       const v = name === 'hook' ? 1 - U.prog(t, e - OUT, OUT, U.easeIn) : U.window(t, s, e, IN, name === 'outro' ? 0.001 : OUT);
       const vis = t >= s && t < e + 0.001;
       ph.style.visibility = vis ? 'visible' : 'hidden';
@@ -161,7 +167,7 @@
       }
 
       // HERO
-      if (hasHero) {
+      if (hasHero && !LUP._overlay) {
         const hs = starts.problem - LAP, he = starts.solution + T.solution;
         const vis = t >= hs && t < he;
         hero.style.visibility = vis ? 'visible' : 'hidden';
@@ -207,7 +213,9 @@
     LUP.timeline = { starts, durations: T, total, fps, frames: Math.round(total * fps) };
     window.__seek = seek;
     window.__setRenderMode = () => document.body.classList.add('render');
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { [hookText, probTitle, solTitle].forEach((e) => { e.style.fontSize = ''; }); LUP.fitText(hookText, 936, 2, 64); LUP.fitText(probTitle, 936, 2, 40); LUP.fitText(solTitle, 936, 2, 40); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    // Overlay: bara badge + hook på transparent bakgrund (läggs ovanpå egen film i klippprogram)
+    window.__setOverlayMode = (variant) => { LUP._overlay = true; document.body.classList.add('render', 'overlay'); if (variant === 'light') document.body.classList.add('overlay-light'); if (cueBox) cueBox.style.display = 'none'; blobs.forEach((b) => (b.style.display = 'none')); if (hasHero) hero.style.display = 'none'; seek(LUP._lastFrame || 0); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { [hookText, probTitle, solTitle].forEach((e) => { e.style.fontSize = ''; }); LUP.fitText(hookText, 936, 2, 64); LUP.fitText(probTitle, 936, 2, 40); LUP.fitText(solTitle, 936, 2, 40); (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
     seek(0);
     return LUP.timeline;
   };

@@ -49,14 +49,15 @@
     "kicker": "Alla *räknade.*"
   },
   "cta": {
-    "question": "Hur räknar ni in chaufförerna vid ett larm?",
-    "label": "Svara i kommentarerna",
+    "question": "Vill du ha vår mall för närvarolista?",
+    "label": "Skriv 'lista'",
+    "icon": "clipboard",
     "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Larmet går. Är alla ute?",
     "problem": "Listan ligger i vakten och chaufförerna är inte med på den.",
     "solution": "Med LUPNUMBER vet du exakt vilka som är på området och kan räkna in alla vid samlingsplatsen.",
-    "outro": "Hur räknar ni in chaufförerna vid larm? Skriv i kommentarerna."
+    "outro": "Vill du ha vår mall för närvarolista? Skriv lista."
   }
 }
