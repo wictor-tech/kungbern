@@ -1,10 +1,10 @@
-# LUPNUMBER shorts – LinkedIn-klipp som serie
+# LUPNUMBER shorts – LinkedIn-serien "Vardag på siten"
 
-Återanvändbar pipeline för 19,5-sekunders LinkedIn-klipp (1080×1350, 4:5) åt LUP Technologies / LUPNUMBER.
-Ett nytt klipp = **en JSON-fil** (text + ikon + voiceover) och, om utmaningen vinner på en illustration, **en scenfil** komponerad av färdiga yard-primitiver.
-Allt annat (intro, outro, färger, wordmark, typografi, flödesstil, tider) är låst i mallen.
+Återanvändbar pipeline för 17,5-sekunders LinkedIn-klipp (1080×1350, 4:5) och längre flödesfilmer åt LUP Technologies / LUPNUMBER.
+Ett nytt klipp = **en JSON-fil** (text + ikon + voiceover + CTA + hook-variant) och **en scenfil** komponerad av färdiga yard-primitiver.
+Allt annat (badge, outro, färger, wordmark, typografi, flödesstil, tider) är låst i mallen.
 
-Serien just nu: se [`SERIE.md`](SERIE.md) (9 klipp, alla manus på ett ställe).
+Serien just nu: se [`SERIE.md`](SERIE.md) (9 klipp + flödesfilmen, alla manus på ett ställe). Klippen numreras inte i bild, badgen visar bara serienamnet.
 
 ## Stack och varför
 
@@ -23,26 +23,32 @@ Remotion (som finns i `src/` för den äldre 30-sekundaren) hade varit det konve
 ```bash
 cd shorts && npm install        # pinnad Playwright 1.56.1 + Chromium (engångs)
 cd ..
-npm run klipp -- 01-koer-vid-grinden                 # mp4 + manus + srt + poster + preview
-npm run klipp -- 01-koer-vid-grinden --no-video      # bara manus + preview.html (sekunder)
-npm run klipp -- 01-koer-vid-grinden --captions      # inbrända undertexter → <slug>-undertextad.mp4
-npm run klipp -- 01-koer-vid-grinden --audio vo.mp3  # muxa in inläst voiceover
-npm run klipp:alla                                   # rendera hela serien
-npm run klipp:serie                                  # uppdatera SERIE.md
-npm run klipp:test                                   # snapshot-test mot test/snapshots.json
+npm run klipp -- 01-koer-vid-grinden                  # mp4 (undertexter inbrända) + manus + srt + poster + karusell + preview
+npm run klipp -- 01-koer-vid-grinden --all-variants   # även hook B → <slug>-hook-b.mp4
+npm run klipp -- 01-koer-vid-grinden --no-captions    # utan inbrända undertexter → <slug>-utan-undertexter.mp4
+npm run klipp -- 01-koer-vid-grinden --no-video       # bara manus + preview.html (sekunder)
+npm run klipp -- 01-koer-vid-grinden --audio vo.mp3   # muxa in inläst voiceover
+npm run klipp:alla -- --all-variants                  # rendera hela serien
+npm run film -- en-dag-pa-siten                       # flödesfilmen (idag överst, med LUPNUMBER nederst)
+npm run klipp:serie                                   # uppdatera SERIE.md
+npm run klipp:test                                    # snapshot-test mot test/snapshots.json
 ```
 
-FFmpeg måste finnas i PATH. Formatet är låst till 4:5; en 1:1-variant kräver en egen layout och finns inte.
+FFmpeg måste finnas i PATH. Formatet är låst till 4:5.
 
 Per klipp hamnar detta i `shorts/out/<slug>/`:
 
 | Fil | Innehåll |
 | --- | --- |
-| `<slug>.mp4` | Färdigt klipp, 19,5 s, 30 fps |
-| `MANUS.md` | On-screen-text per beat + voiceover (helhet och per beat) + checklista |
-| `undertexter.srt` | Voiceover som korta cues (max 7 ord), tidsatta mot beatsen |
-| `poster.jpg` | Stillbild ur lösningsfasen (omslag/thumbnail) |
+| `<slug>.mp4` | Färdigt klipp, 17,5 s, 30 fps, undertexter inbrända, hook i första bildrutan |
+| `<slug>-hook-b.mp4` | Samma klipp med alternativ hook (A/B-test), med `--all-variants` |
+| `carousel.pdf` + `carousel-1..4.png` | Fyra sidor (hook, problem, lösning, CTA) att posta som dokumentinlägg |
+| `MANUS.md` | On-screen-text per beat, voiceover, hook-varianter, förslag på inläggstext, checklista |
+| `undertexter.srt` | Voiceover som korta cues (max 7 ord), för uppladdning om du använder `--no-captions` |
+| `poster.jpg` | Stillbild ur lösningsfasen (översiktsark) |
 | `preview.html` | Öppna direkt i webbläsaren: spela, scrubba, stega frame för frame (mellanslag, ←/→) |
+
+Flödesfilmen hamnar i `shorts/out/film-<slug>/` med mp4, `MANUS.md`, `undertexter.srt`, `poster.jpg` och `preview.html`.
 
 ## Struktur
 
@@ -51,7 +57,8 @@ shorts/
   brand/
     brand.json     # tagline, CTA, format, tidslinje, maxord, undertextregler   (LÅST)
     brand.css      # färgtokens, wordmark, kort, chips, flöde, CTA, @font-face  (LÅST)
-    shell.js       # mallen: intro → hook → problem → lösning → outro            (LÅST)
+    shell.js       # klippmallen: hook (frame 0) → problem → lösning → outro       (LÅST)
+    film.js        # flödesfilmen: hook → N steg (idag överst / LUPNUMBER nederst) → outro (LÅST)
     engine.js      # easing, färgblandning, wordmark-uppbyggnad
     icons.js       # ikonbibliotek (stroke-ikoner, refereras med namn)
     yard.js        # yard-primitiver: väg, bom, lastbil, karta, portar, telefon, bubblor, piller …
@@ -59,9 +66,12 @@ shorts/
     fonts/         # Inter 500/600/700/800 (OFL)
   scenes/          # en fil per scenvisual, komponerad av yard-primitiver
   clips/           # en JSON per klipp
+  films/           # en JSON per flödesfilm (steg som pekar på klippens scener)
   scripts/
-    build.mjs      # bundla + manus + srt + rendera mp4
-    new.mjs        # scaffolda nytt klipp (nästa avsnittsnummer)
+    build.mjs      # klipp: bundla + manus + srt + karusell + rendera mp4 (A/B-varianter)
+    film.mjs       # flödesfilm: bundla + manus + srt + rendera mp4
+    render.mjs     # delad renderare (Playwright + FFmpeg)
+    new.mjs        # scaffolda nytt klipp (nästa ordningsnummer)
     test.mjs       # snapshot-test av nyckelrutor
     overview.mjs   # SERIE.md
     lib.mjs        # delad logik
@@ -73,13 +83,12 @@ shorts/
 
 | Tid | Beat | Innehåll |
 | --- | --- | --- |
-| 0–2 s | Intro | Wordmark byggs upp bokstav för bokstav, accentlinje, tagline. Krymper sedan upp i badgen uppe till vänster. Identisk varje gång. |
-| 2–5 s | Hook | Stor ikon + 1–2 rader punchig text + underrad. Syns från sekund 2,3. |
-| 5–9,5 s | Problemet på siten | Rubrik + hero-visual (grå, stillastående) + max 3 smärtpunkts-chips |
-| 9,5–16 s | LUPNUMBER-lösningen | Samma hero tonar till sky och börjar rulla + flöde med 3 numrerade steg + slutkläm |
-| 16–19,5 s | Outro | Wordmark + tagline + CTA-pill + URL. Identisk varje gång. |
+| 0–2,5 s | Hook | Första bildrutan: badge (wordmark + "Vardag på siten"), ikon och hooktexten. Ingen logga-först. |
+| 2,5–7 s | Problemet på siten | Rubrik + hero-visual (grå, stillastående) + max 3 smärtpunkts-chips |
+| 7–13,5 s | LUPNUMBER-lösningen | Samma hero tonar till sky och börjar rulla + flöde med 3 numrerade steg + slutkläm |
+| 13,5–17,5 s | Outro | Wordmark byggs upp, tagline, CTA-fråga, handling, URL. Layouten identisk varje gång, frågan per klipp. |
 
-Faserna överlappar 0,2 s så att nästa beat tonar in innan den förra är borta.
+Faserna överlappar 0,2 s så att nästa beat tonar in innan den förra är borta. Undertexter bränns in som standard (flödet spelar utan ljud).
 
 ## Klipp-JSON (allt du byter per klipp)
 
@@ -91,15 +100,19 @@ Faserna överlappar 0,2 s så att nästa beat tonar in innan den förra är bort
   "scene": "yard-overblick",          // namn på scenes/<scene>.js, eller null för standardlayout
   "icon": "eye",                      // hook-ikon, namn ur brand/icons.js
   "hook":     { "text": "Vem är på siten\njust nu?", "sub": "Ingen vet säkert." },
+  "variants": { "b": { "hook": { "text": "Elva bilar inne.\nEller tolv?", "sub": "Ingen vet säkert." }, "voiceover": { "hook": "Elva bilar inne. Eller tolv?" } } },
   "problem":  { "title": "Radio. Rundor.\nGissningar.", "pains": ["Max 3 korta smärtpunkter", "…", "…"] },
   "solution": { "title": "Med LUPNUMBER ser du allt.",
                 "steps": [ { "icon": "phone", "label": "Checka in", "sub": "Vid grinden" },
                            { "icon": "map",   "label": "Se yarden",  "sub": "I realtid" },
                            { "icon": "check", "label": "Checka ut",  "sub": "Vid utfart" } ],
                 "kicker": "Full *koll.*" },  // *ord* blir accentfärgat
-  "voiceover": { "hook": "…", "problem": "…", "solution": "…", "outro": "Boka en demo på lupnumber.com." }
+  "cta":      { "question": "Vet ni hur många som är på siten *just nu*?", "label": "Svara i kommentarerna", "url": "lupnumber.com" },
+  "voiceover": { "hook": "…", "problem": "…", "solution": "…", "outro": "Frågan igen. Skriv i kommentarerna." }
 }
 ```
+
+`episode` styr bara ordningen i SERIE.md och filnamnet; det visas inte i bild. `cta` utan `question` ger brandets standard ("Boka en demo").
 
 Regler som `build.mjs` kontrollerar: exakt 3 steg, max 3 smärtpunkter, voiceover i fyra beats, skriv **"vid grinden"** (aldrig "i grinden"), scenfilen måste finnas. Voiceover över 45 ord ger varning i terminalen och i manuset. Rubriker ska rymmas på två rader (≈ 28 tecken per rad).
 
@@ -131,10 +144,17 @@ Problem-läget håller sig till `--muted`/`--border`, lösningen till `--accent`
 
 Utan scen (`"scene": null`) centreras chips respektive flöde automatiskt.
 
+## Flödesfilm: idag överst, med LUPNUMBER nederst
+
+`films/<slug>.json` listar steg i sitens flöde. Varje steg pekar på ett klipp (scenen hämtas därifrån) och har en rad för "idag" och en för "med LUPNUMBER" plus voiceover.
+Mallen visar samma scen två gånger samtidigt: överst i problemläge (grått, stillastående), nederst i lösningsläge (sky, rullande), med en stegindikator i brandets flödesstil.
+Nya steg = nya rader i JSON; nya scener skrivs som vanligt i `scenes/`.
+
 ## Säg bara: "gör nästa klipp om [utmaning]"
 
-Repo-skillen i `.claude/skills/nytt-klipp/SKILL.md` beskriver hela proceduren för Claude Code: välja nästa avsnittsnummer,
-skriva klipp-JSON i rätt röst, komponera scenvisual av primitiverna, rendera, kontrollera bildrutor, köra snapshot-testet och rapportera.
+Repo-skillen i `.claude/skills/nytt-klipp/SKILL.md` beskriver hela proceduren för Claude Code: välja nästa ordningsnummer,
+skriva klipp-JSON i rätt röst (hook A och B, CTA-fråga), komponera scenvisual av primitiverna, rendera, kontrollera bildrutor, köra snapshot-testet,
+lägga till steget i flödesfilmen om det hör hemma där, och rapportera.
 Exempel:
 
 - "gör nästa klipp om besökare och entreprenörer som dyker upp oanmälda"
@@ -143,5 +163,6 @@ Exempel:
 
 ## Svagaste delen
 
-Ljudet. Pipelinen levererar bild, manus och SRT men ingen inspelad röst eller musik. Voiceovern måste läsas in (eller TTS:as)
-och muxas in med `--audio`. Timingen i manuset bygger på ~2,3 ord/sekund; läser du långsammare kan solution-beaten bli trång.
+Ljudet och ansiktet. Pipelinen levererar bild, manus, undertexter och karusell men ingen inspelad röst och inget ansikte.
+Voiceovern bör läsas in av någon hos er och muxas in med `--audio`. Ett två sekunders klipp med en person som säger hooken
+före grafiken är det som skulle lyfta stoppkraften mest, och det måste filmas av er.

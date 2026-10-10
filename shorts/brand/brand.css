@@ -51,11 +51,35 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
 .tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
 
-/* ---- Episode badge (top). Wordmarken morfar hit från intron, sep + ep positioneras i shell.js ---- */
-.badge { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 18px; }
+/* ---- Badge (uppe till vänster från frame 0): liten wordmark + serienamn ---- */
+.badge { position: absolute; left: 72px; top: 64px; display: flex; align-items: center; gap: 18px; }
+.badge .wordmark { font-size: 34px; }
 .badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
-.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; }
-.wm-layer { position: absolute; left: 0; top: 0; transform-origin: top left; }
+.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* ---- Outro: fråga + handling ---- */
+.cta-question { color: var(--heading); font-weight: 800; font-size: 60px; line-height: 1.1; letter-spacing: -0.03em; text-align: center; max-width: 900px; }
+.cta-question em { font-style: normal; color: var(--accent); }
+
+/* ---- Flödesfilm: två paneler (idag / med LUPNUMBER) ---- */
+.panel { position: absolute; left: 56px; width: 968px; border-radius: 32px; background: var(--card); border: 2px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.panel.today { background: #FBFDFF; }
+.panel.lup { border-color: var(--accent); background: linear-gradient(180deg, var(--tint-2) 0%, #FFFFFF 70%); }
+.panel .tag { position: absolute; left: 24px; top: 20px; display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 8px 18px; font-weight: 800; font-size: 20px; letter-spacing: 0.12em; text-transform: uppercase; }
+.panel.today .tag { background: var(--tint-1); color: var(--muted); }
+.panel.lup .tag { background: var(--accent); color: #fff; }
+.panel .line { position: absolute; left: 32px; right: 32px; bottom: 22px; text-align: center; font-weight: 700; font-size: 30px; line-height: 1.2; letter-spacing: -0.01em; }
+.panel.today .line { color: var(--muted); }
+.panel.lup .line { color: var(--heading); }
+.panel .hero-slot { position: absolute; left: 50%; top: 66px; width: 936px; height: 400px; transform-origin: top center; }
+.stepper { position: absolute; left: 72px; right: 72px; display: flex; align-items: center; }
+.stepper .track { position: absolute; left: 20px; right: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--border); }
+.stepper .fill { position: absolute; left: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--accent); transform-origin: left center; }
+.stepper .dot { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 3px solid var(--border); background: #fff; color: var(--muted); font-weight: 800; font-size: 19px; display: flex; align-items: center; justify-content: center; }
+.stepper .dot.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stepper .dot.now { background: #fff; border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 6px var(--tint-1); }
+.step-label { position: absolute; left: 72px; right: 72px; text-align: center; color: var(--heading); font-weight: 800; font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; }
+
 
 /* ---- Typography ---- */
 .hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
@@ -102,7 +126,7 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .hero-accent { color: var(--accent); }
 
 /* ---- Inbrända undertexter (valfritt, --captions) ---- */
-.captions { position: absolute; left: 72px; right: 72px; top: 1196px; display: flex; justify-content: center; pointer-events: none; }
+.captions { position: absolute; left: 72px; right: 72px; top: 1196px; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
 .captions .cue { background: rgba(255,255,255,0.92); border: 2px solid var(--border); border-radius: 20px; padding: 14px 28px; color: var(--heading); font-weight: 700; font-size: 31px; line-height: 1.25; text-align: center; max-width: 936px; box-shadow: var(--shadow); }
 
 /* ---- Preview-kontroller (döljs vid rendering) ---- */

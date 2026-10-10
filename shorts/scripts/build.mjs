@@ -1,84 +1,69 @@
 #!/usr/bin/env node
-// Bygger ett klipp: preview.html + MANUS.md + undertexter.srt + poster.jpg + <slug>.mp4
-// Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--captions]
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+// Bygger ett klipp: preview.html + MANUS.md + undertexter.srt + poster.jpg + carousel.pdf + <slug>.mp4 (undertexter inbrända)
+// Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--no-captions] [--no-carousel] [--variant b | --all-variants]
+import { mkdirSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { createRequire } from 'node:module';
-import { spawn, execSync } from 'node:child_process';
-import { loadBrand, loadClip, listClips, bundleHtml, manusMarkdown, srt, voWords, OUT_DIR } from './lib.mjs';
+import { loadBrand, loadClip, listClips, bundleHtml, manusMarkdown, srt, voWords, applyVariant, phases, OUT_DIR } from './lib.mjs';
+import { renderVideo, withPage, seekFrame } from './render.mjs';
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? (args.splice(i, 1), true) : false; };
 const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 2)[1] : null; };
 const noVideo = flag('--no-video');
-const withCaptions = flag('--captions');
+const withCaptions = !flag('--no-captions');
+const noCarousel = flag('--no-carousel');
+const allVariants = flag('--all-variants');
+const variantKey = opt('--variant');
 const audio = opt('--audio');
 const target = args[0];
-if (!target) { console.error('Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--captions]'); process.exit(1); }
+if (!target) { console.error('Användning: node shorts/scripts/build.mjs <slug|all> [--audio fil.mp3] [--no-video] [--no-captions] [--no-carousel] [--variant b | --all-variants]'); process.exit(1); }
 
-const require = createRequire(import.meta.url);
-function loadPlaywright() {
-  try { return require('playwright'); } catch {}
-  try { const g = execSync('npm root -g', { encoding: 'utf8' }).trim(); return require(join(g, 'playwright')); } catch {}
-  throw new Error('Playwright saknas. Installera: npm i -D playwright && npx playwright install chromium (eller globalt: npm i -g playwright)');
-}
-
-async function renderVideo(brand, clip, html, outDir) {
-  const { chromium } = loadPlaywright();
-  const { width, height, fps } = brand.format;
-  const htmlPath = join(outDir, 'preview.html');
-  const mp4 = join(outDir, `${clip.slug}${withCaptions ? '-undertextad' : ''}.mp4`);
-  const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu', '--font-render-hinting=none', '--hide-scrollbars'] });
-  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
-  await page.goto(pathToFileURL(htmlPath).href);
-  await page.evaluate(() => document.fonts.ready);
-  await page.evaluate(() => window.__setRenderMode());
-  const frames = await page.evaluate(() => LUP.timeline.frames);
-  const cdp = await page.context().newCDPSession(page);
-
-  const ffArgs = ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-'];
-  // mp4-namn: <slug>.mp4, eller <slug>-undertextad.mp4 med inbrända undertexter
-  if (audio) ffArgs.push('-i', audio);
-  ffArgs.push('-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', '-r', String(fps), '-movflags', '+faststart');
-  if (audio) ffArgs.push('-af', 'apad', '-shortest', '-c:a', 'aac', '-b:a', '160k');
-  ffArgs.push(mp4);
-  const ff = spawn('ffmpeg', ffArgs, { stdio: ['pipe', 'inherit', 'inherit'] });
-  const ffDone = new Promise((res, rej) => ff.on('close', (c) => (c === 0 ? res() : rej(new Error('ffmpeg exit ' + c)))));
-  const write = (buf) => new Promise((r) => (ff.stdin.write(buf) ? r() : ff.stdin.once('drain', r)));
-
-  const posterFrame = Math.round((LUPposter(brand)) * fps);
-  const t0 = Date.now();
-  for (let f = 0; f < frames; f++) {
-    await page.evaluate((fr) => new Promise((r) => { window.__seek(fr); requestAnimationFrame(() => r()); }), f);
-    const { data } = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 94 });
-    const buf = Buffer.from(data, 'base64');
-    if (f === posterFrame) writeFileSync(join(outDir, 'poster.jpg'), buf);
-    await write(buf);
-    if (f % 60 === 0) process.stdout.write(`  frame ${f}/${frames}\r`);
-  }
-  ff.stdin.end();
-  await ffDone;
-  await browser.close();
-  console.log(`  ${frames} frames på ${((Date.now() - t0) / 1000).toFixed(1)} s → ${mp4}`);
-  return mp4;
-}
 // Poster: mitt i lösningsfasen (flödet synligt)
-const LUPposter = (b) => b.timeline.intro + b.timeline.hook + b.timeline.problem + b.timeline.solution - 0.8;
+const LUPposter = (b) => phases(b).byKey.solution.end - 0.8;
+
+// Karusell: fyra sidor (hook, problem, lösning, outro) som PNG + en PDF att posta som dokument.
+async function renderCarousel(brand, clip, outDir) {
+  const { width, height, fps } = brand.format;
+  const { byKey } = phases(brand);
+  const htmlPath = join(outDir, '.carousel-src.html');
+  writeFileSync(htmlPath, bundleHtml(brand, clip, { captions: false }));
+  const times = [byKey.hook.start + 1.2, byKey.problem.start + 3.6, byKey.solution.start + 4.6, byKey.outro.start + 3.0];
+  await withPage(brand, htmlPath, async (page) => {
+    const pngs = [];
+    for (let i = 0; i < times.length; i++) {
+      await seekFrame(page, Math.round(times[i] * fps));
+      const f = join(outDir, `carousel-${i + 1}.png`);
+      writeFileSync(f, await page.screenshot({ type: 'png' }));
+      pngs.push(f);
+    }
+    const pdfHtml = `<!doctype html><html><head><meta charset="utf-8"><style>@page{size:${width}px ${height}px;margin:0}html,body{margin:0;padding:0}img{display:block;width:${width}px;height:${height}px;page-break-after:always}img:last-child{page-break-after:auto}</style></head><body>${pngs.map((p) => `<img src="${pathToFileURL(p).href}">`).join('')}</body></html>`;
+    const pdfSrc = join(outDir, '.carousel-pdf.html'); writeFileSync(pdfSrc, pdfHtml);
+    await page.goto(pathToFileURL(pdfSrc).href); await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode())));
+    await page.pdf({ path: join(outDir, 'carousel.pdf'), width: `${width}px`, height: `${height}px`, printBackground: true, preferCSSPageSize: true });
+    for (const f of [htmlPath, pdfSrc]) { try { unlinkSync(f); } catch {} }
+  });
+}
 
 async function build(slug) {
   const brand = loadBrand();
-  const clip = loadClip(slug);
-  const outDir = join(OUT_DIR, clip.slug);
+  const base = loadClip(slug);
+  const outDir = join(OUT_DIR, base.slug);
   mkdirSync(outDir, { recursive: true });
-  const html = bundleHtml(brand, clip, { captions: withCaptions });
-  writeFileSync(join(outDir, 'preview.html'), html);
-  writeFileSync(join(outDir, 'MANUS.md'), manusMarkdown(brand, clip));
-  writeFileSync(join(outDir, 'undertexter.srt'), srt(brand, clip));
-  const words = voWords(clip);
-  console.log(`▶ ${clip.slug}: manus + preview skrivna (voiceover ${words} ord${words > brand.voiceoverMaxWords ? ' – ⚠️ över max ' + brand.voiceoverMaxWords : ''})`);
+  writeFileSync(join(outDir, 'MANUS.md'), manusMarkdown(brand, base));
+  writeFileSync(join(outDir, 'undertexter.srt'), srt(brand, base));
+  const words = voWords(base);
+  console.log(`▶ ${base.slug}: manus skrivet (voiceover ${words} ord${words > brand.voiceoverMaxWords ? ' – ⚠️ över max ' + brand.voiceoverMaxWords : ''})`);
   if (audio && !existsSync(audio)) throw new Error('Ljudfil saknas: ' + audio);
-  if (!noVideo) await renderVideo(brand, clip, html, outDir);
+  const keys = allVariants ? [null, ...Object.keys(base.variants || {})] : [variantKey || null];
+  for (const key of keys) {
+    const clip = applyVariant(base, key);
+    const suffix = (key ? `-hook-${key}` : '') + (withCaptions ? '' : '-utan-undertexter');
+    const htmlPath = join(outDir, key ? `preview-hook-${key}.html` : 'preview.html');
+    writeFileSync(htmlPath, bundleHtml(brand, clip, { captions: withCaptions }));
+    if (!noVideo) await renderVideo({ brand, htmlPath, mp4: join(outDir, `${base.slug}${suffix}.mp4`), audio, posterFrame: key ? null : Math.round(LUPposter(brand) * brand.format.fps), posterPath: key ? null : join(outDir, 'poster.jpg'), label: base.slug + (key ? '-' + key : '') });
+  }
+  if (!noVideo && !noCarousel) { await renderCarousel(brand, base, outDir); console.log('  karusell: carousel.pdf + carousel-1..4.png'); }
   console.log(`✓ ${outDir}`);
 }
 

@@ -1,0 +1,24 @@
+{
+  "slug": "en-dag-pa-siten",
+  "title": "En dag på siten – idag och med LUPNUMBER",
+  "icon": "truck",
+  "hook": { "text": "Samma dag.\nTvå sätt.", "sub": "Idag överst. Med LUPNUMBER nederst." },
+  "labels": { "today": "Idag", "lup": "Med LUPNUMBER" },
+  "segmentDuration": 6.5,
+  "segments": [
+    { "clip": "07-ingen-vet-nar-bilen-kommer", "label": "Dagen innan", "today": "Ingen vet när bilarna kommer.", "lup": "Slot bokad. Ankomsten är *känd.*", "voiceover": "Dagen innan. Idag vet ingen när bilarna kommer. Med LUPNUMBER är sloten bokad och ankomsten känd." },
+    { "clip": "01-koer-vid-grinden", "label": "Vid grinden", "today": "Kö, papper och väntan.", "lup": "Incheckad i mobilen. Bommen går *upp.*", "voiceover": "Vid grinden. Idag kö, papper och väntan. Med LUPNUMBER checkar chauffören in i mobilen och bommen går upp." },
+    { "clip": "04-sakerhetsgenomgang", "label": "Säkerheten", "today": "En lapp på svenska. Ingen vet om den är läst.", "lup": "Läst och *kvitterat* på chaufförens språk.", "voiceover": "Säkerhetsgenomgången. Idag en lapp på svenska. Med LUPNUMBER läst och kvitterad på chaufförens språk." },
+    { "clip": "03-sprakforbistring", "label": "Instruktionen", "today": "Kör till port fyra. Eller?", "lup": "Samma instruktion, på *rätt språk.*", "voiceover": "Instruktionen. Idag pekande och gissande. Med LUPNUMBER kommer den på chaufförens eget språk." },
+    { "clip": "05-fel-port", "label": "På området", "today": "Fel port. Rundor. Backning.", "lup": "Rätt port. *Första gången.*", "voiceover": "På området. Idag fel port och rundor. Med LUPNUMBER visas vägen till rätt port direkt." },
+    { "clip": "02-vem-ar-pa-siten", "label": "Överblicken", "today": "Vem är här? Radio och gissningar.", "lup": "Hela yarden i *realtid.*", "voiceover": "Överblicken. Idag radio och gissningar. Med LUPNUMBER ser du hela yarden i realtid." },
+    { "clip": "08-telefonen-i-vakten", "label": "Vakten", "today": "Telefonen ringer. Samma frågor.", "lup": "Beskeden går direkt till *chauffören.*", "voiceover": "Vakten. Idag ringer telefonen hela dagen. Med LUPNUMBER får chauffören beskedet direkt i mobilen." },
+    { "clip": "06-parmar-och-papper", "label": "Efteråt", "today": "Pärmar. Timmar att leta.", "lup": "Allt loggat. Svar på *sekunder.*", "voiceover": "Efteråt. Idag pärmar och letande. Med LUPNUMBER är allt loggat och sökbart på sekunder." },
+    { "clip": "09-larmet-gar", "label": "Om larmet går", "today": "Är alla ute? Ingen vet.", "lup": "Alla *räknade* vid samlingsplatsen.", "voiceover": "Och om larmet går. Idag vet ingen vem som är kvar. Med LUPNUMBER är alla räknade." }
+  ],
+  "cta": { "question": "Vilket steg kostar *er* mest tid?", "label": "Boka en demo", "url": "lupnumber.com" },
+  "voiceover": {
+    "hook": "Samma dag på siten. Två sätt att driva den.",
+    "outro": "Vilket steg kostar er mest tid? Boka en demo på lupnumber.com."
+  }
+}

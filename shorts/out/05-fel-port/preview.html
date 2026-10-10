@@ -54,11 +54,35 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
 .tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
 
-/* ---- Episode badge (top). Wordmarken morfar hit från intron, sep + ep positioneras i shell.js ---- */
-.badge { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 18px; }
+/* ---- Badge (uppe till vänster från frame 0): liten wordmark + serienamn ---- */
+.badge { position: absolute; left: 72px; top: 64px; display: flex; align-items: center; gap: 18px; }
+.badge .wordmark { font-size: 34px; }
 .badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
-.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; }
-.wm-layer { position: absolute; left: 0; top: 0; transform-origin: top left; }
+.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* ---- Outro: fråga + handling ---- */
+.cta-question { color: var(--heading); font-weight: 800; font-size: 60px; line-height: 1.1; letter-spacing: -0.03em; text-align: center; max-width: 900px; }
+.cta-question em { font-style: normal; color: var(--accent); }
+
+/* ---- Flödesfilm: två paneler (idag / med LUPNUMBER) ---- */
+.panel { position: absolute; left: 56px; width: 968px; border-radius: 32px; background: var(--card); border: 2px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.panel.today { background: #FBFDFF; }
+.panel.lup { border-color: var(--accent); background: linear-gradient(180deg, var(--tint-2) 0%, #FFFFFF 70%); }
+.panel .tag { position: absolute; left: 24px; top: 20px; display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 8px 18px; font-weight: 800; font-size: 20px; letter-spacing: 0.12em; text-transform: uppercase; }
+.panel.today .tag { background: var(--tint-1); color: var(--muted); }
+.panel.lup .tag { background: var(--accent); color: #fff; }
+.panel .line { position: absolute; left: 32px; right: 32px; bottom: 22px; text-align: center; font-weight: 700; font-size: 30px; line-height: 1.2; letter-spacing: -0.01em; }
+.panel.today .line { color: var(--muted); }
+.panel.lup .line { color: var(--heading); }
+.panel .hero-slot { position: absolute; left: 50%; top: 66px; width: 936px; height: 400px; transform-origin: top center; }
+.stepper { position: absolute; left: 72px; right: 72px; display: flex; align-items: center; }
+.stepper .track { position: absolute; left: 20px; right: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--border); }
+.stepper .fill { position: absolute; left: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--accent); transform-origin: left center; }
+.stepper .dot { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 3px solid var(--border); background: #fff; color: var(--muted); font-weight: 800; font-size: 19px; display: flex; align-items: center; justify-content: center; }
+.stepper .dot.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stepper .dot.now { background: #fff; border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 6px var(--tint-1); }
+.step-label { position: absolute; left: 72px; right: 72px; text-align: center; color: var(--heading); font-weight: 800; font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; }
+
 
 /* ---- Typography ---- */
 .hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
@@ -105,7 +129,7 @@ body { background: #0b1220; font-family: var(--font); color: var(--text); -webki
 .hero-accent { color: var(--accent); }
 
 /* ---- Inbrända undertexter (valfritt, --captions) ---- */
-.captions { position: absolute; left: 72px; right: 72px; top: 1196px; display: flex; justify-content: center; pointer-events: none; }
+.captions { position: absolute; left: 72px; right: 72px; top: 1196px; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
 .captions .cue { background: rgba(255,255,255,0.92); border: 2px solid var(--border); border-radius: 20px; padding: 14px 28px; color: var(--heading); font-weight: 700; font-size: 31px; line-height: 1.25; text-align: center; max-width: 936px; box-shadow: var(--shadow); }
 
 /* ---- Preview-kontroller (döljs vid rendering) ---- */
@@ -242,10 +266,9 @@ body.render .viewport { transform: none !important; }
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else (root.LUP = root.LUP || {}).captions = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
-  const ORDER = ['intro', 'hook', 'problem', 'solution', 'outro'];
   function phases(brand) {
     const T = brand.timeline; const list = []; let t = 0;
-    for (const k of ORDER) { list.push({ key: k, start: t, end: t + T[k] }); t += T[k]; }
+    for (const k of Object.keys(T)) { list.push({ key: k, start: t, end: t + T[k] }); t += T[k]; }
     return { list, total: t, byKey: Object.fromEntries(list.map((p) => [p.key, p])) };
   }
   const words = (s) => (String(s).trim().match(/\S+/g) || []);
@@ -258,7 +281,6 @@ body.render .viewport { transform: none !important; }
       const parts = Math.ceil(w.length / maxWords), per = Math.ceil(w.length / parts);
       for (let i = 0; i < w.length; i += per) out.push(w.slice(i, i + per).join(' '));
     }
-    // slå ihop mycket korta cues (≤2 ord) med nästa om det ryms
     const merged = [];
     for (const c of out) {
       const prev = merged[merged.length - 1];
@@ -267,27 +289,31 @@ body.render .viewport { transform: none !important; }
     }
     return merged;
   }
-  function cues(brand, clip) {
-    const cfg = Object.assign({ maxWordsPerCue: 7, minCueSeconds: 0.9 }, brand.captions || {});
-    const { byKey } = phases(brand);
+  // beats: [{ key, start, end, text }] → cues tidsatta inom varje beat, proportionellt mot ordantal
+  function cuesFromBeats(beats, cfgIn) {
+    const cfg = Object.assign({ maxWordsPerCue: 7, minCueSeconds: 0.9 }, cfgIn || {});
     const all = [];
-    for (const k of ['hook', 'problem', 'solution', 'outro']) {
-      const text = clip.voiceover && clip.voiceover[k]; if (!text) continue;
-      const ph = byKey[k];
-      const parts = splitCue(text, cfg.maxWordsPerCue);
+    for (const b of beats) {
+      if (!b.text) continue;
+      const parts = splitCue(b.text, cfg.maxWordsPerCue);
       const total = parts.reduce((a, p) => a + words(p).length, 0);
-      const w0 = ph.start + 0.25, w1 = ph.end - 0.15, span = w1 - w0;
+      const w0 = b.start + 0.25, w1 = b.end - 0.15, span = w1 - w0;
       let t = w0;
       parts.forEach((p, i) => {
         let d = Math.max(cfg.minCueSeconds, (words(p).length / total) * span);
-        if (i === parts.length - 1) d = w1 - t; // sista cuen fyller ut beaten
-        all.push({ beat: k, start: +t.toFixed(3), end: +Math.min(w1, t + d).toFixed(3), text: p });
+        if (i === parts.length - 1) d = w1 - t;
+        all.push({ beat: b.key, start: +t.toFixed(3), end: +Math.min(w1, t + d).toFixed(3), text: p });
         t += d;
       });
     }
     return all;
   }
-  return { ORDER, phases, splitCue, cues, words };
+  function cues(brand, clip) {
+    const { byKey } = phases(brand);
+    const beats = ['hook', 'problem', 'solution', 'outro'].filter((k) => byKey[k] && clip.voiceover && clip.voiceover[k]).map((k) => ({ key: k, start: byKey[k].start, end: byKey[k].end, text: clip.voiceover[k] }));
+    return cuesFromBeats(beats, brand.captions);
+  }
+  return { phases, splitCue, cues, cuesFromBeats, words };
 });
 
 /* Yard-primitiver: färdiga delar att komponera scenvisualer av. Hero-ytan är 936×400 px.
@@ -498,75 +524,89 @@ body.render .viewport { transform: none !important; }
   LUP.yard = Y;
 })();
 
-/* LUPNUMBER shorts – LÅST MALL.
-   Intro (wordmark byggs upp och morfar in i badgen) → Hook → Problem → Lösning → Outro.
+/* LUPNUMBER shorts – LÅST MALL (hook först).
+   Frame 0 = badge + hook. Sedan Problem → Lösning → Outro (wordmark byggs upp, fråga, handling).
    Problem och lösning delar EN hero-visual ("samma kamera") som tonar från grått till sky.
-   Ett klipp byter bara text + ikon + (valfri) scenvisual. Rör inte tider/layout här per klipp. */
+   Ett klipp byter bara text + ikon + scenvisual + CTA. Rör inte tider/layout här per klipp. */
 (function () {
   const LUP = (window.LUP = window.LUP || {});
   const U = LUP.util;
+
+  // Minska fontstorlek tills texten ryms (bredd och antal rader). Används för hook och rubriker.
+  LUP.fitText = function (el, maxWidth, maxLines, minSize) {
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    const lh = parseFloat(getComputedStyle(el).lineHeight) / size;
+    for (let i = 0; i < 24; i++) {
+      el.style.fontSize = size + 'px';
+      const lines = Math.round(el.offsetHeight / (size * lh));
+      if ((el.scrollWidth <= maxWidth && lines <= maxLines) || size <= minSize) break;
+      size -= 3;
+    }
+  };
+
+  // Badge: liten wordmark + serienamn (används av klipp och film)
+  LUP.badge = function (brand) {
+    const badge = U.el('div', 'badge');
+    const wm = U.wordmark(34, brand); wm._letters.forEach((l) => (l.style.opacity = 1));
+    badge.append(wm, U.el('div', 'sep'), U.el('div', 'ep', brand.seriesName));
+    return badge;
+  };
+
+  // Outro: wordmark byggs upp, accentlinje, tagline, CTA-fråga, handling, URL, bolag. Identisk layout varje gång.
+  LUP.outro = function (layer, brand, cta) {
+    const wrap = U.css(U.el('div'), { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '22px' });
+    const wm = U.wordmark(120, brand);
+    const bar = U.css(U.el('div', 'wm-bar'), { width: '200px' });
+    const tag = U.el('div', 'tagline', brand.tagline); tag.style.fontSize = '26px';
+    const q = U.el('div', 'cta-question', (cta.question || '').replace(/\*(.+?)\*/g, '<em>$1</em>'));
+    U.css(q, { marginTop: cta.question ? '44px' : '0', display: cta.question ? 'block' : 'none' });
+    const pill = U.css(U.el('div', 'cta-pill', `<span>${cta.label}</span>${LUP.icon('arrow')}`), { marginTop: cta.question ? '10px' : '34px' });
+    const url = U.el('div', 'url', cta.url);
+    const co = U.css(U.el('div', 'company', brand.company), { marginTop: '30px' });
+    wrap.append(wm, bar, tag, q, pill, url, co); layer.append(wrap);
+    q.style.width = '900px'; LUP.fitText(q, 900, 2, 44);
+    return (l) => {
+      U.animateWordmark(wm, l, 0.05, 0.045, 0.5);
+      const barP = U.prog(l, 0.55, 0.4, U.easeInOut); bar.style.transform = `scaleX(${barP})`; bar.style.opacity = barP > 0 ? 1 : 0;
+      U.enter(tag, U.prog(l, 0.8, 0.4, U.easeOut), { dy: 12 });
+      U.enter(q, U.prog(l, 1.15, 0.5, U.easeOut), { dy: 22 });
+      U.enter(pill, U.prog(l, cta.question ? 1.75 : 1.2, 0.6, U.back), { dy: 0, scale: 0.7 });
+      U.enter(url, U.prog(l, cta.question ? 2.1 : 1.5, 0.45, U.easeOut), { dy: 12 });
+      U.enter(co, U.prog(l, 2.3, 0.5, U.easeOut), { dy: 10 });
+    };
+  };
 
   LUP.init = function (brand, clip, opts = {}) {
     const T = brand.timeline;
     const fps = brand.format.fps;
     const W = brand.format.width, H = brand.format.height;
     const starts = {}; let acc = 0;
-    for (const k of ['intro', 'hook', 'problem', 'solution', 'outro']) { starts[k] = acc; acc += T[k]; }
+    for (const k of Object.keys(T)) { starts[k] = acc; acc += T[k]; }
     const total = acc;
-    const IN = 0.4, OUT = 0.3; // fasövergång (sek)
+    const IN = 0.4, OUT = 0.3, LAP = 0.2;
     const HERO = { left: 72, top: 320, width: 936, height: 400 };
-    const BADGE = { left: 72, top: 64, size: 34 };
-    const INTRO_WM = 132;
+    const cta = Object.assign({}, brand.cta, clip.cta || {});
 
     const stage = document.querySelector('.stage');
     stage.innerHTML = '';
     stage.style.width = W + 'px'; stage.style.height = H + 'px';
-
-    // ---- Bakgrund ----
     const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
-
     const layer = (name) => { const p = U.el('div', 'phase phase-' + name); stage.appendChild(p); return p; };
     const P = { hook: layer('hook'), problem: layer('problem'), solution: layer('solution'), outro: layer('outro') };
-    const introLayer = layer('intro');
 
-    // ---- INTRO: accentlinje + tagline (wordmarken ligger i ett eget lager som morfar till badgen) ----
-    const introBar = U.css(U.el('div', 'wm-bar'), { position: 'absolute', width: '220px', left: (W - 220) / 2 + 'px' });
-    const introTag = U.css(U.el('div', 'tagline', brand.tagline), { position: 'absolute', left: 0, right: 0, textAlign: 'center', fontSize: '30px' });
-    introLayer.append(introBar, introTag);
+    // ---- Badge från frame 0 ----
+    const badge = LUP.badge(brand); stage.appendChild(badge);
 
-    // ---- Wordmark-lager (intro → badge) ----
-    const wmLayer = U.el('div', 'wm-layer');
-    const wm = U.wordmark(INTRO_WM, brand);
-    wmLayer.appendChild(wm);
-    stage.appendChild(wmLayer);
-    const badge = U.el('div', 'badge');
-    const badgeSep = U.el('div', 'sep');
-    const badgeEp = U.el('div', 'ep', `${brand.seriesLabel} ${String(clip.episode).padStart(2, '0')}`);
-    badge.append(badgeSep, badgeEp);
-    stage.appendChild(badge);
-    const geo = { wmW: 0, wmH: 0, x0: 0, y0: 0, scale: BADGE.size / INTRO_WM };
-    const layout = () => {
-      wmLayer.style.transform = 'none';
-      geo.wmW = wm.offsetWidth; geo.wmH = wm.offsetHeight;
-      geo.x0 = (W - geo.wmW) / 2; geo.y0 = H / 2 - geo.wmH / 2 - 60;
-      introBar.style.top = geo.y0 + geo.wmH + 28 + 'px';
-      introTag.style.top = geo.y0 + geo.wmH + 66 + 'px';
-      const smallH = geo.wmH * geo.scale, smallW = geo.wmW * geo.scale;
-      badge.style.left = BADGE.left + smallW + 18 + 'px';
-      badge.style.top = BADGE.top + (smallH - 26) / 2 + 'px';
-    };
-    layout();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
-
-    // ---- HOOK ----
+    // ---- HOOK (synlig från frame 0) ----
     const hookWrap = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' });
     const hookIcon = U.css(U.el('div', 'icon-circle', LUP.icon(clip.icon)), { width: '180px', height: '180px', marginBottom: '56px' });
     const hookText = U.el('div', 'hook-text');
     const hookWords = U.words(hookText, clip.hook.text);
     const hookSub = U.el('div', 'hook-sub', clip.hook.sub || '');
     hookWrap.append(hookIcon, hookText, hookSub); P.hook.appendChild(hookWrap);
+    hookText.style.width = '936px'; LUP.fitText(hookText, 936, 2, 64);
 
-    // ---- HERO (delas av problem + lösning) ----
+    // ---- HERO (problem + lösning) ----
     const scene = (clip.scene && LUP.scenes && LUP.scenes[clip.scene]) || null;
     const hero = U.css(U.el('div', 'hero'), { top: HERO.top + 'px', left: HERO.left + 'px', width: HERO.width + 'px', height: HERO.height + 'px', right: 'auto', opacity: 0, visibility: 'hidden' });
     stage.appendChild(hero);
@@ -575,8 +615,8 @@ body.render .viewport { transform: none !important; }
     const hasHero = !!heroSeek;
 
     // ---- PROBLEM ----
-    const probTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', right: '72px', top: '170px' });
-    U.words(probTitle, clip.problem.title, 'w');
+    const probTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', width: '936px', top: '170px' });
+    U.words(probTitle, clip.problem.title, 'w'); LUP.fitText(probTitle, 936, 2, 40);
     const probTitleWords = [...probTitle.querySelectorAll('.w')];
     const probChips = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: hasHero ? '850px' : '480px', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'flex-start' });
     const chipEls = (clip.problem.pains || []).map((txt) => {
@@ -588,8 +628,8 @@ body.render .viewport { transform: none !important; }
     P.problem.append(probTitle, probChips);
 
     // ---- LÖSNING ----
-    const solTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', right: '72px', top: '170px' });
-    U.words(solTitle, clip.solution.title, 'w');
+    const solTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', width: '936px', top: '170px' });
+    U.words(solTitle, clip.solution.title, 'w'); LUP.fitText(solTitle, 936, 2, 40);
     const solTitleWords = [...solTitle.querySelectorAll('.w')];
     const flowTop = hasHero ? 800 : 520;
     const flow = U.css(U.el('div', 'flow'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 'px' });
@@ -608,34 +648,25 @@ body.render .viewport { transform: none !important; }
     kicker.innerHTML = (clip.solution.kicker || '').replace(/\*(.+?)\*/g, '<em>$1</em>');
     P.solution.append(solTitle, flow, kicker);
 
-    // ---- OUTRO (identisk varje gång) ----
-    const outWrap = U.css(U.el('div'), { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '26px' });
-    const outWm = U.wordmark(120, brand);
-    const outTag = U.el('div', 'tagline', brand.tagline); outTag.style.fontSize = '26px';
-    const outCta = U.css(U.el('div', 'cta-pill', `<span>${brand.cta.label}</span>${LUP.icon('arrow')}`), { marginTop: '34px' });
-    const outUrl = U.el('div', 'url', brand.cta.url);
-    const outCo = U.css(U.el('div', 'company', brand.company), { position: 'absolute', bottom: '72px', left: 0, right: 0, textAlign: 'center' });
-    outWrap.append(outWm, outTag, outCta, outUrl); P.outro.append(outWrap, outCo);
+    // ---- OUTRO ----
+    const outroSeek = LUP.outro(P.outro, brand, cta);
 
-    // ---- Undertexter (valfritt) ----
+    // ---- Undertexter (standard på) ----
     let cueList = null, cueBox = null, cueEl = null;
-    if (opts.captions && LUP.captions) {
+    if (opts.captions !== false && LUP.captions) {
       cueList = LUP.captions.cues(brand, clip);
       cueBox = U.el('div', 'captions'); cueEl = U.el('div', 'cue', '');
       cueBox.appendChild(cueEl); stage.appendChild(cueBox);
     }
 
-    // ---- Per-frame ----
-    // Faserna överlappar med LAP sekunder så att nästa fas börjar tona in innan den förra är helt borta (inget tomt hål).
-    const LAP = 0.2;
     const setPhase = (ph, name, t) => {
-      const s = starts[name] - (name === 'intro' ? 0 : LAP), e = starts[name] + T[name];
-      const v = U.window(t, s, e, IN, OUT);
+      const s = Math.max(0, starts[name] - LAP), e = starts[name] + T[name];
+      const v = name === 'hook' ? 1 - U.prog(t, e - OUT, OUT, U.easeIn) : U.window(t, s, e, IN, name === 'outro' ? 0.001 : OUT);
       const vis = t >= s && t < e + 0.001;
       ph.style.visibility = vis ? 'visible' : 'hidden';
       ph.style.opacity = vis ? v : 0;
-      ph.style.transform = `translateY(${(1 - U.prog(t, s, IN, U.easeOut)) * 30}px)`;
-      return vis ? t - starts[name] : null; // l kan vara svagt negativt under överlappet; prog() klampar till 0
+      ph.style.transform = name === 'hook' ? 'none' : `translateY(${(1 - U.prog(t, s, IN, U.easeOut)) * 30}px)`;
+      return vis ? t - starts[name] : null;
     };
 
     function seek(frame) {
@@ -644,38 +675,18 @@ body.render .viewport { transform: none !important; }
       blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
       blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
       blobs[2].style.transform = `translate(${Math.sin(t * 0.3) * 18}px, ${Math.cos(t * 0.26) * 16}px)`;
+      badge.style.opacity = 1 - U.prog(t, starts.outro - 0.3, 0.3);
 
-      // Wordmark: byggs upp, morfar till badge-position, tonar ut vid outro
-      U.animateWordmark(wm, t, 0.15, 0.06, 0.5);
-      const m = U.prog(t, T.intro - 0.55, 0.7, U.easeInOut);
-      const sc = U.lerp(1, geo.scale, m);
-      wmLayer.style.transform = `translate(${U.lerp(geo.x0, BADGE.left, m)}px, ${U.lerp(geo.y0, BADGE.top, m)}px) scale(${sc})`;
-      wmLayer.style.opacity = 1 - U.prog(t, starts.outro - 0.3, 0.3);
-      // Badge-sep + avsnitt: in när morfen landat
-      const bp = U.prog(t, T.intro + 0.05, 0.4, U.easeOut);
-      badge.style.opacity = Math.min(bp, 1 - U.prog(t, starts.outro - 0.3, 0.3));
-      badge.style.transform = `translateX(${(1 - bp) * -16}px)`;
-
-      // INTRO (bar + tagline)
-      let l = setPhase(introLayer, 'intro', t);
+      // HOOK: allt synligt från frame 0, med en liten "landning"
+      let l = setPhase(P.hook, 'hook', t);
       if (l !== null) {
-        const barP = U.prog(l, 0.8, 0.45, U.easeInOut);
-        introBar.style.transform = `scaleX(${barP})`;
-        const outP = U.prog(l, T.intro - 0.6, 0.3, U.easeIn);
-        introBar.style.opacity = (barP > 0 ? 1 : 0) * (1 - outP);
-        U.enter(introTag, U.prog(l, 0.95, 0.45, U.easeOut), { dy: 14 });
-        introTag.style.opacity = U.prog(l, 0.95, 0.45) * (1 - outP);
+        const settle = U.prog(l, 0, 0.6, U.easeOut);
+        hookIcon.style.transform = `scale(${U.lerp(0.86, 1, U.back(settle))})`; hookIcon.style.opacity = 1;
+        hookWords.forEach((w, i) => { const p = U.prog(l, i * 0.04, 0.45, U.easeOut); w.style.opacity = 1; w.style.transform = `translateY(${(1 - p) * 10}px)`; });
+        U.enter(hookSub, U.prog(l, 0.35, 0.45, U.easeOut), { dy: 14 });
       }
 
-      // HOOK
-      l = setPhase(P.hook, 'hook', t);
-      if (l !== null) {
-        U.enter(hookIcon, U.prog(l, 0.1, 0.6, U.back), { dy: 0, scale: 0.4 });
-        hookWords.forEach((w, i) => U.enter(w, U.prog(l, 0.3 + i * 0.09, 0.5, U.easeOut), { dy: 40 }));
-        U.enter(hookSub, U.prog(l, 0.3 + hookWords.length * 0.09 + 0.25, 0.5, U.easeOut), { dy: 18 });
-      }
-
-      // HERO (problem + lösning, samma kamera)
+      // HERO
       if (hasHero) {
         const hs = starts.problem - LAP, he = starts.solution + T.solution;
         const vis = t >= hs && t < he;
@@ -684,13 +695,7 @@ body.render .viewport { transform: none !important; }
         hero.style.transform = `translateY(${(1 - U.prog(t, hs, IN, U.easeOut)) * 30}px)`;
         if (vis) {
           const inSol = t >= starts.solution;
-          heroSeek({
-            t: t - starts.problem,                       // sek sedan problemfasen började (svagt negativt under intoningen)
-            phase: inSol ? 'solution' : 'problem',
-            l: inSol ? t - starts.solution : t - starts.problem, // sek in i aktuell fas
-            p: U.prog(t, starts.solution - 0.1, 0.9, U.easeInOut), // 0 = problem (grått), 1 = lösning (sky)
-            P: T.problem, S: T.solution,
-          });
+          heroSeek({ t: t - starts.problem, phase: inSol ? 'solution' : 'problem', l: inSol ? t - starts.solution : t - starts.problem, p: U.prog(t, starts.solution - 0.1, 0.9, U.easeInOut), P: T.problem, S: T.solution });
         }
       }
 
@@ -715,13 +720,7 @@ body.render .viewport { transform: none !important; }
 
       // OUTRO
       l = setPhase(P.outro, 'outro', t);
-      if (l !== null) {
-        U.animateWordmark(outWm, l, 0.1, 0.045, 0.5);
-        U.enter(outTag, U.prog(l, 0.6, 0.45, U.easeOut), { dy: 14 });
-        U.enter(outCta, U.prog(l, 0.95, 0.6, U.back), { dy: 0, scale: 0.7 });
-        U.enter(outUrl, U.prog(l, 1.3, 0.45, U.easeOut), { dy: 14 });
-        U.enter(outCo, U.prog(l, 1.6, 0.5, U.easeOut), { dy: 10 });
-      }
+      if (l !== null) outroSeek(l);
 
       // UNDERTEXTER
       if (cueList) {
@@ -734,6 +733,7 @@ body.render .viewport { transform: none !important; }
     LUP.timeline = { starts, durations: T, total, fps, frames: Math.round(total * fps) };
     window.__seek = seek;
     window.__setRenderMode = () => document.body.classList.add('render');
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { [hookText, probTitle, solTitle].forEach((e) => { e.style.fontSize = ''; }); LUP.fitText(hookText, 936, 2, 64); LUP.fitText(probTitle, 936, 2, 40); LUP.fitText(solTitle, 936, 2, 40); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
     seek(0);
     return LUP.timeline;
   };
@@ -785,9 +785,9 @@ body.render .viewport { transform: none !important; }
 </script>
 <script>
 (function(){
-  const brand = {"company":"LUP Technologies","product":"LUPNUMBER","wordmark":{"accent":"LUP","heading":"NUMBER"},"tagline":"Molnbaserad yard management","seriesLabel":"KLIPP","cta":{"label":"Boka en demo","url":"lupnumber.com"},"format":{"width":1080,"height":1350,"fps":30},"timeline":{"intro":2,"hook":3,"problem":4.5,"solution":6.5,"outro":3.5},"voiceoverMaxWords":45,"captions":{"maxWordsPerCue":7,"minCueSeconds":0.9}};
-  const clip = {"slug":"05-fel-port","episode":5,"title":"Chauffören hittar inte rätt port","scene":"hitta-ratt","icon":"map","hook":{"text":"Fel port.\nIgen.","sub":"Tredje gången idag."},"problem":{"title":"Chauffören letar.\nTruckarna väntar.","pains":["Rundor på området","Backning i trängsel","Lastningen står still"]},"solution":{"title":"Med LUPNUMBER hittar alla rätt.","steps":[{"icon":"phone","label":"Checka in","sub":"Vid grinden"},{"icon":"map","label":"Få vägen","sub":"Till rätt port"},{"icon":"check","label":"Lasta","sub":"Direkt"}],"kicker":"Rätt port. *Första gången.*"},"voiceover":{"hook":"Fel port. Igen.","problem":"Chauffören letar, truckarna väntar och trängseln på området ökar.","solution":"Med LUPNUMBER får chauffören vägen till rätt port i mobilen redan vid incheckningen. Lastningen kan börja direkt.","outro":"Boka en demo på lupnumber.com."}};
-  const tl = LUP.init(brand, clip, {"captions":false});
+  const brand = {"company":"LUP Technologies","product":"LUPNUMBER","wordmark":{"accent":"LUP","heading":"NUMBER"},"tagline":"Molnbaserad yard management","seriesName":"Vardag på siten","cta":{"question":null,"label":"Boka en demo","url":"lupnumber.com"},"format":{"width":1080,"height":1350,"fps":30},"timeline":{"hook":2.5,"problem":4.5,"solution":6.5,"outro":4},"voiceoverMaxWords":45,"captions":{"maxWordsPerCue":7,"minCueSeconds":0.9}};
+  const clip = {"slug":"05-fel-port","episode":5,"title":"Chauffören hittar inte rätt port","scene":"hitta-ratt","icon":"map","hook":{"text":"Fel port.\nIgen.","sub":"Tredje gången idag."},"variants":{"b":{"hook":{"text":"Port 2. Nej, 4.\nNej, 7.","sub":"Tredje rundan på området."},"voiceover":{"hook":"Port två. Nej, fyra. Nej, sju."}}},"problem":{"title":"Chauffören letar.\nTruckarna väntar.","pains":["Rundor på området","Backning i trängsel","Lastningen står still"]},"solution":{"title":"Med LUPNUMBER hittar alla rätt.","steps":[{"icon":"phone","label":"Checka in","sub":"Vid grinden"},{"icon":"map","label":"Få vägen","sub":"Till rätt port"},{"icon":"check","label":"Lasta","sub":"Direkt"}],"kicker":"Rätt port. *Första gången.*"},"cta":{"question":"Hur ofta hamnar en bil vid *fel port* hos er?","label":"Svara i kommentarerna","url":"lupnumber.com"},"voiceover":{"hook":"Fel port. Igen.","problem":"Chauffören letar, truckarna väntar och trängseln på området ökar.","solution":"Med LUPNUMBER får chauffören vägen till rätt port i mobilen redan vid incheckningen. Lastningen kan börja direkt.","outro":"Hur ofta blir det fel port hos er? Skriv i kommentarerna."}};
+  const tl = LUP.init(brand, clip, {"captions":true});
   // Preview-kontroller (döljs i render-läge)
   const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
   scrub.max = tl.frames - 1;

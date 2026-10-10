@@ -1,6 +1,6 @@
 # lupnumber short
 
-> **LinkedIn-serien (19,5 s, 4:5) ligger i [`shorts/`](shorts/README.md)** – nio klipp, ett klipp = en JSON + en scenfil, `npm run klipp -- <slug>` ger mp4 + manus + undertexter. Alla manus: [`shorts/SERIE.md`](shorts/SERIE.md). Säg "gör nästa klipp om …" (se `.claude/skills/nytt-klipp`).
+> **LinkedIn-serien "Vardag på siten" ligger i [`shorts/`](shorts/README.md)** – nio klipp (17,5 s, 4:5, hook A/B, karusell) och en flödesfilm (idag överst, med LUPNUMBER nederst). Ett klipp = en JSON + en scenfil, `npm run klipp -- <slug> --all-variants` ger mp4 + manus + undertexter + karusell. Alla manus: [`shorts/SERIE.md`](shorts/SERIE.md). Säg "gör nästa klipp om …" (se `.claude/skills/nytt-klipp`).
 
 18-sekunders vertikalt (9:16, 1080×1920) reklamklipp för lupnumber.com, byggt med [Remotion](https://www.remotion.dev).
 

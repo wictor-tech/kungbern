@@ -12,7 +12,8 @@
     "klipp:nytt": "node shorts/scripts/new.mjs",
     "klipp:alla": "node shorts/scripts/build.mjs all",
     "klipp:test": "node shorts/scripts/test.mjs",
-    "klipp:serie": "node shorts/scripts/overview.mjs"
+    "klipp:serie": "node shorts/scripts/overview.mjs",
+    "film": "node shorts/scripts/film.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.200",

@@ -31,6 +31,8 @@ export function validateClip(clip) {
   need(Array.isArray(clip.solution?.steps) && clip.solution.steps.length === 3, 'solution.steps ska ha exakt 3 steg');
   need(clip.voiceover && ['hook', 'problem', 'solution', 'outro'].every((k) => typeof clip.voiceover[k] === 'string'), 'voiceover.{hook,problem,solution,outro} saknas');
   if (clip.scene) need(existsSync(join(SCENES_DIR, clip.scene + '.js')), `scenfil saknas: scenes/${clip.scene}.js`);
+  if (clip.variants) for (const [k, v] of Object.entries(clip.variants)) need(v.hook?.text, `variants.${k}.hook.text saknas`);
+  if (clip.cta) need(typeof clip.cta === 'object', 'cta ska vara ett objekt { question, label, url }');
   const all = JSON.stringify(clip);
   need(!/\bi grinden\b/i.test(all), 'skriv "vid grinden", inte "i grinden"');
 }
@@ -41,11 +43,20 @@ export const voWords = (clip) => wordCount(Object.values(clip.voiceover).join(' 
 export const phases = (brand) => captions.phases(brand);
 
 // En fil som funkar via file:// utan server: brand.css + motor + ikoner + mall + scen + klipp inlinade.
+// Variant = samma klipp med en annan hook (A/B). Returnerar en kopia av klippet.
+export function applyVariant(clip, key) {
+  if (!key) return clip;
+  const v = clip.variants && clip.variants[key];
+  if (!v) throw new Error(`Klipp "${clip.slug}" har ingen variant "${key}"`);
+  return { ...clip, hook: { ...clip.hook, ...v.hook }, voiceover: { ...clip.voiceover, ...(v.voiceover || {}) }, _variant: key };
+}
+
 export function bundleHtml(brand, clip, opts = {}) {
   const read = (p) => readFileSync(p, 'utf8');
   const css = read(join(BRAND_DIR, 'brand.css')).replaceAll('__FONTS__', pathToFileURL(join(BRAND_DIR, 'fonts')).href);
-  const js = ['engine.js', 'icons.js', 'captions.js', 'yard.js', 'shell.js'].map((f) => read(join(BRAND_DIR, f))).join('\n');
-  const scene = clip.scene ? read(join(SCENES_DIR, clip.scene + '.js')) : '';
+  const js = ['engine.js', 'icons.js', 'captions.js', 'yard.js', 'shell.js', ...(opts.film ? ['film.js'] : [])].map((f) => read(join(BRAND_DIR, f))).join('\n');
+  const sceneNames = opts.scenes || (clip.scene ? [clip.scene] : []);
+  const scene = sceneNames.map((n) => read(join(SCENES_DIR, n + '.js'))).join('\n');
   const { width, height } = brand.format;
   return `<!doctype html>
 <html lang="sv"><head><meta charset="utf-8">
@@ -66,7 +77,7 @@ export function bundleHtml(brand, clip, opts = {}) {
 (function(){
   const brand = ${JSON.stringify(brand)};
   const clip = ${JSON.stringify(clip)};
-  const tl = LUP.init(brand, clip, ${JSON.stringify({ captions: !!opts.captions })});
+  const tl = LUP.${opts.film ? 'initFilm' : 'init'}(brand, clip, ${JSON.stringify({ captions: opts.captions !== false })});
   // Preview-kontroller (döljs i render-läge)
   const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
   scrub.max = tl.frames - 1;
@@ -93,19 +104,21 @@ export function manusMarkdown(brand, clip) {
   const nl = (s) => s.replace(/\n/g, ' / ');
   const words = voWords(clip);
   const maxW = brand.voiceoverMaxWords;
+  const cta = { ...brand.cta, ...(clip.cta || {}) };
   const rows = [
-    [P.intro, 'Intro (låst)', `${brand.wordmark.accent}${brand.wordmark.heading} · ${brand.tagline}`, '—'],
-    [P.hook, 'Hook', [nl(clip.hook.text), clip.hook.sub].filter(Boolean).join(' · '), clip.voiceover.hook],
+    [P.hook, 'Hook (frame 0)', [nl(clip.hook.text), clip.hook.sub].filter(Boolean).join(' · '), clip.voiceover.hook],
     [P.problem, 'Problemet på siten', [nl(clip.problem.title), ...clip.problem.pains].join(' · '), clip.voiceover.problem],
     [P.solution, 'LUPNUMBER-lösningen', [nl(clip.solution.title), ...clip.solution.steps.map((s, i) => `${i + 1}. ${s.label}${s.sub ? ` (${s.sub})` : ''}`), clip.solution.kicker ? clip.solution.kicker.replace(/\*/g, '') : null].filter(Boolean).join(' · '), clip.voiceover.solution],
-    [P.outro, 'Outro / CTA (låst)', `${brand.wordmark.accent}${brand.wordmark.heading} · ${brand.cta.label} → ${brand.cta.url}`, clip.voiceover.outro],
+    [P.outro, 'Outro (låst layout)', [`${brand.wordmark.accent}${brand.wordmark.heading} · ${brand.tagline}`, cta.question ? cta.question.replace(/\*/g, '') : null, `${cta.label} → ${cta.url}`].filter(Boolean).join(' · '), clip.voiceover.outro],
   ];
-  return `# Manus – ${brand.seriesLabel} ${String(clip.episode).padStart(2, '0')}: ${clip.title || clip.slug}
+  const variants = Object.entries(clip.variants || {});
+  return `# Manus – ${brand.seriesName}: ${clip.title || clip.slug}
 
-- **Format:** ${brand.format.width}×${brand.format.height} (4:5, LinkedIn-flöde), ${total.toFixed(0)} s, ${brand.format.fps} fps
-- **Scen:** ${clip.scene || 'ingen egen scenvisual (standardlayout)'} · **Hook-ikon:** ${clip.icon}
+- **Format:** ${brand.format.width}×${brand.format.height} (4:5, LinkedIn-flöde), ${total} s, ${brand.format.fps} fps, undertexter inbrända
+- **Scen:** ${clip.scene || 'standardlayout'} · **Hook-ikon:** ${clip.icon}
 - **Voiceover:** ${words} ord (max ${maxW}) ${words > maxW ? '⚠️ FÖR LÅNGT' : '✓'}
-- **Dramaturgi:** Hook → Problemet på siten → LUPNUMBER-lösningen → CTA
+- **CTA:** ${cta.question ? cta.question.replace(/\*/g, '') + ' · ' : ''}${cta.label} · ${cta.url}
+- **Dramaturgi:** Hook (från frame 0) → Problemet på siten → LUPNUMBER-lösningen → Outro
 
 ## On-screen-text (det som syns i rutan)
 
@@ -120,13 +133,31 @@ ${rows.map(([p, beat, screen, vo]) => `| ${fmt(p.start)}–${fmt(p.end)} | ${bea
 ### Per beat
 
 ${['hook', 'problem', 'solution', 'outro'].map((k) => `- **${k[0].toUpperCase() + k.slice(1)}** (${fmt(P[k].start)}–${fmt(P[k].end)}): ${clip.voiceover[k]}`).join('\n')}
+${variants.length ? `
+## Hook-varianter (A/B)
+
+- **A (standard):** ${nl(clip.hook.text)}${clip.hook.sub ? ' · ' + clip.hook.sub : ''}
+${variants.map(([k, v]) => `- **${k.toUpperCase()}** (\`${clip.slug}-hook-${k}.mp4\`): ${nl(v.hook.text)}${v.hook.sub ? ' · ' + v.hook.sub : ''}${v.voiceover?.hook ? ' · VO: ' + v.voiceover.hook : ''}`).join('\n')}
+
+Posta A och B med en veckas mellanrum, jämför tittartid vid 3 s och 10 s samt antal kommentarer. Gör fler av vinnaren.
+` : ''}
+## Inläggstext (förslag, posta från en personlig profil)
+
+${clip.post || `${nl(clip.hook.text)} ${clip.hook.sub || ''}
+
+${clip.voiceover.problem}
+
+${clip.voiceover.solution}
+
+${cta.question ? cta.question.replace(/\*/g, '') : 'Hur ser det ut hos er?'} Skriv i kommentarerna.`}
 
 ## Checklista innan publicering
 
-- [ ] Rätt avsnittsnummer i badge (${brand.seriesLabel} ${String(clip.episode).padStart(2, '0')})
+- [ ] Första bildrutan visar hooken (ingen logga-först)
 - [ ] "vid grinden", inte "i grinden"
 - [ ] Voiceover ≤ ${maxW} ord och hinner läsas i tempo (~2,3 ord/s)
-- [ ] Undertexter: \`undertexter.srt\` ligger bredvid videon (eller rendera med \`--captions\` för inbrända)
+- [ ] Karusell (\`carousel.pdf\`) postad som dokument, separat från videon
+- [ ] Svara på varje kommentar inom en timme
 `;
 }
 

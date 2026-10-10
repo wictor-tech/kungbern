@@ -4,24 +4,59 @@
   "title": "Språkförbistring med chaufförer",
   "scene": "sprak",
   "icon": "globe",
-  "hook": { "text": "Kör till port fyra.\nEller?", "sub": "Fem språk vid grinden." },
+  "hook": {
+    "text": "Kör till port fyra.\nEller?",
+    "sub": "Fem språk vid grinden."
+  },
+  "variants": {
+    "b": {
+      "hook": {
+        "text": "Fem chaufförer.\nFem språk.",
+        "sub": "En grind."
+      },
+      "voiceover": {
+        "hook": "Fem chaufförer. Fem språk. En grind."
+      }
+    }
+  },
   "problem": {
     "title": "Instruktioner som\ninte går fram.",
-    "pains": ["Pekande och gissande", "Fel port, fel lastning", "Säkerhetsregler på svenska"]
+    "pains": [
+      "Pekande och gissande",
+      "Fel port, fel lastning",
+      "Säkerhetsregler på svenska"
+    ]
   },
   "solution": {
     "title": "Med LUPNUMBER förstår alla.",
     "steps": [
-      { "icon": "globe", "label": "Välj språk", "sub": "I mobilen" },
-      { "icon": "chat", "label": "Få instruktioner", "sub": "På sitt språk" },
-      { "icon": "check", "label": "Kvittera", "sub": "Och kör" }
+      {
+        "icon": "globe",
+        "label": "Välj språk",
+        "sub": "I mobilen"
+      },
+      {
+        "icon": "chat",
+        "label": "Få instruktioner",
+        "sub": "På sitt språk"
+      },
+      {
+        "icon": "check",
+        "label": "Kvittera",
+        "sub": "Och kör"
+      }
     ],
     "kicker": "Noll *missförstånd.*"
   },
+  "cta": {
+    "question": "Hur många språk hör ni vid grinden en vanlig vecka?",
+    "label": "Svara i kommentarerna",
+    "url": "lupnumber.com"
+  },
   "voiceover": {
     "hook": "Kör till port fyra. Eller?",
-    "problem": "Fem språk vid grinden och instruktioner som inte går fram. Fel port, fel lastning.",
+    "problem": "Fem språk vid grinden och instruktioner som inte går fram.",
     "solution": "Med LUPNUMBER väljer chauffören sitt språk i mobilen, får instruktionerna på sitt språk och kvitterar innan infart.",
-    "outro": "Boka en demo på lupnumber.com."
+    "outro": "Hur många språk hör ni vid grinden? Skriv i kommentarerna."
   }
 }

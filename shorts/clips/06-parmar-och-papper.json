@@ -4,24 +4,59 @@
   "title": "Pärmar och papperslogg",
   "scene": "papper",
   "icon": "search",
-  "hook": { "text": "Vem var här\ni tisdags?", "sub": "Pärmen vet. Kanske." },
+  "hook": {
+    "text": "Vem var här\ni tisdags?",
+    "sub": "Pärmen vet. Kanske."
+  },
+  "variants": {
+    "b": {
+      "hook": {
+        "text": "Tisdag 14:10.\nVem var det?",
+        "sub": "Pärmen vet. Kanske."
+      },
+      "voiceover": {
+        "hook": "Tisdag fjorton och tio. Vem var det?"
+      }
+    }
+  },
   "problem": {
     "title": "Besöksliggare,\nblock och pärmar.",
-    "pains": ["Oläsliga rader", "Timmar att leta", "Noll statistik"]
+    "pains": [
+      "Oläsliga rader",
+      "Timmar att leta",
+      "Noll statistik"
+    ]
   },
   "solution": {
     "title": "Med LUPNUMBER finns svaret.",
     "steps": [
-      { "icon": "phone", "label": "Checka in", "sub": "Digitalt" },
-      { "icon": "list", "label": "Loggas", "sub": "Automatiskt" },
-      { "icon": "search", "label": "Sök", "sub": "På sekunder" }
+      {
+        "icon": "phone",
+        "label": "Checka in",
+        "sub": "Digitalt"
+      },
+      {
+        "icon": "list",
+        "label": "Loggas",
+        "sub": "Automatiskt"
+      },
+      {
+        "icon": "search",
+        "label": "Sök",
+        "sub": "På sekunder"
+      }
     ],
     "kicker": "Allt *spårbart.*"
+  },
+  "cta": {
+    "question": "Hur lång tid tar det att hitta en incheckning från i tisdags?",
+    "label": "Svara i kommentarerna",
+    "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Vem var här i tisdags?",
     "problem": "Besöksliggare, block och pärmar. Oläsliga rader och timmar av letande.",
     "solution": "Med LUPNUMBER loggas varje incheckning automatiskt. Sök på regnummer, bolag eller tid och få svaret på sekunder.",
-    "outro": "Boka en demo på lupnumber.com."
+    "outro": "Hur snabbt hittar ni en gammal incheckning? Skriv i kommentarerna."
   }
 }

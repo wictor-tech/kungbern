@@ -3,10 +3,10 @@
   "product": "LUPNUMBER",
   "wordmark": { "accent": "LUP", "heading": "NUMBER" },
   "tagline": "Molnbaserad yard management",
-  "seriesLabel": "KLIPP",
-  "cta": { "label": "Boka en demo", "url": "lupnumber.com" },
+  "seriesName": "Vardag på siten",
+  "cta": { "question": null, "label": "Boka en demo", "url": "lupnumber.com" },
   "format": { "width": 1080, "height": 1350, "fps": 30 },
-  "timeline": { "intro": 2.0, "hook": 3.0, "problem": 4.5, "solution": 6.5, "outro": 3.5 },
+  "timeline": { "hook": 2.5, "problem": 4.5, "solution": 6.5, "outro": 4.0 },
   "voiceoverMaxWords": 45,
   "captions": { "maxWordsPerCue": 7, "minCueSeconds": 0.9 }
 }

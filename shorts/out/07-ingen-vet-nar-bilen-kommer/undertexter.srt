@@ -1,35 +1,35 @@
 1
-00:00:02,250 --> 00:00:04,850
+00:00:00,250 --> 00:00:02,350
 Tre bilar. Samtidigt.
 
 2
-00:00:05,250 --> 00:00:06,617
+00:00:02,750 --> 00:00:04,117
 Alla kommer klockan sju, portarna
 
 3
-00:00:06,617 --> 00:00:07,983
+00:00:04,117 --> 00:00:05,483
 står tomma på eftermiddagen och
 
 4
-00:00:07,983 --> 00:00:09,350
+00:00:05,483 --> 00:00:06,850
 lastningen går inte att planera.
 
 5
-00:00:09,750 --> 00:00:12,262
+00:00:07,250 --> 00:00:09,762
 Med LUPNUMBER bokar transportörerna slot i förväg.
 
 6
-00:00:12,262 --> 00:00:14,056
+00:00:09,762 --> 00:00:11,556
 Du ser dagens ankomster per
 
 7
-00:00:14,056 --> 00:00:15,850
+00:00:11,556 --> 00:00:13,350
 port och fördelar arbetet jämnt.
 
 8
-00:00:16,250 --> 00:00:18,833
-Boka en demo på lupnumber.
+00:00:13,750 --> 00:00:15,807
+När kommer era bilar?
 
 9
-00:00:18,833 --> 00:00:19,350
-com.
+00:00:15,807 --> 00:00:17,350
+Skriv i kommentarerna.

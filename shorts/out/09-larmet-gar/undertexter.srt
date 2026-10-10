@@ -1,31 +1,31 @@
 1
-00:00:02,250 --> 00:00:04,850
+00:00:00,250 --> 00:00:02,350
 Larmet går. Är alla ute?
 
 2
-00:00:05,250 --> 00:00:07,458
-Listan ligger i vakten, chaufförerna är inte
+00:00:02,750 --> 00:00:04,986
+Listan ligger i vakten och chaufförerna
 
 3
-00:00:07,458 --> 00:00:09,350
-med på den, och minuterna räknas.
+00:00:04,986 --> 00:00:06,850
+är inte med på den.
 
 4
-00:00:09,750 --> 00:00:11,997
-Med LUPNUMBER vet du exakt vilka som
+00:00:07,250 --> 00:00:09,403
+Med LUPNUMBER vet du exakt vilka
 
 5
-00:00:11,997 --> 00:00:14,245
-är på området, kan larma alla direkt
+00:00:09,403 --> 00:00:11,556
+som är på området och kan
 
 6
-00:00:14,245 --> 00:00:15,850
-och räkna in vid samlingsplatsen.
+00:00:11,556 --> 00:00:13,350
+räkna in alla vid samlingsplatsen.
 
 7
-00:00:16,250 --> 00:00:18,833
-Boka en demo på lupnumber.
+00:00:13,750 --> 00:00:16,270
+Hur räknar ni in chaufförerna vid larm?
 
 8
-00:00:18,833 --> 00:00:19,350
-com.
+00:00:16,270 --> 00:00:17,350
+Skriv i kommentarerna.

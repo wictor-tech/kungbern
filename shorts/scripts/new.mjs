@@ -17,11 +17,13 @@ if (existsSync(file)) { console.error('Finns redan: ' + file); process.exit(1); 
 const clip = {
   slug, episode, title: title || 'TODO titel', scene, icon: 'check',
   hook: { text: 'TODO hook\nmax två rader', sub: 'TODO underrad (valfri)' },
+  variants: { b: { hook: { text: 'TODO alternativ hook (A/B)', sub: '' }, voiceover: { hook: 'TODO' } } },
   problem: { title: 'TODO problemrubrik\nmax två rader', pains: ['TODO smärtpunkt 1', 'TODO smärtpunkt 2', 'TODO smärtpunkt 3'] },
   solution: { title: 'Med LUPNUMBER …', steps: [
     { icon: 'calendar', label: 'TODO steg 1', sub: '' }, { icon: 'phone', label: 'TODO steg 2', sub: '' }, { icon: 'check', label: 'TODO steg 3', sub: '' } ],
     kicker: 'TODO *slutkläm.*' },
-  voiceover: { hook: 'TODO', problem: 'TODO', solution: 'TODO', outro: 'Boka en demo på lupnumber.com.' },
+  cta: { question: 'TODO fråga som får folk att kommentera?', label: 'Svara i kommentarerna', url: 'lupnumber.com' },
+  voiceover: { hook: 'TODO', problem: 'TODO', solution: 'TODO', outro: 'TODO frågan igen. Skriv i kommentarerna.' },
 };
 writeFileSync(file, JSON.stringify(clip, null, 2) + '\n');
 console.log('Skapade ' + file);
@@ -32,8 +34,12 @@ if (scene && !existsSync(join(SCENES_DIR, scene + '.js'))) {
   const U = LUP.util;
   LUP.scenes = LUP.scenes || {};
   LUP.scenes['${scene}'] = {
-    problem: { mount(root, clip, brand) { root.innerHTML = '<svg width="936" height="460" viewBox="0 0 936 460"></svg>'; return (l, t) => { /* l = sek in i fasen */ }; } },
-    solution: { mount(root, clip, brand) { root.innerHTML = '<svg width="936" height="400" viewBox="0 0 936 400"></svg>'; return (l, t) => {}; } },
+    mount(root, clip, brand) {
+      const Y = LUP.yard, U = LUP.util;
+      const svg = Y.svg(root); // 936×400, samma kamera för problem och lösning
+      // TODO: komponera av Y.road / Y.truck / Y.gate / Y.card / Y.pill … (se scenes/grind-ko.js)
+      return (s) => { /* s.t, s.l, s.phase ('problem'|'solution'), s.p (0→1 vid lösningen) */ };
+    },
   };
 })();
 `);

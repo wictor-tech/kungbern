@@ -8,23 +8,55 @@
     "text": "Kö vid grinden.\nIgen.",
     "sub": "Varje morgon. Varje skift."
   },
+  "variants": {
+    "b": {
+      "hook": {
+        "text": "08:42.\nFjärde bilen i kö.",
+        "sub": "Lastningen skulle ha börjat 08:00."
+      },
+      "voiceover": {
+        "hook": "Åtta fyrtiotvå. Fjärde bilen i kö."
+      }
+    }
+  },
   "problem": {
     "title": "Chaufförer väntar.\nSiten står still.",
-    "pains": ["45 minuter i kö", "Papper vid grinden", "Ingen vet vem som är näst"]
+    "pains": [
+      "45 minuter i kö",
+      "Papper vid grinden",
+      "Ingen vet vem som är näst"
+    ]
   },
   "solution": {
     "title": "Med LUPNUMBER rullar det.",
     "steps": [
-      { "icon": "calendar", "label": "Boka slot", "sub": "Innan avresa" },
-      { "icon": "phone", "label": "Checka in", "sub": "I mobilen" },
-      { "icon": "gate", "label": "Kör in", "sub": "Vid grinden" }
+      {
+        "icon": "calendar",
+        "label": "Boka slot",
+        "sub": "Innan avresa"
+      },
+      {
+        "icon": "phone",
+        "label": "Checka in",
+        "sub": "I mobilen"
+      },
+      {
+        "icon": "gate",
+        "label": "Kör in",
+        "sub": "Vid grinden"
+      }
     ],
     "kicker": "Kön *försvinner.*"
+  },
+  "cta": {
+    "question": "Hur lång är kön hos er en måndag?",
+    "label": "Svara i kommentarerna",
+    "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Kö vid grinden. Igen.",
     "problem": "Chaufförer väntar, lastningen står still och ingen vet vem som är näst.",
     "solution": "Med LUPNUMBER bokar chauffören en slot, checkar in i mobilen och kör rakt in vid grinden. Kön försvinner.",
-    "outro": "Boka en demo på lupnumber.com."
+    "outro": "Hur lång är kön hos er en måndag? Skriv i kommentarerna."
   }
 }

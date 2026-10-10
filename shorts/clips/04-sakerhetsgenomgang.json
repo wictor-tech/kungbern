@@ -4,24 +4,59 @@
   "title": "Säkerhetsgenomgång på papper",
   "scene": "sakerhet",
   "icon": "shield",
-  "hook": { "text": "Säkerhetsgenomgång\npå papper.", "sub": "Läst? Förstått? Ingen vet." },
+  "hook": {
+    "text": "Säkerhetsgenomgång\npå papper.",
+    "sub": "Läst? Förstått? Ingen vet."
+  },
+  "variants": {
+    "b": {
+      "hook": {
+        "text": "Läst och förstått?\nIngen vet.",
+        "sub": "Säkerhetsgenomgången på papper."
+      },
+      "voiceover": {
+        "hook": "Läst och förstått? Ingen vet."
+      }
+    }
+  },
   "problem": {
     "title": "Regler som ingen\nkan intyga.",
-    "pains": ["Tio minuter vid grinden", "Lapp på svenska", "Ingen spårbarhet"]
+    "pains": [
+      "Tio minuter vid grinden",
+      "Lapp på svenska",
+      "Ingen spårbarhet"
+    ]
   },
   "solution": {
     "title": "Med LUPNUMBER är det kvitterat.",
     "steps": [
-      { "icon": "shield", "label": "Läs reglerna", "sub": "På sitt språk" },
-      { "icon": "check", "label": "Kvittera", "sub": "I mobilen" },
-      { "icon": "gate", "label": "Kör in", "sub": "Vid grinden" }
+      {
+        "icon": "shield",
+        "label": "Läs reglerna",
+        "sub": "På sitt språk"
+      },
+      {
+        "icon": "check",
+        "label": "Kvittera",
+        "sub": "I mobilen"
+      },
+      {
+        "icon": "gate",
+        "label": "Kör in",
+        "sub": "Vid grinden"
+      }
     ],
     "kicker": "Säkerheten *först.*"
+  },
+  "cta": {
+    "question": "Hur kvitterar era chaufförer säkerhetsreglerna?",
+    "label": "Svara i kommentarerna",
+    "url": "lupnumber.com"
   },
   "voiceover": {
     "hook": "Säkerhetsgenomgång på papper.",
     "problem": "Tio minuter vid grinden, en lapp på svenska, och ingen vet om den är läst.",
-    "solution": "Med LUPNUMBER läser chauffören reglerna på sitt språk, kvitterar i mobilen och är spårbar innan grinden går upp.",
-    "outro": "Boka en demo på lupnumber.com."
+    "solution": "Med LUPNUMBER läser chauffören reglerna på sitt språk och kvitterar i mobilen innan grinden går upp.",
+    "outro": "Hur kvitterar era chaufförer reglerna? Skriv i kommentarerna."
   }
 }

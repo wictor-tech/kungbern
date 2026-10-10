@@ -19,7 +19,7 @@ const TOLERANCE = 6; // medelavvikelse per cell (0–255)
 const require = createRequire(import.meta.url);
 const pw = (() => { try { return require('playwright'); } catch {} const g = execSync('npm root -g', { encoding: 'utf8' }).trim(); return require(join(g, 'playwright')); })();
 
-const keyTimes = (brand) => { const { byKey } = phases(brand); return [1.0, byKey.hook.start + 1.0, byKey.problem.start + 3.6, byKey.solution.start + 1.2, byKey.solution.start + 4.8, byKey.outro.start + 2.2]; };
+const keyTimes = (brand) => { const { byKey } = phases(brand); return [0.0, byKey.hook.start + 1.2, byKey.problem.start + 3.6, byKey.solution.start + 1.2, byKey.solution.start + 4.8, byKey.outro.start + 3.0]; };
 
 async function thumbs(brand, clip) {
   const html = bundleHtml(brand, clip);
