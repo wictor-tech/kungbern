@@ -1,0 +1,1958 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8">
+<title>LUPNUMBER – This is Sten. – The Morning Rush (60 s)</title>
+<style>/* LUPNUMBER – LÅSTA varumärkestokens. Ändra inte per klipp. */
+/* Inter levereras med repot (OFL) så att alla klipp renderas med exakt samma typsnitt. file:///home/user/kungbern/shorts/brand/fonts byts ut av build. */
+@font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-Medium.otf") format("opentype"), local("Inter Medium"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-SemiBold.otf") format("opentype"), local("Inter SemiBold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-Bold.otf") format("opentype"), local("Inter Bold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 800; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-ExtraBold.otf") format("opentype"), local("Inter ExtraBold"), local("Inter"); }
+:root {
+  --bg: #F5FAFE;
+  --card: #FFFFFF;
+  --border: #BAE6FD;
+  --accent: #0EA5E9;
+  --heading: #0C4A6E;
+  --text: #334155;
+  --muted: #64748B;
+  --tint-1: #E0F2FE;
+  --tint-2: #F0F9FF;
+  --tint-3: #ECFDF5;
+  --font: "Inter", "Inter Display", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --radius: 28px;
+  --radius-sm: 18px;
+  --shadow: 0 18px 40px rgba(14, 165, 233, 0.10), 0 2px 6px rgba(12, 74, 110, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #0b1220; font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+/* ---- Stage ---- */
+.stage {
+  position: relative;
+  width: 1080px; height: 1350px;
+  background: var(--bg);
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--text);
+}
+.stage * { will-change: transform, opacity; }
+
+.blob { position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
+.blob-1 { width: 820px; height: 820px; left: -300px; top: -260px; background: radial-gradient(circle, var(--tint-1) 0%, rgba(224,242,254,0) 70%); }
+.blob-2 { width: 760px; height: 760px; right: -300px; bottom: -220px; background: radial-gradient(circle, var(--tint-3) 0%, rgba(236,253,245,0) 70%); }
+.blob-3 { width: 520px; height: 520px; right: -120px; top: 180px; background: radial-gradient(circle, var(--tint-2) 0%, rgba(240,249,255,0) 70%); }
+
+.phase { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+
+/* ---- Wordmark ---- */
+.wordmark { display: inline-flex; align-items: baseline; font-weight: 800; letter-spacing: -0.04em; line-height: 1; white-space: nowrap; }
+.wordmark .wm-lup { color: var(--accent); }
+.wordmark .wm-number { color: var(--heading); }
+.wordmark i { display: inline-block; font-style: normal; }
+.wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+
+/* ---- Badge (uppe till vänster från frame 0): liten wordmark + serienamn ---- */
+.badge { position: absolute; left: 72px; top: 64px; display: flex; align-items: center; gap: 18px; }
+.badge .wordmark { font-size: 34px; }
+.badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
+.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* ---- Outro: fråga + handling ---- */
+.cta-question { color: var(--heading); font-weight: 800; font-size: 60px; line-height: 1.1; letter-spacing: -0.03em; text-align: center; max-width: 900px; }
+.cta-question em { font-style: normal; color: var(--accent); }
+
+/* ---- Flödesfilm: två paneler (idag / med LUPNUMBER) ---- */
+.panel { position: absolute; left: 56px; width: 968px; border-radius: 32px; background: var(--card); border: 2px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.panel.today { background: #FBFDFF; }
+.panel.lup { border-color: var(--accent); background: linear-gradient(180deg, var(--tint-2) 0%, #FFFFFF 70%); }
+.panel .tag { position: absolute; left: 24px; top: 20px; display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 8px 18px; font-weight: 800; font-size: 20px; letter-spacing: 0.12em; text-transform: uppercase; }
+.panel.today .tag { background: var(--tint-1); color: var(--muted); }
+.panel.lup .tag { background: var(--accent); color: #fff; }
+.panel .line { position: absolute; left: 32px; right: 32px; bottom: 22px; text-align: center; font-weight: 700; font-size: 30px; line-height: 1.2; letter-spacing: -0.01em; }
+.panel.today .line { color: var(--muted); }
+.panel.lup .line { color: var(--heading); }
+.panel .hero-slot { position: absolute; left: 50%; top: 66px; width: 936px; height: 400px; transform-origin: top center; }
+.stepper { position: absolute; left: 72px; right: 72px; display: flex; align-items: center; }
+.stepper .track { position: absolute; left: 20px; right: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--border); }
+.stepper .fill { position: absolute; left: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--accent); transform-origin: left center; }
+.stepper .dot { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 3px solid var(--border); background: #fff; color: var(--muted); font-weight: 800; font-size: 19px; display: flex; align-items: center; justify-content: center; }
+.stepper .dot.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stepper .dot.now { background: #fff; border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 6px var(--tint-1); }
+.step-label { position: absolute; left: 72px; right: 72px; text-align: center; color: var(--heading); font-weight: 800; font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; }
+
+
+/* ---- Typography ---- */
+.hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
+.hook-text .w { display: inline-block; }
+.hook-sub { color: var(--muted); font-weight: 600; font-size: 34px; text-align: center; margin-top: 28px; }
+.h1 { color: var(--heading); font-weight: 800; font-size: 58px; line-height: 1.08; letter-spacing: -0.03em; }
+.lead { color: var(--text); font-weight: 500; font-size: 30px; line-height: 1.35; }
+.kicker { color: var(--heading); font-weight: 800; font-size: 54px; letter-spacing: -0.03em; line-height: 1.1; }
+.kicker em { font-style: normal; color: var(--accent); }
+
+/* ---- Icon circle ---- */
+.icon-circle { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--card); border: 3px solid var(--border); color: var(--accent); box-shadow: var(--shadow); }
+.icon-circle svg { width: 52%; height: 52%; }
+
+/* ---- Cards ---- */
+.card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.chip { display: inline-flex; align-items: center; gap: 16px; background: var(--card); border: 2px solid var(--border); border-radius: 999px; padding: 18px 30px 18px 20px; color: var(--text); font-weight: 600; font-size: 29px; white-space: nowrap; }
+.chip .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--tint-1); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: 0 0 auto; }
+.chip .dot svg { width: 24px; height: 24px; }
+
+/* ---- Flow: numrerade accent-cirklar + linje + kort ---- */
+.flow { position: relative; display: flex; gap: 24px; align-items: stretch; }
+.flow-line { position: absolute; left: 148px; right: 148px; top: 0; height: 6px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.flow-line.ghost { background: var(--border); }
+.step { position: relative; flex: 1 1 0; padding: 68px 24px 34px; text-align: center; }
+.step .num { position: absolute; left: 50%; top: 0; width: 64px; height: 64px; margin-left: -32px; margin-top: -32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(14,165,233,0.35); }
+.step .ico { color: var(--accent); height: 72px; display: flex; align-items: center; justify-content: center; }
+.step .ico svg { width: 64px; height: 64px; }
+.step .label { color: var(--heading); font-weight: 800; font-size: 32px; letter-spacing: -0.02em; margin-top: 10px; line-height: 1.1; }
+.step .sub { color: var(--muted); font-weight: 600; font-size: 22px; margin-top: 8px; }
+
+/* ---- CTA ---- */
+.cta-pill { display: inline-flex; align-items: center; gap: 18px; background: var(--accent); color: #fff; font-weight: 800; font-size: 40px; padding: 28px 56px; border-radius: 999px; box-shadow: 0 22px 44px rgba(14,165,233,0.35); }
+.cta-pill svg { width: 40px; height: 40px; }
+.url { color: var(--heading); font-weight: 700; font-size: 36px; letter-spacing: -0.01em; }
+.company { color: var(--muted); font-weight: 600; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ---- Hero (scenvisuals) ---- */
+.hero { position: absolute; left: 72px; right: 72px; }
+.hero svg { overflow: visible; }
+.hero-road { fill: var(--border); }
+.hero-dash { stroke: #fff; stroke-width: 4; stroke-dasharray: 26 22; }
+.hero-muted { color: var(--muted); }
+.hero-accent { color: var(--accent); }
+
+/* ---- Inbrända undertexter (valfritt, --captions) ---- */
+.captions { position: absolute; left: 72px; right: 72px; top: 1196px; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
+.captions .cue { background: rgba(255,255,255,0.92); border: 2px solid var(--border); border-radius: 20px; padding: 14px 28px; color: var(--heading); font-weight: 700; font-size: 31px; line-height: 1.25; text-align: center; max-width: 936px; box-shadow: var(--shadow); }
+
+/* ---- Preview-kontroller (döljs vid rendering) ---- */
+.controls { font: 14px/1.4 var(--font); color: #cbd5e1; display: flex; gap: 12px; align-items: center; padding: 12px 16px; }
+.controls input[type=range] { flex: 1; }
+.controls button { background: #0EA5E9; color: #fff; border: 0; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
+body.render .controls { display: none; }
+body.overlay, body.overlay .stage { background: transparent !important; }
+body.overlay .stage { box-shadow: none; }
+/* Ljus overlay-variant för mörk film: vit text, vit badge, ikonen behåller accentfärgen */
+body.overlay-light .hook-text, body.overlay-light .wm-number, body.overlay-light .ep { color: #fff !important; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
+body.overlay-light .hook-sub { color: #E0F2FE !important; text-shadow: 0 2px 14px rgba(0,0,0,0.35); }
+body.overlay-light .sep { background: rgba(255,255,255,0.6) !important; }
+body.overlay-light .icon-circle { border-color: rgba(255,255,255,0.7); box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
+body.render .viewport { transform: none !important; }
+
+/* ---- Hero-film (LupnumberSiteDay) ---- */
+.hero-view { position: absolute; inset: 0; overflow: hidden; }
+.hero-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.hero-layer.near { color: var(--accent); }
+.hero-title { position: absolute; left: 72px; width: 936px; top: 150px; color: var(--heading); font-weight: 800; font-size: 56px; line-height: 1.1; letter-spacing: -0.03em; }
+.hero-title .w { display: inline-block; }
+.hero-sub { position: absolute; left: 72px; width: 936px; top: 290px; color: var(--muted); font-weight: 600; font-size: 30px; }
+.hero-dim { position: absolute; inset: 0; background: rgba(245,250,254,0.0); pointer-events: none; opacity: 0; background-color: rgba(245,250,254,0.9); }
+.hero-tap { position: absolute; left: 0; top: 0; width: 60px; height: 60px; border-radius: 50%; border: 4px solid var(--accent); background: rgba(14,165,233,0.18); opacity: 0; pointer-events: none; z-index: 6; }
+
+/* Telefon (420×820 vid skala 1, origin uppe till vänster) */
+.hero-phone { position: absolute; left: 0; top: 0; width: 420px; height: 820px; transform-origin: 0 0; opacity: 0; visibility: hidden; z-index: 5; }
+.ph-frame { position: absolute; inset: 0; border-radius: 54px; background: #fff; border: 6px solid var(--heading); box-shadow: 0 30px 80px rgba(12,74,110,0.25); overflow: hidden; }
+.ph-notch { position: absolute; left: 50%; top: 14px; width: 120px; height: 10px; margin-left: -60px; border-radius: 5px; background: var(--heading); opacity: .5; }
+.ph-screen { position: absolute; left: 18px; right: 18px; top: 44px; bottom: 24px; display: flex; flex-direction: column; }
+.ph-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 6px 14px; border-bottom: 2px solid var(--border); }
+.ph-wm { font-weight: 800; font-size: 26px; letter-spacing: -0.03em; color: var(--heading); } .ph-wm b { color: var(--accent); }
+.ph-site { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; }
+.ph-body { padding: 22px 6px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.ph-title { color: var(--heading); font-weight: 800; font-size: 34px; letter-spacing: -0.02em; line-height: 1.1; }
+.ph-label { color: var(--muted); font-weight: 600; font-size: 22px; }
+.ph-field { display: flex; align-items: center; gap: 4px; border: 3px solid var(--border); border-radius: 18px; padding: 18px 20px; font-weight: 800; font-size: 40px; color: var(--heading); letter-spacing: 0.04em; min-height: 84px; background: var(--tint-2); }
+.ph-caret { color: var(--accent); font-weight: 400; }
+.ph-langs { display: flex; gap: 12px; flex-wrap: wrap; }
+.ph-chip { border: 3px solid var(--border); border-radius: 999px; padding: 12px 22px; font-weight: 800; font-size: 26px; color: var(--muted); background: #fff; }
+.ph-chip.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+.ph-rules { display: flex; flex-direction: column; gap: 14px; }
+.ph-rule { display: flex; align-items: center; gap: 14px; color: var(--text); font-weight: 600; font-size: 25px; line-height: 1.15; }
+.ph-box { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; background: #fff; }
+.ph-box svg { width: 22px; height: 22px; opacity: 0; }
+.ph-rule.on .ph-box { background: var(--accent); border-color: var(--accent); } .ph-rule.on .ph-box svg { opacity: 1; }
+.ph-route { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0; }
+.ph-dist { font-weight: 800; font-size: 72px; color: var(--accent); letter-spacing: -0.03em; }
+.ph-arrow { color: var(--accent); } .ph-arrow svg { width: 90px; height: 90px; }
+.ph-state { display: flex; align-items: center; gap: 14px; color: var(--muted); font-weight: 700; font-size: 26px; } .ph-state svg { width: 40px; height: 40px; } .ph-state.ok { color: var(--accent); }
+.ph-btn { margin-top: auto; background: var(--accent); color: #fff; border-radius: 20px; padding: 22px; text-align: center; font-weight: 800; font-size: 28px; }
+.ph-btn.ghost { background: var(--tint-1); color: var(--muted); } .ph-btn.done { background: var(--heading); }
+
+/* Operatörsvy */
+.hero-panel { position: absolute; left: 72px; width: 936px; top: 745px; background: #fff; border: 2px solid var(--border); border-radius: 28px; box-shadow: var(--shadow); padding: 22px 28px 24px; opacity: 0; visibility: hidden; z-index: 4; }
+.op-head { display: flex; align-items: center; gap: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+.op-title { color: var(--heading); font-weight: 800; font-size: 28px; flex: 1; }
+.op-live { color: var(--accent); font-weight: 700; font-size: 20px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+.op-live i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px var(--tint-1); }
+.op-rows { display: flex; flex-direction: column; gap: 6px; padding: 12px 0 4px; }
+.op-row { display: grid; grid-template-columns: 170px 1fr auto; align-items: center; gap: 16px; padding: 9px 14px; border-radius: 14px; color: var(--text); font-weight: 600; font-size: 24px; }
+.op-row.hi { background: var(--tint-2); border: 2px solid var(--border); }
+.op-plate { font-weight: 800; color: var(--heading); font-size: 26px; letter-spacing: 0.02em; }
+.op-tags { display: flex; gap: 8px; } .op-tags i { font-style: normal; font-weight: 700; font-size: 20px; padding: 6px 12px; border-radius: 999px; background: var(--tint-1); color: var(--heading); white-space: nowrap; }
+.op-tags i.wait { background: #F1F5F9; color: var(--muted); }
+.op-stats { display: flex; gap: 14px; padding-top: 8px; }
+.op-action { flex: 1; text-align: center; background: var(--accent); color: #fff; font-weight: 800; font-size: 26px; padding: 16px; border-radius: 16px; }
+.op-action.done { background: var(--tint-1); color: var(--heading); }
+.op-kpi { flex: 1; background: var(--tint-2); border-radius: 16px; padding: 10px 16px; display: flex; align-items: baseline; gap: 10px; }
+.op-kpi b { color: var(--accent); font-size: 40px; font-weight: 800; } .op-kpi span { color: var(--muted); font-weight: 600; font-size: 22px; }
+
+/* ---- "This is Sten." (sten.js): scenlager, titelkort, stämplar, delad bild, frysbild ---- */
+.sc { position: absolute; inset: 0; display: none; }
+.sc.on { display: block; }
+.sc svg text { user-select: none; }
+.sten-title { position: absolute; left: 72px; top: 1030px; font-weight: 800; font-size: 64px; line-height: 1; color: var(--heading); letter-spacing: -0.03em; opacity: 0; z-index: 6; background: rgba(255,255,255,0.94); border: 2px solid var(--border); border-radius: 20px; padding: 16px 28px 18px; box-shadow: var(--shadow); }
+.sten-stamp { position: absolute; right: 72px; top: 72px; background: #fff; border: 2px solid var(--border); border-radius: 16px; padding: 10px 22px; font-weight: 800; font-size: 40px; color: var(--heading); box-shadow: var(--shadow); opacity: 0; letter-spacing: 0.02em; z-index: 6; }
+.sten-rubber { position: absolute; right: 56px; top: 1016px; border: 5px solid var(--accent); border-radius: 14px; padding: 8px 20px; font-weight: 800; font-size: 34px; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); opacity: 0; transform-origin: center; z-index: 6; background: rgba(255,255,255,0.6); }
+.split-left { position: absolute; left: 0; top: 0; width: 540px; height: 1350px; background: var(--tint-2); border-right: 2px solid var(--border); opacity: 0; visibility: hidden; z-index: 3; }
+.split-left .split-label { position: absolute; left: 60px; top: 150px; width: 420px; text-align: center; color: var(--muted); font-weight: 700; font-size: 24px; letter-spacing: 0.1em; text-transform: uppercase; }
+.sten-dawn { position: absolute; inset: 0; opacity: 0; background: linear-gradient(180deg, #C9E1F4 0%, #DFEEF9 38%, rgba(245,250,254,0) 68%); pointer-events: none; }
+.freeze-wrap { position: absolute; inset: 0; transform-origin: 0 0; }
+.freeze-wrap .copy { position: absolute; inset: 0; }
+.captions .cue br { display: block; }
+
+.viewport{transform-origin:top left;position:absolute;left:0;top:0}
+</style></head>
+<body>
+<div class="viewport"><div class="stage"></div></div>
+<div class="controls" style="position:fixed;left:0;right:0;bottom:0;background:#0b1220">
+  <button id="play">Spela</button>
+  <input id="scrub" type="range" min="0" max="0" value="0" step="1">
+  <span id="time">0.00 s · frame 0</span>
+</div>
+<script>/* LUPNUMBER shorts – animationsmotor. Allt styrs av tiden t (sekunder), inget beror på klockan. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+  const easeIn = (p) => p * p * p;
+  const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+  const back = (p) => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+  // 0..1 mellan start och start+dur, valfri easing
+  const prog = (t, start, dur, ease) => { const p = clamp((t - start) / dur, 0, 1); return ease ? ease(p) : p; };
+  // in/ut-kurva: tonar in över inDur, håller, tonar ut över outDur innan end
+  const window_ = (t, start, end, inDur, outDur) => {
+    if (t < start || t > end) return 0;
+    const a = prog(t, start, inDur, easeOut);
+    const b = 1 - prog(t, end - outDur, outDur, easeIn);
+    return Math.min(a, b);
+  };
+
+  // Färgblandning mellan två hexfärger, p = 0..1 (används för problem→lösning-toning)
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mix = (a, b, p) => { const A = hex(a), B = hex(b), q = clamp(p, 0, 1); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], q))).join(',')})`; };
+  const stagger = (t, start, i, step, dur, ease) => prog(t, start + i * step, dur, ease);
+
+  const el = (tag, cls, html) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  };
+  const css = (e, obj) => { for (const k in obj) e.style[k] = obj[k]; return e; };
+
+  // Standardentré: fade + slide upp (+ liten skala). p = 0..1
+  const enter = (e, p, opts = {}) => {
+    const dy = opts.dy ?? 28, s0 = opts.scale ?? 1, dx = opts.dx ?? 0;
+    e.style.opacity = clamp(p, 0, 1);
+    e.style.transform = `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px) scale(${lerp(s0, 1, p)})`;
+  };
+  const hide = (e) => { e.style.opacity = 0; };
+
+  // Splittar text i rader (\n) och ord, returnerar array av ord-spans
+  const words = (container, text, cls = 'w') => {
+    container.innerHTML = '';
+    const out = [];
+    text.split('\n').forEach((line, li) => {
+      if (li) container.appendChild(el('br'));
+      line.split(/\s+/).filter(Boolean).forEach((w, wi, arr) => {
+        const s = el('span', cls, w);
+        container.appendChild(s);
+        if (wi < arr.length - 1) container.appendChild(document.createTextNode(' '));
+        out.push(s);
+      });
+    });
+    return out;
+  };
+
+  // Wordmark: LUP (accent) + NUMBER (heading), bokstav för bokstav
+  const wordmark = (size, brand) => {
+    const w = el('div', 'wordmark');
+    w.style.fontSize = size + 'px';
+    const a = el('span', 'wm-lup'), b = el('span', 'wm-number');
+    [...brand.wordmark.accent].forEach((ch) => a.appendChild(el('i', null, ch)));
+    [...brand.wordmark.heading].forEach((ch) => b.appendChild(el('i', null, ch)));
+    w.appendChild(a); w.appendChild(b);
+    w._letters = [...w.querySelectorAll('i')];
+    return w;
+  };
+  // Bygger upp wordmark: start = när första bokstaven kommer, stagger per bokstav
+  const animateWordmark = (w, t, start, stagger = 0.07, dur = 0.5) => {
+    w._letters.forEach((L, i) => {
+      const p = prog(t, start + i * stagger, dur, back);
+      L.style.opacity = clamp(p * 1.5, 0, 1);
+      L.style.transform = `translateY(${(1 - p) * 0.35}em) scale(${lerp(0.7, 1, p)})`;
+    });
+  };
+
+  LUP.util = { clamp, lerp, easeOut, easeIn, easeInOut, back, prog, window: window_, mix, stagger, el, css, enter, hide, words, wordmark, animateWordmark };
+})();
+
+/* Ikonbibliotek – stroke-ikoner, 24x24, currentColor. Lägg till här, referera med namn i klipp-JSON. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const wrap = (inner, extra = '') =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${extra}>${inner}</svg>`;
+  LUP.icons = {
+    clock: wrap('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>'),
+    calendar: wrap('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9.5 15 1.8 1.8L15 13"/>'),
+    phone: wrap('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/><path d="m9.5 10.5 1.8 1.8L15 8.8"/>'),
+    gate: wrap('<path d="M4 21V9"/><path d="M2.5 21h3"/><path d="M4 11h16"/><circle cx="4" cy="11" r="1.6" fill="currentColor"/><path d="M9 11v-1.5M14 11v-1.5M19 11v-1.5"/>'),
+    truck: wrap('<path d="M2 6h11v10H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/>'),
+    check: wrap('<path d="m5 12.5 4.5 4.5L19 7.5"/>', 'stroke-width="2.6"'),
+    users: wrap('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.8"/><path d="M15.5 14.5a5 5 0 0 1 6 5"/>'),
+    globe: wrap('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
+    chat: wrap('<path d="M4 5.5h16v10H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>'),
+    map: wrap('<path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z"/><path d="M9 4v13.5M15 6.5V20"/>'),
+    clipboard: wrap('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4"/><path d="M8.5 10h7M8.5 14h4.5"/>'),
+    eye: wrap('<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.8"/>'),
+    bell: wrap('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
+    qr: wrap('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v1M17 20h4M20 17.5v.5"/>'),
+    warning: wrap('<path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4M12 17v.5"/>'),
+    cloud: wrap('<path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4.5 4.5 0 0 1 .4 9z"/>'),
+    arrow: wrap('<path d="M5 12h14M13 6l6 6-6 6"/>', 'stroke-width="2.4"'),
+    bolt: wrap('<path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12z"/>'),
+    search: wrap('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'),
+    handset: wrap('<path d="M5 3.5h3.5l1.8 4.5-2.3 1.6a11 11 0 0 0 6.4 6.4l1.6-2.3 4.5 1.8V19a2 2 0 0 1-2 2A15.5 15.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>'),
+    flag: wrap('<path d="M5 21V4"/><path d="M5 4h13l-3 4.5 3 4.5H5"/>'),
+    pen: wrap('<path d="m4 20 4-1 10.5-10.5a2.1 2.1 0 0 0-3-3L5 16z"/><path d="m13.5 7.5 3 3"/>'),
+    list: wrap('<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor"/><circle cx="3.5" cy="12" r="1" fill="currentColor"/><circle cx="3.5" cy="18" r="1" fill="currentColor"/>'),
+    shield: wrap('<path d="M12 2.5 4.5 5.5v5.5c0 4.8 3.2 8.4 7.5 10.5 4.3-2.1 7.5-5.7 7.5-10.5V5.5z"/><path d="m9 12 2 2 4-4"/>'),
+  };
+  LUP.icon = (name) => LUP.icons[name] || LUP.icons.check;
+})();
+
+/* Undertexts-cues ur voiceover + tidslinje. Körs både i Node (SRT) och i webbläsaren (inbrända undertexter). */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else (root.LUP = root.LUP || {}).captions = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  function phases(brand) {
+    const T = brand.timeline; const list = []; let t = 0;
+    for (const k of Object.keys(T)) { list.push({ key: k, start: t, end: t + T[k] }); t += T[k]; }
+    return { list, total: t, byKey: Object.fromEntries(list.map((p) => [p.key, p])) };
+  }
+  const words = (s) => (String(s).trim().match(/\S+/g) || []);
+  // Dela text i cues: först per mening, sedan i jämna bitar om max maxWords ord.
+  function splitCue(text, maxWords) {
+    const sentences = String(text).replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*/g) || [text];
+    const out = [];
+    for (const s of sentences) {
+      const w = words(s); if (!w.length) continue;
+      const parts = Math.ceil(w.length / maxWords), per = Math.ceil(w.length / parts);
+      for (let i = 0; i < w.length; i += per) out.push(w.slice(i, i + per).join(' '));
+    }
+    const merged = [];
+    for (const c of out) {
+      const prev = merged[merged.length - 1];
+      if (prev && words(prev).length <= 2 && words(prev).length + words(c).length <= maxWords) merged[merged.length - 1] = prev + ' ' + c;
+      else merged.push(c);
+    }
+    return merged;
+  }
+  // beats: [{ key, start, end, text }] → cues tidsatta inom varje beat, proportionellt mot ordantal
+  function cuesFromBeats(beats, cfgIn) {
+    const cfg = Object.assign({ maxWordsPerCue: 7, minCueSeconds: 0.9 }, cfgIn || {});
+    const all = [];
+    for (const b of beats) {
+      if (!b.text) continue;
+      const parts = splitCue(b.text, cfg.maxWordsPerCue);
+      const total = parts.reduce((a, p) => a + words(p).length, 0);
+      const w0 = b.start + 0.25, w1 = b.end - 0.15, span = w1 - w0;
+      let t = w0;
+      parts.forEach((p, i) => {
+        let d = Math.max(cfg.minCueSeconds, (words(p).length / total) * span);
+        if (i === parts.length - 1) d = w1 - t;
+        all.push({ beat: b.key, start: +t.toFixed(3), end: +Math.min(w1, t + d).toFixed(3), text: p });
+        t += d;
+      });
+    }
+    return all;
+  }
+  // beats: [{ key, start, end, text, cues?: [[relStart, relEnd, text], ...] }] → explicita cues där de finns, annars cuesFromBeats
+  function cuesFromScript(beats, cfgIn) {
+    const all = [];
+    for (const b of beats) {
+      if (b.cues && b.cues.length) for (const c of b.cues) all.push({ beat: b.key, start: +(b.start + c[0]).toFixed(3), end: +(b.start + c[1]).toFixed(3), text: c[2] });
+      else if (b.text) all.push(...cuesFromBeats([b], cfgIn));
+    }
+    return all;
+  }
+  function cues(brand, clip) {
+    const { byKey } = phases(brand);
+    const beats = ['hook', 'problem', 'solution', 'outro'].filter((k) => byKey[k] && clip.voiceover && clip.voiceover[k]).map((k) => ({ key: k, start: byKey[k].start, end: byKey[k].end, text: clip.voiceover[k] }));
+    return cuesFromBeats(beats, brand.captions);
+  }
+  return { phases, splitCue, cues, cuesFromBeats, cuesFromScript, words };
+});
+
+/* Yard-primitiver: färdiga delar att komponera scenvisualer av. Hero-ytan är 936×400 px.
+   Alla primitiver returnerar ett Item med .set({x,y,scale,rotate,opacity,color}) och .tone(p) (muted→accent). */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+  const C = { muted: '#64748B', accent: '#0EA5E9', heading: '#0C4A6E', border: '#BAE6FD', tint: '#E0F2FE', tint2: '#F0F9FF', tint3: '#ECFDF5', card: '#FFFFFF', text: '#334155', bg: '#F5FAFE' };
+  const FONT = 'Inter, system-ui, sans-serif';
+  const add = (parent, str) => { parent.insertAdjacentHTML('beforeend', str); return parent.lastElementChild; };
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const tone = (p) => U.mix(C.muted, C.accent, p);
+  const toneBg = (p) => U.mix(C.card, C.tint, p);
+  const fo = (inner, w, h, x = -w / 2, y = -h / 2) => `<foreignObject x="${x}" y="${y}" width="${w}" height="${h}"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;height:${h}px;display:flex;align-items:center;justify-content:center;color:inherit">${inner}</div></foreignObject>`;
+
+  class Item {
+    constructor(el, o = {}) { this.el = el; this.s = Object.assign({ x: 0, y: 0, scale: 1, rotate: 0, opacity: 1, color: null }, o); this.apply(); }
+    set(o) { Object.assign(this.s, o); this.apply(); return this; }
+    apply() { const s = this.s; this.el.setAttribute('transform', `translate(${s.x} ${s.y}) rotate(${s.rotate}) scale(${s.scale})`); this.el.style.opacity = U.clamp(s.opacity, 0, 1); if (s.color) this.el.style.color = s.color; }
+    tone(p) { return this.set({ color: tone(p) }); }
+    // "poppar" in med back-easing från start; returnerar progress
+    pop(t, start, dur = 0.5) { const p = U.prog(t, start, dur, U.back); this.set({ scale: Math.max(0.001, p) * (this.base || 1), opacity: U.clamp(p * 2, 0, 1) }); return p; }
+    fadeIn(t, start, dur = 0.4, dy = 14) { const p = U.prog(t, start, dur, U.easeOut); this.set({ opacity: p, y: (this.y0 ?? this.s.y) + (1 - p) * dy }); if (this.y0 == null) this.y0 = this.s.y; return p; }
+    q(sel) { return this.el.querySelector(sel); }
+  }
+  const item = (svg, inner, o) => new Item(add(svg, `<g>${inner}</g>`), o);
+
+  const Y = {
+    C, tone, toneBg, Item, FONT,
+    svg(root, w = 936, h = 400) { const s = add(root, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible"></svg>`); return s; },
+
+    // Väg: rundad bana med streckad mittlinje. Origin uppe till vänster.
+    road(svg, { x = 0, y = 300, w = 936, h = 16 } = {}) {
+      return item(svg, `<rect x="0" y="0" width="${w}" height="${h}" rx="${h / 2}" fill="${C.border}"/><line x1="20" y1="${h / 2}" x2="${w - 20}" y2="${h / 2}" stroke="#fff" stroke-width="4" stroke-dasharray="26 22"/>`, { x, y });
+    },
+
+    // Lastbil, sidovy. 132 bred, marken vid y=63 (origin uppe till vänster).
+    truck(svg, o = {}) {
+      return item(svg, `
+        <rect x="0" y="4" width="92" height="46" rx="8" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <path d="M92 20h24l16 16v14H92z" fill="#fff" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="99" y="24" width="12" height="11" rx="2" fill="currentColor" opacity=".35"/>
+        <circle cx="24" cy="54" r="9" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <circle cx="112" cy="54" r="9" fill="#fff" stroke="currentColor" stroke-width="4"/>`, Object.assign({ color: C.muted }, o));
+    },
+    // Lastbil uppifrån (för kartor). 64×30, origin i mitten, pekar åt höger.
+    truckTop(svg, o = {}) {
+      return item(svg, `<rect x="-40" y="-19" width="54" height="38" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/><rect x="17" y="-15" width="23" height="30" rx="5" fill="currentColor" opacity=".9"/>`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Bom. Stolpe 22×120, pivot (11,24). .open(p) fäller upp armen.
+    gate(svg, { len = 160, ...o } = {}) {
+      const it = item(svg, `
+        <rect x="0" y="0" width="22" height="120" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <g class="arm" transform-origin="11 24">
+          <rect x="11" y="18" width="${len}" height="12" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/>
+          <rect x="36" y="20" width="22" height="8" fill="currentColor"/><rect x="${36 + (len - 40) / 3}" y="20" width="22" height="8" fill="currentColor"/><rect x="${36 + (2 * (len - 40)) / 3}" y="20" width="22" height="8" fill="currentColor"/>
+        </g>
+        <circle cx="11" cy="24" r="7" fill="currentColor"/>`, Object.assign({ color: C.muted }, o));
+      it.arm = it.q('.arm');
+      it.open = (p) => { it.arm.setAttribute('transform', `rotate(${-82 * U.clamp(p, 0, 1)})`); return it; };
+      return it;
+    },
+
+    // Klocka, origin i mitten. .time(sek) snurrar visarna.
+    clock(svg, { r = 50, ...o } = {}) {
+      const it = item(svg, `<circle r="${r}" fill="#fff" stroke="currentColor" stroke-width="5"/><line class="h" y2="${-r * 0.5}" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><line class="m" y2="${-r * 0.74}" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle r="5" fill="currentColor"/>`, Object.assign({ color: C.muted }, o));
+      const h = it.q('.h'), m = it.q('.m');
+      it.time = (s) => { m.setAttribute('transform', `rotate(${s * 150})`); h.setAttribute('transform', `rotate(${s * 12 + 60})`); return it; };
+      return it;
+    },
+
+    // Ikon ur biblioteket, centrerad i origin.
+    icon(svg, { name, size = 64, ...o }) {
+      return item(svg, fo(`<div style="width:${size}px;height:${size}px">${LUP.icon(name)}</div>`, size, size), Object.assign({ color: C.muted }, o));
+    },
+
+    // Piller med valfri ikon och text, origin uppe till vänster. .text(str) byter text.
+    pill(svg, { text, icon = null, fontSize = 30, h = 60, bg = C.card, border = C.border, fg = C.heading, w = null, ...o }) {
+      const pad = 24, ic = icon ? 38 : 0;
+      const approx = (s) => s.length * fontSize * 0.58;
+      const width = w || Math.round(pad * 2 + ic + (icon ? 10 : 0) + approx(text));
+      const it = item(svg, `
+        <rect class="bg" width="${width}" height="${h}" rx="${h / 2}" fill="${bg}" stroke="${border}" stroke-width="3"/>
+        ${icon ? `<g class="ic" style="color:${fg}" transform="translate(${pad + ic / 2} ${h / 2})">${fo(`<div style="width:${ic - 6}px;height:${ic - 6}px">${LUP.icon(icon)}</div>`, ic, ic)}</g>` : ''}
+        <text class="tx" x="${pad + ic + (icon ? 10 : 0)}" y="${h / 2 + fontSize * 0.36}" font-family="${FONT}" font-weight="700" font-size="${fontSize}" fill="${fg}">${esc(text)}</text>`, o);
+      it.w = width; it.h = h;
+      const tx = it.q('.tx'), bgEl = it.q('.bg');
+      try { const real = tx.getComputedTextLength(); if (real > 0 && !w) { it.w = Math.round(pad * 2 + ic + (icon ? 10 : 0) + real); bgEl.setAttribute('width', it.w); } } catch (e) {}
+      it.text = (s, extra = 0) => { tx.textContent = s; try { const real = tx.getComputedTextLength(); it.w = Math.round(pad * 2 + ic + (icon ? 10 : 0) + real + extra); bgEl.setAttribute('width', it.w); } catch (e) {} return it; };
+      it.style = ({ bg: b, border: bd, fg: f }) => { if (b) bgEl.setAttribute('fill', b); if (bd) bgEl.setAttribute('stroke', bd); if (f) { tx.setAttribute('fill', f); const ic2 = it.q('.ic'); if (ic2) ic2.style.color = f; } return it; };
+      it.icon = (name) => { const d = it.q('.ic div div'); if (d) d.innerHTML = LUP.icon(name); return it; };
+      // Byt text/ikon när p passerar 0.5 (problem→lösning), utan att skriva om DOM varje frame
+      it.swap = (p, a, b) => { const want = p > 0.5 ? 1 : 0; if (it._sw !== want) { it._sw = want; const v = want ? b : a; if (v.text != null) it.text(v.text, v.extra || 0); if (v.icon) it.icon(v.icon); } return it; };
+      // problem→lösning: vit/muted → tint/heading
+      it.toneStyle = (p) => it.style({ bg: U.mix(C.card, C.tint, p), border: U.mix(C.border, C.tint, p), fg: U.mix(C.muted, C.heading, p) });
+      return it;
+    },
+
+    // Pratbubbla. Origin uppe till vänster, svans åt 'left' eller 'right'.
+    bubble(svg, { w = 300, h = 86, text, side = 'left', fontSize = 30, bg = C.card, border = C.border, fg = C.text, ...o }) {
+      const tail = side === 'left' ? `M26 ${h} l-14 22 l34 -22z` : `M${w - 26} ${h} l14 22 l-34 -22z`;
+      const it = item(svg, `
+        <path class="bg" d="M20 0 h${w - 40} a20 20 0 0 1 20 20 v${h - 40} a20 20 0 0 1 -20 20 h-${w - 40} a20 20 0 0 1 -20 -20 v-${h - 40} a20 20 0 0 1 20 -20z ${tail}" fill="${bg}" stroke="${border}" stroke-width="3" stroke-linejoin="round"/>
+        <text class="tx" x="${w / 2}" y="${h / 2 + fontSize * 0.36}" text-anchor="middle" font-family="${FONT}" font-weight="600" font-size="${fontSize}" fill="${fg}">${esc(text)}</text>`, o);
+      it.w = w; it.h = h;
+      it.text = (s) => { it.q('.tx').textContent = s; return it; };
+      it.style = ({ bg: b, border: bd, fg: f }) => { const e = it.q('.bg'); if (b) e.setAttribute('fill', b); if (bd) e.setAttribute('stroke', bd); if (f) it.q('.tx').setAttribute('fill', f); return it; };
+      it.toneStyle = (p) => it.style({ bg: U.mix(C.card, C.tint, p), border: U.mix(C.border, C.tint, p), fg: U.mix(C.muted, C.heading, p) });
+      it.swap = (p, a, b) => { const want = p > 0.5 ? 1 : 0; if (it._sw !== want) { it._sw = want; it.text(want ? b : a); } return it; };
+      return it;
+    },
+
+    // Kort (vit yta med kant). Origin uppe till vänster.
+    card(svg, { w, h, r = 24, bg = C.card, border = C.border, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="${r}" fill="${bg}" stroke="${border}" stroke-width="3"/>`, o);
+      it.style = ({ bg: b, border: bd }) => { const e = it.q('.bg'); if (b) e.setAttribute('fill', b); if (bd) e.setAttribute('stroke', bd); return it; };
+      return it;
+    },
+
+    // Text. anchor: start|middle|end
+    label(svg, { text, size = 28, weight = 700, fill = C.heading, anchor = 'start', ...o }) {
+      const it = item(svg, `<text class="tx" text-anchor="${anchor}" font-family="${FONT}" font-weight="${weight}" font-size="${size}" fill="${fill}" y="${size * 0.36}">${esc(text)}</text>`, o);
+      it.text = (s) => { it.q('.tx').textContent = s; return it; };
+      it.fill = (f) => { it.q('.tx').setAttribute('fill', f); return it; };
+      return it;
+    },
+
+    // Frågetecken, origin i mitten.
+    qmark(svg, { size = 56, ...o } = {}) {
+      return item(svg, `<text text-anchor="middle" y="${size * 0.36}" font-family="${FONT}" font-weight="800" font-size="${size}" fill="currentColor">?</text>`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Checkmärke i cirkel, origin i mitten.
+    check(svg, { r = 22, ...o } = {}) {
+      return item(svg, `<circle r="${r}" fill="currentColor"/><path d="M${-r * 0.42} ${r * 0.05} l${r * 0.3} ${r * 0.3} l${r * 0.55} -${r * 0.6}" fill="none" stroke="#fff" stroke-width="${r * 0.2}" stroke-linecap="round" stroke-linejoin="round"/>`, Object.assign({ color: C.accent }, o));
+    },
+
+    // Lastport (sedd uppifrån): docka med öppning nedåt och etikett. Origin uppe till vänster.
+    dock(svg, { w = 150, h = 68, text = '', fontSize = 28, ...o }) {
+      const it = item(svg, `
+        <rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>
+        <rect x="${w * 0.2}" y="${h - 8}" width="${w * 0.6}" height="10" rx="3" fill="currentColor" opacity=".9"/>
+        <text x="${w / 2}" y="${h / 2 + fontSize * 0.1}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="${fontSize}" fill="currentColor">${esc(text)}</text>`, Object.assign({ color: C.muted }, o));
+      return it;
+    },
+
+    // Kart-rutnät (ljust). Origin uppe till vänster.
+    grid(svg, { w, h, cell = 48, ...o }) {
+      let d = '';
+      for (let x = cell; x < w; x += cell) d += `M${x} 0 V${h} `;
+      for (let y = cell; y < h; y += cell) d += `M0 ${y} H${w} `;
+      return item(svg, `<path d="${d}" stroke="${C.tint}" stroke-width="2" fill="none"/>`, o);
+    },
+
+    // Sträcka (väg på karta eller kopplingslinje). .draw(p) ritar fram den, .at(p) ger punkt längs den.
+    path(svg, { d, width = 10, dash = null, ...o }) {
+      const it = item(svg, `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" ${dash ? `stroke-dasharray="${dash}"` : ''}/>`, Object.assign({ color: C.muted }, o));
+      const p = it.q('path'); const L = p.getTotalLength();
+      it.len = L;
+      if (!dash) { p.setAttribute('stroke-dasharray', L); p.setAttribute('stroke-dashoffset', L); }
+      it.draw = (q) => { if (!dash) p.setAttribute('stroke-dashoffset', L * (1 - U.clamp(q, 0, 1))); else it.set({ opacity: U.clamp(q * 2, 0, 1) }); return it; };
+      it.at = (q) => p.getPointAtLength(L * U.clamp(q, 0, 1));
+      it.angleAt = (q) => { const a = p.getPointAtLength(L * U.clamp(q, 0, 1)), b = p.getPointAtLength(L * U.clamp(q + 0.01, 0, 1)); return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI; };
+      return it;
+    },
+
+    // Kartnål, spetsen i origin.
+    pin(svg, o = {}) {
+      return item(svg, `<path d="M0 0 C-16 -22 -22 -30 -22 -42 a22 22 0 0 1 44 0 c0 12 -6 20 -22 42z" fill="currentColor"/><circle cy="-42" r="9" fill="#fff"/>`, Object.assign({ color: C.accent }, o));
+    },
+
+    // Telefon med skärm. Origin uppe till vänster. .screen är en <g> för eget innehåll (0,0 = skärmens övre vänstra hörn).
+    phone(svg, { w = 150, h = 270, ...o } = {}) {
+      const it = item(svg, `
+        <rect width="${w}" height="${h}" rx="22" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <rect x="${w / 2 - 22}" y="12" width="44" height="6" rx="3" fill="currentColor" opacity=".5"/>
+        <rect x="${w / 2 - 28}" y="${h - 16}" width="56" height="5" rx="2.5" fill="currentColor" opacity=".5"/>
+        <g class="screen" transform="translate(14 32)"></g>`, Object.assign({ color: C.muted }, o));
+      it.screen = it.q('.screen'); it.sw = w - 28; it.sh = h - 60;
+      return it;
+    },
+
+    // Pappersark med textrader. Origin uppe till vänster.
+    sheet(svg, { w = 200, h = 250, lines = 6, title = true, ...o } = {}) {
+      let rows = '';
+      const top = title ? 54 : 26;
+      if (title) rows += `<rect x="20" y="22" width="${w * 0.55}" height="12" rx="6" fill="currentColor" opacity=".7"/>`;
+      for (let i = 0; i < lines; i++) rows += `<rect x="20" y="${top + i * 26}" width="${w - 40 - (i % 3) * 22}" height="8" rx="4" fill="currentColor" opacity=".35"/>`;
+      return item(svg, `<rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>${rows}`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Pulserande punkt ("live"). .pulse(t)
+    dot(svg, { r = 8, ...o } = {}) {
+      const it = item(svg, `<circle class="ring" r="${r}" fill="currentColor" opacity=".3"/><circle r="${r}" fill="currentColor"/>`, Object.assign({ color: C.accent }, o));
+      const ring = it.q('.ring');
+      it.pulse = (t) => { const q = (t % 1.4) / 1.4; ring.setAttribute('r', r * (1 + q * 2.2)); ring.setAttribute('opacity', (1 - q) * 0.45); return it; };
+      return it;
+    },
+
+    // Enkel rad i en lista/tabell: origin uppe till vänster, w bred, 50 hög. cols = [{x, text, weight?}]
+    row(svg, { w, cols, h = 54, bg = 'transparent', fg = C.text, fontSize = 26, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="12" fill="${bg}"/>${cols.map((c) => `<text x="${c.x}" y="${h / 2 + fontSize * 0.36}" font-family="${FONT}" font-weight="${c.weight || 600}" font-size="${fontSize}" fill="${c.fill || fg}">${esc(c.text)}</text>`).join('')}`, o);
+      it.bg = (f) => { it.q('.bg').setAttribute('fill', f); return it; };
+      return it;
+    },
+  };
+  LUP.yard = Y;
+})();
+
+/* LUPNUMBER shorts – LÅST MALL (hook först).
+   Frame 0 = badge + hook. Sedan Problem → Lösning → Outro (wordmark byggs upp, fråga, handling).
+   Problem och lösning delar EN hero-visual ("samma kamera") som tonar från grått till sky.
+   Ett klipp byter bara text + ikon + scenvisual + CTA. Rör inte tider/layout här per klipp. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+
+  // Minska fontstorlek tills texten ryms (bredd och antal rader). Används för hook och rubriker.
+  LUP.fitText = function (el, maxWidth, maxLines, minSize) {
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    const lh = parseFloat(getComputedStyle(el).lineHeight) / size;
+    for (let i = 0; i < 24; i++) {
+      el.style.fontSize = size + 'px';
+      const lines = Math.round(el.offsetHeight / (size * lh));
+      if ((el.scrollWidth <= maxWidth && lines <= maxLines) || size <= minSize) break;
+      size -= 3;
+    }
+  };
+
+  // Badge: liten wordmark + serienamn (används av klipp och film)
+  LUP.badge = function (brand) {
+    const badge = U.el('div', 'badge');
+    const wm = U.wordmark(34, brand); wm._letters.forEach((l) => (l.style.opacity = 1));
+    badge.append(wm, U.el('div', 'sep'), U.el('div', 'ep', brand.seriesName));
+    return badge;
+  };
+
+  // Outro: wordmark byggs upp, accentlinje, tagline, CTA-fråga, handling, URL, bolag. Identisk layout varje gång.
+  LUP.outro = function (layer, brand, cta) {
+    const wrap = U.css(U.el('div'), { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '22px' });
+    const wm = U.wordmark(120, brand);
+    const bar = U.css(U.el('div', 'wm-bar'), { width: '200px' });
+    const tag = U.el('div', 'tagline', brand.tagline); tag.style.fontSize = '26px';
+    const q = U.el('div', 'cta-question', (cta.question || '').replace(/\*(.+?)\*/g, '<em>$1</em>'));
+    U.css(q, { marginTop: cta.question ? '44px' : '0', display: cta.question ? 'block' : 'none' });
+    // Omröstning: A/B/C-chips under frågan
+    const opts = U.css(U.el('div'), { display: cta.options ? 'flex' : 'none', gap: '16px', marginTop: '6px' });
+    const optEls = (cta.options || []).map((o, i) => { const c = U.el('div', 'chip', `<span class="dot" style="background:var(--accent);color:#fff">${'ABC'[i]}</span><span>${o}</span>`); opts.appendChild(c); return c; });
+    const pill = U.css(U.el('div', 'cta-pill', `<span>${cta.label}</span>${LUP.icon(cta.icon || 'chat')}`), { marginTop: cta.question ? '10px' : '34px' });
+    const url = U.el('div', 'url', cta.url);
+    const co = U.css(U.el('div', 'company', brand.company), { marginTop: '30px' });
+    wrap.append(wm, bar, tag, q, opts, pill, url, co); layer.append(wrap);
+    q.style.width = '900px'; LUP.fitText(q, 900, 2, 44); (LUP._refit = LUP._refit || []).push(() => { q.style.fontSize = ''; LUP.fitText(q, 900, 2, 44); });
+    return (l) => {
+      U.animateWordmark(wm, l, 0.05, 0.045, 0.5);
+      const barP = U.prog(l, 0.55, 0.4, U.easeInOut); bar.style.transform = `scaleX(${barP})`; bar.style.opacity = barP > 0 ? 1 : 0;
+      U.enter(tag, U.prog(l, 0.8, 0.4, U.easeOut), { dy: 12 });
+      U.enter(q, U.prog(l, 1.15, 0.5, U.easeOut), { dy: 22 });
+      optEls.forEach((c, i) => U.enter(c, U.prog(l, 1.5 + i * 0.15, 0.45, U.back), { dy: 0, dx: -20, scale: 0.9 }));
+      const pillAt = cta.question ? (cta.options ? 2.05 : 1.75) : 1.2;
+      U.enter(pill, U.prog(l, pillAt, 0.6, U.back), { dy: 0, scale: 0.7 });
+      U.enter(url, U.prog(l, pillAt + 0.35, 0.45, U.easeOut), { dy: 12 });
+      U.enter(co, U.prog(l, pillAt + 0.55, 0.5, U.easeOut), { dy: 10 });
+    };
+  };
+
+  LUP.init = function (brand, clip, opts = {}) {
+    const T = brand.timeline;
+    const fps = brand.format.fps;
+    const W = brand.format.width, H = brand.format.height;
+    const starts = {}; let acc = 0;
+    for (const k of Object.keys(T)) { starts[k] = acc; acc += T[k]; }
+    const total = acc;
+    const IN = 0.4, OUT = 0.3, LAP = 0.2;
+    const HERO = { left: 72, top: 320, width: 936, height: 400 };
+    const cta = Object.assign({}, brand.cta, clip.cta || {});
+
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = '';
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
+    const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
+    const layer = (name) => { const p = U.el('div', 'phase phase-' + name); stage.appendChild(p); return p; };
+    const P = { hook: layer('hook'), problem: layer('problem'), solution: layer('solution'), outro: layer('outro') };
+
+    // ---- Badge från frame 0 ----
+    const badge = LUP.badge(brand); stage.appendChild(badge);
+
+    // ---- HOOK (synlig från frame 0) ----
+    const hookWrap = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' });
+    const hookIcon = U.css(U.el('div', 'icon-circle', LUP.icon(clip.icon)), { width: '180px', height: '180px', marginBottom: '56px' });
+    const hookText = U.el('div', 'hook-text');
+    const hookWords = U.words(hookText, clip.hook.text);
+    const hookSub = U.el('div', 'hook-sub', clip.hook.sub || '');
+    hookWrap.append(hookIcon, hookText, hookSub); P.hook.appendChild(hookWrap);
+    hookText.style.width = '936px'; LUP.fitText(hookText, 936, 2, 64);
+
+    // ---- HERO (problem + lösning) ----
+    const scene = (clip.scene && LUP.scenes && LUP.scenes[clip.scene]) || null;
+    const hero = U.css(U.el('div', 'hero'), { top: HERO.top + 'px', left: HERO.left + 'px', width: HERO.width + 'px', height: HERO.height + 'px', right: 'auto', opacity: 0, visibility: 'hidden' });
+    stage.appendChild(hero);
+    const heroSeek = scene ? scene.mount(hero, clip, brand) : null;
+    if (!heroSeek) hero.remove();
+    const hasHero = !!heroSeek;
+
+    // ---- PROBLEM ----
+    const probTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', width: '936px', top: '170px' });
+    U.words(probTitle, clip.problem.title, 'w'); LUP.fitText(probTitle, 936, 2, 40);
+    const probTitleWords = [...probTitle.querySelectorAll('.w')];
+    const probChips = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: hasHero ? '850px' : '480px', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'flex-start' });
+    const chipEls = (clip.problem.pains || []).map((txt) => {
+      const c = U.el('div', 'chip');
+      c.appendChild(U.el('span', 'dot', LUP.icon('warning')));
+      c.appendChild(U.el('span', null, txt));
+      probChips.appendChild(c); return c;
+    });
+    P.problem.append(probTitle, probChips);
+
+    // ---- LÖSNING ----
+    const solTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', width: '936px', top: '170px' });
+    U.words(solTitle, clip.solution.title, 'w'); LUP.fitText(solTitle, 936, 2, 40);
+    const solTitleWords = [...solTitle.querySelectorAll('.w')];
+    const flowTop = hasHero ? 800 : 520;
+    const flow = U.css(U.el('div', 'flow'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 'px' });
+    const flowGhost = U.el('div', 'flow-line ghost');
+    const flowLine = U.el('div', 'flow-line');
+    flow.append(flowGhost, flowLine);
+    const stepEls = clip.solution.steps.map((s, i) => {
+      const st = U.el('div', 'card step');
+      st.appendChild(U.el('div', 'num', String(i + 1)));
+      st.appendChild(U.el('div', 'ico', LUP.icon(s.icon)));
+      st.appendChild(U.el('div', 'label', s.label));
+      st.appendChild(U.el('div', 'sub', s.sub || ''));
+      flow.appendChild(st); return st;
+    });
+    const kicker = U.css(U.el('div', 'kicker'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 316 + 'px', textAlign: 'center' });
+    kicker.innerHTML = (clip.solution.kicker || '').replace(/\*(.+?)\*/g, '<em>$1</em>');
+    P.solution.append(solTitle, flow, kicker);
+
+    // ---- OUTRO ----
+    const outroSeek = LUP.outro(P.outro, brand, cta);
+
+    // ---- Undertexter (standard på) ----
+    let cueList = null, cueBox = null, cueEl = null;
+    if (opts.captions !== false && LUP.captions) {
+      cueList = LUP.captions.cues(brand, clip);
+      cueBox = U.el('div', 'captions'); cueEl = U.el('div', 'cue', '');
+      cueBox.appendChild(cueEl); stage.appendChild(cueBox);
+    }
+
+    const setPhase = (ph, name, t) => {
+      const s = Math.max(0, starts[name] - LAP), e = starts[name] + T[name];
+      if (LUP._overlay) { const on = name === 'hook'; ph.style.visibility = on ? 'visible' : 'hidden'; ph.style.opacity = on ? 1 : 0; ph.style.transform = 'none'; return on ? t : null; }
+      const v = name === 'hook' ? 1 - U.prog(t, e - OUT, OUT, U.easeIn) : U.window(t, s, e, IN, name === 'outro' ? 0.001 : OUT);
+      const vis = t >= s && t < e + 0.001;
+      ph.style.visibility = vis ? 'visible' : 'hidden';
+      ph.style.opacity = vis ? v : 0;
+      ph.style.transform = name === 'hook' ? 'none' : `translateY(${(1 - U.prog(t, s, IN, U.easeOut)) * 30}px)`;
+      return vis ? t - starts[name] : null;
+    };
+
+    function seek(frame) {
+      LUP._lastFrame = frame;
+      const t = frame / fps;
+      blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
+      blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
+      blobs[2].style.transform = `translate(${Math.sin(t * 0.3) * 18}px, ${Math.cos(t * 0.26) * 16}px)`;
+      badge.style.opacity = 1 - U.prog(t, starts.outro - 0.3, 0.3);
+
+      // HOOK: allt synligt från frame 0, med en liten "landning"
+      let l = setPhase(P.hook, 'hook', t);
+      if (l !== null) {
+        const settle = U.prog(l, 0, 0.6, U.easeOut);
+        hookIcon.style.transform = `scale(${U.lerp(0.86, 1, U.back(settle))})`; hookIcon.style.opacity = 1;
+        hookWords.forEach((w, i) => { const p = U.prog(l, i * 0.04, 0.45, U.easeOut); w.style.opacity = 1; w.style.transform = `translateY(${(1 - p) * 10}px)`; });
+        U.enter(hookSub, U.prog(l, 0.35, 0.45, U.easeOut), { dy: 14 });
+      }
+
+      // HERO
+      if (hasHero && !LUP._overlay) {
+        const hs = starts.problem - LAP, he = starts.solution + T.solution;
+        const vis = t >= hs && t < he;
+        hero.style.visibility = vis ? 'visible' : 'hidden';
+        hero.style.opacity = U.window(t, hs, he, IN, OUT);
+        hero.style.transform = `translateY(${(1 - U.prog(t, hs, IN, U.easeOut)) * 30}px)`;
+        if (vis) {
+          const inSol = t >= starts.solution;
+          heroSeek({ t: t - starts.problem, phase: inSol ? 'solution' : 'problem', l: inSol ? t - starts.solution : t - starts.problem, p: U.prog(t, starts.solution - 0.1, 0.9, U.easeInOut), P: T.problem, S: T.solution });
+        }
+      }
+
+      // PROBLEM
+      l = setPhase(P.problem, 'problem', t);
+      if (l !== null) {
+        probTitleWords.forEach((w, i) => U.enter(w, U.prog(l, 0.1 + i * 0.06, 0.45, U.easeOut), { dy: 24 }));
+        const chipStart = hasHero ? 1.5 : 0.8;
+        chipEls.forEach((c, i) => U.enter(c, U.prog(l, chipStart + i * 0.35, 0.5, U.back), { dy: 0, dx: -40, scale: 0.9 }));
+      }
+
+      // LÖSNING
+      l = setPhase(P.solution, 'solution', t);
+      if (l !== null) {
+        solTitleWords.forEach((w, i) => U.enter(w, U.prog(l, 0.1 + i * 0.06, 0.45, U.easeOut), { dy: 24 }));
+        const f0 = hasHero ? 1.2 : 0.6;
+        flowGhost.style.opacity = U.prog(l, f0, 0.3);
+        flowLine.style.transform = `scaleX(${U.prog(l, f0 + 0.2, 1.2, U.easeInOut)})`;
+        stepEls.forEach((s, i) => U.enter(s, U.prog(l, f0 + 0.25 + i * 0.45, 0.6, U.back), { dy: 36, scale: 0.92 }));
+        U.enter(kicker, U.prog(l, f0 + 1.9, 0.6, U.easeOut), { dy: 22 });
+      }
+
+      // OUTRO
+      l = setPhase(P.outro, 'outro', t);
+      if (l !== null) outroSeek(l);
+
+      // UNDERTEXTER
+      if (cueList) {
+        const c = cueList.find((q) => t >= q.start && t < q.end);
+        if (c) { if (cueEl.textContent !== c.text) cueEl.textContent = c.text; cueBox.style.opacity = Math.min(U.prog(t, c.start, 0.15), 1 - U.prog(t, c.end - 0.15, 0.15)); }
+        else cueBox.style.opacity = 0;
+      }
+    }
+
+    LUP.timeline = { starts, durations: T, total, fps, frames: Math.round(total * fps) };
+    window.__seek = seek;
+    window.__setRenderMode = () => document.body.classList.add('render');
+    // Overlay: bara badge + hook på transparent bakgrund (läggs ovanpå egen film i klippprogram)
+    window.__setOverlayMode = (variant) => { LUP._overlay = true; document.body.classList.add('render', 'overlay'); if (variant === 'light') document.body.classList.add('overlay-light'); if (cueBox) cueBox.style.display = 'none'; blobs.forEach((b) => (b.style.display = 'none')); if (hasHero) hero.style.display = 'none'; seek(LUP._lastFrame || 0); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { [hookText, probTitle, solTitle].forEach((e) => { e.style.fontSize = ''; }); LUP.fitText(hookText, 936, 2, 64); LUP.fitText(probTitle, 936, 2, 40); LUP.fitText(solTitle, 936, 2, 40); (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    seek(0);
+    return LUP.timeline;
+  };
+})();
+
+/* LUPNUMBER hero-film "LupnumberSiteDay" – en sammanhängande värld (sidovy), en lastbil (ABC 123), kamera som rör sig,
+   telefon-närbilder för den digitala delen och en operatörsvy. Beats (längder) kommer från films/*.json så att samma
+   mall bygger både 60-sekundersfilmen och 25-sekundersklippet. Allt är tidsstyrt (deterministiskt per frame). */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+  const C = { muted: '#64748B', accent: '#0EA5E9', heading: '#0C4A6E', border: '#BAE6FD', tint: '#E0F2FE', tint2: '#F0F9FF', tint3: '#ECFDF5', card: '#FFFFFF', text: '#334155', bg: '#F5FAFE', grey: '#94A3B8', greyLight: '#CBD5E1' };
+  const FONT = 'Inter, system-ui, sans-serif';
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const NS = 'http://www.w3.org/2000/svg';
+  const add = (parent, str) => { parent.insertAdjacentHTML('beforeend', str); return parent.lastElementChild; };
+  const tr = (el, x, y, s = 1, r = 0) => el.setAttribute('transform', `translate(${x} ${y}) rotate(${r}) scale(${s})`);
+
+  // ---------- Världen (enheter = px vid skala 1). Marklinje y=560. ----------
+  const WORLD = { w: 3400, h: 700, ground: 560 };
+  const GATE_X = 1000, SIGN_X = 1320, DOCKS = [1700, 2080, 2460, 2840], DOCK_W = 240;
+
+  const TRUCK_LEN = 240;
+  function truckSvg(id, plate, color) {
+    // Dragbil + trailer, 240 enheter lång, framände vid x=240, hjul på marken (y=0 = mark)
+    return `<g class="truck ${id}" style="color:${color}">
+      <ellipse cx="120" cy="4" rx="122" ry="8" fill="rgba(12,74,110,0.10)"/>
+      <rect x="0" y="-122" width="152" height="96" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>
+      <rect x="0" y="-122" width="152" height="14" fill="currentColor" opacity=".18"/>
+      <text x="76" y="-68" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="27" fill="currentColor" opacity=".92">${esc(plate)}</text>
+      <path d="M152 -96 h50 a12 12 0 0 1 11 7 l15 36 v27 h-76z" fill="#fff" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M162 -88 h34 l12 30 h-46z" fill="currentColor" opacity=".22"/>
+      <rect x="152" y="-26" width="76" height="14" rx="3" fill="currentColor" opacity=".9"/>
+      <rect x="226" y="-20" width="12" height="10" rx="2" fill="currentColor"/>
+      <g fill="#fff" stroke="currentColor" stroke-width="5"><circle cx="34" cy="-14" r="16"/><circle cx="76" cy="-14" r="16"/><circle cx="196" cy="-14" r="16"/></g>
+      <g fill="currentColor"><circle cx="34" cy="-14" r="5"/><circle cx="76" cy="-14" r="5"/><circle cx="196" cy="-14" r="5"/></g>
+    </g>`;
+  }
+
+  function buildWorld(far, near, opts = {}) {
+    const docks = opts.docks || DOCKS, signText = opts.sign || 'PORT 1–4 →', W_ = opts.width || WORLD.w;
+    // Bakre lager (parallax 0.5): byggnader, silos, ljusmaster
+    let f = '';
+    for (const [x, w, h] of [[-300, 620, 230], [420, 380, 160], [900, 760, 210], [1750, 980, 260], [2800, 640, 190], [3500, 560, 220]])
+      f += `<rect x="${x}" y="${WORLD.ground - h}" width="${w}" height="${h}" rx="6" fill="${C.tint2}" stroke="${C.border}" stroke-width="3"/>`;
+    for (const x of [1500, 1540, 1580]) f += `<rect x="${x}" y="${WORLD.ground - 320}" width="30" height="320" rx="15" fill="${C.tint}" stroke="${C.border}" stroke-width="3"/>`;
+    for (let x = -100; x < W_ + 400; x += 450) f += `<rect x="${x}" y="${WORLD.ground - 300}" width="6" height="300" fill="${C.border}"/><rect x="${x - 22}" y="${WORLD.ground - 306}" width="50" height="10" rx="5" fill="${C.border}"/>`;
+    far.innerHTML = `<svg width="${W_ + 800}" height="${WORLD.h}" viewBox="-400 0 ${W_ + 800} ${WORLD.h}" style="overflow:visible">${f}</svg>`;
+
+    // Främre lager: mark, väg, staket, grind, bod, skylt, portar
+    let n = '';
+    n += `<rect x="-600" y="${WORLD.ground}" width="${W_ + 1400}" height="140" fill="${C.tint2}"/>`;
+    n += `<rect x="-600" y="${WORLD.ground - 2}" width="${W_ + 1400}" height="26" fill="${C.border}"/>`;
+    n += `<line x1="-600" y1="${WORLD.ground + 11}" x2="${W_ + 800}" y2="${WORLD.ground + 11}" stroke="#fff" stroke-width="5" stroke-dasharray="40 34"/>`;
+    // staket på insidan
+    for (let x = GATE_X + 60; x < W_; x += 120) n += `<rect class="w" x="${x}" y="${WORLD.ground - 80}" width="6" height="80" fill="currentColor" opacity=".35"/>`;
+    n += `<rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 76}" width="${W_ - GATE_X}" height="5" fill="currentColor" opacity=".3"/><rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 40}" width="${W_ - GATE_X}" height="5" fill="currentColor" opacity=".3"/>`;
+    // vaktbod
+    n += `<g class="w"><rect x="${GATE_X + 40}" y="${WORLD.ground - 200}" width="150" height="200" rx="10" fill="#fff" stroke="currentColor" stroke-width="5"/><rect x="${GATE_X + 60}" y="${WORLD.ground - 176}" width="110" height="70" rx="6" fill="${C.tint}" stroke="currentColor" stroke-width="4"/><rect x="${GATE_X + 20}" y="${WORLD.ground - 214}" width="190" height="16" rx="6" fill="currentColor"/></g>`;
+    // grindstolpe + bom (pivot vid stolpens topp)
+    n += `<g class="w"><rect x="${GATE_X - 14}" y="${WORLD.ground - 150}" width="28" height="150" rx="6" fill="#fff" stroke="currentColor" stroke-width="5"/>
+      <g class="arm" transform-origin="${GATE_X} ${WORLD.ground - 128}"><rect x="${GATE_X - 240}" y="${WORLD.ground - 136}" width="246" height="16" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>
+      <rect x="${GATE_X - 210}" y="${WORLD.ground - 133}" width="30" height="10" fill="currentColor"/><rect x="${GATE_X - 150}" y="${WORLD.ground - 133}" width="30" height="10" fill="currentColor"/><rect x="${GATE_X - 90}" y="${WORLD.ground - 133}" width="30" height="10" fill="currentColor"/></g>
+      <circle cx="${GATE_X}" cy="${WORLD.ground - 128}" r="9" fill="currentColor"/></g>`;
+    // stopplinje
+    n += `<rect class="w" x="${GATE_X - 262}" y="${WORLD.ground - 2}" width="14" height="26" fill="currentColor" opacity=".6"/>`;
+    // skylt i yarden
+    n += `<g class="w"><rect x="${SIGN_X}" y="${WORLD.ground - 250}" width="8" height="250" fill="currentColor" opacity=".6"/><rect x="${SIGN_X - 10}" y="${WORLD.ground - 300}" width="240" height="60" rx="10" fill="#fff" stroke="currentColor" stroke-width="4"/><text x="${SIGN_X + 108}" y="${WORLD.ground - 258}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">${signText}</text></g>`;
+    // portar: lastkaj med numrerade dörrar
+    const lastDock = docks[docks.length - 1];
+    n += `<rect class="w" x="${docks[0] - 120}" y="${WORLD.ground - 290}" width="${lastDock - docks[0] + 360}" height="290" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>`;
+    n += `<rect class="w" x="${docks[0] - 120}" y="${WORLD.ground - 290}" width="${lastDock - docks[0] + 360}" height="18" fill="currentColor" opacity=".18"/>`;
+    docks.forEach((x, i) => {
+      n += `<g class="dock dock${i + 1} w"><rect x="${x}" y="${WORLD.ground - 200}" width="${DOCK_W}" height="200" rx="6" fill="${C.tint2}" stroke="currentColor" stroke-width="4"/>
+        <rect class="door" x="${x}" y="${WORLD.ground - 200}" width="${DOCK_W}" height="200" rx="6" fill="${C.tint}" stroke="currentColor" stroke-width="4" transform-origin="${x + DOCK_W / 2} ${WORLD.ground - 200}"/>
+        <rect x="${x + 60}" y="${WORLD.ground - 254}" width="${DOCK_W - 120}" height="42" rx="21" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <text x="${x + DOCK_W / 2}" y="${WORLD.ground - 222}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">PORT ${i + 1}</text></g>`;
+    });
+    near.innerHTML = `<svg width="${W_ + 1200}" height="${WORLD.h + 200}" viewBox="-600 0 ${W_ + 1200} ${WORLD.h + 200}" style="overflow:visible"><g class="statics">${n}</g><g class="trucks"></g><g class="fx"></g></svg>`;
+    return near.querySelector('svg');
+  }
+
+  // ---------- Telefon-UI (DOM för skarp text). Skärm 380×760 vid skala 1. ----------
+  const PL = {
+    title: 'Zameldowanie kierowcy', plate: 'Numer rejestracyjny', lang: 'Wybierz język', next: 'Dalej', safety: 'Zasady bezpieczeństwa',
+    rules: ['Kask i kamizelka odblaskowa', 'Maks. 20 km/h na terenie', 'Zatrzymaj się przy rampie', 'Zakaz palenia'], confirm: 'Potwierdzam', confirmed: 'Potwierdzono', route: 'Jedź do rampy 3', dist: '140 m', wait: 'Czekaj na zgodę operatora', go: 'Zgoda. Wjedź na teren.',
+  };
+  const SV = { title: 'Incheckning', plate: 'Registreringsnummer', lang: 'Välj språk', next: 'Nästa' };
+
+  function buildPhone(root) {
+    root.innerHTML = `
+      <div class="ph-frame">
+        <div class="ph-notch"></div>
+        <div class="ph-screen">
+          <div class="ph-head"><span class="ph-wm"><b>LUP</b>NUMBER</span><span class="ph-site">Grind 1</span></div>
+          <div class="ph-body">
+            <div class="ph-title"></div>
+            <div class="ph-label"></div>
+            <div class="ph-field"><span class="ph-plate"></span><span class="ph-caret">|</span></div>
+            <div class="ph-langs"></div>
+            <div class="ph-rules"></div>
+            <div class="ph-route"></div>
+            <div class="ph-btn"></div>
+          </div>
+        </div>
+      </div>`;
+    const q = (s) => root.querySelector(s);
+    const langs = ['SV', 'PL', 'EN', 'DE'];
+    q('.ph-langs').innerHTML = langs.map((l) => `<div class="ph-chip" data-l="${l}">${l}</div>`).join('');
+    q('.ph-rules').innerHTML = PL.rules.map((r) => `<div class="ph-rule"><span class="ph-box">${LUP.icon('check')}</span><span>${r}</span></div>`).join('');
+    return {
+      el: root, title: q('.ph-title'), label: q('.ph-label'), field: q('.ph-field'), plate: q('.ph-plate'), caret: q('.ph-caret'), langs: q('.ph-langs'), chips: [...root.querySelectorAll('.ph-chip')],
+      rules: q('.ph-rules'), ruleEls: [...root.querySelectorAll('.ph-rule')], route: q('.ph-route'), btn: q('.ph-btn'),
+    };
+  }
+
+  // ---------- Operatörsvy (plattformen) ----------
+  function buildPanel(root) {
+    root.innerHTML = `
+      <div class="op-head"><span class="ph-wm"><b>LUP</b>NUMBER</span><span class="op-title"></span><span class="op-live"><i></i>Realtid</span></div>
+      <div class="op-rows"></div>
+      <div class="op-stats"></div>`;
+    return { el: root, title: root.querySelector('.op-title'), rows: root.querySelector('.op-rows'), stats: root.querySelector('.op-stats') };
+  }
+
+  LUP.heroParts = { WORLD, GATE_X, SIGN_X, DOCKS, DOCK_W, TRUCK_LEN, C, FONT, esc, add, tr, truckSvg, buildWorld, buildPhone, buildPanel, PL, SV };
+
+  LUP.initHero = function (brand, film, opts = {}) {
+    const fps = brand.format.fps, W = brand.format.width, H = brand.format.height;
+    const beats = film.beats.map((b) => ({ ...b }));
+    let acc = 0; beats.forEach((b) => { b.start = acc; acc += b.duration; b.end = acc; });
+    const total = acc;
+    const cta = Object.assign({}, brand.cta, film.cta || {});
+    const byId = Object.fromEntries(beats.map((b) => [b.id, b]));
+
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = '';
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
+    const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
+
+    // Världslager
+    const view = U.css(U.el('div', 'hero-view'), {});
+    const far = U.el('div', 'hero-layer far'), near = U.el('div', 'hero-layer near');
+    view.append(far, near); stage.appendChild(view);
+    const svg = buildWorld(far, near);
+    const trucksG = svg.querySelector('.trucks'), fxG = svg.querySelector('.fx');
+    const arm = svg.querySelector('.arm');
+    const hero = add(trucksG, truckSvg('hero', film.plate || 'ABC 123', C.accent));
+    const queue = [0, 1, 2].map((i) => add(trucksG, truckSvg('q' + i, ['KLM 456', 'XYZ 789', 'DEF 321'][i], C.grey)));
+    const others = [0, 1, 2].map((i) => add(trucksG, truckSvg('o' + i, ['GHI 654', 'JKL 987', 'MNO 135'][i], C.accent)));
+    trucksG.appendChild(hero); // hjälten ritas sist: framför parkerade bilar vid portarna
+    // "idag"-rekvisita vid boden: klocka, papper, frågetecken
+    const props = add(fxG, `<g class="props" style="color:${C.muted}">
+      <g transform="translate(${GATE_X - 20} ${WORLD.ground - 345})"><circle r="46" fill="#fff" stroke="currentColor" stroke-width="5"/><line class="hm" y2="-34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><line class="hh" y2="-22" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></g>
+      <g class="paper" transform="translate(${GATE_X - 110} ${WORLD.ground - 250})"><rect x="-26" y="-34" width="52" height="68" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/><path d="M-14 -14h28M-14 0h28M-14 14h18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></g>
+      <g class="qm" transform="translate(${GATE_X - 215} ${WORLD.ground - 330})"><text text-anchor="middle" y="22" font-family="${FONT}" font-weight="800" font-size="74" fill="currentColor">?</text></g>
+    </g>`);
+    const bridge = add(fxG, `<rect class="bridge" x="${DOCKS[2] + 60}" y="${WORLD.ground - 8}" width="${DOCK_W - 120}" height="10" rx="4" fill="${C.accent}" opacity="0"/>`);
+    const hud = add(fxG, `<g class="hud" opacity="0"><rect x="-150" y="-70" width="300" height="60" rx="30" fill="#fff" stroke="${C.border}" stroke-width="4"/><text class="hud-t" text-anchor="middle" y="-28" font-family="${FONT}" font-weight="800" font-size="30" fill="${C.heading}">Port 3 · 140 m →</text></g>`);
+
+    // Rubriker, telefon, panel, badge, outro, undertexter
+    const dim = U.el('div', 'hero-dim'); stage.appendChild(dim);
+    const titleEl = U.css(U.el('div', 'hero-title'), {});
+    stage.appendChild(titleEl);
+    const subEl = U.css(U.el('div', 'hero-sub'), {}); stage.appendChild(subEl);
+    const phoneRoot = U.el('div', 'hero-phone'); stage.appendChild(phoneRoot); const ph = buildPhone(phoneRoot);
+    const panelRoot = U.el('div', 'hero-panel'); stage.appendChild(panelRoot); const op = buildPanel(panelRoot);
+    const tapEl = U.el('div', 'hero-tap'); stage.appendChild(tapEl);
+    const badge = LUP.badge(brand); stage.appendChild(badge);
+    const outroLayer = U.el('div', 'phase phase-outro'); stage.appendChild(outroLayer);
+    const outroSeek = LUP.outro(outroLayer, brand, cta);
+    let cueList = null, cueBox = null, cueEl = null;
+    if (opts.captions !== false && LUP.captions) {
+      cueList = LUP.captions.cuesFromBeats(beats.filter((b) => b.caption).map((b) => ({ key: b.id, start: b.start, end: b.end, text: b.caption })), brand.captions);
+      cueBox = U.el('div', 'captions'); cueEl = U.el('div', 'cue', ''); cueBox.appendChild(cueEl); stage.appendChild(cueBox);
+    }
+
+    // ---------- Hjälpare ----------
+    const setTitle = (() => { let cur = null; return (txt) => { if (txt === cur) return; cur = txt; titleEl.innerHTML = ''; if (!txt) return; U.words(titleEl, txt, 'w'); titleEl.style.fontSize = ''; LUP.fitText(titleEl, 936, 2, 48); }; })();
+    const titleWords = () => [...titleEl.querySelectorAll('.w')];
+    // Kamera: x = världs-x i bildens mitt, s = skala, g = var marklinjen hamnar i stage (px)
+    let camera = { x: 600, s: 1.0, g: 990 };
+    const lerpCam = (a, b, p) => ({ x: U.lerp(a.x, b.x, p), s: U.lerp(a.s, b.s, p), g: U.lerp(a.g ?? 990, b.g ?? 990, p) });
+    const applyCamera = (cam) => {
+      const cx = 540, g = cam.g ?? 990;
+      // SVG-lagren har viewBox som börjar vid -600 (nära) respektive -400 (fjärran): kompensera
+      near.style.transform = `translate(${cx - (cam.x + 600) * cam.s}px, ${g - WORLD.ground * cam.s}px) scale(${cam.s})`;
+      const fs = cam.s * 0.9, fx = cam.x * 0.55 + 260;
+      far.style.transform = `translate(${cx - (fx + 400) * fs}px, ${g - 10 - WORLD.ground * fs}px) scale(${fs})`;
+    };
+    const worldToStage = (wx, wy, cam) => ({ x: 540 + (wx - cam.x) * cam.s, y: (cam.g ?? 990) + (wy - WORLD.ground) * cam.s });
+    const DOCK_DY = -70, DOCK_S = 0.86; // "inne vid porten": längre från kameran
+    const heroAt = (x, dy = 0, sc = 1) => tr(hero, x - TRUCK_LEN * sc, WORLD.ground + dy, sc); // x = framände
+    const place = (el, x, dy = 0, sc = 1) => tr(el, x - TRUCK_LEN * sc, WORLD.ground + dy, sc);
+    const placeDock = (el, x) => tr(el, x - TRUCK_LEN * DOCK_S, WORLD.ground + DOCK_DY, DOCK_S);
+    const toneWorld = (p) => { near.style.setProperty('color', U.mix(C.muted, C.accent, p)); near.style.setProperty('--wopacity', 1); far.style.opacity = U.lerp(0.75, 1, p); };
+    const phoneState = { vis: 0, scale: 1, screen: null };
+    const showPhone = (vis, scale, originX = 540, originY = 760) => {
+      phoneRoot.style.opacity = vis; phoneRoot.style.visibility = vis > 0.001 ? 'visible' : 'hidden';
+      const s = U.lerp(0.18, 0.95, scale);
+      const x = U.lerp(originX, 540, scale), y = U.lerp(originY, 775, scale);
+      phoneRoot.style.transform = `translate(${x - 210 * s}px, ${y - 410 * s}px) scale(${s})`;
+      dim.style.opacity = vis * scale * 0.55;
+    };
+    const showPanel = (vis, dy = 0) => { panelRoot.style.opacity = vis; panelRoot.style.visibility = vis > 0.001 ? 'visible' : 'hidden'; panelRoot.style.transform = `translateY(${dy}px)`; };
+    const tap = (vis, x, y) => { tapEl.style.opacity = vis; tapEl.style.transform = `translate(${x - 30}px, ${y - 30}px) scale(${U.lerp(0.6, 1.1, vis)})`; };
+    const phoneScreen = (mode) => {
+      if (phoneState.screen === mode) return; phoneState.screen = mode;
+      const show = (el, on) => (el.style.display = on ? '' : 'none');
+      show(ph.field, mode === 'plate' || mode === 'lang'); show(ph.langs, mode === 'lang'); show(ph.rules, mode === 'safety'); show(ph.route, mode === 'route' || mode === 'wait' || mode === 'go'); show(ph.btn, mode !== 'plate');
+      ph.label.textContent = mode === 'plate' ? SV.plate : mode === 'lang' ? SV.lang : mode === 'safety' ? PL.safety : '';
+      ph.title.textContent = mode === 'plate' ? SV.title : mode === 'lang' ? SV.title : mode === 'safety' ? PL.title : mode === 'route' ? PL.route : mode === 'wait' ? PL.title : PL.title;
+      ph.btn.textContent = mode === 'lang' ? SV.next : mode === 'safety' ? PL.confirm : mode === 'wait' ? PL.wait : mode === 'go' ? PL.go : PL.next;
+      ph.btn.className = 'ph-btn' + (mode === 'wait' ? ' ghost' : '');
+      ph.route.innerHTML = mode === 'route' ? `<div class="ph-dist">${PL.dist}</div><div class="ph-arrow">${LUP.icon('arrow')}</div>` : mode === 'wait' ? `<div class="ph-state">${LUP.icon('clock')}<span>${PL.wait}</span></div>` : mode === 'go' ? `<div class="ph-state ok">${LUP.icon('check')}<span>${PL.confirmed}</span></div>` : '';
+    };
+    const opRows = (() => { let cur = null; return (key, html) => { if (cur === key) return; cur = key; op.rows.innerHTML = html; }; })();
+    const opStats = (() => { let cur = null; return (html) => { if (cur === html) return; cur = html; op.stats.innerHTML = html; }; })();
+
+    // SFX-händelser (absoluta tider) – exporteras till ljudmixen
+    const events = [];
+    const ev = (t, sfx, gain = 0) => events.push({ t: +t.toFixed(2), sfx, gain });
+    for (const b of beats) {
+      const s = b.start, d = b.duration;
+      if (b.id === 'arrival') { ev(s + 0.2, 'truck_pass', -4); }
+      if (b.id === 'today') { ev(s + 0.6, 'air_brake', -6); ev(s + 1.2, 'truck_idle', -10); }
+      if (b.id === 'reset') { ev(s + 0.1, 'whoosh', -4); ev(s + 0.3, 'lift', -6); }
+      if (b.id === 'checkin') { ev(s + 0.3, 'air_brake', -8); ev(s + d * 0.12, 'tick', -6); ev(s + d * 0.55, 'tick', -6); ev(s + d * 0.62, 'confirm', -8); }
+      if (b.id === 'safety') { for (let i = 0; i < 4; i++) ev(s + d * (0.22 + i * 0.1), 'tick', -8); ev(s + d * 0.72, 'confirm', -6); }
+      if (b.id === 'gate') { ev(s + d * 0.45, 'tick', -6); ev(s + d * 0.55, 'confirm', -8); ev(s + d * 0.62, 'gate_open', -4); ev(s + d * 0.8, 'truck_pass', -6); }
+      if (b.id === 'route') { ev(s + 0.2, 'cam_move', -10); ev(s + d * 0.9, 'air_brake', -10); ev(s + d * 0.96, 'confirm', -8); }
+      if (b.id === 'overview') { ev(s + 0.1, 'cam_move', -8); }
+      if (b.id === 'checkout') { ev(s + d * 0.3, 'beep', -10); ev(s + d * 0.5, 'truck_pass', -8); }
+      if (b.id === 'close') { ev(s + 0.2, 'whoosh', -8); }
+    }
+
+    // ---------- Per-frame ----------
+    const curBeat = (t) => { let b = beats[0]; for (const x of beats) if (t >= x.start) b = x; return b; };
+    function seek(frame) {
+      LUP._lastFrame = frame;
+      const t = frame / fps;
+      blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
+      blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
+      const b = curBeat(t), l = t - b.start, d = b.duration, p = U.clamp(l / d, 0, 1);
+      const inOut = (a0, a1) => Math.min(U.prog(l, 0, a0, U.easeOut), 1 - U.prog(l, d - a1, a1, U.easeIn));
+
+      // Standardvärden varje frame
+      let cam = camera, heroX = -400, heroDepth = 0, armOpen = 0, tone = 0, propsVis = 0, hudVis = 0, bridgeVis = 0, phVis = 0, phScale = 0, panelVis = 0;
+      const qVis = [0, 0, 0], oVis = [0, 0, 0]; let qX = [GATE_X - 290, GATE_X - 290 - 250, -900], oX = [DOCKS[0] + 150, DOCKS[1] + 150, 600];
+      const QV = (v) => { qVis[0] = v; qVis[1] = v; };
+      let title = b.title || '', sub = b.sub || '';
+      tap(0, 0, 0); hero.style.opacity = 1;
+      const clockHands = (sec) => { props.querySelector('.hm').setAttribute('transform', `rotate(${sec * 120})`); props.querySelector('.hh').setAttribute('transform', `rotate(${sec * 10 + 210})`); };
+      const prev = (id) => byId[id];
+
+      switch (b.id) {
+        case 'arrival': {
+          // Grå värld, bilen kommer in från vänster (nära kameran) och rullar fram bakom kön
+          heroX = U.lerp(-250, GATE_X - 290 - 500, U.easeInOut(p)); tone = 0; propsVis = 1; QV(1);
+          cam = lerpCam({ x: -300, s: 1.5, g: 990 }, { x: 510, s: 0.95, g: 990 }, U.easeInOut(p));
+          clockHands(t); break;
+        }
+        case 'today': {
+          heroX = GATE_X - 290 - 500 + Math.sin(t * 9) * 0.6; tone = 0; propsVis = 1; QV(1);
+          cam = lerpCam({ x: 510, s: 0.95, g: 990 }, { x: 530, s: 0.98, g: 990 }, U.easeInOut(p));
+          clockHands(t);
+          props.querySelector('.qm').setAttribute('transform', `translate(${GATE_X - 215} ${WORLD.ground - 330 + Math.sin(t * 3) * 6})`);
+          break;
+        }
+        case 'reset': {
+          // Svep: världen byter till LUPNUMBER-läge; samma bil kör fram till grinden utan kö
+          const wipe = U.prog(l, 0, Math.min(1.0, d * 0.35), U.easeInOut);
+          tone = wipe; propsVis = 1 - wipe; QV(1 - wipe);
+          heroX = U.lerp(GATE_X - 290 - 500, GATE_X - 290, U.easeInOut(U.prog(l, d * 0.25, d * 0.75)));
+          cam = lerpCam({ x: 530, s: 0.98, g: 990 }, { x: 820, s: 1.3, g: 990 }, U.easeInOut(p));
+          dim.style.background = `linear-gradient(90deg, transparent ${wipe * 140 - 40}%, rgba(14,165,233,0.18) ${wipe * 140 - 20}%, transparent ${wipe * 140}%)`;
+          break;
+        }
+        case 'checkin': {
+          tone = 1; heroX = GATE_X - 290; 
+          cam = lerpCam({ x: 820, s: 1.3, g: 990 }, { x: 880, s: 1.45, g: 1040 }, U.easeInOut(U.prog(l, 0, d * 0.25)));
+          const rise = U.prog(l, d * 0.05, d * 0.14, U.easeInOut); phVis = U.prog(l, d * 0.03, 0.2); phScale = rise;
+          const typed = U.prog(l, d * 0.16, d * 0.26); const plate = (film.plate || 'ABC 123');
+          const nChars = Math.round(typed * plate.length);
+          if (ph.plate.textContent !== plate.slice(0, nChars)) ph.plate.textContent = plate.slice(0, nChars);
+          ph.caret.style.opacity = typed < 1 ? (Math.floor(l * 3) % 2 ? 1 : 0) : 0;
+          const langPhase = l > d * 0.46; phoneScreen(langPhase ? 'lang' : 'plate');
+          const sel = U.prog(l, d * 0.56, 0.3, U.back);
+          ph.chips.forEach((c) => { c.classList.toggle('on', c.dataset.l === 'PL' && sel > 0.5); });
+          if (langPhase && sel > 0 && sel < 1) tap(1 - sel, 540 - 40, 700 + 10);
+          if (l > d * 0.72) { ph.title.textContent = PL.title; ph.label.textContent = PL.plate; ph.btn.textContent = PL.next; }
+          break;
+        }
+        case 'safety': {
+          tone = 1; heroX = GATE_X - 290; cam = { x: 880, s: 1.45, g: 1040 }; phVis = 1; phScale = 1 - U.prog(l, d - 0.9, 0.9, U.easeInOut);
+          phoneScreen('safety');
+          ph.ruleEls.forEach((r, i) => r.classList.toggle('on', l > d * (0.22 + i * 0.1)));
+          const press = U.prog(l, d * 0.68, 0.25, U.back); if (press > 0 && press < 1) tap(1 - press, 540, 700 + 300);
+          ph.btn.textContent = l > d * 0.72 ? PL.confirmed : PL.confirm; ph.btn.classList.toggle('done', l > d * 0.72);
+          break;
+        }
+        case 'gate': {
+          tone = 1; heroX = GATE_X - 290;
+          cam = lerpCam({ x: 880, s: 1.45, g: 1040 }, { x: 1000, s: 1.0, g: 700 }, U.easeInOut(U.prog(l, 0, d * 0.3)));
+          panelVis = inOut(0.5, 0.5);
+          op.title.textContent = 'Grind 1 · Ankomster';
+          const assigned = l > d * 0.55;
+          opRows('gate' + (assigned ? 1 : 0), `
+            <div class="op-row hi"><span class="op-plate">${film.plate || 'ABC 123'}</span><span>Nordfrakt AB</span><span class="op-tags"><i class="ok">Incheckad</i><i class="ok">Säkerhet ✓</i><i class="${assigned ? 'ok' : 'wait'}">${assigned ? 'Port 3 anvisad' : 'Väntar på port'}</i></span></div>
+            <div class="op-row"><span class="op-plate">GHI 654</span><span>Transit AB</span><span class="op-tags"><i class="ok">Vid port 1</i></span></div>
+            <div class="op-row"><span class="op-plate">JKL 987</span><span>Linjetrafik</span><span class="op-tags"><i class="ok">Vid port 2</i></span></div>`);
+          opStats(`<div class="op-action${assigned ? ' done' : ''}">${assigned ? 'Port 3 anvisad · grinden öppnas' : 'Anvisa port'}</div>`);
+          const press = U.prog(l, d * 0.44, 0.25, U.back); if (press > 0 && press < 1) tap(1 - press, 540, 1130);
+          armOpen = U.prog(l, d * 0.62, Math.min(1.2, d * 0.18), U.easeInOut);
+          heroX = GATE_X - 290 + U.easeIn(U.prog(l, d * 0.78, d * 0.22)) * 420;
+          oVis[0] = 1; oVis[1] = 1; break;
+        }
+        case 'route': {
+          tone = 1; const run = U.easeInOut(p); heroX = U.lerp(GATE_X + 130, DOCKS[2] + 150, run);
+          cam = lerpCam({ x: 1000, s: 1.0, g: 700 }, { x: heroX - 40, s: 1.25, g: 990 }, U.easeInOut(U.prog(l, 0, Math.min(1.2, d * 0.2))));
+          if (l > d * 0.2) cam = { x: heroX - 40, s: 1.25, g: 990 };
+          hudVis = 1; hud.setAttribute('transform', `translate(${heroX - 150} ${WORLD.ground - 200 - 60 * U.prog(p, 0.86, 0.14)})`);
+          const dist = Math.max(0, Math.round((DOCKS[2] + 150 - heroX) * 0.1 / 10) * 10);
+          const ht = hud.querySelector('.hud-t'); const txt = p < 0.95 ? `Port 3 · ${dist} m →` : 'Vid port 3 ✓'; if (ht.textContent !== txt) ht.textContent = txt;
+          heroDepth = U.prog(p, 0.86, 0.14, U.easeInOut); // backar in mot porten (djup)
+          bridgeVis = U.prog(l, d * 0.94, 0.3); oVis[0] = 1; oVis[1] = 1; break;
+        }
+        case 'overview': {
+          tone = 1; heroX = DOCKS[2] + 150; heroDepth = 1; bridgeVis = 1; oVis[0] = 1; oVis[1] = 1; oVis[2] = 1; oX[2] = U.lerp(300, GATE_X - 290, U.easeOut(p));
+          cam = lerpCam({ x: heroX - 40, s: 1.25, g: 990 }, { x: 1800, s: 0.56, g: 700 }, U.easeInOut(U.prog(l, 0, d * 0.55)));
+          panelVis = inOut(0.6, 0.4); op.title.textContent = 'Siten just nu';
+          opRows('ov', `
+            <div class="op-row hi"><span class="op-plate">${film.plate || 'ABC 123'}</span><span>Port 3</span><span class="op-tags"><i class="ok">Lastning pågår</i></span></div>
+            <div class="op-row"><span class="op-plate">GHI 654</span><span>Port 1</span><span class="op-tags"><i class="ok">Lastning pågår</i></span></div>
+            <div class="op-row"><span class="op-plate">MNO 135</span><span>Grind 1</span><span class="op-tags"><i class="wait">Incheckning</i></span></div>`);
+          opStats(`<div class="op-kpi"><b>5</b><span>på siten</span></div><div class="op-kpi"><b>3</b><span>vid port</span></div><div class="op-kpi"><b>0</b><span>i kö</span></div>`);
+          break;
+        }
+        case 'checkout': {
+          tone = 1; bridgeVis = 1 - U.prog(l, 0, 0.4); oVis[0] = 1; oVis[1] = 1; oVis[2] = 1; oX[2] = GATE_X - 290;
+          heroDepth = 1 - U.prog(l, d * 0.1, d * 0.3, U.easeInOut); // ut på körbanan igen
+          heroX = DOCKS[2] + 150 + U.easeIn(U.prog(l, d * 0.35, d * 0.65)) * 900;
+          cam = lerpCam({ x: 1800, s: 0.56, g: 700 }, { x: 2250, s: 0.62, g: 700 }, U.easeInOut(p));
+          panelVis = inOut(0.5, 0.4); op.title.textContent = 'Logg · idag';
+          opRows('log', `
+            <div class="op-row hi"><span class="op-plate">${film.plate || 'ABC 123'}</span><span>In 06:58 · Ut 07:41</span><span class="op-tags"><i class="ok">Port 3</i><i class="ok">Utcheckad</i></span></div>
+            <div class="op-row"><span class="op-plate">GHI 654</span><span>In 06:40</span><span class="op-tags"><i class="ok">Port 1</i></span></div>`);
+          opStats(`<div class="op-kpi"><b>43</b><span>min på siten</span></div><div class="op-kpi"><b>0</b><span>papper</span></div>`);
+          break;
+        }
+        case 'close': { tone = 1; cam = { x: 2250, s: 0.62, g: 700 }; heroX = DOCKS[2] + 1050 + l * 150; oVis[0] = 1; oVis[1] = 1; break; }
+      }
+
+      // Tillämpa
+      camera = cam; applyCamera(cam);
+      toneWorld(tone); hero.style.color = U.mix(C.heading, C.accent, tone);
+      heroAt(heroX, DOCK_DY * heroDepth, U.lerp(1, DOCK_S, heroDepth));
+      queue.forEach((q, i) => { q.style.opacity = qVis[i]; place(q, qX[i]); });
+      others.forEach((o, i) => { o.style.opacity = oVis[i]; if (i < 2) placeDock(o, oX[i]); else place(o, oX[i]); });
+      props.style.opacity = propsVis; arm.setAttribute('transform', `rotate(${-82 * armOpen})`);
+      hud.setAttribute('opacity', hudVis); bridge.setAttribute('opacity', bridgeVis);
+      const cab = worldToStage(GATE_X - 290 - 40, WORLD.ground - 70, cam); showPhone(phVis, phScale, cab.x, cab.y);
+      if (b.id !== 'reset') dim.style.background = '';
+      if (b.id !== 'reset') dim.style.opacity = phVis * phScale * 0.55; else dim.style.opacity = 1;
+      showPanel(panelVis, (1 - panelVis) * 40);
+      const isClose = b.id === 'close';
+      view.style.opacity = isClose ? 1 - U.prog(l, 0, 0.5) : 1;
+      badge.style.opacity = isClose ? 1 - U.prog(l, 0, 0.3) : 1;
+      // Rubrik
+      setTitle(isClose ? '' : title);
+      const tw = titleWords(); const first = b === beats[0];
+      tw.forEach((w, i) => { const pin = first ? 1 : U.prog(l, i * 0.04, 0.35, U.easeOut); U.enter(w, Math.min(pin, 1 - U.prog(l, d - 0.22, 0.22, U.easeIn)), { dy: first ? 0 : 16 }); if (first) w.style.transform = `translateY(${(1 - U.prog(l, i * 0.03, 0.4, U.easeOut)) * 8}px)`; });
+      subEl.textContent = sub; subEl.style.opacity = sub ? Math.min(U.prog(l, 0.6, 0.4), 1 - U.prog(l, d - 0.35, 0.35)) : 0;
+      // Outro
+      outroLayer.style.visibility = isClose ? 'visible' : 'hidden'; outroLayer.style.opacity = isClose ? U.prog(l, 0.1, 0.4) : 0;
+      if (isClose) outroSeek(l - 0.1);
+      // Undertexter
+      if (cueList) { const c = cueList.find((q) => t >= q.start && t < q.end); if (c) { if (cueEl.textContent !== c.text) cueEl.textContent = c.text; cueBox.style.opacity = Math.min(U.prog(t, c.start, 0.15), 1 - U.prog(t, c.end - 0.15, 0.15)); } else cueBox.style.opacity = 0; }
+    }
+
+    LUP.timeline = { total, fps, frames: Math.round(total * fps), beats: beats.map((b) => ({ id: b.id, start: b.start, end: b.end, title: b.title })), events };
+    window.__seek = seek;
+    window.__setRenderMode = () => document.body.classList.add('render');
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    seek(0);
+    return LUP.timeline;
+  };
+})();
+
+/* LUPNUMBER – "This is Sten." (60 s komedi, engelsk speaker). Mallen återanvänder hero-filmens värld, kamera, lastbilar,
+   telefon-UI (polska) och ljudpipeline via LUP.heroParts och lägger till karaktärsriggar (Sten, Dariusz, chefen, chaufförer),
+   interiörer (boden) och 14 scener exakt enligt shorts/manus/this-is-sten.md. Allt är tidsstyrt (deterministiskt per frame). */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util, HP = LUP.heroParts;
+  const { WORLD, GATE_X, DOCK_W, TRUCK_LEN, C, FONT, esc, add, tr, truckSvg, buildWorld, buildPhone, PL } = HP;
+  const DOCKS = Array.from({ length: 8 }, (_, i) => 1700 + i * 300);
+  const H = C.heading, SW = 4;
+  const SK = { sten: '#F2D6BF', dar: '#E8C2A2', man: '#F6DCC8', ro: '#D7AC86', lt: '#F3D4BF', vis: '#EFC9B0' };
+  const COL = { vest: '#FACC15', fleece: '#1E3A5F', red: '#F87171', orange: '#FB923C', lime: '#A3E635', shirt: '#60A5FA', beanie: '#0C4A6E', hairDark: '#374151', hairBrown: '#6B4F3A', grey: '#9CA3AF', pants: '#334155', jeans: '#475569' };
+  const svgWrap = (inner, w = 1080, h = 1350) => `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="position:absolute;left:0;top:0;overflow:visible">${inner}</svg>`;
+  const txt = (x, y, s, size, o = {}) => `<text${o.cls ? ` class="${o.cls}"` : ''} x="${x}" y="${y}" font-family="${FONT}" font-weight="${o.w || 800}" font-size="${size}" fill="${o.fill || H}" text-anchor="${o.anchor || 'start'}"${o.op != null ? ` opacity="${o.op}"` : ''}${o.ls ? ` letter-spacing="${o.ls}"` : ''}${o.tf ? ` transform="${o.tf}"` : ''}>${esc(s)}</text>`;
+  const q = (el, s) => el.querySelector(s), qa = (el, s) => [...el.querySelectorAll(s)];
+  const setT = (el, s) => el.setAttribute('transform', s), setO = (el, v) => el.setAttribute('opacity', v);
+  const blinkAt = (l, times, dur = 0.18) => { let v = 0; for (const tt of times) { const a = Math.abs(l - tt); if (a < dur / 2) v = Math.max(v, 1 - a / (dur / 2)); } return v; };
+  const nodAt = (l, times, amp = 8, dur = 0.45) => { let v = 0; for (const tt of times) { const p = (l - tt) / dur; if (p >= 0 && p <= 1) v = amp * Math.sin(Math.PI * p); } return v; };
+  const between = (l, a, b) => l >= a && l < b;
+
+  // ======================= Karaktärsrigg (enhet: huvudbredd 100) =======================
+  function headFront(o) {
+    const skin = o.skin; let s = `<g class="head">`;
+    s += `<ellipse cx="-50" cy="8" rx="9" ry="13" fill="${skin}" stroke="${H}" stroke-width="${SW}"/><ellipse cx="50" cy="8" rx="9" ry="13" fill="${skin}" stroke="${H}" stroke-width="${SW}"/>`;
+    s += `<path d="M -46 -36 Q -53 48 0 57 Q 53 48 46 -36 Z" fill="${skin}" stroke="${H}" stroke-width="${SW}"/>`;
+    if (o.stubble) s += `<path d="M -43 12 Q -36 50 0 55 Q 36 50 43 12 Q 22 34 0 36 Q -22 34 -43 12 Z" fill="${COL.grey}" opacity=".42"/>`;
+    s += `<g class="eyes"><circle cx="-18" cy="0" r="5.5" fill="${H}"/><circle cx="18" cy="0" r="5.5" fill="${H}"/></g>`;
+    s += `<g class="lids"><rect x="-31" y="-11" width="26" height="0" fill="${skin}"/><rect x="5" y="-11" width="26" height="0" fill="${skin}"/></g>`;
+    s += `<path class="bl" d="M -31 -15 q 13 -7 25 -3" stroke="${H}" stroke-width="4.5" fill="none" stroke-linecap="round"/><path class="br" d="M 6 -18 q 12 -4 25 3" stroke="${H}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+    s += `<path d="M 1 -1 q -7 14 4 17" stroke="${H}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+    s += `<path class="mouth" d="M -15 31 Q 0 34 15 31" stroke="${H}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    if (o.hair === 'beanie') {
+      s += `<path d="M -54 -30 Q -56 -78 0 -80 Q 56 -78 54 -30 Z" fill="${COL.beanie}" stroke="${H}" stroke-width="${SW}"/><rect x="-57" y="-46" width="114" height="24" rx="10" fill="${COL.beanie}" stroke="${H}" stroke-width="${SW}"/><rect x="-57" y="-36" width="114" height="5" fill="${C.accent}"/>`;
+      s += `<g transform="translate(0 -33)" fill="rgba(255,255,255,.16)" stroke="#E2E8F0" stroke-width="3"><circle cx="-18" r="12"/><circle cx="18" r="12"/><path d="M -6 0 h 12 M -30 0 h -16 M 30 0 h 16" fill="none"/></g>`;
+    } else if (o.hair === 'short') s += `<path d="M -47 -28 Q -46 -66 0 -68 Q 46 -66 47 -28 Q 30 -42 0 -44 Q -30 -42 -47 -28 Z" fill="${o.hairColor || COL.hairDark}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    else if (o.hair === 'cap') s += `<path d="M -50 -30 Q -50 -70 0 -72 Q 50 -70 50 -30 Z" fill="${o.hairColor || C.grey}" stroke="${H}" stroke-width="${SW}"/><path d="M -54 -32 h 108 l 42 10 q 6 2 2 8 l -46 -6 h -106 z" fill="${o.hairColor || C.grey}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    if (o.glasses) s += `<g fill="none" stroke="${H}" stroke-width="3"><circle cx="-18" cy="0" r="13"/><circle cx="18" cy="0" r="13"/><path d="M -5 0 h 10"/></g>`;
+    return s + `</g>`;
+  }
+  // Ansiktsuttryck: blink 0–1, brow [v,h] −1..1 (upp), smile −1..1, ex/ey = blickriktning
+  function face(headEl, f) {
+    const b = U.clamp(f.blink || 0, 0, 1);
+    qa(headEl, '.lids rect').forEach((r) => r.setAttribute('height', (17 * b).toFixed(2)));
+    qa(headEl, '.eyes circle').forEach((e, i) => { e.setAttribute('cx', (i ? 18 : -18) + (f.ex || 0)); e.setAttribute('cy', f.ey || 0); });
+    const br = f.brow || [0, 0];
+    q(headEl, '.bl').setAttribute('transform', `translate(0 ${(-br[0] * 7).toFixed(2)})`); q(headEl, '.br').setAttribute('transform', `translate(0 ${(-br[1] * 7).toFixed(2)})`);
+    const sm = f.smile || 0; q(headEl, '.mouth').setAttribute('d', `M -15 31 Q 0 ${(34 + sm * 11).toFixed(2)} 15 ${(31 - Math.max(0, sm) * 7).toFixed(2)}`);
+  }
+  function torsoFront(o) {
+    const top = o.top || COL.fleece; let s = `<g class="torso">`;
+    s += `<rect x="-17" y="-14" width="34" height="30" fill="${o.skin}" stroke="${H}" stroke-width="${SW}"/>`;
+    s += `<path d="M -94 28 Q -94 4 -66 4 L -22 4 Q 0 24 22 4 L 66 4 Q 94 4 94 28 L 94 210 L -94 210 Z" fill="${top}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    if (o.vest) {
+      s += `<path d="M -78 8 Q -94 8 -94 26 L -94 210 L -32 210 L -32 64 L -60 8 Z" fill="${o.vest}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/><path d="M 78 8 Q 94 8 94 26 L 94 210 L 32 210 L 32 64 L 60 8 Z" fill="${o.vest}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+      s += `<g fill="#F8FAFC" opacity=".95"><rect x="-94" y="118" width="62" height="13"/><rect x="32" y="118" width="62" height="13"/><rect x="-94" y="146" width="62" height="13"/><rect x="32" y="146" width="62" height="13"/><rect x="-72" y="14" width="13" height="104"/><rect x="59" y="14" width="13" height="104"/></g>`;
+    }
+    if (o.collar) s += `<path d="M -22 4 L -6 34 L 0 24 L 6 34 L 22 4" fill="none" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    return s + `</g>`;
+  }
+  // Arm = polyline axel→armbåge→hand (2-leds IK), hand med plats för föremål (.held)
+  const armSvg = (cls, color, skin, w = 36) => `<g class="arm ${cls}"><polyline points="0,0 0,0 0,0" fill="none" stroke="${H}" stroke-width="${w + SW * 2}" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,0 0,0 0,0" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/><g class="hand"><circle r="${(w * 0.56).toFixed(1)}" fill="${skin}" stroke="${H}" stroke-width="${SW}"/><g class="held"></g></g></g>`;
+  function ik(S, Hd, a, b, bend) {
+    let dx = Hd.x - S.x, dy = Hd.y - S.y, d = Math.hypot(dx, dy) || 0.001; const m = a + b - 0.5;
+    if (d > m) { dx *= m / d; dy *= m / d; d = m; }
+    const x = (a * a - b * b + d * d) / (2 * d), h = Math.sqrt(Math.max(0, a * a - x * x)), ux = dx / d, uy = dy / d;
+    return { ex: S.x + ux * x - uy * h * bend, ey: S.y + uy * x + ux * h * bend, hx: S.x + dx, hy: S.y + dy };
+  }
+  function setArm(el, S, Hd, a, b, bend = 1, rot = 0) {
+    const e = ik(S, Hd, a, b, bend); const pts = `${S.x.toFixed(1)},${S.y.toFixed(1)} ${e.ex.toFixed(1)},${e.ey.toFixed(1)} ${e.hx.toFixed(1)},${e.hy.toFixed(1)}`;
+    qa(el, 'polyline').forEach((p) => p.setAttribute('points', pts));
+    setT(q(el, '.hand'), `translate(${e.hx.toFixed(1)} ${e.hy.toFixed(1)}) rotate(${rot})`);
+  }
+  const held = (armEl, html) => { const h = q(armEl, '.held'); if (h.getAttribute('data-k') !== html.length + '') { h.innerHTML = html; h.setAttribute('data-k', html.length + ''); } return h; };
+  // Rekvisita
+  const ringsSvg = () => `<g class="rings" opacity="0" fill="none" stroke="${C.accent}" stroke-width="4" stroke-linecap="round"><path d="M -40 -26 q -12 14 0 28"/><path d="M -54 -36 q -20 24 0 48"/><path d="M 40 -26 q 12 14 0 28"/><path d="M 54 -36 q 20 24 0 48"/></g>`;
+  const mugSvg = (s = 1) => `<g class="mug" transform="scale(${s})"><circle cx="66" cy="-2" r="24" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/><rect x="-40" y="-50" width="80" height="96" rx="10" fill="#fff" stroke="${H}" stroke-width="${SW}"/><path d="M 40 -26 q 32 0 32 24 q 0 24 -32 24" fill="none" stroke="${H}" stroke-width="5"/><g font-family="${FONT}" font-weight="800" fill="${H}" text-anchor="middle" font-size="11"><text y="-16">WORLD'S</text><text y="-2">OKAYEST</text><text y="12">GATE</text></g><ellipse cx="0" cy="-50" rx="40" ry="8" fill="${C.tint}" stroke="${H}" stroke-width="${SW}"/><ellipse cx="0" cy="-50" rx="31" ry="5" fill="#6B4F3A"/><path d="M 44 -40 q -4 -22 18 -24 q 16 0 14 18" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/></g>`;
+  const handsetSvg = (s = 1) => `<g class="handset" transform="scale(${s})"><rect x="-46" y="-11" width="92" height="22" rx="11" fill="#fff" stroke="${H}" stroke-width="${SW}"/><ellipse cx="-40" cy="0" rx="18" ry="14" fill="#fff" stroke="${H}" stroke-width="${SW}"/><ellipse cx="40" cy="0" rx="18" ry="14" fill="#fff" stroke="${H}" stroke-width="${SW}"/><circle cx="-40" r="5" fill="${H}"/><circle cx="40" r="5" fill="${H}"/>${ringsSvg()}</g>`;
+  const mobileSvg = (s = 1, on = false) => `<g class="mobile" transform="scale(${s})"><rect x="-17" y="-32" width="34" height="64" rx="6" fill="${H}"/><rect class="scr" x="-13" y="-26" width="26" height="48" rx="3" fill="${on ? C.accent : '#CBD5E1'}"/>${ringsSvg()}</g>`;
+  const radioSvg = (s = 1) => `<g class="radio" transform="scale(${s})"><rect x="-16" y="-30" width="32" height="60" rx="6" fill="${H}"/><line x1="10" y1="-30" x2="14" y2="-62" stroke="${H}" stroke-width="5" stroke-linecap="round"/><g stroke="#94A3B8" stroke-width="2"><line x1="-10" y1="-14" x2="10" y2="-14"/><line x1="-10" y1="-8" x2="10" y2="-8"/><line x1="-10" y1="-2" x2="10" y2="-2"/></g><circle cx="0" cy="16" r="5" fill="${C.accent}"/>${ringsSvg()}</g>`;
+  const phoneBaseSvg = (s = 1) => `<g class="pbase" transform="scale(${s})"><path d="M -60 20 L -50 -20 L 50 -20 L 60 20 Z" fill="#fff" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/><rect x="-26" y="-8" width="52" height="20" rx="4" fill="${C.tint}" stroke="${H}" stroke-width="3"/><g class="cradle" transform="translate(0 -26)">${handsetSvg(0.9)}</g>${ringsSvg()}</g>`;
+  const thumbSvg = (s = 1) => `<g class="thumbup" transform="scale(${s})"><rect x="-34" y="-26" width="68" height="62" rx="20" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/><rect x="-12" y="-74" width="26" height="60" rx="12" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/><path d="M -34 -6 h 60 M -34 10 h 60" stroke="${H}" stroke-width="3" opacity=".5"/></g>`;
+  function flipClock(id, hh, mm) {
+    const tile = (x, cls, v, flip) => {
+      if (!flip) return `<g class="tile ${cls}" transform="translate(${x} 0)"><rect x="0" y="0" width="100" height="110" rx="12" fill="#fff" stroke="${H}" stroke-width="${SW}"/><text class="v" x="50" y="86" font-family="${FONT}" font-weight="800" font-size="78" fill="${H}" text-anchor="middle">${v}</text><line x1="0" y1="55" x2="100" y2="55" stroke="${H}" stroke-width="3"/></g>`;
+      const half = (c, clip) => `<g class="${c}"${clip ? ` clip-path="url(#${id}-${clip})"` : ''} transform-origin="50 55"><rect x="0" y="0" width="100" height="110" rx="12" fill="#fff" stroke="${H}" stroke-width="${SW}"/><text class="v" x="50" y="86" font-family="${FONT}" font-weight="800" font-size="78" fill="${H}" text-anchor="middle">${v}</text></g>`;
+      return `<g class="tile ${cls}" transform="translate(${x} 0)"><defs><clipPath id="${id}-top"><rect x="-4" y="-4" width="108" height="59"/></clipPath><clipPath id="${id}-bot"><rect x="-4" y="55" width="108" height="60"/></clipPath></defs>${half('baseTop', 'top')}${half('baseBot', 'bot')}${half('flapTop', 'top')}${half('flapBot', 'bot')}<line x1="0" y1="55" x2="100" y2="55" stroke="${H}" stroke-width="3"/></g>`;
+    };
+    return `<g class="clock ${id}"><rect x="-16" y="-16" width="272" height="142" rx="18" fill="${COL.beanie}"/>${tile(0, 'hh', hh, false)}<circle cx="120" cy="40" r="6" fill="#fff"/><circle cx="120" cy="72" r="6" fill="#fff"/>${tile(140, 'mm', mm, true)}</g>`;
+  }
+  function setFlip(clockEl, oldV, newV, p) {
+    const g = (c) => q(clockEl, '.mm .' + c); const v = (c, val) => { const e = q(g(c), '.v'); if (e.textContent !== String(val)) e.textContent = val; };
+    const cur = p <= 0 ? oldV : newV;
+    if (p <= 0 || p >= 1) { ['baseTop', 'baseBot', 'flapTop', 'flapBot'].forEach((c) => v(c, cur)); setT(g('flapTop'), 'scale(1 1)'); setT(g('flapBot'), 'scale(1 1)'); return; }
+    v('baseTop', newV); v('baseBot', oldV); v('flapTop', oldV); v('flapBot', newV);
+    setT(g('flapTop'), `scale(1 ${Math.max(0.001, 1 - 2 * p).toFixed(3)})`); setT(g('flapBot'), `scale(1 ${Math.max(0.001, 2 * p - 1).toFixed(3)})`);
+  }
+  function bubble(x, y, text, o = {}) { // spetsen vid (x, y), bubblan ovanför
+    const size = o.size || 30, w = o.w || Math.round(text.length * size * 0.56 + 60), h = Math.round(size * 1.3 + 34);
+    const bx = x - w / 2 + (o.dx || 0), by = y - h - 24;
+    return `<g class="bubble ${o.cls || ''}" opacity="0" transform-origin="${x} ${y}"><rect x="${bx}" y="${by}" width="${w}" height="${h}" rx="22" fill="#fff" stroke="${C.border}" stroke-width="4"/><path d="M ${x - 18} ${by + h - 3} L ${x} ${y} L ${x + 18} ${by + h - 3} Z" fill="#fff" stroke="${C.border}" stroke-width="4" stroke-linejoin="round"/><rect x="${x - 16}" y="${by + h - 8}" width="32" height="10" fill="#fff"/>${txt(bx + w / 2, by + h / 2 + size * 0.36, text, size, { anchor: 'middle' })}</g>`;
+  }
+  // Person i profil (vänd åt höger), origo vid fötterna, höjd ≈ 344 (hjässa) · armar: .ab (bakre), .af (främre), ben .lb/.lf, huvud .head
+  function personSide(o) {
+    const top = o.top || COL.fleece, pants = o.pants || COL.pants, skin = o.skin; let s = `<g class="person side">`;
+    s += armSvg('ab', top, skin, 30);
+    s += `<g class="leg lb" transform-origin="-4 -150"><rect x="-22" y="-156" width="34" height="142" rx="15" fill="${pants}" stroke="${H}" stroke-width="${SW}"/><rect x="-28" y="-18" width="56" height="20" rx="8" fill="${H}"/></g>`;
+    s += `<g class="leg lf" transform-origin="4 -150"><rect x="-10" y="-156" width="34" height="142" rx="15" fill="${pants}" stroke="${H}" stroke-width="${SW}"/><rect x="-14" y="-18" width="60" height="20" rx="8" fill="${H}"/></g>`;
+    s += `<path d="M -38 -300 L 38 -300 Q 50 -300 50 -288 L 46 -146 L -46 -146 L -50 -288 Q -50 -300 -38 -300 Z" fill="${top}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    if (o.vest) s += `<path d="M 4 -296 L 38 -296 Q 50 -296 50 -284 L 46 -146 L 4 -146 Z" fill="${o.vest}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/><rect x="5" y="-222" width="42" height="12" fill="#F8FAFC" opacity=".95"/><rect x="5" y="-198" width="42" height="12" fill="#F8FAFC" opacity=".95"/>`;
+    if (o.pockets) s += `<path d="M 10 -210 q 0 -5 5 -5 h 26" fill="none" stroke="${H}" stroke-width="3" opacity=".55"/>`;
+    s += `<rect x="-8" y="-320" width="26" height="28" fill="${skin}" stroke="${H}" stroke-width="${SW}"/>`;
+    s += `<g class="head" transform="translate(0 -344)"><circle r="46" fill="${skin}" stroke="${H}" stroke-width="${SW}"/><ellipse cx="-36" cy="4" rx="8" ry="12" fill="${skin}" stroke="${H}" stroke-width="${SW}"/>`;
+    if (o.stubble) s += `<path d="M -16 14 Q 4 50 42 24 Q 26 36 -16 14 Z" fill="${COL.grey}" opacity=".42"/>`;
+    s += `<path d="M 42 -4 q 16 8 2 20" fill="none" stroke="${H}" stroke-width="3.5" stroke-linecap="round"/><circle class="eye" cx="24" cy="-8" r="5" fill="${H}"/><path class="brow" d="M 12 -24 q 12 -6 22 0" fill="none" stroke="${H}" stroke-width="4.5" stroke-linecap="round"/><path class="mouth" d="M 24 22 q 8 2 14 -2" fill="none" stroke="${H}" stroke-width="4" stroke-linecap="round"/>`;
+    if (o.hair === 'beanie') s += `<path d="M -50 -14 Q -52 -66 0 -68 Q 52 -66 50 -14 Z" fill="${COL.beanie}" stroke="${H}" stroke-width="${SW}"/><rect x="-52" y="-30" width="104" height="22" rx="9" fill="${COL.beanie}" stroke="${H}" stroke-width="${SW}"/><rect x="-52" y="-21" width="104" height="4" fill="${C.accent}"/><g fill="rgba(255,255,255,.16)" stroke="#E2E8F0" stroke-width="3"><circle cx="34" cy="-19" r="10"/><path d="M 24 -19 h -62" fill="none"/></g>`;
+    else if (o.hair === 'short') s += `<path d="M -48 -8 Q -50 -60 0 -62 Q 50 -60 46 -22 Q 20 -38 -8 -32 Q -40 -26 -48 -8 Z" fill="${o.hairColor || COL.hairDark}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    else if (o.hair === 'cap') s += `<path d="M -48 -14 Q -50 -64 0 -66 Q 50 -64 48 -14 Z" fill="${o.hairColor || C.grey}" stroke="${H}" stroke-width="${SW}"/><path d="M 20 -22 h 54 q 8 0 6 8 l -60 2 z" fill="${o.hairColor || C.grey}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    s += `</g>`;
+    s += armSvg('af', top, skin, 30);
+    return s + `</g>`;
+  }
+  // Person framifrån, origo vid fötterna (höjd ≈ 340): ben + torso + armar + huvud
+  function personFront(o) {
+    const pants = o.pants || COL.pants;
+    return `<g class="person front"><g transform="translate(0 -300)"><rect x="-70" y="200" width="56" height="112" rx="18" fill="${pants}" stroke="${H}" stroke-width="${SW}"/><rect x="14" y="200" width="56" height="112" rx="18" fill="${pants}" stroke="${H}" stroke-width="${SW}"/><rect x="-78" y="290" width="70" height="20" rx="8" fill="${H}"/><rect x="8" y="290" width="70" height="20" rx="8" fill="${H}"/>${torsoFront(o)}${armSvg('ar', o.top || COL.fleece, o.skin)}${armSvg('al', o.top || COL.fleece, o.skin)}<g class="headg" transform="translate(0 -58)">${headFront(o)}</g></g></g>`;
+  }
+  // Sten bakifrån (origo vid fötterna): rygg med reflexer, mössa, armar
+  function stenBack() {
+    let s = `<g class="person back">`;
+    s += `<rect x="-62" y="-156" width="48" height="156" rx="18" fill="${COL.pants}" stroke="${H}" stroke-width="${SW}"/><rect x="14" y="-156" width="48" height="156" rx="18" fill="${COL.pants}" stroke="${H}" stroke-width="${SW}"/>`;
+    s += `<path d="M -98 -300 L 98 -300 Q 112 -300 112 -286 L 104 -140 L -104 -140 L -112 -286 Q -112 -300 -98 -300 Z" fill="${COL.vest}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/>`;
+    s += `<g fill="#F8FAFC" opacity=".95"><rect x="-108" y="-230" width="216" height="16"/><rect x="-108" y="-200" width="216" height="16"/><rect x="-76" y="-298" width="16" height="70"/><rect x="60" y="-298" width="16" height="70"/></g>`;
+    s += `<path d="M -98 -300 L -64 -300 L -64 -140 L -104 -140 L -112 -286 Q -112 -300 -98 -300 Z M 98 -300 L 64 -300 L 64 -140 L 104 -140 L 112 -286 Q 112 -300 98 -300 Z" fill="${COL.fleece}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round" opacity=".0"/>`;
+    s += `<rect x="-16" y="-326" width="32" height="30" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/>`;
+    s += `<g transform="translate(0 -364)"><circle r="50" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/><ellipse cx="-50" cy="10" rx="9" ry="13" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/><ellipse cx="50" cy="10" rx="9" ry="13" fill="${SK.sten}" stroke="${H}" stroke-width="${SW}"/><path d="M -54 -10 Q -56 -72 0 -74 Q 56 -72 54 -10 Z" fill="${COL.beanie}" stroke="${H}" stroke-width="${SW}"/><rect x="-57" y="-26" width="114" height="24" rx="10" fill="${COL.beanie}" stroke="${H}" stroke-width="${SW}"/><rect x="-57" y="-16" width="114" height="5" fill="${C.accent}"/><path d="M -56 -14 q -2 -14 10 -16 M 56 -14 q 2 -14 -10 -16" fill="none" stroke="#E2E8F0" stroke-width="3"/></g>`;
+    s += armSvg('al', COL.fleece, SK.sten, 30) + armSvg('ar', COL.fleece, SK.sten, 30);
+    return s + `</g>`;
+  }
+  const forkliftSvg = () => `<g class="fl"><rect x="-70" y="-120" width="130" height="92" rx="10" fill="#fff" stroke="${H}" stroke-width="5"/><rect x="-70" y="-120" width="130" height="14" fill="${COL.orange}"/><rect x="60" y="-196" width="14" height="196" fill="${H}"/><rect x="74" y="-14" width="96" height="10" fill="${H}"/><rect x="-44" y="-176" width="76" height="56" rx="8" fill="${C.tint}" stroke="${H}" stroke-width="4"/><circle cx="-10" cy="-150" r="18" fill="${SK.ro}" stroke="${H}" stroke-width="4"/><path d="M -28 -168 q 18 -14 36 0" fill="none" stroke="${H}" stroke-width="4"/><g fill="#fff" stroke="${H}" stroke-width="5"><circle cx="-40" cy="-6" r="22"/><circle cx="30" cy="-6" r="22"/></g><g class="honk" opacity="0" fill="none" stroke="${C.accent}" stroke-width="5" stroke-linecap="round"><path d="M 96 -150 q 14 16 0 32"/><path d="M 112 -164 q 26 30 0 60"/></g></g>`;
+  const RULES_SV = ['Varselväst och hjälm på hela området', 'Max 20 km/h på området', 'Stanna vid stopplinjen', 'Följ anvisad port', 'Motorn av vid lastning', 'Rökning förbjuden', 'Avvikelser anmäls i grinden'];
+  const sheetSvg = () => `<g class="sheetg"><rect x="-156" y="-206" width="312" height="412" rx="8" fill="#fff" stroke="#CBD5E1" stroke-width="8"/><rect x="-150" y="-200" width="300" height="400" rx="4" fill="#fff" stroke="${H}" stroke-width="3"/><rect x="-150" y="-200" width="300" height="52" fill="${C.tint}"/>${txt(0, -164, 'SÄKERHETSREGLER', 29, { anchor: 'middle', ls: '0.02em' })}${RULES_SV.map((r, i) => `<circle cx="-126" cy="${-110 + i * 42}" r="12" fill="${C.accent}"/>${txt(-126, -105 + i * 42, String(i + 1), 14, { anchor: 'middle', fill: '#fff' })}${txt(-104, -104 + i * 42, r, 15.5, { w: 600, fill: C.text })}`).join('')}<path d="M -156 -206 l 312 412" stroke="#fff" stroke-width="2" opacity=".35"/></g>`;
+
+  // ======================= Mallen =======================
+  LUP.initSten = function (brand, film, opts = {}) {
+    const fps = brand.format.fps, W = brand.format.width, Hh = brand.format.height;
+    const beats = film.beats.map((b) => ({ ...b })); let acc = 0; beats.forEach((b) => { b.start = acc; acc += b.duration; b.end = acc; }); const total = acc;
+    const byId = Object.fromEntries(beats.map((b) => [b.id, b]));
+    const cta = Object.assign({}, brand.cta, film.cta || {});
+    const brandEn = Object.assign({}, brand, { tagline: film.tagline || brand.tagline });
+    const PLATE = film.plate || 'WGM 4521';
+
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = ''; stage.style.width = W + 'px'; stage.style.height = Hh + 'px';
+    const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
+
+    // ---------- Världen (samma anläggning som hero-filmen, åtta portar) ----------
+    const dawnEl = U.el('div', 'sten-dawn'); stage.appendChild(dawnEl);
+    const view = U.el('div', 'hero-view'); const far = U.el('div', 'hero-layer far'), near = U.el('div', 'hero-layer near'); view.append(far, near); stage.appendChild(view);
+    const svg = buildWorld(far, near, { docks: DOCKS, sign: 'PORT 1–8 →', width: 4600 });
+    const statics = q(svg, '.statics'), trucksG = q(svg, '.trucks'), fxG = q(svg, '.fx'), arm = q(svg, '.arm');
+    statics.insertAdjacentHTML('afterbegin', `<rect x="-1400" y="${WORLD.ground + 138}" width="7400" height="1800" fill="${C.tint2}"/>`);
+    svg.insertAdjacentHTML('afterbegin', `<defs><linearGradient id="beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FDE68A" stop-opacity=".6"/><stop offset="1" stop-color="#FDE68A" stop-opacity="0"/></linearGradient><clipPath id="winclip"><rect x="${GATE_X + 62}" y="${WORLD.ground - 174}" width="106" height="66"/></clipPath></defs>`);
+    // större portskyltar (läsbara i vida bilder)
+    qa(statics, '.dock').forEach((d, i) => { const x = DOCKS[i]; const pill = qa(d, 'rect')[2]; pill.setAttribute('x', x + 30); pill.setAttribute('width', DOCK_W - 60); pill.setAttribute('y', WORLD.ground - 262); pill.setAttribute('height', 56); pill.setAttribute('rx', 28); const t = q(d, 'text'); t.setAttribute('font-size', 42); t.setAttribute('y', WORLD.ground - 219); });
+    // Sten i bodens fönster (mini), ovanpå boden men bakom lastbilarna
+    const mini = add(statics, `<g class="mini" clip-path="url(#winclip)"><g class="minib" transform="translate(${GATE_X + 115} ${WORLD.ground - 104}) scale(0.4)">${torsoFront({ skin: SK.sten, vest: COL.vest })}${armSvg('ar', COL.fleece, SK.sten)}${armSvg('al', COL.fleece, SK.sten)}<g class="headg" transform="translate(0 -58)">${headFront({ skin: SK.sten, hair: 'beanie', stubble: true })}</g></g></g>`);
+    const miniArms = { r: q(mini, '.ar'), l: q(mini, '.al') };
+    const headlight = `<g class="hl" opacity="0"><circle cx="236" cy="-44" r="8" fill="#FDE68A"/><path d="M 238 -44 L 600 -130 L 600 40 Z" fill="url(#beam)"/></g>`;
+    const PLATES = ['RKL 7712', 'LTV 203', 'KHM 918', 'ZTA 4410', 'BVG 77', 'ODR 5519', 'PJX 302', 'MRA 6681', 'GNT 140', 'SLK 9027', 'HWB 214', 'TFR 3368', 'QEL 905', 'XNA 7703', 'YDK 61', 'CPR 4482', 'NBH 330', 'UVE 1207', 'LKO 59', 'ASD 7841'];
+    const queue = PLATES.map((p, i) => { const t = add(trucksG, truckSvg('q' + i, p, C.muted)); add(t, headlight); return t; });
+    const t5a = add(trucksG, truckSvg('t5a', 'KHM 918', C.muted)), t5b = add(trucksG, truckSvg('t5b', 'ZTA 4410', C.muted));
+    const parked = [0, 4].map((i) => add(trucksG, truckSvg('p' + i, ['RKL 7712', 'LTV 203'][i ? 1 : 0], C.accent)));
+    const passer = add(trucksG, truckSvg('pass', 'ODR 5519', C.accent));
+    const dar = add(trucksG, truckSvg('dar', PLATE, C.grey)); add(dar, headlight);
+    add(dar, `<g class="drv"><circle cx="178" cy="-80" r="9" fill="${SK.dar}" stroke="${H}" stroke-width="3"/><path d="M 169 -84 q 9 -10 18 0" fill="${COL.hairDark}" stroke="${H}" stroke-width="2"/><rect x="170" y="-72" width="16" height="12" fill="${COL.red}"/></g>`);
+    [...queue, t5a, t5b, dar, passer, ...parked].forEach((t) => (t.style.opacity = 0));
+    // mini-telefoner i hytterna (scen 10) och tumme upp
+    const miniPhone = (id, label) => add(fxG, `<g class="mphone ${id}" opacity="0"><rect x="-74" y="-128" width="148" height="92" rx="18" fill="#fff" stroke="${C.border}" stroke-width="4"/><path d="M -14 -38 L 0 -18 L 14 -38 Z" fill="#fff" stroke="${C.border}" stroke-width="4"/><rect x="-12" y="-42" width="24" height="8" fill="#fff"/><rect x="-62" y="-116" width="124" height="34" rx="17" fill="${C.accent}"/>${txt(0, -92, label, 21, { anchor: 'middle', fill: '#fff' })}<g transform="translate(0 -56)"><circle r="14" fill="${C.accent}"/><path d="M -6 0 l 4 4 l 8 -8" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g></g>`);
+    const mp2 = miniPhone('mp2', 'Română'), mp3 = miniPhone('mp3', 'Lietuvių');
+    const thumbB = add(fxG, `<g class="thumbb" opacity="0"><rect x="-44" y="-112" width="88" height="80" rx="18" fill="#fff" stroke="${C.border}" stroke-width="4"/><path d="M -12 -34 L 0 -16 L 12 -34 Z" fill="#fff" stroke="${C.border}" stroke-width="4"/><rect x="-10" y="-38" width="20" height="8" fill="#fff"/><g transform="translate(0 -70) scale(0.5)">${thumbSvg(1)}</g></g>`);
+    // Sten gående + Dariusz vid rampen (scen 13), i världen
+    const wSten = add(fxG, `<g class="wsten" opacity="0">${personSide({ skin: SK.sten, vest: COL.vest, hair: 'beanie', stubble: true })}</g>`);
+    const wDar = add(fxG, `<g class="wdar" opacity="0"><g transform="scale(-1 1)">${personSide({ skin: SK.dar, vest: COL.red, top: '#334155', pants: COL.jeans, hair: 'short', pockets: true })}</g></g>`);
+    const strap = add(fxG, `<g class="strap" opacity="0"><circle r="16" fill="${C.accent}" opacity=".25"/><circle r="7" fill="${C.accent}"/></g>`);
+
+    // ---------- Scenlager ----------
+    const S = {};
+    const scene = (id) => { const d = U.el('div', 'sc sc-' + id); stage.appendChild(d); S[id] = d; return d; };
+
+    // Scen 1 & 14: extrem närbild
+    function buildFaceShot(id, hh, mm) {
+      const el = scene(id);
+      el.innerHTML = svgWrap(`<defs><linearGradient id="${id}-lg" x1="0" x2="1"><stop offset="0" stop-color="#DDEFFC"/><stop offset="1" stop-color="#F8FBFF"/></linearGradient></defs>
+        <rect width="1080" height="1350" fill="url(#${id}-lg)"/>
+        <g style="filter: blur(7px)" opacity=".92" transform="translate(70 230) scale(1.1)">${flipClock(id + 'c', hh, mm)}</g>
+        <g class="body" transform="translate(540 1082) scale(6.4)">${torsoFront({ skin: SK.sten, vest: COL.vest })}</g>
+        <g class="headg" transform="translate(540 700) scale(6.4)">${headFront({ skin: SK.sten, hair: 'beanie', stubble: true })}</g>
+        <g class="mugg">${mugSvg(3.1)}<g class="steam" opacity="0" stroke="${C.grey}" stroke-width="6" fill="none" stroke-linecap="round"><path d="M -44 -166 q 22 -36 0 -72 q -22 -36 0 -72"/><path d="M 24 -186 q 22 -36 0 -72 q -22 -36 0 -72"/></g></g>`);
+      return { el, head: q(el, '.headg .head'), headg: q(el, '.headg'), mug: q(el, '.mugg'), steam: q(el, '.steam') };
+    }
+    const F1 = buildFaceShot('intro', '06', '58'), F14 = buildFaceShot('fine', '07', '04');
+
+    // Scen 3: genom skjutfönstret
+    const W3 = (() => {
+      const id = 'loves'; const el = scene(id);
+      const refl = [0, 1, 2, 3, 4].map((i) => `<g transform="translate(${1060 - i * 236} 600) scale(-0.8 0.8)">${truckSvg('r' + i, '', C.grey)}</g>`).join('');
+      el.innerHTML = svgWrap(`<defs><clipPath id="${id}-glass"><rect x="84" y="224" width="912" height="712" rx="10"/></clipPath></defs>
+        <rect width="1080" height="1350" fill="${C.tint2}"/>
+        <g class="push" transform-origin="540 650">
+          <rect x="50" y="190" width="980" height="830" rx="22" fill="#fff" stroke="${H}" stroke-width="6"/>
+          <rect x="84" y="224" width="912" height="712" rx="10" fill="#E6F3FC"/>
+          <g clip-path="url(#${id}-glass)">
+            <rect x="84" y="224" width="912" height="712" fill="#F4F9FD"/><rect x="84" y="224" width="912" height="40" fill="${C.tint}"/>
+            <g class="sten" transform="translate(540 600) scale(2.3)">${torsoFront({ skin: SK.sten, vest: COL.vest })}${armSvg('ar', COL.fleece, SK.sten)}${armSvg('al', COL.fleece, SK.sten)}<g class="headg" transform="translate(0 -58)">${headFront({ skin: SK.sten, hair: 'beanie', stubble: true })}</g></g>
+            <rect x="84" y="896" width="912" height="40" fill="#fff" stroke="${H}" stroke-width="4"/>
+            <g class="landline" transform="translate(262 890) scale(1.35)">${phoneBaseSvg(1)}</g>
+            <g class="mobile" transform="translate(540 884) rotate(90) scale(1.5)">${mobileSvg(1)}</g>
+            <g class="radio" transform="translate(800 860) scale(1.45)">${radioSvg(1)}</g>
+            <g class="refl" opacity=".13">${refl}</g>
+          </g>
+          <line x1="540" y1="224" x2="540" y2="936" stroke="${H}" stroke-width="4" opacity=".35"/>
+        </g>`);
+      const sten = q(el, '.sten');
+      return { el, push: q(el, '.push'), head: q(sten, '.head'), ar: q(sten, '.ar'), al: q(sten, '.al'), landline: q(el, '.landline'), cradle: q(el, '.landline .cradle'), mobile: q(el, '.mobile') };
+    })();
+
+    // Scen 4: utanför fönstret, tre chaufförer
+    const W4 = (() => {
+      const id = 'languages'; const el = scene(id);
+      const drv = [
+        { x: 330, o: { skin: SK.dar, vest: COL.red, top: '#334155', pants: COL.jeans, hair: 'short', pockets: true }, say: 'Dzień dobry, brama trzy?' },
+        { x: 690, o: { skin: SK.ro, vest: COL.orange, top: '#1F2937', pants: COL.pants, hair: 'cap', hairColor: '#4B5563' }, say: 'Unde descarc?' },
+        { x: 1050, o: { skin: SK.lt, vest: COL.lime, top: '#3F3F46', pants: COL.jeans, hair: 'short', hairColor: COL.hairBrown }, say: 'Kur man važiuoti?' },
+      ];
+      el.innerHTML = svgWrap(`<defs><clipPath id="${id}-win"><rect x="424" y="304" width="752" height="312" rx="10"/></clipPath></defs>
+        <rect width="1080" height="1350" fill="${C.bg}"/>
+        <g class="wide">
+          <rect x="-600" y="1040" width="2800" height="500" fill="${C.tint2}"/><rect x="-600" y="1036" width="2800" height="22" fill="${C.border}"/>
+          <rect x="60" y="236" width="1480" height="30" rx="10" fill="${H}"/>
+          <rect x="80" y="260" width="1440" height="790" rx="18" fill="#fff" stroke="${H}" stroke-width="6"/>
+          <rect x="420" y="300" width="760" height="320" rx="12" fill="#E6F3FC" stroke="${H}" stroke-width="6"/>
+          <g clip-path="url(#${id}-win)"><rect x="424" y="304" width="752" height="40" fill="${C.tint}"/><g class="sten" transform="translate(800 560) scale(1.6)">${torsoFront({ skin: SK.sten, vest: COL.vest })}${armSvg('ar', COL.fleece, SK.sten)}${armSvg('al', COL.fleece, SK.sten)}<g class="radiochin" transform="translate(0 -4) rotate(14)">${radioSvg(0.78)}</g><g class="headg" transform="translate(0 -58)">${headFront({ skin: SK.sten, hair: 'beanie', stubble: true })}</g></g></g>
+          <line x1="800" y1="300" x2="800" y2="620" stroke="${H}" stroke-width="4" opacity=".4"/>
+          <rect x="120" y="300" width="230" height="60" rx="12" fill="#fff" stroke="${H}" stroke-width="4"/>${txt(235, 342, 'GRIND 1', 30, { anchor: 'middle' })}
+          ${drv.map((d, i) => `<g class="drv d${i}" transform="translate(${d.x} 1040) scale(0.95)">${personSide(d.o)}</g>`).join('')}
+          ${drv.map((d, i) => bubble(d.x + 44, 1040 - 344 * 0.95 - 16, d.say, { cls: 'b' + i, size: 30 })).join('')}
+        </g>`);
+      const sten = q(el, '.sten');
+      return { el, wide: q(el, '.wide'), head: q(sten, '.head'), headg: q(sten, '.headg'), ar: q(sten, '.ar'), al: q(sten, '.al'), radio: q(sten, '.radiochin'), drv: qa(el, '.drv'), bub: qa(el, '.bubble') };
+    })();
+
+    // Scen 6 / 8b / 12: över Stens axel mot skärmen
+    function buildOts(id, variant) {
+      const el = scene(id); const live = variant === 'live', alarm = variant === 'alarm';
+      const [hh, mm] = live ? ['07', '03'] : alarm ? ['07', '00'] : ['06', '59'];
+      const win = `<g clip-path="url(#${id}-win)"><rect x="430" y="110" width="420" height="340" fill="${C.bg}"/><rect x="430" y="382" width="420" height="68" fill="${C.tint2}"/><rect x="430" y="378" width="420" height="10" fill="${C.border}"/>${[0, 1, 2, 3, 4].map((i) => `<rect x="${446 + i * 96}" y="326" width="5" height="54" fill="${C.grey}" opacity=".45"/>`).join('')}<rect x="430" y="328" width="420" height="4" fill="${C.grey}" opacity=".4"/><rect x="430" y="356" width="420" height="4" fill="${C.grey}" opacity=".4"/>
+        <path d="M 540 420 h 170 m -26 -16 l 26 16 l -26 16" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <g class="wrong" opacity="0">${truckSvg('w' + id, '', C.grey)}</g>
+        ${live ? `<g class="winok" transform="translate(600 382) scale(0.42)">${truckSvg('wo' + id, 'LTV 203', C.accent)}</g>` : ''}</g>`;
+      const screenOld = `<rect x="240" y="470" width="620" height="470" rx="18" fill="#CBD5E1" stroke="${H}" stroke-width="5"/><rect x="290" y="512" width="520" height="380" rx="6" fill="#F8FAFC" stroke="${H}" stroke-width="4"/><rect x="480" y="938" width="140" height="30" fill="#94A3B8" stroke="${H}" stroke-width="4"/><rect x="430" y="964" width="240" height="14" rx="6" fill="#94A3B8" stroke="${H}" stroke-width="4"/>`;
+      const screenNew = `<rect x="250" y="470" width="600" height="440" rx="12" fill="${H}"/><rect x="262" y="482" width="576" height="416" rx="6" fill="#fff"/><rect x="520" y="908" width="60" height="44" fill="${H}"/><rect x="440" y="948" width="220" height="14" rx="7" fill="${H}"/>`;
+      const cols = ['IN', 'UT', 'REG', 'PORT', 'SPRÅK?'], cx = [292, 372, 452, 582, 672], cw = [80, 80, 130, 90, 128];
+      const rows = [['06:31', '07:12', 'GHI 654', '1', ''], ['06:40', '', 'JKL 987', '2', ''], ['06:52', '', 'KHM 918', '7?', 'PL?'], ['06:55', '', 'RKL 7712', '', 'RO?'], ['06:57', '', 'LTV 203', '5', '??']];
+      const tabs = ['Blad1', 'Blad1 (2)', 'Kopia av Blad1', 'mars', 'mars (2)', 'april', 'FINAL', 'FINAL2', 'FINAL_v3'];
+      let tx = 292; const tabsSvg = tabs.map((t) => { const w = t.length * 11 + 26; const s = `<rect x="${tx}" y="866" width="${w}" height="26" fill="${tx === 292 ? '#fff' : '#E2E8F0'}" stroke="${H}" stroke-width="2"/>${txt(tx + 12, 884, t, 14, { w: 600, fill: C.text })}`; tx += w + 2; return s; }).join('');
+      const excel = `<g clip-path="url(#${id}-scr)"><rect x="290" y="512" width="520" height="26" fill="${C.tint}"/>${txt(300, 531, 'siffror_v3_FINAL(2).xlsx', 15, { w: 700 })}<g fill="${C.grey}"><circle cx="770" cy="525" r="5"/><circle cx="786" cy="525" r="5"/><circle cx="802" cy="525" r="5"/></g>
+        <rect x="290" y="538" width="520" height="28" fill="#E2E8F0"/>${cols.map((c, i) => txt(cx[i] + 6, 558, c, 16, { w: 800 })).join('')}
+        ${rows.map((r, ri) => `<line x1="290" y1="${566 + ri * 30}" x2="810" y2="${566 + ri * 30}" stroke="#E2E8F0" stroke-width="2"/>${r.map((v, i) => txt(cx[i] + 6, 587 + ri * 30, v, 16, { w: 600, fill: C.text })).join('')}`).join('')}
+        ${cx.map((x) => `<line x1="${x}" y1="538" x2="${x}" y2="866" stroke="#E2E8F0" stroke-width="2"/>`).join('')}
+        <line x1="290" y1="716" x2="810" y2="716" stroke="#E2E8F0" stroke-width="2"/><rect class="cur" x="292" y="718" width="78" height="26" fill="none" stroke="${C.accent}" stroke-width="3"/>
+        ${cols.map((_, i) => txt(cx[i] + 6, 737, '', 16, { cls: 'cell c' + i, w: 600, fill: C.text })).join('')}
+        ${tabsSvg}
+        <g class="dialog" opacity="0"><rect x="380" y="640" width="340" height="124" rx="10" fill="#fff" stroke="${H}" stroke-width="3"/><rect x="380" y="640" width="340" height="30" rx="10" fill="#E2E8F0"/>${txt(396, 661, 'Kalkylark', 14, { w: 700 })}<circle cx="416" cy="708" r="16" fill="#FCA5A5" stroke="${H}" stroke-width="3"/>${txt(416, 714, '!', 20, { anchor: 'middle' })}${txt(444, 714, 'Autosave failed', 24, { w: 800 })}<rect x="610" y="730" width="96" height="26" rx="6" fill="${C.tint}" stroke="${H}" stroke-width="2"/>${txt(658, 749, 'Retry', 15, { anchor: 'middle', w: 700 })}</g></g>`;
+      const liveUi = `<g clip-path="url(#${id}-scr2)"><rect x="262" y="482" width="576" height="46" fill="${C.tint2}"/>${txt(278, 513, 'LUP', 24, { fill: C.accent })}${txt(324, 513, 'NUMBER', 24)}${txt(455, 513, 'Site · live', 24)}<circle cx="790" cy="505" r="7" fill="${C.accent}"/>${txt(804, 512, 'Live', 18, { fill: C.accent, w: 700 })}
+        <rect x="278" y="548" width="360" height="300" rx="10" fill="${C.tint2}" stroke="${C.border}" stroke-width="2"/>
+        <rect x="278" y="660" width="360" height="52" fill="#E2E8F0"/><rect x="278" y="684" width="360" height="4" fill="#fff" opacity=".9"/>
+        ${DOCKS.map((_, i) => `<rect x="${292 + i * 42}" y="562" width="34" height="48" rx="5" fill="${i === 2 ? C.accent : '#fff'}" stroke="${i === 2 ? C.accent : C.border}" stroke-width="2"/>${txt(309 + i * 42, 593, String(i + 1), 18, { anchor: 'middle', fill: i === 2 ? '#fff' : H })}`).join('')}
+        ${[0, 4].map((i) => `<rect x="${288 + i * 42}" y="616" width="42" height="18" rx="9" fill="${C.accent}" opacity=".85"/>`).join('')}
+        <rect x="372" y="616" width="42" height="18" rx="9" fill="${C.accent}"/>${txt(393, 646, PLATE, 12, { anchor: 'middle', w: 800 })}
+        <rect x="300" y="668" width="40" height="18" rx="9" fill="${C.accent}"/>${txt(320, 731, 'Gate', 13, { anchor: 'middle', w: 700, fill: C.muted })}
+        ${txt(292, 775, 'On site', 15, { w: 700, fill: C.muted })}${txt(292, 806, '4', 34, { fill: C.accent })}${txt(360, 775, 'At dock', 15, { w: 700, fill: C.muted })}${txt(360, 806, '3', 34, { fill: C.accent })}${txt(440, 775, 'Queue', 15, { w: 700, fill: C.muted })}${txt(440, 806, '0', 34, { fill: C.accent })}${txt(520, 775, 'Paper', 15, { w: 700, fill: C.muted })}${txt(520, 806, '0', 34, { fill: C.accent })}
+        <g class="log">${[['06:58', 'IN', 'WGM 4521', 'Dock 3'], ['07:00', 'IN', 'RKL 7712', 'Dock 1'], ['07:02', 'IN', 'LTV 203', 'Dock 5'], ['07:03', 'OUT', 'GHI 654', '']].map((r, i) => `<g class="lrow" opacity="0"><rect x="652" y="${550 + i * 58}" width="178" height="50" rx="10" fill="${C.tint2}" stroke="${C.border}" stroke-width="2"/>${txt(664, 571 + i * 58, r[0] + ' · ' + r[1], 14, { w: 700, fill: C.muted })}${txt(664, 592 + i * 58, r[2] + (r[3] ? ' · ' + r[3] : ''), 15, { w: 800 })}</g>`).join('')}</g>
+        <g class="report"><rect x="278" y="862" width="552" height="30" rx="15" fill="${C.tint}" stroke="${C.border}" stroke-width="2"/>${txt(554, 883, 'Report · today · building…', 16, { anchor: 'middle', w: 800, cls: 'rtext' })}</g></g>`;
+      el.innerHTML = svgWrap(`<defs><clipPath id="${id}-win"><rect x="430" y="110" width="420" height="340" rx="8"/></clipPath><clipPath id="${id}-scr"><rect x="290" y="512" width="520" height="380" rx="6"/></clipPath><clipPath id="${id}-scr2"><rect x="262" y="482" width="576" height="416" rx="6"/></clipPath><clipPath id="${id}-door"><rect x="932" y="120" width="148" height="880"/></clipPath></defs>
+        <rect width="1080" height="1350" fill="${C.tint2}"/>
+        <g class="cam" transform-origin="550 700">
+          <rect x="0" y="1150" width="1080" height="14" fill="${C.border}"/>
+          <rect x="422" y="102" width="436" height="356" rx="12" fill="#fff" stroke="${H}" stroke-width="6"/>${win}
+          <g transform="translate(96 126) scale(1.0)">${flipClock(id + 'c', hh, mm)}</g>
+          <rect x="930" y="118" width="150" height="884" fill="${H}" opacity=".82"/><rect x="896" y="118" width="40" height="884" rx="6" fill="#fff" stroke="${H}" stroke-width="5"/>
+          <g clip-path="url(#${id}-door)"><g class="mgr" transform="translate(1180 630)"><path d="M -70 60 L 70 60 L 120 120 L 120 420 L -120 420 L -120 120 Z" fill="${COL.shirt}" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/><path d="M -24 58 L -8 96 L 0 84 L 8 96 L 24 58" fill="#fff" stroke="${H}" stroke-width="${SW}" stroke-linejoin="round"/><g transform="scale(1.5)">${headFront({ skin: SK.man, hair: 'short', hairColor: COL.hairBrown, glasses: true })}</g></g></g>
+          <rect x="0" y="950" width="1080" height="400" fill="#fff" stroke="${H}" stroke-width="5"/><rect x="0" y="950" width="1080" height="18" fill="${C.border}" opacity=".6"/>
+          ${live ? screenNew + liveUi : screenOld + excel}
+          <g transform="translate(330 985)"><rect x="0" y="0" width="460" height="86" rx="10" fill="#E2E8F0" stroke="${H}" stroke-width="4"/>${Array.from({ length: 36 }, (_, k) => `<rect x="${12 + (k % 12) * 37}" y="${10 + Math.floor(k / 12) * 24}" width="30" height="18" rx="4" fill="#fff" stroke="${H}" stroke-width="2"/>`).join('')}</g>
+          ${live ? `<g transform="translate(850 1010) scale(1.2)">${mugSvg(1)}</g><g transform="translate(975 1002) scale(1.1)">${mobileSvg(1)}</g><g transform="translate(1030 1000) scale(1.0)">${radioSvg(1)}</g>` : `<g class="landline" transform="translate(850 1012) scale(1.3)">${phoneBaseSvg(1)}</g>${alarm ? `<g class="mobile" transform="translate(760 1004) scale(1.2)">${mobileSvg(1)}</g><g class="radio" transform="translate(690 996) scale(1.1)">${radioSvg(1)}</g>` : ''}`}
+          ${live ? '' : `<path class="cord" d="M 836 1040 q 0 70 -60 76 c -40 4 -40 -30 -80 -26 c -40 4 -40 34 -80 30 c -40 -4 -40 -34 -80 -30 c -40 4 -40 34 -80 30 c -40 -4 -40 -34 -80 -30 q -40 6 -40 50" fill="none" stroke="${H}" stroke-width="5" stroke-linecap="round"/>`}
+          <g class="ots" transform="translate(170 1270)"><path d="M -320 400 L -320 20 Q -320 -70 -230 -70 L 190 -70 Q 280 -70 280 20 L 280 400 Z" fill="${COL.fleece}" stroke="${H}" stroke-width="5"/><path d="M 60 -66 L 190 -70 Q 280 -70 280 20 L 280 400 L 60 400 Z" fill="${COL.vest}" stroke="${H}" stroke-width="5"/><rect x="60" y="60" width="220" height="26" fill="#F8FAFC" opacity=".95"/><rect x="60" y="120" width="220" height="26" fill="#F8FAFC" opacity=".95"/><rect x="150" y="-66" width="26" height="130" fill="#F8FAFC" opacity=".95"/>
+            <rect x="-40" y="-120" width="80" height="60" fill="${SK.sten}" stroke="${H}" stroke-width="5"/>
+            <g transform="translate(0 -250)"><circle r="170" fill="${SK.sten}" stroke="${H}" stroke-width="5"/><ellipse cx="166" cy="30" rx="22" ry="34" fill="${SK.sten}" stroke="${H}" stroke-width="5"/><path d="M -176 -30 Q -180 -238 0 -244 Q 180 -238 176 -30 Z" fill="${COL.beanie}" stroke="${H}" stroke-width="5"/><rect x="-184" y="-84" width="368" height="64" rx="26" fill="${COL.beanie}" stroke="${H}" stroke-width="5"/><rect x="-184" y="-56" width="368" height="12" fill="${C.accent}"/><path d="M 120 -52 q 50 -10 72 6" fill="none" stroke="#E2E8F0" stroke-width="5"/></g>
+            ${live ? '' : `<g class="shoulderset" transform="translate(228 -92) rotate(62) scale(1.5)">${handsetSvg(1)}</g>`}
+          </g>
+          <g class="typearm"><polyline points="0,0 0,0 0,0" fill="none" stroke="${H}" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,0 0,0 0,0" fill="none" stroke="${COL.fleece}" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/><g class="hand"><circle r="32" fill="${SK.sten}" stroke="${H}" stroke-width="5"/><rect x="-10" y="-62" width="22" height="50" rx="11" fill="${SK.sten}" stroke="${H}" stroke-width="5"/></g></g>
+          <g class="thumb" opacity="0" transform="translate(330 1000)">${thumbSvg(1.2)}</g>
+          ${bubble(960, 560, 'Sten? The numbers by nine?', { cls: 'mb', size: 30, dx: -150 })}
+        </g>`);
+      return { el, cam: q(el, '.cam'), wrong: q(el, '.wrong'), mgr: q(el, '.mgr'), mgrHead: q(el, '.mgr .head'), bub: q(el, '.mb'), typearm: q(el, '.typearm'), thumb: q(el, '.thumb'), cells: qa(el, '.cell'), cur: q(el, '.cur'), dialog: q(el, '.dialog'), landline: q(el, '.landline'), mobile: q(el, '.mobile'), radio: q(el, '.radio'), lrows: qa(el, '.lrow'), report: q(el, '.report'), rtext: q(el, '.rtext'), clock: q(el, '.clock'), live };
+    }
+    const O6 = buildOts('numbers', 'excel'), O8 = buildOts('tenmoreB', 'alarm'), O12 = buildOts('live', 'live');
+
+    // Scen 7: tvåbild i profil med lappen
+    const W7 = (() => {
+      const id = 'safety'; const el = scene(id);
+      el.innerHTML = svgWrap(`<rect width="1080" height="1350" fill="${C.bg}"/>
+        <g class="zoom" transform-origin="545 640">
+          <g class="bgd">
+            <rect x="-800" y="1000" width="2700" height="700" fill="${C.tint2}"/><rect x="-800" y="996" width="2700" height="22" fill="${C.border}"/>
+            <g opacity=".9"><rect x="700" y="690" width="1200" height="310" fill="#fff" stroke="${H}" stroke-width="5"/><rect x="700" y="690" width="1200" height="20" fill="${H}" opacity=".15"/>${[0, 1, 2, 3].map((i) => `<rect x="${760 + i * 280}" y="790" width="190" height="210" rx="6" fill="${C.tint}" stroke="${H}" stroke-width="4"/><rect x="${800 + i * 280}" y="740" width="110" height="36" rx="18" fill="#fff" stroke="${H}" stroke-width="3"/>${txt(855 + i * 280, 766, 'PORT ' + (i + 1), 20, { anchor: 'middle' })}`).join('')}</g>
+            ${Array.from({ length: 26 }, (_, i) => `<rect x="${-800 + i * 100}" y="880" width="6" height="120" fill="${C.grey}" opacity=".45"/>`).join('')}<rect x="-800" y="890" width="1500" height="5" fill="${C.grey}" opacity=".4"/><rect x="-800" y="950" width="1500" height="5" fill="${C.grey}" opacity=".4"/>
+            <rect x="20" y="760" width="28" height="240" rx="6" fill="#fff" stroke="${H}" stroke-width="5"/><rect x="-300" y="786" width="330" height="18" rx="9" fill="#fff" stroke="${H}" stroke-width="5"/><rect x="-260" y="789" width="40" height="12" fill="${H}"/><rect x="-180" y="789" width="40" height="12" fill="${H}"/><rect x="-100" y="789" width="40" height="12" fill="${H}"/>
+            <g class="forklift" opacity="0"><g transform="scale(-0.8 0.8)">${forkliftSvg()}</g></g>
+            <g class="visitor" opacity="0">${personSide({ skin: SK.vis, top: '#94A3B8', pants: COL.jeans, hair: 'short', hairColor: '#6B7280' })}</g>
+          </g>
+          <g class="dar" transform="translate(770 1000) scale(1.9)"><g transform="scale(-1 1)">${personSide({ skin: SK.dar, vest: COL.red, top: '#334155', pants: COL.jeans, hair: 'short', pockets: true })}</g></g>
+          <g class="sten" transform="translate(330 1000) scale(1.9)">${personSide({ skin: SK.sten, vest: COL.vest, hair: 'beanie', stubble: true })}</g>
+          <g class="belt" transform="translate(372 690) rotate(-8)">${radioSvg(0.9)}</g>
+          <g class="sheet" transform="translate(545 640) rotate(-3)">${sheetSvg()}</g>
+          <g class="parm"><polyline points="0,0 0,0 0,0" fill="none" stroke="${H}" stroke-width="66" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,0 0,0 0,0" fill="none" stroke="${COL.fleece}" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/><g class="hand"><circle r="32" fill="${SK.sten}" stroke="${H}" stroke-width="5"/><rect x="10" y="-11" width="58" height="22" rx="11" fill="${SK.sten}" stroke="${H}" stroke-width="5"/></g></g>
+        </g>`);
+      const sten = q(el, '.sten'), darg = q(el, '.dar');
+      return { el, zoom: q(el, '.zoom'), forklift: q(el, '.forklift'), honk: q(el, '.honk'), visitor: q(el, '.visitor'), visLegs: [q(el, '.visitor .lb'), q(el, '.visitor .lf')], visArms: [q(el, '.visitor .ab'), q(el, '.visitor .af')], sten, stenHead: q(sten, '.head'), stenArms: { ab: q(sten, '.ab'), af: q(sten, '.af') }, darHead: q(darg, '.head'), darArms: { ab: q(darg, '.ab'), af: q(darg, '.af') }, parm: q(el, '.parm'), belt: q(el, '.belt') };
+    })();
+
+    // Scen 8c + 9: klockan, Sten, Dariusz i fönstret
+    function buildClockShot(id, host) {
+      host.innerHTML = svgWrap(`<defs><clipPath id="${id}-win"><rect x="694" y="524" width="352" height="392" rx="8"/></clipPath><radialGradient id="${id}-glow"><stop offset="0" stop-color="${C.accent}" stop-opacity=".55"/><stop offset="1" stop-color="${C.accent}" stop-opacity="0"/></radialGradient></defs>
+        <rect width="1080" height="1350" fill="${C.tint2}"/>
+        <g class="cam">
+          <rect x="0" y="1150" width="1080" height="14" fill="${C.border}"/>
+          <g transform="translate(260 180) scale(2.2)">${flipClock(id + 'c', '07', '00')}</g>
+          <rect x="686" y="516" width="368" height="408" rx="12" fill="#fff" stroke="${H}" stroke-width="6"/>
+          <g clip-path="url(#${id}-win)"><rect x="694" y="524" width="352" height="392" fill="${C.bg}"/><rect x="694" y="850" width="352" height="70" fill="${C.tint2}"/><rect x="694" y="846" width="352" height="10" fill="${C.border}"/>
+            <g transform="translate(1000 846) scale(0.5)">${truckSvg('cw' + id, PLATE, C.grey)}</g>
+            <g class="darw" transform="translate(860 866) scale(0.86)">${personFront({ skin: SK.dar, vest: COL.red, top: '#334155', pants: COL.jeans, hair: 'short' })}</g>
+            <circle class="glow" cx="860" cy="700" r="150" fill="url(#${id}-glow)" opacity="0"/>
+            <g class="dphone" transform="translate(860 700) rotate(-10) scale(1.25)">${mobileSvg(1, true)}</g>
+          </g>
+          <g class="sten" transform="translate(400 1000) scale(2.2)">${torsoFront({ skin: SK.sten, vest: COL.vest })}${armSvg('ar', COL.fleece, SK.sten)}${armSvg('al', COL.fleece, SK.sten)}<g class="headg" transform="translate(0 -58)">${headFront({ skin: SK.sten, hair: 'beanie', stubble: true })}</g></g>
+        </g>`);
+      const sten = q(host, '.sten'), darw = q(host, '.darw');
+      return { el: host, cam: q(host, '.cam'), clock: q(host, '.clock'), head: q(sten, '.head'), ar: q(sten, '.ar'), al: q(sten, '.al'), darHead: q(darw, '.head'), darArms: { r: q(darw, '.ar'), l: q(darw, '.al') }, glow: q(host, '.glow') };
+    }
+    const sc8c = scene('tenmoreC'); const K8 = buildClockShot('k8', sc8c);
+    const scF = scene('freeze'); const fw = U.el('div', 'freeze-wrap'); scF.appendChild(fw);
+    const cGrey = U.el('div', 'copy grey'), cCol = U.el('div', 'copy color'); fw.append(cGrey, cCol);
+    const KG = buildClockShot('kg', cGrey), KC = buildClockShot('kc', cCol);
+    cGrey.style.filter = 'grayscale(1) contrast(.92) brightness(1.04)';
+    const sc8a = scene('tenmoreA'); // världen (ingen egen DOM)
+    const scDock = scene('dock'); scDock.innerHTML = svgWrap(`<g class="back" transform="translate(430 1420) scale(2.0)">${stenBack()}</g>`);
+    const B5 = { el: scDock, g: q(scDock, '.back'), al: q(scDock, '.al'), ar: q(scDock, '.ar') };
+    // Världsscener utan egen DOM får tomma lager (för enhetlig hantering)
+    ['fleet', 'checkin', 'before', 'realjob'].forEach((id) => scene(id));
+
+    // ---------- Gemensamma DOM-lager ----------
+    const dim = U.el('div', 'hero-dim'); stage.appendChild(dim);
+    const split = U.el('div', 'split-left'); split.innerHTML = '<div class="split-label">Kierowca · WGM 4521</div>'; stage.appendChild(split);
+    const phoneRoot = U.el('div', 'hero-phone'); stage.appendChild(phoneRoot); const ph = buildPhone(phoneRoot);
+    const LANGS = ['Polski', 'Română', 'Lietuvių', 'English', 'Svenska', 'Deutsch', 'Українська', 'Latviešu', '+18'];
+    ph.langs.innerHTML = LANGS.map((l) => `<div class="ph-chip" data-l="${l}">${l}</div>`).join(''); ph.chips = qa(phoneRoot, '.ph-chip');
+    q(phoneRoot, '.ph-site').textContent = 'Gate 1';
+    const tapEl = U.el('div', 'hero-tap'); stage.appendChild(tapEl);
+    const stamp = U.el('div', 'sten-stamp', '06:58'); stage.appendChild(stamp);
+    const rubber = U.el('div', 'sten-rubber', 'according to management'); stage.appendChild(rubber);
+    const titleCard = U.el('div', 'sten-title', 'This is Sten.'); stage.appendChild(titleCard);
+    const outroLayer = U.el('div', 'phase phase-outro'); outroLayer.style.zIndex = 7; stage.appendChild(outroLayer);
+    const outroSeek = LUP.outro(outroLayer, brandEn, cta);
+    let cueList = null, cueBox = null, cueEl = null;
+    if (opts.captions !== false && LUP.captions) {
+      cueList = LUP.captions.cuesFromScript(beats.map((b) => ({ key: b.id, start: b.start, end: b.end, text: b.en, cues: b.cues })), brand.captions);
+      cueBox = U.el('div', 'captions'); cueBox.style.zIndex = 8; cueEl = U.el('div', 'cue', ''); cueBox.appendChild(cueEl); stage.appendChild(cueBox);
+    }
+
+    // ---------- Hjälpare ----------
+    let camera = { x: 600, s: 1, g: 1010 };
+    const lerpCam = (a, b, p) => ({ x: U.lerp(a.x, b.x, p), s: U.lerp(a.s, b.s, p), g: U.lerp(a.g ?? 1010, b.g ?? 1010, p) });
+    const applyCamera = (cam) => {
+      const cx = 540, g = cam.g ?? 1010;
+      near.style.transform = `translate(${cx - (cam.x + 600) * cam.s}px, ${g - WORLD.ground * cam.s}px) scale(${cam.s})`;
+      const fs = cam.s * 0.9, fx = cam.x * 0.55 + 260;
+      far.style.transform = `translate(${cx - (fx + 400) * fs}px, ${g - 10 - WORLD.ground * fs}px) scale(${fs})`;
+    };
+    const worldToStage = (wx, wy, cam) => ({ x: 540 + (wx - cam.x) * cam.s, y: (cam.g ?? 1010) + (wy - WORLD.ground) * cam.s });
+    const DOCK_DY = -70, DOCK_S = 0.86;
+    const place = (el, xFront, depth = 0) => { const sc = U.lerp(1, DOCK_S, depth); tr(el, xFront - TRUCK_LEN * sc, WORLD.ground + DOCK_DY * depth, sc); };
+    const show = (el, v) => { el.style.opacity = v; };
+    const toneWorld = (p, dawn) => { near.style.setProperty('color', U.mix(C.muted, C.accent, p)); far.style.opacity = U.lerp(0.75, 1, p); qa(trucksG, '.hl').forEach((h) => h.setAttribute('opacity', dawn)); };
+    const phoneState = { screen: null };
+    const showPhone = (vis, scale, originX = 540, originY = 760) => {
+      phoneRoot.style.opacity = vis; phoneRoot.style.visibility = vis > 0.001 ? 'visible' : 'hidden';
+      const s = U.lerp(0.18, 0.95, scale), x = U.lerp(originX, 560, scale), y = U.lerp(originY, 760, scale);
+      phoneRoot.style.transform = `translate(${x - 210 * s}px, ${y - 410 * s}px) scale(${s})`;
+    };
+    const phoneFixed = (vis, x, y, s) => { phoneRoot.style.opacity = vis; phoneRoot.style.visibility = vis > 0.001 ? 'visible' : 'hidden'; phoneRoot.style.transform = `translate(${x}px, ${y}px) scale(${s})`; };
+    const tap = (vis, x, y) => { tapEl.style.opacity = vis; tapEl.style.transform = `translate(${x - 30}px, ${y - 30}px) scale(${U.lerp(0.6, 1.1, vis)})`; };
+    const EN = { title: 'Check-in', plate: 'Registration number', lang: 'Choose language', next: 'Next' };
+    const phoneScreen = (mode) => {
+      if (phoneState.screen === mode) return; phoneState.screen = mode;
+      const sh = (el, on) => (el.style.display = on ? '' : 'none');
+      sh(ph.field, mode === 'plate' || mode === 'lang'); sh(ph.langs, mode === 'lang'); sh(ph.rules, mode === 'pl' || mode === 'before'); sh(ph.route, false); sh(ph.btn, true);
+      ph.title.textContent = mode === 'plate' || mode === 'lang' ? EN.title : mode === 'before' ? 'Rampa 3 →' : PL.title;
+      ph.label.textContent = mode === 'plate' ? EN.plate : mode === 'lang' ? EN.lang : PL.safety;
+      ph.btn.textContent = mode === 'plate' ? EN.next : mode === 'lang' ? EN.next : mode === 'before' ? PL.confirm : PL.next;
+      ph.btn.className = 'ph-btn'; ph.title.style.fontSize = mode === 'before' ? '56px' : ''; ph.title.style.color = mode === 'before' ? C.accent : '';
+      if (mode !== 'before') ph.ruleEls.forEach((r) => r.classList.remove('on'));
+    };
+    const ringAnim = (el, on, t, amp = 5) => { if (!el) return; const r = q(el, '.rings'); if (r) setO(r, on ? (Math.sin(t * 34) > 0 ? 1 : 0.35) : 0); el.style.transform = on ? `rotate(${(Math.sin(t * 72) * amp).toFixed(2)}deg)` : ''; };
+    const walk = (legs, arms, t, speed = 1.6, amp = 26, armAmp = 18) => { const ph_ = Math.sin(t * Math.PI * 2 * speed); if (legs[0]) setT(legs[0], `rotate(${(ph_ * amp).toFixed(2)})`); if (legs[1]) setT(legs[1], `rotate(${(-ph_ * amp).toFixed(2)})`); return ph_; };
+    const sideArmsIdle = (g, swing = 0) => { const ab = q(g, '.ab'), af = q(g, '.af'); if (ab) setArm(ab, { x: -10, y: -282 }, { x: -22 + swing, y: -124 }, 90, 86, -1); if (af) setArm(af, { x: 10, y: -282 }, { x: 20 - swing, y: -124 }, 90, 86, 1); };
+    const sideArmsPockets = (g) => { const ab = q(g, '.ab'), af = q(g, '.af'); if (ab) setArm(ab, { x: -10, y: -282 }, { x: -2, y: -154 }, 90, 86, -1); if (af) setArm(af, { x: 10, y: -282 }, { x: 28, y: -150 }, 90, 86, 1); };
+
+    // ---------- Ljudhändelser (absoluta tider) ----------
+    const B = Object.fromEntries(beats.map((b) => [b.id, b.start]));
+    const events = [];
+    const ev = (t, sfx, gain = 0) => events.push({ t: +t.toFixed(2), sfx, gain });
+    [[0.4, 'chirp', -14], [1.1, 'beeper', -24], [0.2, 'truck_idle', -20], [2.85, 'ring', -8]].forEach(([t, s, g]) => ev(B.intro + t, s, g));
+    [[0.0, 'truck_idle', -10], [0.4, 'beeper', -14], [0.9, 'beeper', -18], [1.5, 'air_brake', -10], [1.8, 'beeper', -16], [2.5, 'ring', -16], [2.9, 'beeper', -18], [3.7, 'ring', -16], [3.9, 'air_brake', -14], [4.4, 'beeper', -20]].forEach(([t, s, g]) => ev(B.fleet + t, s, g));
+    [[0.0, 'ring', -6], [1.2, 'ring', -6], [1.95, 'tick', -10], [2.4, 'cup', -6], [2.8, 'ring_mobile', -8]].forEach(([t, s, g]) => ev(B.loves + t, s, g));
+    [[0.3, 'ring', -10], [0.9, 'ring_mobile', -8], [1.6, 'radio', -8], [2.3, 'ring', -10], [2.6, 'ring_mobile', -8], [3.0, 'radio', -8], [3.5, 'ring', -10], [4.1, 'ring_mobile', -8]].forEach(([t, s, g]) => ev(B.languages + t, s, g));
+    [[0.3, 'beeper', -8], [1.2, 'beeper', -8], [1.9, 'air_brake', -6], [2.7, 'beeper', -10], [3.5, 'air_brake', -8]].forEach(([t, s, g]) => ev(B.dock + t, s, g));
+    [[0.25, 'typing', -8], [1.85, 'typing', -8], [2.0, 'beeper', -18], [3.45, 'typing', -8]].forEach(([t, s, g]) => ev(B.numbers + t, s, g));
+    [[1.3, 'horn', -8], [2.6, 'radio', -6], [3.4, 'radio', -6], [4.6, 'horn', -12], [5.6, 'radio', -4]].forEach(([t, s, g]) => ev(B.safety + t, s, g));
+    [[0.0, 'cam_move', -10], [0.2, 'beeper', -14], [0.6, 'beeper', -16], [1.0, 'beeper', -18], [1.35, 'ring', -6], [1.45, 'ring_mobile', -6], [1.6, 'radio', -6], [1.9, 'beep', -8], [2.95, 'tick', -4], [3.05, 'ring', -12], [3.45, 'ring_mobile', -14]].forEach(([t, s, g]) => ev(B.tenmore + t, s, g));
+    [[0.0, 'truck_idle', -16], [1.4, 'tick', -8], [2.8, 'tick', -8], [3.3, 'confirm', -8], [4.9, 'confirm', -10], [5.5, 'confirm', -10]].forEach(([t, s, g]) => ev(B.checkin + t, s, g));
+    [[0.4, 'tick', -8], [0.8, 'tick', -8], [1.2, 'tick', -8], [1.6, 'tick', -8], [1.2, 'gate_open', -4], [2.0, 'confirm', -8], [2.4, 'truck_pass', -10]].forEach(([t, s, g]) => ev(B.before + t, s, g));
+    [[2.2, 'confirm', -10]].forEach(([t, s, g]) => ev(B.live + t, s, g));
+    [[0.2, 'steps', -8], [2.4, 'truck_pass', -12], [3.6, 'beep', -14]].forEach(([t, s, g]) => ev(B.realjob + t, s, g));
+    [[0.5, 'beeper', -22], [1.9, 'logo', -8]].forEach(([t, s, g]) => ev(B.fine + t, s, g));
+    events.sort((a, b) => a.t - b.t);
+
+    // ---------- Scenuppdateringar ----------
+    const stenMugArm = (armEl, S, Hd, a, b, bend, rot, mugScale) => { held(armEl, mugSvg(mugScale)); setArm(armEl, S, Hd, a, b, bend, rot); };
+    const SH_R = { x: -84, y: 22 }, SH_L = { x: 84, y: 22 }; // axlar (torsoFront-koordinater)
+
+    function faceShot(F, l, d, which) {
+      if (which === 'intro') {
+        const rise = U.easeInOut(U.prog(l, 0.25, 2.55));
+        setT(F.mug, `translate(${U.lerp(800, 648, rise).toFixed(1)} ${U.lerp(1540, 1072, rise).toFixed(1)}) rotate(${U.lerp(-3, -9, rise).toFixed(1)})`);
+        setO(F.steam, (0.5 * U.prog(l, 0.9, 0.6) * (1 - rise * 0.4)).toFixed(3)); qa(F.steam, 'path').forEach((p, i) => setT(p, `translate(0 ${(-((l * 60 + i * 30) % 70)).toFixed(1)})`));
+        face(F.head, { blink: blinkAt(l, [1.35]), brow: [0, 0], smile: 0, ex: 0, ey: 0 });
+        setT(F.headg, `translate(540 ${(700 + Math.sin(l * 1.2) * 2).toFixed(1)}) scale(6.4)`);
+      } else {
+        const rise = U.easeInOut(U.prog(l, 0.0, 0.5)), sip = U.prog(l, 0.6, 0.6, U.easeInOut), down = U.prog(l, 1.25, 0.3, U.easeInOut);
+        const tilt = Math.sin(Math.PI * sip) * 1; // 0→1→0
+        setT(F.mug, `translate(${U.lerp(760, 648, rise).toFixed(1)} ${(U.lerp(1400, 1072, rise) - tilt * 26 + down * 30).toFixed(1)}) rotate(${(-9 - tilt * 26).toFixed(1)})`);
+        setO(F.steam, 0);
+        const cold = U.prog(l, 1.2, 0.18) * (1 - U.prog(l, 1.5, 0.3)); // kort rynkning: kaffet är kallt
+        const smile = U.prog(l, 1.5, 0.45, U.easeOut) * 0.75;
+        face(F.head, { blink: Math.max(sip > 0.1 && sip < 0.9 ? 1 : 0, blinkAt(l, [2.5])), brow: [-0.6 * cold + 0.4 * smile, -0.6 * cold + 0.15 * smile], smile, ex: 0, ey: 0 });
+        setT(F.headg, `translate(540 ${(700 - tilt * 10).toFixed(1)}) scale(6.4) rotate(${(-tilt * 2).toFixed(2)})`);
+      }
+    }
+
+    function windowShot(l, d, t) {
+      const W = W3; const picked = l >= 2.0;
+      const toPhone = U.prog(l, 1.72, 0.28, U.easeInOut), toEar = U.prog(l, 2.0, 0.35, U.easeInOut);
+      const hr = toEar > 0 ? { x: U.lerp(-122, -60, toEar), y: U.lerp(125, -46, toEar) } : { x: U.lerp(-112, -122, toPhone), y: U.lerp(150, 125, toPhone) };
+      held(W.ar, picked ? handsetSvg(0.55) : ''); setArm(W.ar, SH_R, hr, 100, 96, 1, picked ? U.lerp(0, 68, toEar) : 0);
+      W.cradle.style.opacity = picked ? 0 : 1;
+      const setDown = U.prog(l, 2.35, 0.35, U.easeInOut);
+      stenMugArm(W.al, SH_L, { x: U.lerp(68, 84, setDown), y: U.lerp(58, 94, setDown) }, 100, 96, -1, 0, 0.62);
+      let ex = 0, ey = 0;
+      if (between(l, 0.25, 0.75)) { ex = -6; ey = 4; } else if (between(l, 0.95, 1.4)) { ex = 6; ey = 5; } else if (between(l, 1.45, 1.95)) { ex = -6; ey = 4; }
+      const browUp = U.prog(l, 2.05, 0.25, U.easeOut) * 0.75;
+      face(W.head, { blink: Math.max(blinkAt(l, [0.9]), blinkAt(l, [2.2], 0.42)), brow: [browUp, 0], smile: U.prog(l, 2.4, 0.4) * 0.25, ex, ey });
+      ringAnim(W.landline, l < 1.95, t, 4); ringAnim(W.mobile, l >= 2.75, t, 6);
+      const push = 1 + 0.06 * U.prog(l, d - 0.67, 0.67, U.easeInOut); setT(W.push, `scale(${push.toFixed(4)})`);
+    }
+
+    function outsideShot(l, d, t) {
+      const W = W4;
+      const tx = U.lerp(40, -356, U.easeInOut(U.prog(l, 0.1, 2.7))) + U.lerp(0, 50, U.easeInOut(U.prog(l, 4.4, 0.6)));
+      setT(W.wide, `translate(${tx.toFixed(1)} -120) scale(1.12)`);
+      const nod = Math.sin(t * 7) * 3; setT(W.headg, `translate(0 -58) rotate(${nod.toFixed(2)})`);
+      const point = U.prog(l, 4.35, 0.45, U.easeInOut);
+      held(W.ar, handsetSvg(0.6)); setArm(W.ar, SH_R, { x: U.lerp(-62, -168, point), y: U.lerp(-44, -40, point) }, 100, 96, 1, U.lerp(-62, -10, point));
+      held(W.al, mobileSvg(0.95)); setArm(W.al, SH_L, { x: 62, y: -44 }, 100, 96, -1, 18);
+      ringAnim(q(W.ar, '.handset'), true, t, 4); ringAnim(q(W.al, '.mobile'), l > 0.8, t, 5); ringAnim(W.radio, l > 1.6, t + 1, 4);
+      face(W.head, { blink: blinkAt(l, [1.2, 3.9]), brow: [0, l > 3.0 ? 0.5 : 0], smile: 0.15, ex: l < 2.7 ? -3 : 0, ey: 3 });
+      W.drv.forEach((g, i) => { const hd = q(g, '.head'); setT(hd, `translate(0 -344) rotate(${nodAt(l, [0.6 + i * 0.7, 3.0 + i * 0.3], 6, 0.5).toFixed(2)})`); if (i === 0) sideArmsPockets(g); else sideArmsIdle(g); });
+      W.bub.forEach((bb, i) => { const p = U.prog(l, 0.35 + i * 0.7, 0.4, U.back); setO(bb, Math.min(1, p * 2)); setT(bb, `scale(${Math.max(0.01, p).toFixed(3)})`); });
+    }
+
+    const TYPE_STR = '06:58\tWGM 4521\t3'; const TAPS = []; [0.25, 1.85, 3.45].forEach((s) => { for (let k = 0; k < 6; k++) TAPS.push(s + k * 0.22); });
+    function otsShot(O, l, d, t, variant) {
+      const alarm = variant === 'alarm', live = variant === 'live';
+      const jitter = alarm ? { x: Math.sin(t * 23) * 4 + Math.sin(t * 7.3) * 3, y: Math.cos(t * 19) * 3 } : { x: 0, y: 0 };
+      const sc = alarm ? 1 + 0.1 * U.prog(l, 0, 1.3, U.easeIn) : live ? 1 + 0.05 * U.prog(l, 0, d, U.easeInOut) : 1 + 0.07 * U.prog(l, 0, d, U.easeInOut);
+      setT(O.cam, `translate(${jitter.x.toFixed(2)} ${jitter.y.toFixed(2)}) scale(${sc.toFixed(4)})`);
+      // chefen i dörren
+      let mgrIn = 0, nod = 0;
+      if (variant === 'excel') { mgrIn = U.prog(l, 0.7, 0.4, U.easeOut) * (1 - U.prog(l, 3.6, 0.4, U.easeIn)); }
+      else if (alarm) { mgrIn = U.prog(l, 0.15, 0.3, U.easeOut); nod = 0; }
+      else { mgrIn = U.prog(l, 1.4, 0.4, U.easeOut) * (1 - U.prog(l, 3.1, 0.4, U.easeIn)); nod = nodAt(l, [2.2, 2.55], 7, 0.35); }
+      setT(O.mgr, `translate(${U.lerp(1180, 1000, mgrIn).toFixed(1)} 630) rotate(${(-10 * mgrIn + nod).toFixed(2)})`);
+      face(O.mgrHead, { blink: blinkAt(l, [2.0]), brow: live ? [0.3, 0.3] : [0.6, 0.1], smile: live ? 0.5 : -0.2, ex: live ? -4 : -5, ey: live ? 3 : 1 });
+      const bp = variant === 'excel' ? U.prog(l, 1.05, 0.35, U.back) * (1 - U.prog(l, 3.3, 0.3)) : 0; setO(O.bub, Math.min(1, bp * 2)); setT(O.bub, `scale(${Math.max(0.01, bp).toFixed(3)})`);
+      // skrivande finger / tumme upp
+      if (!live) {
+        let n = 0; for (const tt of TAPS) if (l >= tt) n++;
+        const chars = TYPE_STR.slice(0, n).split('\t'); O.cells.forEach((c, i) => { const v = chars[i] || ''; if (c.textContent !== v) c.textContent = v; });
+        const curCol = Math.min(chars.length - 1, 4); O.cur.setAttribute('x', [292, 372, 452, 582, 672][curCol]); O.cur.setAttribute('width', [78, 78, 128, 88, 126][curCol]);
+        const k = Math.max(0, n - 1), key = { x: 360 + ((k * 7) % 11) * 37, y: 1003 + ((k * 5) % 3) * 24 }; let dip = 0; const last = TAPS[n - 1]; if (last != null && l - last < 0.09) dip = 1 - (l - last) / 0.09;
+        const S = { x: 330, y: 1190 }, Hd = { x: key.x, y: key.y - 30 + dip * 10 }; const e = ik(S, Hd, 190, 180, -1);
+        qa(O.typearm, 'polyline').forEach((p) => p.setAttribute('points', `${S.x},${S.y} ${e.ex.toFixed(1)},${e.ey.toFixed(1)} ${e.hx.toFixed(1)},${e.hy.toFixed(1)}`)); setT(q(O.typearm, '.hand'), `translate(${e.hx.toFixed(1)} ${e.hy.toFixed(1)}) rotate(-12)`);
+        const th = variant === 'excel' ? U.prog(l, 2.25, 0.35, U.back) * (1 - U.prog(l, 3.6, 0.3)) : 0; setO(O.thumb, Math.min(1, th * 2)); setT(O.thumb, `translate(330 ${(1150 - 150 * th).toFixed(1)})`);
+        const wrongP = U.prog(l, 2.0, 2.6); setO(O.wrong, wrongP > 0 && wrongP < 1 ? 1 : 0); setT(O.wrong, `translate(${U.lerp(1040, 330, wrongP).toFixed(1)} 382) scale(-0.5 0.5)`);
+        if (alarm) { setO(O.dialog, Math.sin(t * 14) > 0 ? 1 : 0.4); ringAnim(O.landline, true, t, 4); ringAnim(O.mobile, true, t + 0.4, 6); ringAnim(O.radio, true, t + 0.8, 5); } else { setO(O.dialog, 0); ringAnim(O.landline, false, t); }
+      } else {
+        O.typearm.style.opacity = 0; setO(O.thumb, 0);
+        O.lrows.forEach((r, i) => setO(r, U.prog(l, 0.5 + i * 0.55, 0.3)));
+        const ready = l >= 2.2; const v = ready ? 'Report · today · ready ✓' : 'Report · today · building…'; if (O.rtext.textContent !== v) O.rtext.textContent = v;
+        q(O.report, 'rect').setAttribute('fill', ready ? C.accent : C.tint); O.rtext.setAttribute('fill', ready ? '#fff' : H);
+      }
+    }
+
+    const POINT_T = [0.6, 1.02, 1.44, 1.86, 2.28, 2.7, 4.3]; // punkt 1–6 i följd, punkt 7 lite senare
+    function twoShot(l, d, t) {
+      const W = W7; const z = U.lerp(1.14, 0.84, U.easeInOut(U.prog(l, 4.0, 2.0))); setT(W.zoom, `scale(${z.toFixed(4)})`);
+      // Sten håller lappen med främre handen; bakre armen ersätts av pekarmen (ritas framför lappen)
+      const af = W.stenArms.af; setArm(af, { x: 10, y: -282 }, { x: 28, y: -180 }, 90, 86, 1); W.stenArms.ab.style.opacity = 0;
+      let idx = 0; for (let i = 0; i < POINT_T.length; i++) if (l >= POINT_T[i]) idx = i;
+      const prevT = POINT_T[idx], nextIdx = Math.min(idx + 1, 6);
+      const moveP = l < POINT_T[0] ? 0 : U.prog(l, prevT, 0.18, U.easeInOut);
+      const yFrom = l < POINT_T[0] ? 420 : 524 + Math.max(0, idx - 1) * 42, yTo = l < POINT_T[0] ? 420 : 524 + idx * 42;
+      const tip = { x: l < POINT_T[0] ? 380 : 436, y: U.lerp(yFrom, yTo, moveP) };
+      const S = { x: 311, y: 468 }, Hd = { x: tip.x - 30, y: tip.y - 44 }; const e = ik(S, Hd, 150, 150, 1);
+      qa(W.parm, 'polyline').forEach((p) => p.setAttribute('points', `${S.x},${S.y} ${e.ex.toFixed(1)},${e.ey.toFixed(1)} ${e.hx.toFixed(1)},${e.hy.toFixed(1)}`)); setT(q(W.parm, '.hand'), `translate(${e.hx.toFixed(1)} ${e.hy.toFixed(1)}) rotate(48)`);
+      setT(W.stenHead, `translate(0 -344) rotate(${(4 + nodAt(l, [4.3], 4, 0.4)).toFixed(2)})`);
+      // Dariusz nickar vid varje punkt
+      const nod = nodAt(l, POINT_T.map((x) => x + 0.12), 8, 0.4) + nodAt(l, [4.75], 8, 0.5);
+      setT(W.darHead, `translate(0 -344) rotate(${(-nod).toFixed(2)})`); sideArmsPockets(W.darArms.af.parentNode);
+      // bakgrund: truck (tutar), besökare utan väst, komradio som sprakar
+      const fp = U.prog(l, 1.1, 1.0) * 0.2 + U.prog(l, 3.6, 2.4) * 0.8; setO(W.forklift, fp > 0 && fp < 1 ? 1 : 0); setT(W.forklift, `translate(${U.lerp(1450, 880, fp).toFixed(1)} 1000)`); setO(W.honk, (between(l, 1.3, 1.9) || between(l, 4.6, 5.0)) && Math.sin(t * 30) > 0 ? 1 : 0);
+      const vp = U.prog(l, 2.2, 3.6); setO(W.visitor, vp > 0 && vp < 1 ? 1 : 0); setT(W.visitor, `translate(${U.lerp(-150, 1350, vp).toFixed(1)} 1000) scale(0.72)`); walk(W.visLegs, null, t, 1.7, 24); sideArmsIdle(W.visitor, Math.sin(t * Math.PI * 3.4) * 14);
+      const crackle = (between(l, 2.6, 3.1) || between(l, 3.4, 3.9) || between(l, 5.6, 6.0)) && Math.sin(t * 40) > -0.2; const rr = q(W.belt, '.rings'); if (rr) setO(rr, crackle ? 1 : 0);
+    }
+
+    function clockShot(K, l) {
+      // 0–0.55: extrem närbild på klockan, slår om vid 0.35; 0.55–1.3: ut/ned till Sten och fönstret
+      const z = U.lerp(2.0, 1.0, U.easeInOut(U.prog(l, 0.55, 0.75))), cx = 524, cy = 301;
+      setT(K.cam, `translate(${(cx - cx * z).toFixed(2)} ${(cy - cy * z).toFixed(2)}) scale(${z.toFixed(4)})`);
+      setFlip(K.clock, '00', '01', U.prog(l, 0.35, 0.3));
+      face(K.head, { blink: blinkAt(l, [1.1]), brow: [0.3, 0.3], smile: 0, ex: 4, ey: -7 });
+      stenMugArm(K.al, SH_L, { x: 70, y: 46 }, 100, 96, -1, 0, 0.62); setArm(K.ar, SH_R, { x: -108, y: 160 }, 100, 96, 1);
+      setArm(K.darArms.r, SH_R, { x: -24, y: 112 }, 100, 96, 1); setArm(K.darArms.l, SH_L, { x: 24, y: 112 }, 100, 96, -1);
+      face(K.darHead, { blink: 0, brow: [0, 0], smile: 0.2, ex: 0, ey: 6 });
+    }
+
+    // ---------- Per-frame ----------
+    const curBeat = (t) => { let b = beats[0]; for (const x of beats) if (t >= x.start) b = x; return b; };
+    const allScenes = () => Object.values(S);
+    function seek(frame) {
+      LUP._lastFrame = frame;
+      const t = frame / fps;
+      blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
+      blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
+      const b = curBeat(t), l = t - b.start, d = b.duration, p = U.clamp(l / d, 0, 1);
+
+      // standardvärden
+      let cam = camera, worldOn = false, tone = 0, dawn = 0, armOpen = 0, phVis = 0, phScale = 0, phOrigin = null, splitOn = false, stampV = 0, rubberV = 0, titleV = 0, dimV = 0, outroV = 0, outroL = -1, capOn = true;
+      const qVis = Array(queue.length).fill(0), qX = queue.map((_, i) => GATE_X - 290 - i * 292);
+      let darV = 0, darX = GATE_X - 290, darDepth = 0, t5aV = 0, t5aX = 0, t5aD = 0, t5bV = 0, t5bX = 0, t5bD = 0, parkedV = 0, passerV = 0, passerX = 0, miniV = 1, miniMode = 'phone', wStenV = 0, wDarV = 0, strapV = 0, thumbV = 0, mp2V = 0, mp3V = 0;
+      tap(0, 0, 0); allScenes().forEach((s) => s.classList.remove('on'));
+      const on = (id) => S[id].classList.add('on');
+      view.style.clipPath = '';
+
+      switch (b.id) {
+        case 'intro': { on('intro'); faceShot(F1, l, d, 'intro'); titleV = Math.min(U.prog(l, 0.3, 0.3), 1); capOn = false; break; }
+        case 'fleet': {
+          on('fleet'); worldOn = true; tone = 0; dawn = 1;
+          cam = lerpCam({ x: 820, s: 1.0, g: 1080 }, { x: 380, s: 0.75, g: 1000 }, U.easeInOut(p));
+          for (let i = 0; i < 10; i++) { qVis[i] = 1; const arr = U.easeOut(U.prog(l, 0.0 + i * 0.05, 1.9)); qX[i] = GATE_X - 290 - i * 292 - (1 - arr) * 760; }
+          stampV = Math.min(U.prog(l, 0.4, 0.3), 1); miniMode = 'phone'; break;
+        }
+        case 'loves': { on('loves'); windowShot(l, d, t); break; }
+        case 'languages': { on('languages'); outsideShot(l, d, t); rubberV = U.prog(l, 3.2, 0.35, U.back); break; }
+        case 'dock': {
+          on('dock'); worldOn = true; tone = 0; dawn = 0.7; cam = { x: 3000, s: 0.72, g: 1010 };
+          const drive = U.easeInOut(U.prog(l, 0, 1.9)); t5aV = 1; t5aX = U.lerp(2150, DOCKS[6] + 150, drive); t5aD = U.prog(l, 1.95, 0.85, U.easeInOut);
+          const drive2 = U.easeInOut(U.prog(l, 0.3, 2.3)); t5bV = 1; t5bX = U.lerp(1500, DOCKS[5] + 150, drive2); t5bD = U.prog(l, 2.7, 0.9, U.easeInOut);
+          const lower = U.easeInOut(U.prog(l, 2.6, 0.5)); const bob = Math.sin(t * 2) * 2;
+          setT(B5.g, `translate(430 ${(1420 + bob).toFixed(1)}) scale(2.0)`);
+          setArm(B5.al, { x: -84, y: -286 }, { x: U.lerp(-244, -132, lower), y: U.lerp(-432, -128, lower) }, 100, 96, -1);
+          setArm(B5.ar, { x: 84, y: -286 }, { x: U.lerp(118, 132, lower), y: U.lerp(-480, -132, lower) }, 100, 96, 1);
+          miniV = 0; capOn = false; break;
+        }
+        case 'numbers': { on('numbers'); otsShot(O6, l, d, t, 'excel'); break; }
+        case 'safety': { on('safety'); twoShot(l, d, t); break; }
+        case 'tenmore': {
+          if (l < 1.3) {
+            on('tenmoreA'); worldOn = true; tone = 0; dawn = 1;
+            cam = lerpCam({ x: -1000, s: 0.7, g: 1000 }, { x: -1750, s: 0.7, g: 1000 }, U.easeInOut(U.prog(l, 0, 1.3)));
+            for (let i = 0; i < queue.length; i++) { qVis[i] = 1; if (i >= 10) { const arr = U.easeOut(U.prog(l, 0.05 + (i - 10) * 0.09, 1.0)); qX[i] = GATE_X - 290 - i * 292 - (1 - arr) * 1400; } }
+            miniMode = 'phone';
+          } else if (l < 2.6) { on('tenmoreB'); otsShot(O8, l - 1.3, 1.3, t, 'alarm'); }
+          else { on('tenmoreC'); clockShot(K8, l - 2.6); }
+          break;
+        }
+        case 'freeze': {
+          on('freeze'); clockShot(KG, 1.4); clockShot(KC, 1.4);
+          const drain = U.prog(l, 0.0, 0.6, U.easeInOut), back = U.prog(l, 2.6, 0.4, U.easeIn);
+          const r = back > 0 ? U.lerp(46, 1700, back) : U.lerp(1700, 46, drain);
+          cCol.style.clipPath = `circle(${r.toFixed(0)}px at 860px 700px)`;
+          const z = 1 + 0.32 * U.easeInOut(U.prog(l, 0.3, 2.5)); fw.style.transform = `translate(${(860 - 860 * z).toFixed(2)}px, ${(700 - 700 * z).toFixed(2)}px) scale(${z.toFixed(4)})`;
+          setO(KC.glow, ((0.75 + 0.25 * Math.sin(t * 5)) * drain * (1 - back)).toFixed(3)); setO(KG.glow, 0);
+          break;
+        }
+        case 'checkin': {
+          on('checkin'); worldOn = true; tone = 1; dawn = 0; miniMode = 'mug';
+          darV = 1; darX = GATE_X - 290 + U.prog(l, 0, d) * 8; qVis[0] = 1; qVis[1] = 1; qX[0] = GATE_X - 290 - 560 + U.prog(l, 0, d) * 30; qX[1] = GATE_X - 290 - 1120 + U.prog(l, 0, d) * 30;
+          dar.style.color = C.accent;
+          const glide = U.easeInOut(U.prog(l, 4.4, 1.5));
+          cam = lerpCam({ x: 860, s: 1.4, g: 1070 }, { x: 860 - 1050, s: 1.25, g: 1070 }, glide);
+          phVis = U.prog(l, 0.25, 0.2) * (1 - U.prog(l, 4.4, 0.4)); phScale = U.prog(l, 0.3, 0.45, U.easeInOut) * (1 - U.prog(l, 4.3, 0.5, U.easeInOut)); phOrigin = worldToStage(GATE_X - 290 - 40, WORLD.ground - 70, cam);
+          const typed = U.prog(l, 0.6, 0.9); const n = Math.round(typed * PLATE.length); if (ph.plate.textContent !== PLATE.slice(0, n)) ph.plate.textContent = PLATE.slice(0, n);
+          ph.caret.style.opacity = typed < 1 ? (Math.floor(l * 3) % 2 ? 1 : 0) : 0;
+          const mode = l < 2.2 ? 'plate' : l < 3.3 ? 'lang' : 'pl'; phoneScreen(mode);
+          const sel = U.prog(l, 2.75, 0.3, U.back); ph.chips.forEach((c) => c.classList.toggle('on', c.dataset.l === 'Polski' && sel > 0.5));
+          if (mode === 'lang' && sel > 0 && sel < 1) tap(1 - sel, 470, 620);
+          thumbV = U.prog(l, 3.75, 0.3, U.back) * (1 - U.prog(l, 4.5, 0.3)); setT(thumbB, `translate(${GATE_X - 290 - 60} ${WORLD.ground - 130}) scale(${Math.max(0.01, thumbV).toFixed(3)})`);
+          mp2V = U.prog(l, 4.85, 0.3, U.back); setT(mp2, `translate(${qX[0] - 60} ${WORLD.ground - 130}) scale(${Math.max(0.01, mp2V).toFixed(3)})`);
+          mp3V = U.prog(l, 5.45, 0.3, U.back); setT(mp3, `translate(${qX[1] - 60} ${WORLD.ground - 130}) scale(${Math.max(0.01, mp3V).toFixed(3)})`);
+          dimV = phVis * phScale * 0.45; break;
+        }
+        case 'before': {
+          on('before'); worldOn = true; tone = 1; dawn = 0; miniMode = 'crossed'; splitOn = true; dar.style.color = C.accent;
+          phoneScreen('before'); ph.ruleEls.forEach((r, i) => r.classList.toggle('on', l > 0.4 + i * 0.4)); ph.btn.textContent = l > 2.0 ? PL.confirmed : PL.confirm; ph.btn.classList.toggle('done', l > 2.0);
+          phoneFixed(1, 60, 265, 1);
+          armOpen = U.prog(l, 0.9, 0.8, U.easeInOut);
+          const run = U.easeInOut(U.prog(l, 1.5, 1.8)); darV = 1; darX = U.lerp(GATE_X - 290, DOCKS[2] + 150, run); darDepth = U.prog(l, 3.3, 0.65, U.easeInOut);
+          const focus = l < 1.5 ? GATE_X - 120 : U.lerp(GATE_X - 120, DOCKS[2] + 100, run); const s = 0.7; cam = { x: focus - 270 / s, s, g: 1010 };
+          parkedV = 1; view.style.clipPath = 'inset(0 0 0 540px)'; break;
+        }
+        case 'live': { on('live'); otsShot(O12, l, d, t, 'live'); break; }
+        case 'realjob': {
+          on('realjob'); worldOn = true; tone = 1; dawn = 0; miniV = 0; parkedV = 1; dar.style.color = C.accent;
+          darV = 1; darX = DOCKS[2] + 150; darDepth = 1;
+          const walkP = U.prog(l, 0, 2.6, (x) => x < 0.1 ? U.easeIn(x / 0.1) * 0.1 : x > 0.9 ? 0.9 + U.easeOut((x - 0.9) / 0.1) * 0.1 : x);
+          const sx = U.lerp(1500, 2235, walkP); wStenV = 1; wDarV = 1;
+          const moving = l < 2.6; const ph_ = moving ? walk([q(wSten, '.lb'), q(wSten, '.lf')], null, t, 1.7, 26) : (setT(q(wSten, '.lb'), 'rotate(0)'), setT(q(wSten, '.lf'), 'rotate(0)'), 0);
+          setT(wSten, `translate(${sx.toFixed(1)} ${(WORLD.ground - (moving ? Math.abs(ph_) * 3 : 0)).toFixed(1)}) scale(0.56)`);
+          const point = U.prog(l, 2.9, 0.5, U.easeInOut) * (1 - U.prog(l, 4.2, 0.4, U.easeInOut));
+          setArm(q(wSten, '.ab'), { x: -10, y: -282 }, { x: U.lerp(-22 + Math.sin(t * Math.PI * 3.4) * 14 * (moving ? 1 : 0), 150, point), y: U.lerp(-124, -300, point) }, 90, 86, -1);
+          held(q(wSten, '.af'), mugSvg(0.5)); setArm(q(wSten, '.af'), { x: 10, y: -282 }, { x: 54, y: -200 }, 90, 86, 1, -6);
+          setT(q(wSten, '.head'), `translate(0 -344) rotate(${nodAt(l, [4.35], 6, 0.45).toFixed(2)})`);
+          setT(wDar, `translate(${DOCKS[2] + 125} ${WORLD.ground}) scale(0.56)`);
+          const fix = U.prog(l, 3.5, 0.45, U.easeInOut) * (1 - U.prog(l, 4.1, 0.4, U.easeInOut));
+          setArm(q(wDar, '.af'), { x: 10, y: -282 }, { x: U.lerp(30, 150, fix), y: U.lerp(-192, -310, fix) }, 90, 86, 1); setArm(q(wDar, '.ab'), { x: -10, y: -282 }, { x: 18, y: -196 }, 90, 86, -1);
+          setT(q(wDar, '.head'), `translate(0 -344) rotate(${(-nodAt(l, [4.45], 6, 0.45)).toFixed(2)})`);
+          strapV = U.prog(l, 3.0, 0.3) * (1 - U.prog(l, 4.1, 0.3)); setT(strap, `translate(${DOCKS[2] + 70} ${WORLD.ground - 70 - 108})`);
+          const pp = U.prog(l, 2.2, 2.4); passerV = pp > 0 && pp < 1 ? 1 : 0; passerX = U.lerp(1300, 3300, pp);
+          const follow = U.easeInOut(U.prog(l, 0, 2.6)), push = U.easeInOut(U.prog(l, 2.6, 1.0));
+          cam = lerpCam(lerpCam({ x: 1640, s: 1.15, g: 1110 }, { x: 2130, s: 1.15, g: 1110 }, follow), { x: 2300, s: 2.1, g: 1190 }, push);
+          break;
+        }
+        case 'fine': {
+          on('fine'); faceShot(F14, l, d, 'fine');
+          const fade = U.prog(l, 1.4, 0.4, U.easeInOut); S.fine.style.opacity = 1 - fade; outroV = fade; outroL = (l - 1.45) * 2.6;
+          break;
+        }
+      }
+      if (b.id !== 'fine') S.fine.style.opacity = 1;
+
+      // ---- Tillämpa världen ----
+      view.style.visibility = worldOn ? 'visible' : 'hidden'; dawnEl.style.opacity = worldOn ? dawn : 0;
+      if (worldOn) {
+        camera = cam; applyCamera(cam); toneWorld(tone, dawn);
+        queue.forEach((qq, i) => { show(qq, qVis[i]); if (qVis[i]) place(qq, qX[i]); });
+        show(dar, darV); if (darV) { place(dar, darX, darDepth); q(dar, '.drv').style.opacity = tone; }
+        show(t5a, t5aV); if (t5aV) place(t5a, t5aX, t5aD); show(t5b, t5bV); if (t5bV) place(t5b, t5bX, t5bD);
+        parked.forEach((pk, i) => { show(pk, parkedV); if (parkedV) place(pk, DOCKS[i ? 4 : 0] + 150, 1); });
+        show(passer, passerV); if (passerV) place(passer, passerX, 1);
+        arm.setAttribute('transform', `rotate(${-82 * armOpen})`);
+        mini.style.opacity = miniV;
+        if (miniV) {
+          const hd = q(mini, '.head'); face(hd, { blink: 0, brow: [0, 0], smile: miniMode === 'phone' ? 0 : 0.3, ex: 0, ey: 2 });
+          if (miniMode === 'phone') { held(miniArms.r, handsetSvg(0.55)); setArm(miniArms.r, SH_R, { x: -60, y: -46 }, 100, 96, 1, 68); held(miniArms.l, ''); setArm(miniArms.l, SH_L, { x: 100, y: 160 }, 100, 96, -1); }
+          else if (miniMode === 'mug') { held(miniArms.r, ''); setArm(miniArms.r, SH_R, { x: -100, y: 160 }, 100, 96, 1); stenMugArm(miniArms.l, SH_L, { x: 66, y: 50 }, 100, 96, -1, 0, 0.62); }
+          else { held(miniArms.r, ''); held(miniArms.l, ''); setArm(miniArms.r, SH_R, { x: 40, y: 92 }, 100, 96, 1); setArm(miniArms.l, SH_L, { x: -40, y: 96 }, 100, 96, -1); }
+        }
+        wSten.setAttribute('opacity', wStenV); wDar.setAttribute('opacity', wDarV); setO(strap, strapV); setO(thumbB, Math.min(1, thumbV * 2)); setO(mp2, Math.min(1, mp2V * 2)); setO(mp3, Math.min(1, mp3V * 2));
+      }
+      // ---- Telefon, delad bild, dim ----
+      if (b.id === 'checkin') { showPhone(phVis, phScale, phOrigin.x, phOrigin.y); }
+      else if (b.id !== 'before') phoneRoot.style.visibility = 'hidden';
+      split.style.opacity = splitOn ? 1 : 0; split.style.visibility = splitOn ? 'visible' : 'hidden';
+      dim.style.opacity = dimV;
+      // ---- Stämplar, titelkort, slutkort ----
+      stamp.style.opacity = stampV; stamp.textContent = '06:58';
+      rubber.style.opacity = Math.min(1, rubberV * 2); rubber.style.transform = `rotate(-8deg) scale(${U.lerp(1.8, 1, Math.min(1, rubberV)).toFixed(3)})`;
+      titleCard.style.opacity = titleV; titleCard.style.transform = `translateY(${((1 - titleV) * 10).toFixed(1)}px)`;
+      outroLayer.style.visibility = outroV > 0 ? 'visible' : 'hidden'; outroLayer.style.opacity = outroV; if (outroV > 0) outroSeek(Math.max(0, outroL));
+      // ---- Undertexter ----
+      if (cueList) {
+        const c = capOn ? cueList.find((x) => t >= x.start && t < x.end) : null;
+        if (c) { const html = esc(c.text).replace(/ \/ /g, '<br>'); if (cueEl.innerHTML !== html) cueEl.innerHTML = html; cueBox.style.opacity = Math.min(U.prog(t, c.start, 0.12), 1 - U.prog(t, c.end - 0.12, 0.12)); }
+        else cueBox.style.opacity = 0;
+      }
+    }
+
+    LUP.timeline = { total, fps, frames: Math.round(total * fps), beats: beats.map((b) => ({ id: b.id, start: b.start, end: b.end, title: b.scene || '' })), events };
+    window.__seek = seek;
+    window.__setRenderMode = () => document.body.classList.add('render');
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    seek(0);
+    return LUP.timeline;
+  };
+})();
+</script>
+<script></script>
+<script>
+(function(){
+  const brand = {"company":"LUP Technologies","product":"LUPNUMBER","wordmark":{"accent":"LUP","heading":"NUMBER"},"tagline":"Molnbaserad yard management","seriesName":"Vardag på siten","cta":{"question":null,"label":"Boka en demo","url":"lupnumber.com"},"format":{"width":1080,"height":1350,"fps":30},"timeline":{"hook":2.5,"problem":4.5,"solution":6.5,"outro":4},"voiceoverMaxWords":45,"captions":{"maxWordsPerCue":7,"minCueSeconds":0.9}};
+  const clip = {"slug":"this-is-sten","composition":"ThisIsSten","template":"sten","lang":"en","title":"This is Sten. – The Morning Rush (60 s)","series":"This is Sten.","plate":"WGM 4521","poster":14.6,"tagline":"Cloud-based yard management","music":{"sections":"0:silence,11:waltz,35:silence,37.6:pulse,57:silence"},"cta":{"question":"Every site has a Sten. Give yours *LUPNUMBER*.","label":"Book a demo","url":"lupnumber.com","icon":"arrow"},"beats":[{"id":"intro","duration":3,"scene":"\"This is Sten.\"","en":"This is Sten.","cues":[[0.3,1.7,"This is Sten."]]},{"id":"fleet","duration":5,"scene":"The fleet","en":"Sten works at a very busy logistics site. Every morning, thirty trucks arrive.","cues":[[0.1,2.5,"Sten works at a very busy / logistics site."],[2.8,4.85,"Every morning, thirty trucks arrive."]]},{"id":"loves","duration":3,"scene":"\"Sten loves that.\"","en":"Usually at the same time. Sten loves that.","cues":[[0.1,1.45,"Usually at the same time."],[1.8,2.95,"Sten loves that."]]},{"id":"languages","duration":5,"scene":"Thirty languages","en":"Sten also speaks thirty languages. Well. According to management.","cues":[[0.2,2.1,"Sten also speaks thirty languages."],[2.9,4.8,"Well. According to management."]]},{"id":"dock","duration":4,"scene":"Dock 3 (silent)","en":"","cues":[]},{"id":"numbers","duration":5,"scene":"The numbers","en":"Management needs the numbers by nine. Sten finds this very relaxing.","cues":[[0.1,2.1,"Management needs the numbers by nine."],[2.6,4.6,"Sten finds this very relaxing."]]},{"id":"safety","duration":6,"scene":"Safety. In Swedish. To Dariusz.","en":"Safety is also Sten. Here he is, explaining the rules. In Swedish. To Dariusz.","cues":[[0.1,1.35,"Safety is also Sten."],[1.75,3.35,"Here he is, explaining the rules."],[3.75,4.5,"In Swedish."],[4.9,5.8,"To Dariusz."]]},{"id":"tenmore","duration":4,"scene":"Ten more. 07:01.","en":"And now: ten more trucks. It is seven-oh-one.","cues":[[0.1,1.75,"And now: ten more trucks."],[2.45,3.7,"It is 7:01."]]},{"id":"freeze","duration":3,"scene":"The turning point","en":"There is another way to run a gate.","cues":[[1,2.95,"There is another way / to run a gate."]]},{"id":"checkin","duration":6,"scene":"Check-in on their own phones","en":"Drivers check in on their own phones. In their own language. Twenty-six real ones.","cues":[[0.1,2.1,"Drivers check in on their own phones."],[2.5,3.7,"In their own language."],[4.1,5.6,"Twenty-six real ones."]]},{"id":"before","duration":4,"scene":"Dock, instructions, safety. Before the barrier.","en":"Dock, instructions, safety rules. Before the barrier.","cues":[[0.1,1.85,"Dock, instructions, safety rules."],[2.25,3.5,"Before the barrier."]]},{"id":"live","duration":4,"scene":"The numbers write themselves","en":"The site sees every vehicle. The numbers write themselves.","cues":[[0.1,1.7,"The site sees every vehicle."],[2.1,3.7,"The numbers write themselves."]]},{"id":"realjob","duration":5,"scene":"Sten does his real job","en":"Sten still works at a very busy site. He just doesn't have to be thirty people.","cues":[[0.1,2.2,"Sten still works / at a very busy site."],[2.6,4.8,"He just doesn't have to be / thirty people."]]},{"id":"fine","duration":3,"scene":"\"He's fine now.\"","en":"This is Sten. He's fine now.","cues":[[0.1,1.05,"This is Sten."],[1.5,2.75,"He's fine now."]]}],"scene":null};
+  const tl = LUP.initSten(brand, clip, {"captions":true});
+  // Preview-kontroller (döljs i render-läge)
+  const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
+  scrub.max = tl.frames - 1;
+  let frame = 0, playing = false, t0 = 0, f0 = 0;
+  const show = (f) => { frame = Math.max(0, Math.min(tl.frames - 1, Math.round(f))); window.__seek(frame); scrub.value = frame; time.textContent = (frame / tl.fps).toFixed(2) + ' s · frame ' + frame; };
+  scrub.addEventListener('input', () => { playing = false; play.textContent = 'Spela'; show(+scrub.value); });
+  play.addEventListener('click', () => { playing = !playing; play.textContent = playing ? 'Paus' : 'Spela'; t0 = performance.now(); f0 = frame >= tl.frames - 1 ? 0 : frame; });
+  const loop = (now) => { if (playing) { const f = f0 + (now - t0) / 1000 * tl.fps; if (f >= tl.frames) { playing = false; play.textContent = 'Spela'; show(tl.frames - 1); } else show(f); } requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+  const fit = () => { if (document.body.classList.contains('render')) return; const s = Math.min(window.innerWidth / 1080, (window.innerHeight - 60) / 1350); document.querySelector('.viewport').style.transform = 'scale(' + s + ')'; };
+  window.addEventListener('resize', fit); fit();
+  document.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); play.click(); } if (e.key === 'ArrowRight') show(frame + 1); if (e.key === 'ArrowLeft') show(frame - 1); });
+  show(0);
+})();
+</script>
+</body></html>
