@@ -149,6 +149,21 @@ Problem-läget håller sig till `--muted`/`--border`, lösningen till `--accent`
 
 Utan scen (`"scene": null`) centreras chips respektive flöde automatiskt.
 
+## Hero-film och LinkedIn-version (`brand/hero.js`)
+
+`LupnumberSiteDay` är en 60-sekunders film i ett sammanhängande bildrum (sidovy): infart, grind med bom och vaktbod, skylt, lastkaj med fyra portar. En lastbil, ABC 123, en morgon. Kameran åker och zoomar, telefonen lyfts ur hytten för den digitala delen, operatörsvyn glider upp under bilden. Beats och texter ligger i `films/lupnumber-site-day.json`; `films/lupnumber-linkedin-25.json` är en egen 25-sekundersklippning av samma mall.
+
+```bash
+npm run hero -- lupnumber-site-day        # 60 s: mp4 med ljudmix + tyst version, MANUS, SRT (sv/en), events.json, audio/
+npm run hero -- lupnumber-linkedin-25     # 25 s LinkedIn-version
+npm run hero -- lupnumber-site-day --vo-sv speaker.wav   # mixa in inspelad speaker (8 dB ducking)
+npm run material                          # checklista + närvarolista (PDF) som klipp 04 och 09 lovar
+npm run index                             # out/index.html med spelare för alla renderingar
+npm run verify                            # ffprobe på alla mp4 → tabell i QUALITY.md
+```
+
+Ljudet är en **prototyp**: `audio/synth.py` syntetiserar originalmusik och ljudeffekter (inga licenser), mixar efter filmens händelser och normaliserar till −16 LUFS. Ingen röst finns i miljön; speakertexterna på svenska och engelska ligger tidkodade i `MANUS.md`. Kvalitetsrapporten med granskning, red team och verifierade filer: [`QUALITY.md`](QUALITY.md).
+
 ## Flödesfilm: idag överst, med LUPNUMBER nederst
 
 `films/<slug>.json` listar steg i sitens flöde. Varje steg pekar på ett klipp (scenen hämtas därifrån) och har en rad för "idag" och en för "med LUPNUMBER", egen längd (`duration`) och voiceover.

@@ -13,7 +13,11 @@
     "klipp:alla": "node shorts/scripts/build.mjs all",
     "klipp:test": "node shorts/scripts/test.mjs",
     "klipp:serie": "node shorts/scripts/overview.mjs",
-    "film": "node shorts/scripts/film.mjs"
+    "film": "node shorts/scripts/film.mjs",
+    "hero": "node shorts/scripts/hero.mjs",
+    "material": "node shorts/scripts/material.mjs",
+    "index": "node shorts/scripts/index.mjs",
+    "verify": "node shorts/scripts/verify.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.200",

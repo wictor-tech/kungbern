@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8">
+<title>LUPNUMBER – LUPNUMBER – Incheckning på 25 sekunder (LinkedIn)</title>
+<style>/* LUPNUMBER – LÅSTA varumärkestokens. Ändra inte per klipp. */
+/* Inter levereras med repot (OFL) så att alla klipp renderas med exakt samma typsnitt. file:///home/user/kungbern/shorts/brand/fonts byts ut av build. */
+@font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-Medium.otf") format("opentype"), local("Inter Medium"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-SemiBold.otf") format("opentype"), local("Inter SemiBold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-Bold.otf") format("opentype"), local("Inter Bold"), local("Inter"); }
+@font-face { font-family: "Inter"; font-weight: 800; font-style: normal; src: url("file:///home/user/kungbern/shorts/brand/fonts/Inter-ExtraBold.otf") format("opentype"), local("Inter ExtraBold"), local("Inter"); }
+:root {
+  --bg: #F5FAFE;
+  --card: #FFFFFF;
+  --border: #BAE6FD;
+  --accent: #0EA5E9;
+  --heading: #0C4A6E;
+  --text: #334155;
+  --muted: #64748B;
+  --tint-1: #E0F2FE;
+  --tint-2: #F0F9FF;
+  --tint-3: #ECFDF5;
+  --font: "Inter", "Inter Display", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --radius: 28px;
+  --radius-sm: 18px;
+  --shadow: 0 18px 40px rgba(14, 165, 233, 0.10), 0 2px 6px rgba(12, 74, 110, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #0b1220; font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+/* ---- Stage ---- */
+.stage {
+  position: relative;
+  width: 1080px; height: 1350px;
+  background: var(--bg);
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--text);
+}
+.stage * { will-change: transform, opacity; }
+
+.blob { position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
+.blob-1 { width: 820px; height: 820px; left: -300px; top: -260px; background: radial-gradient(circle, var(--tint-1) 0%, rgba(224,242,254,0) 70%); }
+.blob-2 { width: 760px; height: 760px; right: -300px; bottom: -220px; background: radial-gradient(circle, var(--tint-3) 0%, rgba(236,253,245,0) 70%); }
+.blob-3 { width: 520px; height: 520px; right: -120px; top: 180px; background: radial-gradient(circle, var(--tint-2) 0%, rgba(240,249,255,0) 70%); }
+
+.phase { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+
+/* ---- Wordmark ---- */
+.wordmark { display: inline-flex; align-items: baseline; font-weight: 800; letter-spacing: -0.04em; line-height: 1; white-space: nowrap; }
+.wordmark .wm-lup { color: var(--accent); }
+.wordmark .wm-number { color: var(--heading); }
+.wordmark i { display: inline-block; font-style: normal; }
+.wm-bar { height: 10px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.tagline { color: var(--muted); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+
+/* ---- Badge (uppe till vänster från frame 0): liten wordmark + serienamn ---- */
+.badge { position: absolute; left: 72px; top: 64px; display: flex; align-items: center; gap: 18px; }
+.badge .wordmark { font-size: 34px; }
+.badge .sep { width: 2px; height: 26px; background: var(--border); border-radius: 2px; }
+.badge .ep { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* ---- Outro: fråga + handling ---- */
+.cta-question { color: var(--heading); font-weight: 800; font-size: 60px; line-height: 1.1; letter-spacing: -0.03em; text-align: center; max-width: 900px; }
+.cta-question em { font-style: normal; color: var(--accent); }
+
+/* ---- Flödesfilm: två paneler (idag / med LUPNUMBER) ---- */
+.panel { position: absolute; left: 56px; width: 968px; border-radius: 32px; background: var(--card); border: 2px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.panel.today { background: #FBFDFF; }
+.panel.lup { border-color: var(--accent); background: linear-gradient(180deg, var(--tint-2) 0%, #FFFFFF 70%); }
+.panel .tag { position: absolute; left: 24px; top: 20px; display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 8px 18px; font-weight: 800; font-size: 20px; letter-spacing: 0.12em; text-transform: uppercase; }
+.panel.today .tag { background: var(--tint-1); color: var(--muted); }
+.panel.lup .tag { background: var(--accent); color: #fff; }
+.panel .line { position: absolute; left: 32px; right: 32px; bottom: 22px; text-align: center; font-weight: 700; font-size: 30px; line-height: 1.2; letter-spacing: -0.01em; }
+.panel.today .line { color: var(--muted); }
+.panel.lup .line { color: var(--heading); }
+.panel .hero-slot { position: absolute; left: 50%; top: 66px; width: 936px; height: 400px; transform-origin: top center; }
+.stepper { position: absolute; left: 72px; right: 72px; display: flex; align-items: center; }
+.stepper .track { position: absolute; left: 20px; right: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--border); }
+.stepper .fill { position: absolute; left: 20px; top: 19px; height: 4px; border-radius: 2px; background: var(--accent); transform-origin: left center; }
+.stepper .dot { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 3px solid var(--border); background: #fff; color: var(--muted); font-weight: 800; font-size: 19px; display: flex; align-items: center; justify-content: center; }
+.stepper .dot.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stepper .dot.now { background: #fff; border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 6px var(--tint-1); }
+.step-label { position: absolute; left: 72px; right: 72px; text-align: center; color: var(--heading); font-weight: 800; font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; }
+
+
+/* ---- Typography ---- */
+.hook-text { color: var(--heading); font-weight: 800; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; text-align: center; }
+.hook-text .w { display: inline-block; }
+.hook-sub { color: var(--muted); font-weight: 600; font-size: 34px; text-align: center; margin-top: 28px; }
+.h1 { color: var(--heading); font-weight: 800; font-size: 58px; line-height: 1.08; letter-spacing: -0.03em; }
+.lead { color: var(--text); font-weight: 500; font-size: 30px; line-height: 1.35; }
+.kicker { color: var(--heading); font-weight: 800; font-size: 54px; letter-spacing: -0.03em; line-height: 1.1; }
+.kicker em { font-style: normal; color: var(--accent); }
+
+/* ---- Icon circle ---- */
+.icon-circle { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--card); border: 3px solid var(--border); color: var(--accent); box-shadow: var(--shadow); }
+.icon-circle svg { width: 52%; height: 52%; }
+
+/* ---- Cards ---- */
+.card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.chip { display: inline-flex; align-items: center; gap: 16px; background: var(--card); border: 2px solid var(--border); border-radius: 999px; padding: 18px 30px 18px 20px; color: var(--text); font-weight: 600; font-size: 29px; white-space: nowrap; }
+.chip .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--tint-1); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: 0 0 auto; }
+.chip .dot svg { width: 24px; height: 24px; }
+
+/* ---- Flow: numrerade accent-cirklar + linje + kort ---- */
+.flow { position: relative; display: flex; gap: 24px; align-items: stretch; }
+.flow-line { position: absolute; left: 148px; right: 148px; top: 0; height: 6px; border-radius: 999px; background: var(--accent); transform-origin: left center; }
+.flow-line.ghost { background: var(--border); }
+.step { position: relative; flex: 1 1 0; padding: 68px 24px 34px; text-align: center; }
+.step .num { position: absolute; left: 50%; top: 0; width: 64px; height: 64px; margin-left: -32px; margin-top: -32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(14,165,233,0.35); }
+.step .ico { color: var(--accent); height: 72px; display: flex; align-items: center; justify-content: center; }
+.step .ico svg { width: 64px; height: 64px; }
+.step .label { color: var(--heading); font-weight: 800; font-size: 32px; letter-spacing: -0.02em; margin-top: 10px; line-height: 1.1; }
+.step .sub { color: var(--muted); font-weight: 600; font-size: 22px; margin-top: 8px; }
+
+/* ---- CTA ---- */
+.cta-pill { display: inline-flex; align-items: center; gap: 18px; background: var(--accent); color: #fff; font-weight: 800; font-size: 40px; padding: 28px 56px; border-radius: 999px; box-shadow: 0 22px 44px rgba(14,165,233,0.35); }
+.cta-pill svg { width: 40px; height: 40px; }
+.url { color: var(--heading); font-weight: 700; font-size: 36px; letter-spacing: -0.01em; }
+.company { color: var(--muted); font-weight: 600; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ---- Hero (scenvisuals) ---- */
+.hero { position: absolute; left: 72px; right: 72px; }
+.hero svg { overflow: visible; }
+.hero-road { fill: var(--border); }
+.hero-dash { stroke: #fff; stroke-width: 4; stroke-dasharray: 26 22; }
+.hero-muted { color: var(--muted); }
+.hero-accent { color: var(--accent); }
+
+/* ---- Inbrända undertexter (valfritt, --captions) ---- */
+.captions { position: absolute; left: 72px; right: 72px; top: 1196px; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
+.captions .cue { background: rgba(255,255,255,0.92); border: 2px solid var(--border); border-radius: 20px; padding: 14px 28px; color: var(--heading); font-weight: 700; font-size: 31px; line-height: 1.25; text-align: center; max-width: 936px; box-shadow: var(--shadow); }
+
+/* ---- Preview-kontroller (döljs vid rendering) ---- */
+.controls { font: 14px/1.4 var(--font); color: #cbd5e1; display: flex; gap: 12px; align-items: center; padding: 12px 16px; }
+.controls input[type=range] { flex: 1; }
+.controls button { background: #0EA5E9; color: #fff; border: 0; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
+body.render .controls { display: none; }
+body.overlay, body.overlay .stage { background: transparent !important; }
+body.overlay .stage { box-shadow: none; }
+/* Ljus overlay-variant för mörk film: vit text, vit badge, ikonen behåller accentfärgen */
+body.overlay-light .hook-text, body.overlay-light .wm-number, body.overlay-light .ep { color: #fff !important; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
+body.overlay-light .hook-sub { color: #E0F2FE !important; text-shadow: 0 2px 14px rgba(0,0,0,0.35); }
+body.overlay-light .sep { background: rgba(255,255,255,0.6) !important; }
+body.overlay-light .icon-circle { border-color: rgba(255,255,255,0.7); box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
+body.render .viewport { transform: none !important; }
+
+/* ---- Hero-film (LupnumberSiteDay) ---- */
+.hero-view { position: absolute; inset: 0; overflow: hidden; }
+.hero-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.hero-layer.near { color: var(--accent); }
+.hero-title { position: absolute; left: 72px; width: 936px; top: 150px; color: var(--heading); font-weight: 800; font-size: 56px; line-height: 1.1; letter-spacing: -0.03em; }
+.hero-title .w { display: inline-block; }
+.hero-sub { position: absolute; left: 72px; width: 936px; top: 290px; color: var(--muted); font-weight: 600; font-size: 30px; }
+.hero-dim { position: absolute; inset: 0; background: rgba(245,250,254,0.0); pointer-events: none; opacity: 0; background-color: rgba(245,250,254,0.9); }
+.hero-tap { position: absolute; left: 0; top: 0; width: 60px; height: 60px; border-radius: 50%; border: 4px solid var(--accent); background: rgba(14,165,233,0.18); opacity: 0; pointer-events: none; z-index: 6; }
+
+/* Telefon (420×820 vid skala 1, origin uppe till vänster) */
+.hero-phone { position: absolute; left: 0; top: 0; width: 420px; height: 820px; transform-origin: 0 0; opacity: 0; visibility: hidden; z-index: 5; }
+.ph-frame { position: absolute; inset: 0; border-radius: 54px; background: #fff; border: 6px solid var(--heading); box-shadow: 0 30px 80px rgba(12,74,110,0.25); overflow: hidden; }
+.ph-notch { position: absolute; left: 50%; top: 14px; width: 120px; height: 10px; margin-left: -60px; border-radius: 5px; background: var(--heading); opacity: .5; }
+.ph-screen { position: absolute; left: 18px; right: 18px; top: 44px; bottom: 24px; display: flex; flex-direction: column; }
+.ph-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 6px 14px; border-bottom: 2px solid var(--border); }
+.ph-wm { font-weight: 800; font-size: 26px; letter-spacing: -0.03em; color: var(--heading); } .ph-wm b { color: var(--accent); }
+.ph-site { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; }
+.ph-body { padding: 22px 6px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.ph-title { color: var(--heading); font-weight: 800; font-size: 34px; letter-spacing: -0.02em; line-height: 1.1; }
+.ph-label { color: var(--muted); font-weight: 600; font-size: 22px; }
+.ph-field { display: flex; align-items: center; gap: 4px; border: 3px solid var(--border); border-radius: 18px; padding: 18px 20px; font-weight: 800; font-size: 40px; color: var(--heading); letter-spacing: 0.04em; min-height: 84px; background: var(--tint-2); }
+.ph-caret { color: var(--accent); font-weight: 400; }
+.ph-langs { display: flex; gap: 12px; flex-wrap: wrap; }
+.ph-chip { border: 3px solid var(--border); border-radius: 999px; padding: 12px 22px; font-weight: 800; font-size: 26px; color: var(--muted); background: #fff; }
+.ph-chip.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+.ph-rules { display: flex; flex-direction: column; gap: 14px; }
+.ph-rule { display: flex; align-items: center; gap: 14px; color: var(--text); font-weight: 600; font-size: 25px; line-height: 1.15; }
+.ph-box { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; background: #fff; }
+.ph-box svg { width: 22px; height: 22px; opacity: 0; }
+.ph-rule.on .ph-box { background: var(--accent); border-color: var(--accent); } .ph-rule.on .ph-box svg { opacity: 1; }
+.ph-route { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0; }
+.ph-dist { font-weight: 800; font-size: 72px; color: var(--accent); letter-spacing: -0.03em; }
+.ph-arrow { color: var(--accent); } .ph-arrow svg { width: 90px; height: 90px; }
+.ph-state { display: flex; align-items: center; gap: 14px; color: var(--muted); font-weight: 700; font-size: 26px; } .ph-state svg { width: 40px; height: 40px; } .ph-state.ok { color: var(--accent); }
+.ph-btn { margin-top: auto; background: var(--accent); color: #fff; border-radius: 20px; padding: 22px; text-align: center; font-weight: 800; font-size: 28px; }
+.ph-btn.ghost { background: var(--tint-1); color: var(--muted); } .ph-btn.done { background: var(--heading); }
+
+/* Operatörsvy */
+.hero-panel { position: absolute; left: 72px; width: 936px; top: 745px; background: #fff; border: 2px solid var(--border); border-radius: 28px; box-shadow: var(--shadow); padding: 22px 28px 24px; opacity: 0; visibility: hidden; z-index: 4; }
+.op-head { display: flex; align-items: center; gap: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+.op-title { color: var(--heading); font-weight: 800; font-size: 28px; flex: 1; }
+.op-live { color: var(--accent); font-weight: 700; font-size: 20px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+.op-live i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px var(--tint-1); }
+.op-rows { display: flex; flex-direction: column; gap: 6px; padding: 12px 0 4px; }
+.op-row { display: grid; grid-template-columns: 170px 1fr auto; align-items: center; gap: 16px; padding: 9px 14px; border-radius: 14px; color: var(--text); font-weight: 600; font-size: 24px; }
+.op-row.hi { background: var(--tint-2); border: 2px solid var(--border); }
+.op-plate { font-weight: 800; color: var(--heading); font-size: 26px; letter-spacing: 0.02em; }
+.op-tags { display: flex; gap: 8px; } .op-tags i { font-style: normal; font-weight: 700; font-size: 20px; padding: 6px 12px; border-radius: 999px; background: var(--tint-1); color: var(--heading); white-space: nowrap; }
+.op-tags i.wait { background: #F1F5F9; color: var(--muted); }
+.op-stats { display: flex; gap: 14px; padding-top: 8px; }
+.op-action { flex: 1; text-align: center; background: var(--accent); color: #fff; font-weight: 800; font-size: 26px; padding: 16px; border-radius: 16px; }
+.op-action.done { background: var(--tint-1); color: var(--heading); }
+.op-kpi { flex: 1; background: var(--tint-2); border-radius: 16px; padding: 10px 16px; display: flex; align-items: baseline; gap: 10px; }
+.op-kpi b { color: var(--accent); font-size: 40px; font-weight: 800; } .op-kpi span { color: var(--muted); font-weight: 600; font-size: 22px; }
+
+.viewport{transform-origin:top left;position:absolute;left:0;top:0}
+</style></head>
+<body>
+<div class="viewport"><div class="stage"></div></div>
+<div class="controls" style="position:fixed;left:0;right:0;bottom:0;background:#0b1220">
+  <button id="play">Spela</button>
+  <input id="scrub" type="range" min="0" max="0" value="0" step="1">
+  <span id="time">0.00 s · frame 0</span>
+</div>
+<script>/* LUPNUMBER shorts – animationsmotor. Allt styrs av tiden t (sekunder), inget beror på klockan. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+  const easeIn = (p) => p * p * p;
+  const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+  const back = (p) => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+  // 0..1 mellan start och start+dur, valfri easing
+  const prog = (t, start, dur, ease) => { const p = clamp((t - start) / dur, 0, 1); return ease ? ease(p) : p; };
+  // in/ut-kurva: tonar in över inDur, håller, tonar ut över outDur innan end
+  const window_ = (t, start, end, inDur, outDur) => {
+    if (t < start || t > end) return 0;
+    const a = prog(t, start, inDur, easeOut);
+    const b = 1 - prog(t, end - outDur, outDur, easeIn);
+    return Math.min(a, b);
+  };
+
+  // Färgblandning mellan två hexfärger, p = 0..1 (används för problem→lösning-toning)
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mix = (a, b, p) => { const A = hex(a), B = hex(b), q = clamp(p, 0, 1); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], q))).join(',')})`; };
+  const stagger = (t, start, i, step, dur, ease) => prog(t, start + i * step, dur, ease);
+
+  const el = (tag, cls, html) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  };
+  const css = (e, obj) => { for (const k in obj) e.style[k] = obj[k]; return e; };
+
+  // Standardentré: fade + slide upp (+ liten skala). p = 0..1
+  const enter = (e, p, opts = {}) => {
+    const dy = opts.dy ?? 28, s0 = opts.scale ?? 1, dx = opts.dx ?? 0;
+    e.style.opacity = clamp(p, 0, 1);
+    e.style.transform = `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px) scale(${lerp(s0, 1, p)})`;
+  };
+  const hide = (e) => { e.style.opacity = 0; };
+
+  // Splittar text i rader (\n) och ord, returnerar array av ord-spans
+  const words = (container, text, cls = 'w') => {
+    container.innerHTML = '';
+    const out = [];
+    text.split('\n').forEach((line, li) => {
+      if (li) container.appendChild(el('br'));
+      line.split(/\s+/).filter(Boolean).forEach((w, wi, arr) => {
+        const s = el('span', cls, w);
+        container.appendChild(s);
+        if (wi < arr.length - 1) container.appendChild(document.createTextNode(' '));
+        out.push(s);
+      });
+    });
+    return out;
+  };
+
+  // Wordmark: LUP (accent) + NUMBER (heading), bokstav för bokstav
+  const wordmark = (size, brand) => {
+    const w = el('div', 'wordmark');
+    w.style.fontSize = size + 'px';
+    const a = el('span', 'wm-lup'), b = el('span', 'wm-number');
+    [...brand.wordmark.accent].forEach((ch) => a.appendChild(el('i', null, ch)));
+    [...brand.wordmark.heading].forEach((ch) => b.appendChild(el('i', null, ch)));
+    w.appendChild(a); w.appendChild(b);
+    w._letters = [...w.querySelectorAll('i')];
+    return w;
+  };
+  // Bygger upp wordmark: start = när första bokstaven kommer, stagger per bokstav
+  const animateWordmark = (w, t, start, stagger = 0.07, dur = 0.5) => {
+    w._letters.forEach((L, i) => {
+      const p = prog(t, start + i * stagger, dur, back);
+      L.style.opacity = clamp(p * 1.5, 0, 1);
+      L.style.transform = `translateY(${(1 - p) * 0.35}em) scale(${lerp(0.7, 1, p)})`;
+    });
+  };
+
+  LUP.util = { clamp, lerp, easeOut, easeIn, easeInOut, back, prog, window: window_, mix, stagger, el, css, enter, hide, words, wordmark, animateWordmark };
+})();
+
+/* Ikonbibliotek – stroke-ikoner, 24x24, currentColor. Lägg till här, referera med namn i klipp-JSON. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const wrap = (inner, extra = '') =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${extra}>${inner}</svg>`;
+  LUP.icons = {
+    clock: wrap('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>'),
+    calendar: wrap('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9.5 15 1.8 1.8L15 13"/>'),
+    phone: wrap('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/><path d="m9.5 10.5 1.8 1.8L15 8.8"/>'),
+    gate: wrap('<path d="M4 21V9"/><path d="M2.5 21h3"/><path d="M4 11h16"/><circle cx="4" cy="11" r="1.6" fill="currentColor"/><path d="M9 11v-1.5M14 11v-1.5M19 11v-1.5"/>'),
+    truck: wrap('<path d="M2 6h11v10H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/>'),
+    check: wrap('<path d="m5 12.5 4.5 4.5L19 7.5"/>', 'stroke-width="2.6"'),
+    users: wrap('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.8"/><path d="M15.5 14.5a5 5 0 0 1 6 5"/>'),
+    globe: wrap('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
+    chat: wrap('<path d="M4 5.5h16v10H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>'),
+    map: wrap('<path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z"/><path d="M9 4v13.5M15 6.5V20"/>'),
+    clipboard: wrap('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4"/><path d="M8.5 10h7M8.5 14h4.5"/>'),
+    eye: wrap('<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.8"/>'),
+    bell: wrap('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
+    qr: wrap('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v1M17 20h4M20 17.5v.5"/>'),
+    warning: wrap('<path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4M12 17v.5"/>'),
+    cloud: wrap('<path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4.5 4.5 0 0 1 .4 9z"/>'),
+    arrow: wrap('<path d="M5 12h14M13 6l6 6-6 6"/>', 'stroke-width="2.4"'),
+    bolt: wrap('<path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12z"/>'),
+    search: wrap('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'),
+    handset: wrap('<path d="M5 3.5h3.5l1.8 4.5-2.3 1.6a11 11 0 0 0 6.4 6.4l1.6-2.3 4.5 1.8V19a2 2 0 0 1-2 2A15.5 15.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>'),
+    flag: wrap('<path d="M5 21V4"/><path d="M5 4h13l-3 4.5 3 4.5H5"/>'),
+    pen: wrap('<path d="m4 20 4-1 10.5-10.5a2.1 2.1 0 0 0-3-3L5 16z"/><path d="m13.5 7.5 3 3"/>'),
+    list: wrap('<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor"/><circle cx="3.5" cy="12" r="1" fill="currentColor"/><circle cx="3.5" cy="18" r="1" fill="currentColor"/>'),
+    shield: wrap('<path d="M12 2.5 4.5 5.5v5.5c0 4.8 3.2 8.4 7.5 10.5 4.3-2.1 7.5-5.7 7.5-10.5V5.5z"/><path d="m9 12 2 2 4-4"/>'),
+  };
+  LUP.icon = (name) => LUP.icons[name] || LUP.icons.check;
+})();
+
+/* Undertexts-cues ur voiceover + tidslinje. Körs både i Node (SRT) och i webbläsaren (inbrända undertexter). */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else (root.LUP = root.LUP || {}).captions = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  function phases(brand) {
+    const T = brand.timeline; const list = []; let t = 0;
+    for (const k of Object.keys(T)) { list.push({ key: k, start: t, end: t + T[k] }); t += T[k]; }
+    return { list, total: t, byKey: Object.fromEntries(list.map((p) => [p.key, p])) };
+  }
+  const words = (s) => (String(s).trim().match(/\S+/g) || []);
+  // Dela text i cues: först per mening, sedan i jämna bitar om max maxWords ord.
+  function splitCue(text, maxWords) {
+    const sentences = String(text).replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*/g) || [text];
+    const out = [];
+    for (const s of sentences) {
+      const w = words(s); if (!w.length) continue;
+      const parts = Math.ceil(w.length / maxWords), per = Math.ceil(w.length / parts);
+      for (let i = 0; i < w.length; i += per) out.push(w.slice(i, i + per).join(' '));
+    }
+    const merged = [];
+    for (const c of out) {
+      const prev = merged[merged.length - 1];
+      if (prev && words(prev).length <= 2 && words(prev).length + words(c).length <= maxWords) merged[merged.length - 1] = prev + ' ' + c;
+      else merged.push(c);
+    }
+    return merged;
+  }
+  // beats: [{ key, start, end, text }] → cues tidsatta inom varje beat, proportionellt mot ordantal
+  function cuesFromBeats(beats, cfgIn) {
+    const cfg = Object.assign({ maxWordsPerCue: 7, minCueSeconds: 0.9 }, cfgIn || {});
+    const all = [];
+    for (const b of beats) {
+      if (!b.text) continue;
+      const parts = splitCue(b.text, cfg.maxWordsPerCue);
+      const total = parts.reduce((a, p) => a + words(p).length, 0);
+      const w0 = b.start + 0.25, w1 = b.end - 0.15, span = w1 - w0;
+      let t = w0;
+      parts.forEach((p, i) => {
+        let d = Math.max(cfg.minCueSeconds, (words(p).length / total) * span);
+        if (i === parts.length - 1) d = w1 - t;
+        all.push({ beat: b.key, start: +t.toFixed(3), end: +Math.min(w1, t + d).toFixed(3), text: p });
+        t += d;
+      });
+    }
+    return all;
+  }
+  function cues(brand, clip) {
+    const { byKey } = phases(brand);
+    const beats = ['hook', 'problem', 'solution', 'outro'].filter((k) => byKey[k] && clip.voiceover && clip.voiceover[k]).map((k) => ({ key: k, start: byKey[k].start, end: byKey[k].end, text: clip.voiceover[k] }));
+    return cuesFromBeats(beats, brand.captions);
+  }
+  return { phases, splitCue, cues, cuesFromBeats, words };
+});
+
+/* Yard-primitiver: färdiga delar att komponera scenvisualer av. Hero-ytan är 936×400 px.
+   Alla primitiver returnerar ett Item med .set({x,y,scale,rotate,opacity,color}) och .tone(p) (muted→accent). */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+  const C = { muted: '#64748B', accent: '#0EA5E9', heading: '#0C4A6E', border: '#BAE6FD', tint: '#E0F2FE', tint2: '#F0F9FF', tint3: '#ECFDF5', card: '#FFFFFF', text: '#334155', bg: '#F5FAFE' };
+  const FONT = 'Inter, system-ui, sans-serif';
+  const add = (parent, str) => { parent.insertAdjacentHTML('beforeend', str); return parent.lastElementChild; };
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const tone = (p) => U.mix(C.muted, C.accent, p);
+  const toneBg = (p) => U.mix(C.card, C.tint, p);
+  const fo = (inner, w, h, x = -w / 2, y = -h / 2) => `<foreignObject x="${x}" y="${y}" width="${w}" height="${h}"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;height:${h}px;display:flex;align-items:center;justify-content:center;color:inherit">${inner}</div></foreignObject>`;
+
+  class Item {
+    constructor(el, o = {}) { this.el = el; this.s = Object.assign({ x: 0, y: 0, scale: 1, rotate: 0, opacity: 1, color: null }, o); this.apply(); }
+    set(o) { Object.assign(this.s, o); this.apply(); return this; }
+    apply() { const s = this.s; this.el.setAttribute('transform', `translate(${s.x} ${s.y}) rotate(${s.rotate}) scale(${s.scale})`); this.el.style.opacity = U.clamp(s.opacity, 0, 1); if (s.color) this.el.style.color = s.color; }
+    tone(p) { return this.set({ color: tone(p) }); }
+    // "poppar" in med back-easing från start; returnerar progress
+    pop(t, start, dur = 0.5) { const p = U.prog(t, start, dur, U.back); this.set({ scale: Math.max(0.001, p) * (this.base || 1), opacity: U.clamp(p * 2, 0, 1) }); return p; }
+    fadeIn(t, start, dur = 0.4, dy = 14) { const p = U.prog(t, start, dur, U.easeOut); this.set({ opacity: p, y: (this.y0 ?? this.s.y) + (1 - p) * dy }); if (this.y0 == null) this.y0 = this.s.y; return p; }
+    q(sel) { return this.el.querySelector(sel); }
+  }
+  const item = (svg, inner, o) => new Item(add(svg, `<g>${inner}</g>`), o);
+
+  const Y = {
+    C, tone, toneBg, Item, FONT,
+    svg(root, w = 936, h = 400) { const s = add(root, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible"></svg>`); return s; },
+
+    // Väg: rundad bana med streckad mittlinje. Origin uppe till vänster.
+    road(svg, { x = 0, y = 300, w = 936, h = 16 } = {}) {
+      return item(svg, `<rect x="0" y="0" width="${w}" height="${h}" rx="${h / 2}" fill="${C.border}"/><line x1="20" y1="${h / 2}" x2="${w - 20}" y2="${h / 2}" stroke="#fff" stroke-width="4" stroke-dasharray="26 22"/>`, { x, y });
+    },
+
+    // Lastbil, sidovy. 132 bred, marken vid y=63 (origin uppe till vänster).
+    truck(svg, o = {}) {
+      return item(svg, `
+        <rect x="0" y="4" width="92" height="46" rx="8" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <path d="M92 20h24l16 16v14H92z" fill="#fff" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="99" y="24" width="12" height="11" rx="2" fill="currentColor" opacity=".35"/>
+        <circle cx="24" cy="54" r="9" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <circle cx="112" cy="54" r="9" fill="#fff" stroke="currentColor" stroke-width="4"/>`, Object.assign({ color: C.muted }, o));
+    },
+    // Lastbil uppifrån (för kartor). 64×30, origin i mitten, pekar åt höger.
+    truckTop(svg, o = {}) {
+      return item(svg, `<rect x="-40" y="-19" width="54" height="38" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/><rect x="17" y="-15" width="23" height="30" rx="5" fill="currentColor" opacity=".9"/>`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Bom. Stolpe 22×120, pivot (11,24). .open(p) fäller upp armen.
+    gate(svg, { len = 160, ...o } = {}) {
+      const it = item(svg, `
+        <rect x="0" y="0" width="22" height="120" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <g class="arm" transform-origin="11 24">
+          <rect x="11" y="18" width="${len}" height="12" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/>
+          <rect x="36" y="20" width="22" height="8" fill="currentColor"/><rect x="${36 + (len - 40) / 3}" y="20" width="22" height="8" fill="currentColor"/><rect x="${36 + (2 * (len - 40)) / 3}" y="20" width="22" height="8" fill="currentColor"/>
+        </g>
+        <circle cx="11" cy="24" r="7" fill="currentColor"/>`, Object.assign({ color: C.muted }, o));
+      it.arm = it.q('.arm');
+      it.open = (p) => { it.arm.setAttribute('transform', `rotate(${-82 * U.clamp(p, 0, 1)})`); return it; };
+      return it;
+    },
+
+    // Klocka, origin i mitten. .time(sek) snurrar visarna.
+    clock(svg, { r = 50, ...o } = {}) {
+      const it = item(svg, `<circle r="${r}" fill="#fff" stroke="currentColor" stroke-width="5"/><line class="h" y2="${-r * 0.5}" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><line class="m" y2="${-r * 0.74}" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle r="5" fill="currentColor"/>`, Object.assign({ color: C.muted }, o));
+      const h = it.q('.h'), m = it.q('.m');
+      it.time = (s) => { m.setAttribute('transform', `rotate(${s * 150})`); h.setAttribute('transform', `rotate(${s * 12 + 60})`); return it; };
+      return it;
+    },
+
+    // Ikon ur biblioteket, centrerad i origin.
+    icon(svg, { name, size = 64, ...o }) {
+      return item(svg, fo(`<div style="width:${size}px;height:${size}px">${LUP.icon(name)}</div>`, size, size), Object.assign({ color: C.muted }, o));
+    },
+
+    // Piller med valfri ikon och text, origin uppe till vänster. .text(str) byter text.
+    pill(svg, { text, icon = null, fontSize = 30, h = 60, bg = C.card, border = C.border, fg = C.heading, w = null, ...o }) {
+      const pad = 24, ic = icon ? 38 : 0;
+      const approx = (s) => s.length * fontSize * 0.58;
+      const width = w || Math.round(pad * 2 + ic + (icon ? 10 : 0) + approx(text));
+      const it = item(svg, `
+        <rect class="bg" width="${width}" height="${h}" rx="${h / 2}" fill="${bg}" stroke="${border}" stroke-width="3"/>
+        ${icon ? `<g class="ic" style="color:${fg}" transform="translate(${pad + ic / 2} ${h / 2})">${fo(`<div style="width:${ic - 6}px;height:${ic - 6}px">${LUP.icon(icon)}</div>`, ic, ic)}</g>` : ''}
+        <text class="tx" x="${pad + ic + (icon ? 10 : 0)}" y="${h / 2 + fontSize * 0.36}" font-family="${FONT}" font-weight="700" font-size="${fontSize}" fill="${fg}">${esc(text)}</text>`, o);
+      it.w = width; it.h = h;
+      const tx = it.q('.tx'), bgEl = it.q('.bg');
+      try { const real = tx.getComputedTextLength(); if (real > 0 && !w) { it.w = Math.round(pad * 2 + ic + (icon ? 10 : 0) + real); bgEl.setAttribute('width', it.w); } } catch (e) {}
+      it.text = (s, extra = 0) => { tx.textContent = s; try { const real = tx.getComputedTextLength(); it.w = Math.round(pad * 2 + ic + (icon ? 10 : 0) + real + extra); bgEl.setAttribute('width', it.w); } catch (e) {} return it; };
+      it.style = ({ bg: b, border: bd, fg: f }) => { if (b) bgEl.setAttribute('fill', b); if (bd) bgEl.setAttribute('stroke', bd); if (f) { tx.setAttribute('fill', f); const ic2 = it.q('.ic'); if (ic2) ic2.style.color = f; } return it; };
+      it.icon = (name) => { const d = it.q('.ic div div'); if (d) d.innerHTML = LUP.icon(name); return it; };
+      // Byt text/ikon när p passerar 0.5 (problem→lösning), utan att skriva om DOM varje frame
+      it.swap = (p, a, b) => { const want = p > 0.5 ? 1 : 0; if (it._sw !== want) { it._sw = want; const v = want ? b : a; if (v.text != null) it.text(v.text, v.extra || 0); if (v.icon) it.icon(v.icon); } return it; };
+      // problem→lösning: vit/muted → tint/heading
+      it.toneStyle = (p) => it.style({ bg: U.mix(C.card, C.tint, p), border: U.mix(C.border, C.tint, p), fg: U.mix(C.muted, C.heading, p) });
+      return it;
+    },
+
+    // Pratbubbla. Origin uppe till vänster, svans åt 'left' eller 'right'.
+    bubble(svg, { w = 300, h = 86, text, side = 'left', fontSize = 30, bg = C.card, border = C.border, fg = C.text, ...o }) {
+      const tail = side === 'left' ? `M26 ${h} l-14 22 l34 -22z` : `M${w - 26} ${h} l14 22 l-34 -22z`;
+      const it = item(svg, `
+        <path class="bg" d="M20 0 h${w - 40} a20 20 0 0 1 20 20 v${h - 40} a20 20 0 0 1 -20 20 h-${w - 40} a20 20 0 0 1 -20 -20 v-${h - 40} a20 20 0 0 1 20 -20z ${tail}" fill="${bg}" stroke="${border}" stroke-width="3" stroke-linejoin="round"/>
+        <text class="tx" x="${w / 2}" y="${h / 2 + fontSize * 0.36}" text-anchor="middle" font-family="${FONT}" font-weight="600" font-size="${fontSize}" fill="${fg}">${esc(text)}</text>`, o);
+      it.w = w; it.h = h;
+      it.text = (s) => { it.q('.tx').textContent = s; return it; };
+      it.style = ({ bg: b, border: bd, fg: f }) => { const e = it.q('.bg'); if (b) e.setAttribute('fill', b); if (bd) e.setAttribute('stroke', bd); if (f) it.q('.tx').setAttribute('fill', f); return it; };
+      it.toneStyle = (p) => it.style({ bg: U.mix(C.card, C.tint, p), border: U.mix(C.border, C.tint, p), fg: U.mix(C.muted, C.heading, p) });
+      it.swap = (p, a, b) => { const want = p > 0.5 ? 1 : 0; if (it._sw !== want) { it._sw = want; it.text(want ? b : a); } return it; };
+      return it;
+    },
+
+    // Kort (vit yta med kant). Origin uppe till vänster.
+    card(svg, { w, h, r = 24, bg = C.card, border = C.border, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="${r}" fill="${bg}" stroke="${border}" stroke-width="3"/>`, o);
+      it.style = ({ bg: b, border: bd }) => { const e = it.q('.bg'); if (b) e.setAttribute('fill', b); if (bd) e.setAttribute('stroke', bd); return it; };
+      return it;
+    },
+
+    // Text. anchor: start|middle|end
+    label(svg, { text, size = 28, weight = 700, fill = C.heading, anchor = 'start', ...o }) {
+      const it = item(svg, `<text class="tx" text-anchor="${anchor}" font-family="${FONT}" font-weight="${weight}" font-size="${size}" fill="${fill}" y="${size * 0.36}">${esc(text)}</text>`, o);
+      it.text = (s) => { it.q('.tx').textContent = s; return it; };
+      it.fill = (f) => { it.q('.tx').setAttribute('fill', f); return it; };
+      return it;
+    },
+
+    // Frågetecken, origin i mitten.
+    qmark(svg, { size = 56, ...o } = {}) {
+      return item(svg, `<text text-anchor="middle" y="${size * 0.36}" font-family="${FONT}" font-weight="800" font-size="${size}" fill="currentColor">?</text>`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Checkmärke i cirkel, origin i mitten.
+    check(svg, { r = 22, ...o } = {}) {
+      return item(svg, `<circle r="${r}" fill="currentColor"/><path d="M${-r * 0.42} ${r * 0.05} l${r * 0.3} ${r * 0.3} l${r * 0.55} -${r * 0.6}" fill="none" stroke="#fff" stroke-width="${r * 0.2}" stroke-linecap="round" stroke-linejoin="round"/>`, Object.assign({ color: C.accent }, o));
+    },
+
+    // Lastport (sedd uppifrån): docka med öppning nedåt och etikett. Origin uppe till vänster.
+    dock(svg, { w = 150, h = 68, text = '', fontSize = 28, ...o }) {
+      const it = item(svg, `
+        <rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>
+        <rect x="${w * 0.2}" y="${h - 8}" width="${w * 0.6}" height="10" rx="3" fill="currentColor" opacity=".9"/>
+        <text x="${w / 2}" y="${h / 2 + fontSize * 0.1}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="${fontSize}" fill="currentColor">${esc(text)}</text>`, Object.assign({ color: C.muted }, o));
+      return it;
+    },
+
+    // Kart-rutnät (ljust). Origin uppe till vänster.
+    grid(svg, { w, h, cell = 48, ...o }) {
+      let d = '';
+      for (let x = cell; x < w; x += cell) d += `M${x} 0 V${h} `;
+      for (let y = cell; y < h; y += cell) d += `M0 ${y} H${w} `;
+      return item(svg, `<path d="${d}" stroke="${C.tint}" stroke-width="2" fill="none"/>`, o);
+    },
+
+    // Sträcka (väg på karta eller kopplingslinje). .draw(p) ritar fram den, .at(p) ger punkt längs den.
+    path(svg, { d, width = 10, dash = null, ...o }) {
+      const it = item(svg, `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" ${dash ? `stroke-dasharray="${dash}"` : ''}/>`, Object.assign({ color: C.muted }, o));
+      const p = it.q('path'); const L = p.getTotalLength();
+      it.len = L;
+      if (!dash) { p.setAttribute('stroke-dasharray', L); p.setAttribute('stroke-dashoffset', L); }
+      it.draw = (q) => { if (!dash) p.setAttribute('stroke-dashoffset', L * (1 - U.clamp(q, 0, 1))); else it.set({ opacity: U.clamp(q * 2, 0, 1) }); return it; };
+      it.at = (q) => p.getPointAtLength(L * U.clamp(q, 0, 1));
+      it.angleAt = (q) => { const a = p.getPointAtLength(L * U.clamp(q, 0, 1)), b = p.getPointAtLength(L * U.clamp(q + 0.01, 0, 1)); return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI; };
+      return it;
+    },
+
+    // Kartnål, spetsen i origin.
+    pin(svg, o = {}) {
+      return item(svg, `<path d="M0 0 C-16 -22 -22 -30 -22 -42 a22 22 0 0 1 44 0 c0 12 -6 20 -22 42z" fill="currentColor"/><circle cy="-42" r="9" fill="#fff"/>`, Object.assign({ color: C.accent }, o));
+    },
+
+    // Telefon med skärm. Origin uppe till vänster. .screen är en <g> för eget innehåll (0,0 = skärmens övre vänstra hörn).
+    phone(svg, { w = 150, h = 270, ...o } = {}) {
+      const it = item(svg, `
+        <rect width="${w}" height="${h}" rx="22" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <rect x="${w / 2 - 22}" y="12" width="44" height="6" rx="3" fill="currentColor" opacity=".5"/>
+        <rect x="${w / 2 - 28}" y="${h - 16}" width="56" height="5" rx="2.5" fill="currentColor" opacity=".5"/>
+        <g class="screen" transform="translate(14 32)"></g>`, Object.assign({ color: C.muted }, o));
+      it.screen = it.q('.screen'); it.sw = w - 28; it.sh = h - 60;
+      return it;
+    },
+
+    // Pappersark med textrader. Origin uppe till vänster.
+    sheet(svg, { w = 200, h = 250, lines = 6, title = true, ...o } = {}) {
+      let rows = '';
+      const top = title ? 54 : 26;
+      if (title) rows += `<rect x="20" y="22" width="${w * 0.55}" height="12" rx="6" fill="currentColor" opacity=".7"/>`;
+      for (let i = 0; i < lines; i++) rows += `<rect x="20" y="${top + i * 26}" width="${w - 40 - (i % 3) * 22}" height="8" rx="4" fill="currentColor" opacity=".35"/>`;
+      return item(svg, `<rect width="${w}" height="${h}" rx="12" fill="#fff" stroke="currentColor" stroke-width="3.5"/>${rows}`, Object.assign({ color: C.muted }, o));
+    },
+
+    // Pulserande punkt ("live"). .pulse(t)
+    dot(svg, { r = 8, ...o } = {}) {
+      const it = item(svg, `<circle class="ring" r="${r}" fill="currentColor" opacity=".3"/><circle r="${r}" fill="currentColor"/>`, Object.assign({ color: C.accent }, o));
+      const ring = it.q('.ring');
+      it.pulse = (t) => { const q = (t % 1.4) / 1.4; ring.setAttribute('r', r * (1 + q * 2.2)); ring.setAttribute('opacity', (1 - q) * 0.45); return it; };
+      return it;
+    },
+
+    // Enkel rad i en lista/tabell: origin uppe till vänster, w bred, 50 hög. cols = [{x, text, weight?}]
+    row(svg, { w, cols, h = 54, bg = 'transparent', fg = C.text, fontSize = 26, ...o }) {
+      const it = item(svg, `<rect class="bg" width="${w}" height="${h}" rx="12" fill="${bg}"/>${cols.map((c) => `<text x="${c.x}" y="${h / 2 + fontSize * 0.36}" font-family="${FONT}" font-weight="${c.weight || 600}" font-size="${fontSize}" fill="${c.fill || fg}">${esc(c.text)}</text>`).join('')}`, o);
+      it.bg = (f) => { it.q('.bg').setAttribute('fill', f); return it; };
+      return it;
+    },
+  };
+  LUP.yard = Y;
+})();
+
+/* LUPNUMBER shorts – LÅST MALL (hook först).
+   Frame 0 = badge + hook. Sedan Problem → Lösning → Outro (wordmark byggs upp, fråga, handling).
+   Problem och lösning delar EN hero-visual ("samma kamera") som tonar från grått till sky.
+   Ett klipp byter bara text + ikon + scenvisual + CTA. Rör inte tider/layout här per klipp. */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+
+  // Minska fontstorlek tills texten ryms (bredd och antal rader). Används för hook och rubriker.
+  LUP.fitText = function (el, maxWidth, maxLines, minSize) {
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    const lh = parseFloat(getComputedStyle(el).lineHeight) / size;
+    for (let i = 0; i < 24; i++) {
+      el.style.fontSize = size + 'px';
+      const lines = Math.round(el.offsetHeight / (size * lh));
+      if ((el.scrollWidth <= maxWidth && lines <= maxLines) || size <= minSize) break;
+      size -= 3;
+    }
+  };
+
+  // Badge: liten wordmark + serienamn (används av klipp och film)
+  LUP.badge = function (brand) {
+    const badge = U.el('div', 'badge');
+    const wm = U.wordmark(34, brand); wm._letters.forEach((l) => (l.style.opacity = 1));
+    badge.append(wm, U.el('div', 'sep'), U.el('div', 'ep', brand.seriesName));
+    return badge;
+  };
+
+  // Outro: wordmark byggs upp, accentlinje, tagline, CTA-fråga, handling, URL, bolag. Identisk layout varje gång.
+  LUP.outro = function (layer, brand, cta) {
+    const wrap = U.css(U.el('div'), { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '22px' });
+    const wm = U.wordmark(120, brand);
+    const bar = U.css(U.el('div', 'wm-bar'), { width: '200px' });
+    const tag = U.el('div', 'tagline', brand.tagline); tag.style.fontSize = '26px';
+    const q = U.el('div', 'cta-question', (cta.question || '').replace(/\*(.+?)\*/g, '<em>$1</em>'));
+    U.css(q, { marginTop: cta.question ? '44px' : '0', display: cta.question ? 'block' : 'none' });
+    // Omröstning: A/B/C-chips under frågan
+    const opts = U.css(U.el('div'), { display: cta.options ? 'flex' : 'none', gap: '16px', marginTop: '6px' });
+    const optEls = (cta.options || []).map((o, i) => { const c = U.el('div', 'chip', `<span class="dot" style="background:var(--accent);color:#fff">${'ABC'[i]}</span><span>${o}</span>`); opts.appendChild(c); return c; });
+    const pill = U.css(U.el('div', 'cta-pill', `<span>${cta.label}</span>${LUP.icon(cta.icon || 'chat')}`), { marginTop: cta.question ? '10px' : '34px' });
+    const url = U.el('div', 'url', cta.url);
+    const co = U.css(U.el('div', 'company', brand.company), { marginTop: '30px' });
+    wrap.append(wm, bar, tag, q, opts, pill, url, co); layer.append(wrap);
+    q.style.width = '900px'; LUP.fitText(q, 900, 2, 44); (LUP._refit = LUP._refit || []).push(() => { q.style.fontSize = ''; LUP.fitText(q, 900, 2, 44); });
+    return (l) => {
+      U.animateWordmark(wm, l, 0.05, 0.045, 0.5);
+      const barP = U.prog(l, 0.55, 0.4, U.easeInOut); bar.style.transform = `scaleX(${barP})`; bar.style.opacity = barP > 0 ? 1 : 0;
+      U.enter(tag, U.prog(l, 0.8, 0.4, U.easeOut), { dy: 12 });
+      U.enter(q, U.prog(l, 1.15, 0.5, U.easeOut), { dy: 22 });
+      optEls.forEach((c, i) => U.enter(c, U.prog(l, 1.5 + i * 0.15, 0.45, U.back), { dy: 0, dx: -20, scale: 0.9 }));
+      const pillAt = cta.question ? (cta.options ? 2.05 : 1.75) : 1.2;
+      U.enter(pill, U.prog(l, pillAt, 0.6, U.back), { dy: 0, scale: 0.7 });
+      U.enter(url, U.prog(l, pillAt + 0.35, 0.45, U.easeOut), { dy: 12 });
+      U.enter(co, U.prog(l, pillAt + 0.55, 0.5, U.easeOut), { dy: 10 });
+    };
+  };
+
+  LUP.init = function (brand, clip, opts = {}) {
+    const T = brand.timeline;
+    const fps = brand.format.fps;
+    const W = brand.format.width, H = brand.format.height;
+    const starts = {}; let acc = 0;
+    for (const k of Object.keys(T)) { starts[k] = acc; acc += T[k]; }
+    const total = acc;
+    const IN = 0.4, OUT = 0.3, LAP = 0.2;
+    const HERO = { left: 72, top: 320, width: 936, height: 400 };
+    const cta = Object.assign({}, brand.cta, clip.cta || {});
+
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = '';
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
+    const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
+    const layer = (name) => { const p = U.el('div', 'phase phase-' + name); stage.appendChild(p); return p; };
+    const P = { hook: layer('hook'), problem: layer('problem'), solution: layer('solution'), outro: layer('outro') };
+
+    // ---- Badge från frame 0 ----
+    const badge = LUP.badge(brand); stage.appendChild(badge);
+
+    // ---- HOOK (synlig från frame 0) ----
+    const hookWrap = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' });
+    const hookIcon = U.css(U.el('div', 'icon-circle', LUP.icon(clip.icon)), { width: '180px', height: '180px', marginBottom: '56px' });
+    const hookText = U.el('div', 'hook-text');
+    const hookWords = U.words(hookText, clip.hook.text);
+    const hookSub = U.el('div', 'hook-sub', clip.hook.sub || '');
+    hookWrap.append(hookIcon, hookText, hookSub); P.hook.appendChild(hookWrap);
+    hookText.style.width = '936px'; LUP.fitText(hookText, 936, 2, 64);
+
+    // ---- HERO (problem + lösning) ----
+    const scene = (clip.scene && LUP.scenes && LUP.scenes[clip.scene]) || null;
+    const hero = U.css(U.el('div', 'hero'), { top: HERO.top + 'px', left: HERO.left + 'px', width: HERO.width + 'px', height: HERO.height + 'px', right: 'auto', opacity: 0, visibility: 'hidden' });
+    stage.appendChild(hero);
+    const heroSeek = scene ? scene.mount(hero, clip, brand) : null;
+    if (!heroSeek) hero.remove();
+    const hasHero = !!heroSeek;
+
+    // ---- PROBLEM ----
+    const probTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', width: '936px', top: '170px' });
+    U.words(probTitle, clip.problem.title, 'w'); LUP.fitText(probTitle, 936, 2, 40);
+    const probTitleWords = [...probTitle.querySelectorAll('.w')];
+    const probChips = U.css(U.el('div'), { position: 'absolute', left: '72px', right: '72px', top: hasHero ? '850px' : '480px', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'flex-start' });
+    const chipEls = (clip.problem.pains || []).map((txt) => {
+      const c = U.el('div', 'chip');
+      c.appendChild(U.el('span', 'dot', LUP.icon('warning')));
+      c.appendChild(U.el('span', null, txt));
+      probChips.appendChild(c); return c;
+    });
+    P.problem.append(probTitle, probChips);
+
+    // ---- LÖSNING ----
+    const solTitle = U.css(U.el('div', 'h1'), { position: 'absolute', left: '72px', width: '936px', top: '170px' });
+    U.words(solTitle, clip.solution.title, 'w'); LUP.fitText(solTitle, 936, 2, 40);
+    const solTitleWords = [...solTitle.querySelectorAll('.w')];
+    const flowTop = hasHero ? 800 : 520;
+    const flow = U.css(U.el('div', 'flow'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 'px' });
+    const flowGhost = U.el('div', 'flow-line ghost');
+    const flowLine = U.el('div', 'flow-line');
+    flow.append(flowGhost, flowLine);
+    const stepEls = clip.solution.steps.map((s, i) => {
+      const st = U.el('div', 'card step');
+      st.appendChild(U.el('div', 'num', String(i + 1)));
+      st.appendChild(U.el('div', 'ico', LUP.icon(s.icon)));
+      st.appendChild(U.el('div', 'label', s.label));
+      st.appendChild(U.el('div', 'sub', s.sub || ''));
+      flow.appendChild(st); return st;
+    });
+    const kicker = U.css(U.el('div', 'kicker'), { position: 'absolute', left: '72px', right: '72px', top: flowTop + 316 + 'px', textAlign: 'center' });
+    kicker.innerHTML = (clip.solution.kicker || '').replace(/\*(.+?)\*/g, '<em>$1</em>');
+    P.solution.append(solTitle, flow, kicker);
+
+    // ---- OUTRO ----
+    const outroSeek = LUP.outro(P.outro, brand, cta);
+
+    // ---- Undertexter (standard på) ----
+    let cueList = null, cueBox = null, cueEl = null;
+    if (opts.captions !== false && LUP.captions) {
+      cueList = LUP.captions.cues(brand, clip);
+      cueBox = U.el('div', 'captions'); cueEl = U.el('div', 'cue', '');
+      cueBox.appendChild(cueEl); stage.appendChild(cueBox);
+    }
+
+    const setPhase = (ph, name, t) => {
+      const s = Math.max(0, starts[name] - LAP), e = starts[name] + T[name];
+      if (LUP._overlay) { const on = name === 'hook'; ph.style.visibility = on ? 'visible' : 'hidden'; ph.style.opacity = on ? 1 : 0; ph.style.transform = 'none'; return on ? t : null; }
+      const v = name === 'hook' ? 1 - U.prog(t, e - OUT, OUT, U.easeIn) : U.window(t, s, e, IN, name === 'outro' ? 0.001 : OUT);
+      const vis = t >= s && t < e + 0.001;
+      ph.style.visibility = vis ? 'visible' : 'hidden';
+      ph.style.opacity = vis ? v : 0;
+      ph.style.transform = name === 'hook' ? 'none' : `translateY(${(1 - U.prog(t, s, IN, U.easeOut)) * 30}px)`;
+      return vis ? t - starts[name] : null;
+    };
+
+    function seek(frame) {
+      LUP._lastFrame = frame;
+      const t = frame / fps;
+      blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
+      blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
+      blobs[2].style.transform = `translate(${Math.sin(t * 0.3) * 18}px, ${Math.cos(t * 0.26) * 16}px)`;
+      badge.style.opacity = 1 - U.prog(t, starts.outro - 0.3, 0.3);
+
+      // HOOK: allt synligt från frame 0, med en liten "landning"
+      let l = setPhase(P.hook, 'hook', t);
+      if (l !== null) {
+        const settle = U.prog(l, 0, 0.6, U.easeOut);
+        hookIcon.style.transform = `scale(${U.lerp(0.86, 1, U.back(settle))})`; hookIcon.style.opacity = 1;
+        hookWords.forEach((w, i) => { const p = U.prog(l, i * 0.04, 0.45, U.easeOut); w.style.opacity = 1; w.style.transform = `translateY(${(1 - p) * 10}px)`; });
+        U.enter(hookSub, U.prog(l, 0.35, 0.45, U.easeOut), { dy: 14 });
+      }
+
+      // HERO
+      if (hasHero && !LUP._overlay) {
+        const hs = starts.problem - LAP, he = starts.solution + T.solution;
+        const vis = t >= hs && t < he;
+        hero.style.visibility = vis ? 'visible' : 'hidden';
+        hero.style.opacity = U.window(t, hs, he, IN, OUT);
+        hero.style.transform = `translateY(${(1 - U.prog(t, hs, IN, U.easeOut)) * 30}px)`;
+        if (vis) {
+          const inSol = t >= starts.solution;
+          heroSeek({ t: t - starts.problem, phase: inSol ? 'solution' : 'problem', l: inSol ? t - starts.solution : t - starts.problem, p: U.prog(t, starts.solution - 0.1, 0.9, U.easeInOut), P: T.problem, S: T.solution });
+        }
+      }
+
+      // PROBLEM
+      l = setPhase(P.problem, 'problem', t);
+      if (l !== null) {
+        probTitleWords.forEach((w, i) => U.enter(w, U.prog(l, 0.1 + i * 0.06, 0.45, U.easeOut), { dy: 24 }));
+        const chipStart = hasHero ? 1.5 : 0.8;
+        chipEls.forEach((c, i) => U.enter(c, U.prog(l, chipStart + i * 0.35, 0.5, U.back), { dy: 0, dx: -40, scale: 0.9 }));
+      }
+
+      // LÖSNING
+      l = setPhase(P.solution, 'solution', t);
+      if (l !== null) {
+        solTitleWords.forEach((w, i) => U.enter(w, U.prog(l, 0.1 + i * 0.06, 0.45, U.easeOut), { dy: 24 }));
+        const f0 = hasHero ? 1.2 : 0.6;
+        flowGhost.style.opacity = U.prog(l, f0, 0.3);
+        flowLine.style.transform = `scaleX(${U.prog(l, f0 + 0.2, 1.2, U.easeInOut)})`;
+        stepEls.forEach((s, i) => U.enter(s, U.prog(l, f0 + 0.25 + i * 0.45, 0.6, U.back), { dy: 36, scale: 0.92 }));
+        U.enter(kicker, U.prog(l, f0 + 1.9, 0.6, U.easeOut), { dy: 22 });
+      }
+
+      // OUTRO
+      l = setPhase(P.outro, 'outro', t);
+      if (l !== null) outroSeek(l);
+
+      // UNDERTEXTER
+      if (cueList) {
+        const c = cueList.find((q) => t >= q.start && t < q.end);
+        if (c) { if (cueEl.textContent !== c.text) cueEl.textContent = c.text; cueBox.style.opacity = Math.min(U.prog(t, c.start, 0.15), 1 - U.prog(t, c.end - 0.15, 0.15)); }
+        else cueBox.style.opacity = 0;
+      }
+    }
+
+    LUP.timeline = { starts, durations: T, total, fps, frames: Math.round(total * fps) };
+    window.__seek = seek;
+    window.__setRenderMode = () => document.body.classList.add('render');
+    // Overlay: bara badge + hook på transparent bakgrund (läggs ovanpå egen film i klippprogram)
+    window.__setOverlayMode = (variant) => { LUP._overlay = true; document.body.classList.add('render', 'overlay'); if (variant === 'light') document.body.classList.add('overlay-light'); if (cueBox) cueBox.style.display = 'none'; blobs.forEach((b) => (b.style.display = 'none')); if (hasHero) hero.style.display = 'none'; seek(LUP._lastFrame || 0); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { [hookText, probTitle, solTitle].forEach((e) => { e.style.fontSize = ''; }); LUP.fitText(hookText, 936, 2, 64); LUP.fitText(probTitle, 936, 2, 40); LUP.fitText(solTitle, 936, 2, 40); (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    seek(0);
+    return LUP.timeline;
+  };
+})();
+
+/* LUPNUMBER hero-film "LupnumberSiteDay" – en sammanhängande värld (sidovy), en lastbil (ABC 123), kamera som rör sig,
+   telefon-närbilder för den digitala delen och en operatörsvy. Beats (längder) kommer från films/*.json så att samma
+   mall bygger både 60-sekundersfilmen och 25-sekundersklippet. Allt är tidsstyrt (deterministiskt per frame). */
+(function () {
+  const LUP = (window.LUP = window.LUP || {});
+  const U = LUP.util;
+  const C = { muted: '#64748B', accent: '#0EA5E9', heading: '#0C4A6E', border: '#BAE6FD', tint: '#E0F2FE', tint2: '#F0F9FF', tint3: '#ECFDF5', card: '#FFFFFF', text: '#334155', bg: '#F5FAFE', grey: '#94A3B8', greyLight: '#CBD5E1' };
+  const FONT = 'Inter, system-ui, sans-serif';
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const NS = 'http://www.w3.org/2000/svg';
+  const add = (parent, str) => { parent.insertAdjacentHTML('beforeend', str); return parent.lastElementChild; };
+  const tr = (el, x, y, s = 1, r = 0) => el.setAttribute('transform', `translate(${x} ${y}) rotate(${r}) scale(${s})`);
+
+  // ---------- Världen (enheter = px vid skala 1). Marklinje y=560. ----------
+  const WORLD = { w: 3400, h: 700, ground: 560 };
+  const GATE_X = 1000, SIGN_X = 1320, DOCKS = [1700, 2080, 2460, 2840], DOCK_W = 240;
+
+  const TRUCK_LEN = 240;
+  function truckSvg(id, plate, color) {
+    // Dragbil + trailer, 240 enheter lång, framände vid x=240, hjul på marken (y=0 = mark)
+    return `<g class="truck ${id}" style="color:${color}">
+      <ellipse cx="120" cy="4" rx="122" ry="8" fill="rgba(12,74,110,0.10)"/>
+      <rect x="0" y="-122" width="152" height="96" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>
+      <rect x="0" y="-122" width="152" height="14" fill="currentColor" opacity=".18"/>
+      <text x="76" y="-68" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="27" fill="currentColor" opacity=".92">${esc(plate)}</text>
+      <path d="M152 -96 h50 a12 12 0 0 1 11 7 l15 36 v27 h-76z" fill="#fff" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M162 -88 h34 l12 30 h-46z" fill="currentColor" opacity=".22"/>
+      <rect x="152" y="-26" width="76" height="14" rx="3" fill="currentColor" opacity=".9"/>
+      <rect x="226" y="-20" width="12" height="10" rx="2" fill="currentColor"/>
+      <g fill="#fff" stroke="currentColor" stroke-width="5"><circle cx="34" cy="-14" r="16"/><circle cx="76" cy="-14" r="16"/><circle cx="196" cy="-14" r="16"/></g>
+      <g fill="currentColor"><circle cx="34" cy="-14" r="5"/><circle cx="76" cy="-14" r="5"/><circle cx="196" cy="-14" r="5"/></g>
+    </g>`;
+  }
+
+  function buildWorld(far, near) {
+    // Bakre lager (parallax 0.5): byggnader, silos, ljusmaster
+    let f = '';
+    for (const [x, w, h] of [[-300, 620, 230], [420, 380, 160], [900, 760, 210], [1750, 980, 260], [2800, 640, 190], [3500, 560, 220]])
+      f += `<rect x="${x}" y="${WORLD.ground - h}" width="${w}" height="${h}" rx="6" fill="${C.tint2}" stroke="${C.border}" stroke-width="3"/>`;
+    for (const x of [1500, 1540, 1580]) f += `<rect x="${x}" y="${WORLD.ground - 320}" width="30" height="320" rx="15" fill="${C.tint}" stroke="${C.border}" stroke-width="3"/>`;
+    for (let x = -100; x < 3600; x += 450) f += `<rect x="${x}" y="${WORLD.ground - 300}" width="6" height="300" fill="${C.border}"/><rect x="${x - 22}" y="${WORLD.ground - 306}" width="50" height="10" rx="5" fill="${C.border}"/>`;
+    far.innerHTML = `<svg width="${WORLD.w + 800}" height="${WORLD.h}" viewBox="-400 0 ${WORLD.w + 800} ${WORLD.h}" style="overflow:visible">${f}</svg>`;
+
+    // Främre lager: mark, väg, staket, grind, bod, skylt, portar
+    let n = '';
+    n += `<rect x="-600" y="${WORLD.ground}" width="${WORLD.w + 1400}" height="140" fill="${C.tint2}"/>`;
+    n += `<rect x="-600" y="${WORLD.ground - 2}" width="${WORLD.w + 1400}" height="26" fill="${C.border}"/>`;
+    n += `<line x1="-600" y1="${WORLD.ground + 11}" x2="${WORLD.w + 800}" y2="${WORLD.ground + 11}" stroke="#fff" stroke-width="5" stroke-dasharray="40 34"/>`;
+    // staket på insidan
+    for (let x = GATE_X + 60; x < WORLD.w; x += 120) n += `<rect class="w" x="${x}" y="${WORLD.ground - 80}" width="6" height="80" fill="currentColor" opacity=".35"/>`;
+    n += `<rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 76}" width="${WORLD.w - GATE_X}" height="5" fill="currentColor" opacity=".3"/><rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 40}" width="${WORLD.w - GATE_X}" height="5" fill="currentColor" opacity=".3"/>`;
+    // vaktbod
+    n += `<g class="w"><rect x="${GATE_X + 40}" y="${WORLD.ground - 200}" width="150" height="200" rx="10" fill="#fff" stroke="currentColor" stroke-width="5"/><rect x="${GATE_X + 60}" y="${WORLD.ground - 176}" width="110" height="70" rx="6" fill="${C.tint}" stroke="currentColor" stroke-width="4"/><rect x="${GATE_X + 20}" y="${WORLD.ground - 214}" width="190" height="16" rx="6" fill="currentColor"/></g>`;
+    // grindstolpe + bom (pivot vid stolpens topp)
+    n += `<g class="w"><rect x="${GATE_X - 14}" y="${WORLD.ground - 150}" width="28" height="150" rx="6" fill="#fff" stroke="currentColor" stroke-width="5"/>
+      <g class="arm" transform-origin="${GATE_X} ${WORLD.ground - 128}"><rect x="${GATE_X - 240}" y="${WORLD.ground - 136}" width="246" height="16" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>
+      <rect x="${GATE_X - 210}" y="${WORLD.ground - 133}" width="30" height="10" fill="currentColor"/><rect x="${GATE_X - 150}" y="${WORLD.ground - 133}" width="30" height="10" fill="currentColor"/><rect x="${GATE_X - 90}" y="${WORLD.ground - 133}" width="30" height="10" fill="currentColor"/></g>
+      <circle cx="${GATE_X}" cy="${WORLD.ground - 128}" r="9" fill="currentColor"/></g>`;
+    // stopplinje
+    n += `<rect class="w" x="${GATE_X - 262}" y="${WORLD.ground - 2}" width="14" height="26" fill="currentColor" opacity=".6"/>`;
+    // skylt i yarden
+    n += `<g class="w"><rect x="${SIGN_X}" y="${WORLD.ground - 250}" width="8" height="250" fill="currentColor" opacity=".6"/><rect x="${SIGN_X - 10}" y="${WORLD.ground - 300}" width="240" height="60" rx="10" fill="#fff" stroke="currentColor" stroke-width="4"/><text x="${SIGN_X + 108}" y="${WORLD.ground - 258}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">PORT 1–4 →</text></g>`;
+    // portar: lastkaj med numrerade dörrar
+    n += `<rect class="w" x="${DOCKS[0] - 120}" y="${WORLD.ground - 290}" width="${DOCKS[3] - DOCKS[0] + 360}" height="290" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>`;
+    n += `<rect class="w" x="${DOCKS[0] - 120}" y="${WORLD.ground - 290}" width="${DOCKS[3] - DOCKS[0] + 360}" height="18" fill="currentColor" opacity=".18"/>`;
+    DOCKS.forEach((x, i) => {
+      n += `<g class="dock dock${i + 1} w"><rect x="${x}" y="${WORLD.ground - 200}" width="${DOCK_W}" height="200" rx="6" fill="${C.tint2}" stroke="currentColor" stroke-width="4"/>
+        <rect class="door" x="${x}" y="${WORLD.ground - 200}" width="${DOCK_W}" height="200" rx="6" fill="${C.tint}" stroke="currentColor" stroke-width="4" transform-origin="${x + DOCK_W / 2} ${WORLD.ground - 200}"/>
+        <rect x="${x + 60}" y="${WORLD.ground - 254}" width="${DOCK_W - 120}" height="42" rx="21" fill="#fff" stroke="currentColor" stroke-width="4"/>
+        <text x="${x + DOCK_W / 2}" y="${WORLD.ground - 222}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">PORT ${i + 1}</text></g>`;
+    });
+    near.innerHTML = `<svg width="${WORLD.w + 1200}" height="${WORLD.h + 200}" viewBox="-600 0 ${WORLD.w + 1200} ${WORLD.h + 200}" style="overflow:visible"><g class="statics">${n}</g><g class="trucks"></g><g class="fx"></g></svg>`;
+    return near.querySelector('svg');
+  }
+
+  // ---------- Telefon-UI (DOM för skarp text). Skärm 380×760 vid skala 1. ----------
+  const PL = {
+    title: 'Zameldowanie kierowcy', plate: 'Numer rejestracyjny', lang: 'Wybierz język', next: 'Dalej', safety: 'Zasady bezpieczeństwa',
+    rules: ['Kask i kamizelka odblaskowa', 'Maks. 20 km/h na terenie', 'Zatrzymaj się przy rampie', 'Zakaz palenia'], confirm: 'Potwierdzam', confirmed: 'Potwierdzono', route: 'Jedź do rampy 3', dist: '140 m', wait: 'Czekaj na zgodę operatora', go: 'Zgoda. Wjedź na teren.',
+  };
+  const SV = { title: 'Incheckning', plate: 'Registreringsnummer', lang: 'Välj språk', next: 'Nästa' };
+
+  function buildPhone(root) {
+    root.innerHTML = `
+      <div class="ph-frame">
+        <div class="ph-notch"></div>
+        <div class="ph-screen">
+          <div class="ph-head"><span class="ph-wm"><b>LUP</b>NUMBER</span><span class="ph-site">Grind 1</span></div>
+          <div class="ph-body">
+            <div class="ph-title"></div>
+            <div class="ph-label"></div>
+            <div class="ph-field"><span class="ph-plate"></span><span class="ph-caret">|</span></div>
+            <div class="ph-langs"></div>
+            <div class="ph-rules"></div>
+            <div class="ph-route"></div>
+            <div class="ph-btn"></div>
+          </div>
+        </div>
+      </div>`;
+    const q = (s) => root.querySelector(s);
+    const langs = ['SV', 'PL', 'EN', 'DE'];
+    q('.ph-langs').innerHTML = langs.map((l) => `<div class="ph-chip" data-l="${l}">${l}</div>`).join('');
+    q('.ph-rules').innerHTML = PL.rules.map((r) => `<div class="ph-rule"><span class="ph-box">${LUP.icon('check')}</span><span>${r}</span></div>`).join('');
+    return {
+      el: root, title: q('.ph-title'), label: q('.ph-label'), field: q('.ph-field'), plate: q('.ph-plate'), caret: q('.ph-caret'), langs: q('.ph-langs'), chips: [...root.querySelectorAll('.ph-chip')],
+      rules: q('.ph-rules'), ruleEls: [...root.querySelectorAll('.ph-rule')], route: q('.ph-route'), btn: q('.ph-btn'),
+    };
+  }
+
+  // ---------- Operatörsvy (plattformen) ----------
+  function buildPanel(root) {
+    root.innerHTML = `
+      <div class="op-head"><span class="ph-wm"><b>LUP</b>NUMBER</span><span class="op-title"></span><span class="op-live"><i></i>Realtid</span></div>
+      <div class="op-rows"></div>
+      <div class="op-stats"></div>`;
+    return { el: root, title: root.querySelector('.op-title'), rows: root.querySelector('.op-rows'), stats: root.querySelector('.op-stats') };
+  }
+
+  LUP.initHero = function (brand, film, opts = {}) {
+    const fps = brand.format.fps, W = brand.format.width, H = brand.format.height;
+    const beats = film.beats.map((b) => ({ ...b }));
+    let acc = 0; beats.forEach((b) => { b.start = acc; acc += b.duration; b.end = acc; });
+    const total = acc;
+    const cta = Object.assign({}, brand.cta, film.cta || {});
+    const byId = Object.fromEntries(beats.map((b) => [b.id, b]));
+
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = '';
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
+    const blobs = ['blob-1', 'blob-2', 'blob-3'].map((c) => stage.appendChild(U.el('div', 'blob ' + c)));
+
+    // Världslager
+    const view = U.css(U.el('div', 'hero-view'), {});
+    const far = U.el('div', 'hero-layer far'), near = U.el('div', 'hero-layer near');
+    view.append(far, near); stage.appendChild(view);
+    const svg = buildWorld(far, near);
+    const trucksG = svg.querySelector('.trucks'), fxG = svg.querySelector('.fx');
+    const arm = svg.querySelector('.arm');
+    const hero = add(trucksG, truckSvg('hero', film.plate || 'ABC 123', C.accent));
+    const queue = [0, 1, 2].map((i) => add(trucksG, truckSvg('q' + i, ['KLM 456', 'XYZ 789', 'DEF 321'][i], C.grey)));
+    const others = [0, 1, 2].map((i) => add(trucksG, truckSvg('o' + i, ['GHI 654', 'JKL 987', 'MNO 135'][i], C.accent)));
+    trucksG.appendChild(hero); // hjälten ritas sist: framför parkerade bilar vid portarna
+    // "idag"-rekvisita vid boden: klocka, papper, frågetecken
+    const props = add(fxG, `<g class="props" style="color:${C.muted}">
+      <g transform="translate(${GATE_X - 20} ${WORLD.ground - 345})"><circle r="46" fill="#fff" stroke="currentColor" stroke-width="5"/><line class="hm" y2="-34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><line class="hh" y2="-22" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></g>
+      <g class="paper" transform="translate(${GATE_X - 110} ${WORLD.ground - 250})"><rect x="-26" y="-34" width="52" height="68" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/><path d="M-14 -14h28M-14 0h28M-14 14h18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></g>
+      <g class="qm" transform="translate(${GATE_X - 215} ${WORLD.ground - 330})"><text text-anchor="middle" y="22" font-family="${FONT}" font-weight="800" font-size="74" fill="currentColor">?</text></g>
+    </g>`);
+    const bridge = add(fxG, `<rect class="bridge" x="${DOCKS[2] + 60}" y="${WORLD.ground - 8}" width="${DOCK_W - 120}" height="10" rx="4" fill="${C.accent}" opacity="0"/>`);
+    const hud = add(fxG, `<g class="hud" opacity="0"><rect x="-150" y="-70" width="300" height="60" rx="30" fill="#fff" stroke="${C.border}" stroke-width="4"/><text class="hud-t" text-anchor="middle" y="-28" font-family="${FONT}" font-weight="800" font-size="30" fill="${C.heading}">Port 3 · 140 m →</text></g>`);
+
+    // Rubriker, telefon, panel, badge, outro, undertexter
+    const dim = U.el('div', 'hero-dim'); stage.appendChild(dim);
+    const titleEl = U.css(U.el('div', 'hero-title'), {});
+    stage.appendChild(titleEl);
+    const subEl = U.css(U.el('div', 'hero-sub'), {}); stage.appendChild(subEl);
+    const phoneRoot = U.el('div', 'hero-phone'); stage.appendChild(phoneRoot); const ph = buildPhone(phoneRoot);
+    const panelRoot = U.el('div', 'hero-panel'); stage.appendChild(panelRoot); const op = buildPanel(panelRoot);
+    const tapEl = U.el('div', 'hero-tap'); stage.appendChild(tapEl);
+    const badge = LUP.badge(brand); stage.appendChild(badge);
+    const outroLayer = U.el('div', 'phase phase-outro'); stage.appendChild(outroLayer);
+    const outroSeek = LUP.outro(outroLayer, brand, cta);
+    let cueList = null, cueBox = null, cueEl = null;
+    if (opts.captions !== false && LUP.captions) {
+      cueList = LUP.captions.cuesFromBeats(beats.filter((b) => b.caption).map((b) => ({ key: b.id, start: b.start, end: b.end, text: b.caption })), brand.captions);
+      cueBox = U.el('div', 'captions'); cueEl = U.el('div', 'cue', ''); cueBox.appendChild(cueEl); stage.appendChild(cueBox);
+    }
+
+    // ---------- Hjälpare ----------
+    const setTitle = (() => { let cur = null; return (txt) => { if (txt === cur) return; cur = txt; titleEl.innerHTML = ''; if (!txt) return; U.words(titleEl, txt, 'w'); titleEl.style.fontSize = ''; LUP.fitText(titleEl, 936, 2, 48); }; })();
+    const titleWords = () => [...titleEl.querySelectorAll('.w')];
+    // Kamera: x = världs-x i bildens mitt, s = skala, g = var marklinjen hamnar i stage (px)
+    let camera = { x: 600, s: 1.0, g: 990 };
+    const lerpCam = (a, b, p) => ({ x: U.lerp(a.x, b.x, p), s: U.lerp(a.s, b.s, p), g: U.lerp(a.g ?? 990, b.g ?? 990, p) });
+    const applyCamera = (cam) => {
+      const cx = 540, g = cam.g ?? 990;
+      // SVG-lagren har viewBox som börjar vid -600 (nära) respektive -400 (fjärran): kompensera
+      near.style.transform = `translate(${cx - (cam.x + 600) * cam.s}px, ${g - WORLD.ground * cam.s}px) scale(${cam.s})`;
+      const fs = cam.s * 0.9, fx = cam.x * 0.55 + 260;
+      far.style.transform = `translate(${cx - (fx + 400) * fs}px, ${g - 10 - WORLD.ground * fs}px) scale(${fs})`;
+    };
+    const worldToStage = (wx, wy, cam) => ({ x: 540 + (wx - cam.x) * cam.s, y: (cam.g ?? 990) + (wy - WORLD.ground) * cam.s });
+    const DOCK_DY = -70, DOCK_S = 0.86; // "inne vid porten": längre från kameran
+    const heroAt = (x, dy = 0, sc = 1) => tr(hero, x - TRUCK_LEN * sc, WORLD.ground + dy, sc); // x = framände
+    const place = (el, x, dy = 0, sc = 1) => tr(el, x - TRUCK_LEN * sc, WORLD.ground + dy, sc);
+    const placeDock = (el, x) => tr(el, x - TRUCK_LEN * DOCK_S, WORLD.ground + DOCK_DY, DOCK_S);
+    const toneWorld = (p) => { near.style.setProperty('color', U.mix(C.muted, C.accent, p)); near.style.setProperty('--wopacity', 1); far.style.opacity = U.lerp(0.75, 1, p); };
+    const phoneState = { vis: 0, scale: 1, screen: null };
+    const showPhone = (vis, scale, originX = 540, originY = 760) => {
+      phoneRoot.style.opacity = vis; phoneRoot.style.visibility = vis > 0.001 ? 'visible' : 'hidden';
+      const s = U.lerp(0.18, 0.95, scale);
+      const x = U.lerp(originX, 540, scale), y = U.lerp(originY, 775, scale);
+      phoneRoot.style.transform = `translate(${x - 210 * s}px, ${y - 410 * s}px) scale(${s})`;
+      dim.style.opacity = vis * scale * 0.55;
+    };
+    const showPanel = (vis, dy = 0) => { panelRoot.style.opacity = vis; panelRoot.style.visibility = vis > 0.001 ? 'visible' : 'hidden'; panelRoot.style.transform = `translateY(${dy}px)`; };
+    const tap = (vis, x, y) => { tapEl.style.opacity = vis; tapEl.style.transform = `translate(${x - 30}px, ${y - 30}px) scale(${U.lerp(0.6, 1.1, vis)})`; };
+    const phoneScreen = (mode) => {
+      if (phoneState.screen === mode) return; phoneState.screen = mode;
+      const show = (el, on) => (el.style.display = on ? '' : 'none');
+      show(ph.field, mode === 'plate' || mode === 'lang'); show(ph.langs, mode === 'lang'); show(ph.rules, mode === 'safety'); show(ph.route, mode === 'route' || mode === 'wait' || mode === 'go'); show(ph.btn, mode !== 'plate');
+      ph.label.textContent = mode === 'plate' ? SV.plate : mode === 'lang' ? SV.lang : mode === 'safety' ? PL.safety : '';
+      ph.title.textContent = mode === 'plate' ? SV.title : mode === 'lang' ? SV.title : mode === 'safety' ? PL.title : mode === 'route' ? PL.route : mode === 'wait' ? PL.title : PL.title;
+      ph.btn.textContent = mode === 'lang' ? SV.next : mode === 'safety' ? PL.confirm : mode === 'wait' ? PL.wait : mode === 'go' ? PL.go : PL.next;
+      ph.btn.className = 'ph-btn' + (mode === 'wait' ? ' ghost' : '');
+      ph.route.innerHTML = mode === 'route' ? `<div class="ph-dist">${PL.dist}</div><div class="ph-arrow">${LUP.icon('arrow')}</div>` : mode === 'wait' ? `<div class="ph-state">${LUP.icon('clock')}<span>${PL.wait}</span></div>` : mode === 'go' ? `<div class="ph-state ok">${LUP.icon('check')}<span>${PL.confirmed}</span></div>` : '';
+    };
+    const opRows = (() => { let cur = null; return (key, html) => { if (cur === key) return; cur = key; op.rows.innerHTML = html; }; })();
+    const opStats = (() => { let cur = null; return (html) => { if (cur === html) return; cur = html; op.stats.innerHTML = html; }; })();
+
+    // SFX-händelser (absoluta tider) – exporteras till ljudmixen
+    const events = [];
+    const ev = (t, sfx, gain = 0) => events.push({ t: +t.toFixed(2), sfx, gain });
+    for (const b of beats) {
+      const s = b.start, d = b.duration;
+      if (b.id === 'arrival') { ev(s + 0.2, 'truck_pass', -4); }
+      if (b.id === 'today') { ev(s + 0.6, 'air_brake', -6); ev(s + 1.2, 'truck_idle', -10); }
+      if (b.id === 'reset') { ev(s + 0.1, 'whoosh', -4); ev(s + 0.3, 'lift', -6); }
+      if (b.id === 'checkin') { ev(s + 0.3, 'air_brake', -8); ev(s + d * 0.12, 'tick', -6); ev(s + d * 0.55, 'tick', -6); ev(s + d * 0.62, 'confirm', -8); }
+      if (b.id === 'safety') { for (let i = 0; i < 4; i++) ev(s + d * (0.22 + i * 0.1), 'tick', -8); ev(s + d * 0.72, 'confirm', -6); }
+      if (b.id === 'gate') { ev(s + d * 0.45, 'tick', -6); ev(s + d * 0.55, 'confirm', -8); ev(s + d * 0.62, 'gate_open', -4); ev(s + d * 0.8, 'truck_pass', -6); }
+      if (b.id === 'route') { ev(s + 0.2, 'cam_move', -10); ev(s + d * 0.9, 'air_brake', -10); ev(s + d * 0.96, 'confirm', -8); }
+      if (b.id === 'overview') { ev(s + 0.1, 'cam_move', -8); }
+      if (b.id === 'checkout') { ev(s + d * 0.3, 'beep', -10); ev(s + d * 0.5, 'truck_pass', -8); }
+      if (b.id === 'close') { ev(s + 0.2, 'whoosh', -8); }
+    }
+
+    // ---------- Per-frame ----------
+    const curBeat = (t) => { let b = beats[0]; for (const x of beats) if (t >= x.start) b = x; return b; };
+    function seek(frame) {
+      LUP._lastFrame = frame;
+      const t = frame / fps;
+      blobs[0].style.transform = `translate(${Math.sin(t * 0.25) * 30}px, ${Math.cos(t * 0.2) * 24}px)`;
+      blobs[1].style.transform = `translate(${Math.cos(t * 0.22) * -28}px, ${Math.sin(t * 0.18) * -20}px)`;
+      const b = curBeat(t), l = t - b.start, d = b.duration, p = U.clamp(l / d, 0, 1);
+      const inOut = (a0, a1) => Math.min(U.prog(l, 0, a0, U.easeOut), 1 - U.prog(l, d - a1, a1, U.easeIn));
+
+      // Standardvärden varje frame
+      let cam = camera, heroX = -400, heroDepth = 0, armOpen = 0, tone = 0, propsVis = 0, hudVis = 0, bridgeVis = 0, phVis = 0, phScale = 0, panelVis = 0;
+      const qVis = [0, 0, 0], oVis = [0, 0, 0]; let qX = [GATE_X - 290, GATE_X - 290 - 250, -900], oX = [DOCKS[0] + 150, DOCKS[1] + 150, 600];
+      const QV = (v) => { qVis[0] = v; qVis[1] = v; };
+      let title = b.title || '', sub = b.sub || '';
+      tap(0, 0, 0); hero.style.opacity = 1;
+      const clockHands = (sec) => { props.querySelector('.hm').setAttribute('transform', `rotate(${sec * 120})`); props.querySelector('.hh').setAttribute('transform', `rotate(${sec * 10 + 210})`); };
+      const prev = (id) => byId[id];
+
+      switch (b.id) {
+        case 'arrival': {
+          // Grå värld, bilen kommer in från vänster (nära kameran) och rullar fram bakom kön
+          heroX = U.lerp(-250, GATE_X - 290 - 500, U.easeInOut(p)); tone = 0; propsVis = 1; QV(1);
+          cam = lerpCam({ x: -300, s: 1.5, g: 990 }, { x: 510, s: 0.95, g: 990 }, U.easeInOut(p));
+          clockHands(t); break;
+        }
+        case 'today': {
+          heroX = GATE_X - 290 - 500 + Math.sin(t * 9) * 0.6; tone = 0; propsVis = 1; QV(1);
+          cam = lerpCam({ x: 510, s: 0.95, g: 990 }, { x: 530, s: 0.98, g: 990 }, U.easeInOut(p));
+          clockHands(t);
+          props.querySelector('.qm').setAttribute('transform', `translate(${GATE_X - 215} ${WORLD.ground - 330 + Math.sin(t * 3) * 6})`);
+          break;
+        }
+        case 'reset': {
+          // Svep: världen byter till LUPNUMBER-läge; samma bil kör fram till grinden utan kö
+          const wipe = U.prog(l, 0, Math.min(1.0, d * 0.35), U.easeInOut);
+          tone = wipe; propsVis = 1 - wipe; QV(1 - wipe);
+          heroX = U.lerp(GATE_X - 290 - 500, GATE_X - 290, U.easeInOut(U.prog(l, d * 0.25, d * 0.75)));
+          cam = lerpCam({ x: 530, s: 0.98, g: 990 }, { x: 820, s: 1.3, g: 990 }, U.easeInOut(p));
+          dim.style.background = `linear-gradient(90deg, transparent ${wipe * 140 - 40}%, rgba(14,165,233,0.18) ${wipe * 140 - 20}%, transparent ${wipe * 140}%)`;
+          break;
+        }
+        case 'checkin': {
+          tone = 1; heroX = GATE_X - 290; 
+          cam = lerpCam({ x: 820, s: 1.3, g: 990 }, { x: 880, s: 1.45, g: 1040 }, U.easeInOut(U.prog(l, 0, d * 0.25)));
+          const rise = U.prog(l, d * 0.05, d * 0.14, U.easeInOut); phVis = U.prog(l, d * 0.03, 0.2); phScale = rise;
+          const typed = U.prog(l, d * 0.16, d * 0.26); const plate = (film.plate || 'ABC 123');
+          const nChars = Math.round(typed * plate.length);
+          if (ph.plate.textContent !== plate.slice(0, nChars)) ph.plate.textContent = plate.slice(0, nChars);
+          ph.caret.style.opacity = typed < 1 ? (Math.floor(l * 3) % 2 ? 1 : 0) : 0;
+          const langPhase = l > d * 0.46; phoneScreen(langPhase ? 'lang' : 'plate');
+          const sel = U.prog(l, d * 0.56, 0.3, U.back);
+          ph.chips.forEach((c) => { c.classList.toggle('on', c.dataset.l === 'PL' && sel > 0.5); });
+          if (langPhase && sel > 0 && sel < 1) tap(1 - sel, 540 - 40, 700 + 10);
+          if (l > d * 0.72) { ph.title.textContent = PL.title; ph.label.textContent = PL.plate; ph.btn.textContent = PL.next; }
+          break;
+        }
+        case 'safety': {
+          tone = 1; heroX = GATE_X - 290; cam = { x: 880, s: 1.45, g: 1040 }; phVis = 1; phScale = 1 - U.prog(l, d - 0.9, 0.9, U.easeInOut);
+          phoneScreen('safety');
+          ph.ruleEls.forEach((r, i) => r.classList.toggle('on', l > d * (0.22 + i * 0.1)));
+          const press = U.prog(l, d * 0.68, 0.25, U.back); if (press > 0 && press < 1) tap(1 - press, 540, 700 + 300);
+          ph.btn.textContent = l > d * 0.72 ? PL.confirmed : PL.confirm; ph.btn.classList.toggle('done', l > d * 0.72);
+          break;
+        }
+        case 'gate': {
+          tone = 1; heroX = GATE_X - 290;
+          cam = lerpCam({ x: 880, s: 1.45, g: 1040 }, { x: 1000, s: 1.0, g: 700 }, U.easeInOut(U.prog(l, 0, d * 0.3)));
+          panelVis = inOut(0.5, 0.5);
+          op.title.textContent = 'Grind 1 · Ankomster';
+          const assigned = l > d * 0.55;
+          opRows('gate' + (assigned ? 1 : 0), `
+            <div class="op-row hi"><span class="op-plate">${film.plate || 'ABC 123'}</span><span>Nordfrakt AB</span><span class="op-tags"><i class="ok">Incheckad</i><i class="ok">Säkerhet ✓</i><i class="${assigned ? 'ok' : 'wait'}">${assigned ? 'Port 3 anvisad' : 'Väntar på port'}</i></span></div>
+            <div class="op-row"><span class="op-plate">GHI 654</span><span>Transit AB</span><span class="op-tags"><i class="ok">Vid port 1</i></span></div>
+            <div class="op-row"><span class="op-plate">JKL 987</span><span>Linjetrafik</span><span class="op-tags"><i class="ok">Vid port 2</i></span></div>`);
+          opStats(`<div class="op-action${assigned ? ' done' : ''}">${assigned ? 'Port 3 anvisad · grinden öppnas' : 'Anvisa port'}</div>`);
+          const press = U.prog(l, d * 0.44, 0.25, U.back); if (press > 0 && press < 1) tap(1 - press, 540, 1130);
+          armOpen = U.prog(l, d * 0.62, Math.min(1.2, d * 0.18), U.easeInOut);
+          heroX = GATE_X - 290 + U.easeIn(U.prog(l, d * 0.78, d * 0.22)) * 420;
+          oVis[0] = 1; oVis[1] = 1; break;
+        }
+        case 'route': {
+          tone = 1; const run = U.easeInOut(p); heroX = U.lerp(GATE_X + 130, DOCKS[2] + 150, run);
+          cam = lerpCam({ x: 1000, s: 1.0, g: 700 }, { x: heroX - 40, s: 1.25, g: 990 }, U.easeInOut(U.prog(l, 0, Math.min(1.2, d * 0.2))));
+          if (l > d * 0.2) cam = { x: heroX - 40, s: 1.25, g: 990 };
+          hudVis = 1; hud.setAttribute('transform', `translate(${heroX - 150} ${WORLD.ground - 200 - 60 * U.prog(p, 0.86, 0.14)})`);
+          const dist = Math.max(0, Math.round((DOCKS[2] + 150 - heroX) * 0.1 / 10) * 10);
+          const ht = hud.querySelector('.hud-t'); const txt = p < 0.95 ? `Port 3 · ${dist} m →` : 'Vid port 3 ✓'; if (ht.textContent !== txt) ht.textContent = txt;
+          heroDepth = U.prog(p, 0.86, 0.14, U.easeInOut); // backar in mot porten (djup)
+          bridgeVis = U.prog(l, d * 0.94, 0.3); oVis[0] = 1; oVis[1] = 1; break;
+        }
+        case 'overview': {
+          tone = 1; heroX = DOCKS[2] + 150; heroDepth = 1; bridgeVis = 1; oVis[0] = 1; oVis[1] = 1; oVis[2] = 1; oX[2] = U.lerp(300, GATE_X - 290, U.easeOut(p));
+          cam = lerpCam({ x: heroX - 40, s: 1.25, g: 990 }, { x: 1800, s: 0.56, g: 700 }, U.easeInOut(U.prog(l, 0, d * 0.55)));
+          panelVis = inOut(0.6, 0.4); op.title.textContent = 'Siten just nu';
+          opRows('ov', `
+            <div class="op-row hi"><span class="op-plate">${film.plate || 'ABC 123'}</span><span>Port 3</span><span class="op-tags"><i class="ok">Lastning pågår</i></span></div>
+            <div class="op-row"><span class="op-plate">GHI 654</span><span>Port 1</span><span class="op-tags"><i class="ok">Lastning pågår</i></span></div>
+            <div class="op-row"><span class="op-plate">MNO 135</span><span>Grind 1</span><span class="op-tags"><i class="wait">Incheckning</i></span></div>`);
+          opStats(`<div class="op-kpi"><b>5</b><span>på siten</span></div><div class="op-kpi"><b>3</b><span>vid port</span></div><div class="op-kpi"><b>0</b><span>i kö</span></div>`);
+          break;
+        }
+        case 'checkout': {
+          tone = 1; bridgeVis = 1 - U.prog(l, 0, 0.4); oVis[0] = 1; oVis[1] = 1; oVis[2] = 1; oX[2] = GATE_X - 290;
+          heroDepth = 1 - U.prog(l, d * 0.1, d * 0.3, U.easeInOut); // ut på körbanan igen
+          heroX = DOCKS[2] + 150 + U.easeIn(U.prog(l, d * 0.35, d * 0.65)) * 900;
+          cam = lerpCam({ x: 1800, s: 0.56, g: 700 }, { x: 2250, s: 0.62, g: 700 }, U.easeInOut(p));
+          panelVis = inOut(0.5, 0.4); op.title.textContent = 'Logg · idag';
+          opRows('log', `
+            <div class="op-row hi"><span class="op-plate">${film.plate || 'ABC 123'}</span><span>In 06:58 · Ut 07:41</span><span class="op-tags"><i class="ok">Port 3</i><i class="ok">Utcheckad</i></span></div>
+            <div class="op-row"><span class="op-plate">GHI 654</span><span>In 06:40</span><span class="op-tags"><i class="ok">Port 1</i></span></div>`);
+          opStats(`<div class="op-kpi"><b>43</b><span>min på siten</span></div><div class="op-kpi"><b>0</b><span>papper</span></div>`);
+          break;
+        }
+        case 'close': { tone = 1; cam = { x: 2250, s: 0.62, g: 700 }; heroX = DOCKS[2] + 1050 + l * 150; oVis[0] = 1; oVis[1] = 1; break; }
+      }
+
+      // Tillämpa
+      camera = cam; applyCamera(cam);
+      toneWorld(tone); hero.style.color = U.mix(C.heading, C.accent, tone);
+      heroAt(heroX, DOCK_DY * heroDepth, U.lerp(1, DOCK_S, heroDepth));
+      queue.forEach((q, i) => { q.style.opacity = qVis[i]; place(q, qX[i]); });
+      others.forEach((o, i) => { o.style.opacity = oVis[i]; if (i < 2) placeDock(o, oX[i]); else place(o, oX[i]); });
+      props.style.opacity = propsVis; arm.setAttribute('transform', `rotate(${-82 * armOpen})`);
+      hud.setAttribute('opacity', hudVis); bridge.setAttribute('opacity', bridgeVis);
+      const cab = worldToStage(GATE_X - 290 - 40, WORLD.ground - 70, cam); showPhone(phVis, phScale, cab.x, cab.y);
+      if (b.id !== 'reset') dim.style.background = '';
+      if (b.id !== 'reset') dim.style.opacity = phVis * phScale * 0.55; else dim.style.opacity = 1;
+      showPanel(panelVis, (1 - panelVis) * 40);
+      const isClose = b.id === 'close';
+      view.style.opacity = isClose ? 1 - U.prog(l, 0, 0.5) : 1;
+      badge.style.opacity = isClose ? 1 - U.prog(l, 0, 0.3) : 1;
+      // Rubrik
+      setTitle(isClose ? '' : title);
+      const tw = titleWords(); const first = b === beats[0];
+      tw.forEach((w, i) => { const pin = first ? 1 : U.prog(l, i * 0.04, 0.35, U.easeOut); U.enter(w, Math.min(pin, 1 - U.prog(l, d - 0.22, 0.22, U.easeIn)), { dy: first ? 0 : 16 }); if (first) w.style.transform = `translateY(${(1 - U.prog(l, i * 0.03, 0.4, U.easeOut)) * 8}px)`; });
+      subEl.textContent = sub; subEl.style.opacity = sub ? Math.min(U.prog(l, 0.6, 0.4), 1 - U.prog(l, d - 0.35, 0.35)) : 0;
+      // Outro
+      outroLayer.style.visibility = isClose ? 'visible' : 'hidden'; outroLayer.style.opacity = isClose ? U.prog(l, 0.1, 0.4) : 0;
+      if (isClose) outroSeek(l - 0.1);
+      // Undertexter
+      if (cueList) { const c = cueList.find((q) => t >= q.start && t < q.end); if (c) { if (cueEl.textContent !== c.text) cueEl.textContent = c.text; cueBox.style.opacity = Math.min(U.prog(t, c.start, 0.15), 1 - U.prog(t, c.end - 0.15, 0.15)); } else cueBox.style.opacity = 0; }
+    }
+
+    LUP.timeline = { total, fps, frames: Math.round(total * fps), beats: beats.map((b) => ({ id: b.id, start: b.start, end: b.end, title: b.title })), events };
+    window.__seek = seek;
+    window.__setRenderMode = () => document.body.classList.add('render');
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { (LUP._refit || []).forEach((f) => f()); if (LUP._lastFrame != null) seek(LUP._lastFrame); });
+    seek(0);
+    return LUP.timeline;
+  };
+})();
+</script>
+<script></script>
+<script>
+(function(){
+  const brand = {"company":"LUP Technologies","product":"LUPNUMBER","wordmark":{"accent":"LUP","heading":"NUMBER"},"tagline":"Molnbaserad yard management","seriesName":"Vardag på siten","cta":{"question":null,"label":"Boka en demo","url":"lupnumber.com"},"format":{"width":1080,"height":1350,"fps":30},"timeline":{"hook":2.5,"problem":4.5,"solution":6.5,"outro":4},"voiceoverMaxWords":45,"captions":{"maxWordsPerCue":7,"minCueSeconds":0.9}};
+  const clip = {"slug":"lupnumber-linkedin-25","composition":"LupnumberLinkedIn25","title":"LUPNUMBER – Incheckning på 25 sekunder (LinkedIn)","plate":"ABC 123","music":{"sections":"0:lift,21:close"},"cta":{"question":"Hur checkar chaufförerna in hos *er*?","label":"Boka en demo","url":"lupnumber.com","icon":"arrow"},"beats":[{"id":"checkin","duration":6.5,"title":"Så checkar en chaufför in. Utan kö, på sitt språk.","caption":"Så checkar en chaufför in: i mobilen, på sitt eget språk.","en":"This is how a driver checks in: on the phone, in their own language."},{"id":"safety","duration":6,"title":"Säkerhetsreglerna på polska. Kvitterade före infart.","caption":"Säkerhetsreglerna på polska, kvitterade innan bilen kör in.","en":"Safety rules in Polish, confirmed before the truck enters."},{"id":"gate","duration":5,"title":"Operatören anvisar port 3. Grinden öppnas.","caption":"Operatören anvisar port tre och öppnar grinden.","en":"The operator assigns dock three and opens the gate."},{"id":"route","duration":4,"title":"Rätt port. Första gången.","caption":"Rätt port. Första gången.","en":"Right dock. First time."},{"id":"close","duration":3.5,"title":"","caption":"LUPNUMBER. Boka en demo.","en":"LUPNUMBER. Book a demo."}],"scene":null};
+  const tl = LUP.initHero(brand, clip, {"captions":true});
+  // Preview-kontroller (döljs i render-läge)
+  const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
+  scrub.max = tl.frames - 1;
+  let frame = 0, playing = false, t0 = 0, f0 = 0;
+  const show = (f) => { frame = Math.max(0, Math.min(tl.frames - 1, Math.round(f))); window.__seek(frame); scrub.value = frame; time.textContent = (frame / tl.fps).toFixed(2) + ' s · frame ' + frame; };
+  scrub.addEventListener('input', () => { playing = false; play.textContent = 'Spela'; show(+scrub.value); });
+  play.addEventListener('click', () => { playing = !playing; play.textContent = playing ? 'Paus' : 'Spela'; t0 = performance.now(); f0 = frame >= tl.frames - 1 ? 0 : frame; });
+  const loop = (now) => { if (playing) { const f = f0 + (now - t0) / 1000 * tl.fps; if (f >= tl.frames) { playing = false; play.textContent = 'Spela'; show(tl.frames - 1); } else show(f); } requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+  const fit = () => { if (document.body.classList.contains('render')) return; const s = Math.min(window.innerWidth / 1080, (window.innerHeight - 60) / 1350); document.querySelector('.viewport').style.transform = 'scale(' + s + ')'; };
+  window.addEventListener('resize', fit); fit();
+  document.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); play.click(); } if (e.key === 'ArrowRight') show(frame + 1); if (e.key === 'ArrowLeft') show(frame - 1); });
+  show(0);
+})();
+</script>
+</body></html>

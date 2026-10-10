@@ -1,0 +1,52 @@
+{
+  "slug": "lupnumber-linkedin-25",
+  "composition": "LupnumberLinkedIn25",
+  "title": "LUPNUMBER – Incheckning på 25 sekunder (LinkedIn)",
+  "plate": "ABC 123",
+  "music": {
+    "sections": "0:lift,21:close"
+  },
+  "cta": {
+    "question": "Hur checkar chaufförerna in hos *er*?",
+    "label": "Boka en demo",
+    "url": "lupnumber.com",
+    "icon": "arrow"
+  },
+  "beats": [
+    {
+      "id": "checkin",
+      "duration": 6.5,
+      "title": "Så checkar en chaufför in. Utan kö, på sitt språk.",
+      "caption": "Så checkar en chaufför in: i mobilen, på sitt eget språk.",
+      "en": "This is how a driver checks in: on the phone, in their own language."
+    },
+    {
+      "id": "safety",
+      "duration": 6.0,
+      "title": "Säkerhetsreglerna på polska. Kvitterade före infart.",
+      "caption": "Säkerhetsreglerna på polska, kvitterade innan bilen kör in.",
+      "en": "Safety rules in Polish, confirmed before the truck enters."
+    },
+    {
+      "id": "gate",
+      "duration": 5.0,
+      "title": "Operatören anvisar port 3. Grinden öppnas.",
+      "caption": "Operatören anvisar port tre och öppnar grinden.",
+      "en": "The operator assigns dock three and opens the gate."
+    },
+    {
+      "id": "route",
+      "duration": 4.0,
+      "title": "Rätt port. Första gången.",
+      "caption": "Rätt port. Första gången.",
+      "en": "Right dock. First time."
+    },
+    {
+      "id": "close",
+      "duration": 3.5,
+      "title": "",
+      "caption": "LUPNUMBER. Boka en demo.",
+      "en": "LUPNUMBER. Book a demo."
+    }
+  ]
+}

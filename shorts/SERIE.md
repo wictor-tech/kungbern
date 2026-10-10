@@ -1,6 +1,6 @@
 # LUPNUMBER – LinkedIn-serien "Vardag på siten"
 
-10 klipp à 17.5 s (1080×1350, undertexter inbrända, hook i första bildrutan) och 1 flödesfilm.
+10 klipp à 17.5 s (1080×1350, undertexter inbrända, hook i första bildrutan), en hero-film (60 s), en LinkedIn-version (25 s) och en flödesfilm med delad bild (49,5 s). Kvalitetsrapport: [QUALITY.md](QUALITY.md).
 Klippen numreras inte i bild; ordningen nedan är bara filordning.
 
 | Ordning | Utmaning | Hook A | Hook B | CTA-fråga | VO-ord |
@@ -58,7 +58,34 @@ Klippen numreras inte i bild; ordningen nedan är bara filordning.
 
 > Vad kostar kön vid grinden? Räkna med mig. Säg tolv bilar om dagen, trettiofem minuter var, tjugotvå dagar. Hundrafemtiofyra timmar i kö. Med LUPNUMBER tar incheckningen fem minuter. Tjugotvå timmar. Hundratrettiotvå timmar tillbaka, varje månad. Hur ser er räkning ut? Skriv siffrorna i kommentarerna.
 
-## Flödesfilmer
+## Hero-film och LinkedIn-version
+
+**LUPNUMBER – Incheckning på 25 sekunder (LinkedIn)** (`shorts/out/hero-lupnumber-linkedin-25/`): 25 s, 5 beats, en lastbil (ABC 123) genom hela resan. Ljud: syntetiserad prototyp, speaker SV/EN i MANUS.md.
+
+| Beat | Rubrik i bild | Speaker SV |
+| --- | --- | --- |
+| checkin (6.5 s) | Så checkar en chaufför in. Utan kö, på sitt språk. | Så checkar en chaufför in: i mobilen, på sitt eget språk. |
+| safety (6 s) | Säkerhetsreglerna på polska. Kvitterade före infart. | Säkerhetsreglerna på polska, kvitterade innan bilen kör in. |
+| gate (5 s) | Operatören anvisar port 3. Grinden öppnas. | Operatören anvisar port tre och öppnar grinden. |
+| route (4 s) | Rätt port. Första gången. | Rätt port. Första gången. |
+| close (3.5 s) | – | LUPNUMBER. Boka en demo. |
+
+**LUPNUMBER – En dag på siten (hero, 60 s)** (`shorts/out/hero-lupnumber-site-day/`): 60 s, 10 beats, en lastbil (ABC 123) genom hela resan. Ljud: syntetiserad prototyp, speaker SV/EN i MANUS.md.
+
+| Beat | Rubrik i bild | Speaker SV |
+| --- | --- | --- |
+| arrival (4 s) | 06:58. En lastbil på väg till grinden. | Sju minuter i åtta. En lastbil på väg till grinden. |
+| today (6 s) | Idag: kö, papper och ett språk som inte går fram. | Idag möts den av kö, papper och instruktioner på ett språk chauffören inte förstår. |
+| reset (4 s) | Samma grind. Med LUPNUMBER. | Samma grind. Med LUPNUMBER. |
+| checkin (8 s) | Chauffören checkar in i mobilen. På sitt språk. | Chauffören checkar in i mobilen, på sitt eget språk. |
+| safety (8 s) | Säkerhetsreglerna på polska. Kvitterade före infart. | Säkerhetsreglerna visas på polska och kvitteras innan bilen kör in. |
+| gate (7 s) | Operatören ser ankomsten och anvisar port 3. | Operatören ser ankomsten, anvisar port tre och öppnar grinden. |
+| route (8 s) | Rätt port. Första gången. | Vägen till rätt port finns i mobilen. Rätt första gången. |
+| overview (6 s) | Hela siten i realtid. | Alla fordon på siten syns i realtid. |
+| checkout (4 s) | Utcheckad. Allt loggat. | Vid utfart loggas allt. Spårbart, utan papper. |
+| close (5 s) | – | LUPNUMBER. Boka en demo och se hur det fungerar på er site. |
+
+## Flödesfilm (delad bild)
 
 **En dag på siten – idag och med LUPNUMBER** (`shorts/out/film-en-dag-pa-siten/`): 6 steg, överst "idag", nederst "med LUPNUMBER".
 

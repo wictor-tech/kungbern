@@ -1,0 +1,71 @@
+1
+00:00:00,250 --> 00:00:01,690
+Sju minuter i åtta.
+
+2
+00:00:01,690 --> 00:00:03,850
+En lastbil på väg till grinden.
+
+3
+00:00:04,250 --> 00:00:07,050
+Idag möts den av kö, papper och
+
+4
+00:00:07,050 --> 00:00:09,850
+instruktioner på ett språk chauffören inte förstår.
+
+5
+00:00:10,250 --> 00:00:13,850
+Samma grind. Med LUPNUMBER.
+
+6
+00:00:14,250 --> 00:00:18,472
+Chauffören checkar in i mobilen,
+
+7
+00:00:18,472 --> 00:00:21,850
+på sitt eget språk.
+
+8
+00:00:22,250 --> 00:00:26,050
+Säkerhetsreglerna visas på polska och
+
+9
+00:00:26,050 --> 00:00:29,850
+kvitteras innan bilen kör in.
+
+10
+00:00:30,250 --> 00:00:33,917
+Operatören ser ankomsten, anvisar port
+
+11
+00:00:33,917 --> 00:00:36,850
+tre och öppnar grinden.
+
+12
+00:00:37,250 --> 00:00:42,570
+Vägen till rätt port finns i mobilen.
+
+13
+00:00:42,570 --> 00:00:44,850
+Rätt första gången.
+
+14
+00:00:45,250 --> 00:00:50,850
+Alla fordon på siten syns i realtid.
+
+15
+00:00:51,250 --> 00:00:53,307
+Vid utfart loggas allt.
+
+16
+00:00:53,307 --> 00:00:54,850
+Spårbart, utan papper.
+
+17
+00:00:55,250 --> 00:00:57,933
+LUPNUMBER. Boka en demo och se hur
+
+18
+00:00:57,933 --> 00:00:59,850
+det fungerar på er site.

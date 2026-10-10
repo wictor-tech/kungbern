@@ -142,3 +142,59 @@ body.overlay-light .hook-sub { color: #E0F2FE !important; text-shadow: 0 2px 14p
 body.overlay-light .sep { background: rgba(255,255,255,0.6) !important; }
 body.overlay-light .icon-circle { border-color: rgba(255,255,255,0.7); box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
 body.render .viewport { transform: none !important; }
+
+/* ---- Hero-film (LupnumberSiteDay) ---- */
+.hero-view { position: absolute; inset: 0; overflow: hidden; }
+.hero-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.hero-layer.near { color: var(--accent); }
+.hero-title { position: absolute; left: 72px; width: 936px; top: 150px; color: var(--heading); font-weight: 800; font-size: 56px; line-height: 1.1; letter-spacing: -0.03em; }
+.hero-title .w { display: inline-block; }
+.hero-sub { position: absolute; left: 72px; width: 936px; top: 290px; color: var(--muted); font-weight: 600; font-size: 30px; }
+.hero-dim { position: absolute; inset: 0; background: rgba(245,250,254,0.0); pointer-events: none; opacity: 0; background-color: rgba(245,250,254,0.9); }
+.hero-tap { position: absolute; left: 0; top: 0; width: 60px; height: 60px; border-radius: 50%; border: 4px solid var(--accent); background: rgba(14,165,233,0.18); opacity: 0; pointer-events: none; z-index: 6; }
+
+/* Telefon (420×820 vid skala 1, origin uppe till vänster) */
+.hero-phone { position: absolute; left: 0; top: 0; width: 420px; height: 820px; transform-origin: 0 0; opacity: 0; visibility: hidden; z-index: 5; }
+.ph-frame { position: absolute; inset: 0; border-radius: 54px; background: #fff; border: 6px solid var(--heading); box-shadow: 0 30px 80px rgba(12,74,110,0.25); overflow: hidden; }
+.ph-notch { position: absolute; left: 50%; top: 14px; width: 120px; height: 10px; margin-left: -60px; border-radius: 5px; background: var(--heading); opacity: .5; }
+.ph-screen { position: absolute; left: 18px; right: 18px; top: 44px; bottom: 24px; display: flex; flex-direction: column; }
+.ph-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 6px 14px; border-bottom: 2px solid var(--border); }
+.ph-wm { font-weight: 800; font-size: 26px; letter-spacing: -0.03em; color: var(--heading); } .ph-wm b { color: var(--accent); }
+.ph-site { color: var(--muted); font-weight: 700; font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; }
+.ph-body { padding: 22px 6px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.ph-title { color: var(--heading); font-weight: 800; font-size: 34px; letter-spacing: -0.02em; line-height: 1.1; }
+.ph-label { color: var(--muted); font-weight: 600; font-size: 22px; }
+.ph-field { display: flex; align-items: center; gap: 4px; border: 3px solid var(--border); border-radius: 18px; padding: 18px 20px; font-weight: 800; font-size: 40px; color: var(--heading); letter-spacing: 0.04em; min-height: 84px; background: var(--tint-2); }
+.ph-caret { color: var(--accent); font-weight: 400; }
+.ph-langs { display: flex; gap: 12px; flex-wrap: wrap; }
+.ph-chip { border: 3px solid var(--border); border-radius: 999px; padding: 12px 22px; font-weight: 800; font-size: 26px; color: var(--muted); background: #fff; }
+.ph-chip.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+.ph-rules { display: flex; flex-direction: column; gap: 14px; }
+.ph-rule { display: flex; align-items: center; gap: 14px; color: var(--text); font-weight: 600; font-size: 25px; line-height: 1.15; }
+.ph-box { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: #fff; flex: 0 0 auto; background: #fff; }
+.ph-box svg { width: 22px; height: 22px; opacity: 0; }
+.ph-rule.on .ph-box { background: var(--accent); border-color: var(--accent); } .ph-rule.on .ph-box svg { opacity: 1; }
+.ph-route { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0; }
+.ph-dist { font-weight: 800; font-size: 72px; color: var(--accent); letter-spacing: -0.03em; }
+.ph-arrow { color: var(--accent); } .ph-arrow svg { width: 90px; height: 90px; }
+.ph-state { display: flex; align-items: center; gap: 14px; color: var(--muted); font-weight: 700; font-size: 26px; } .ph-state svg { width: 40px; height: 40px; } .ph-state.ok { color: var(--accent); }
+.ph-btn { margin-top: auto; background: var(--accent); color: #fff; border-radius: 20px; padding: 22px; text-align: center; font-weight: 800; font-size: 28px; }
+.ph-btn.ghost { background: var(--tint-1); color: var(--muted); } .ph-btn.done { background: var(--heading); }
+
+/* Operatörsvy */
+.hero-panel { position: absolute; left: 72px; width: 936px; top: 745px; background: #fff; border: 2px solid var(--border); border-radius: 28px; box-shadow: var(--shadow); padding: 22px 28px 24px; opacity: 0; visibility: hidden; z-index: 4; }
+.op-head { display: flex; align-items: center; gap: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+.op-title { color: var(--heading); font-weight: 800; font-size: 28px; flex: 1; }
+.op-live { color: var(--accent); font-weight: 700; font-size: 20px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+.op-live i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px var(--tint-1); }
+.op-rows { display: flex; flex-direction: column; gap: 6px; padding: 12px 0 4px; }
+.op-row { display: grid; grid-template-columns: 170px 1fr auto; align-items: center; gap: 16px; padding: 9px 14px; border-radius: 14px; color: var(--text); font-weight: 600; font-size: 24px; }
+.op-row.hi { background: var(--tint-2); border: 2px solid var(--border); }
+.op-plate { font-weight: 800; color: var(--heading); font-size: 26px; letter-spacing: 0.02em; }
+.op-tags { display: flex; gap: 8px; } .op-tags i { font-style: normal; font-weight: 700; font-size: 20px; padding: 6px 12px; border-radius: 999px; background: var(--tint-1); color: var(--heading); white-space: nowrap; }
+.op-tags i.wait { background: #F1F5F9; color: var(--muted); }
+.op-stats { display: flex; gap: 14px; padding-top: 8px; }
+.op-action { flex: 1; text-align: center; background: var(--accent); color: #fff; font-weight: 800; font-size: 26px; padding: 16px; border-radius: 16px; }
+.op-action.done { background: var(--tint-1); color: var(--heading); }
+.op-kpi { flex: 1; background: var(--tint-2); border-radius: 16px; padding: 10px 16px; display: flex; align-items: baseline; gap: 10px; }
+.op-kpi b { color: var(--accent); font-size: 40px; font-weight: 800; } .op-kpi span { color: var(--muted); font-weight: 600; font-size: 22px; }

@@ -1,0 +1,87 @@
+[
+  {
+    "t": 0.3,
+    "sfx": "air_brake",
+    "gain": -8
+  },
+  {
+    "t": 0.78,
+    "sfx": "tick",
+    "gain": -6
+  },
+  {
+    "t": 3.58,
+    "sfx": "tick",
+    "gain": -6
+  },
+  {
+    "t": 4.03,
+    "sfx": "confirm",
+    "gain": -8
+  },
+  {
+    "t": 7.82,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 8.42,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 9.02,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 9.62,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 10.82,
+    "sfx": "confirm",
+    "gain": -6
+  },
+  {
+    "t": 14.75,
+    "sfx": "tick",
+    "gain": -6
+  },
+  {
+    "t": 15.25,
+    "sfx": "confirm",
+    "gain": -8
+  },
+  {
+    "t": 15.6,
+    "sfx": "gate_open",
+    "gain": -4
+  },
+  {
+    "t": 16.5,
+    "sfx": "truck_pass",
+    "gain": -6
+  },
+  {
+    "t": 17.7,
+    "sfx": "cam_move",
+    "gain": -10
+  },
+  {
+    "t": 21.1,
+    "sfx": "air_brake",
+    "gain": -10
+  },
+  {
+    "t": 21.34,
+    "sfx": "confirm",
+    "gain": -8
+  },
+  {
+    "t": 21.7,
+    "sfx": "whoosh",
+    "gain": -8
+  }
+]

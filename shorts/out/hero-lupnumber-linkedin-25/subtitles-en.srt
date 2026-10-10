@@ -1,0 +1,31 @@
+1
+00:00:00,250 --> 00:00:03,300
+This is how a driver checks in:
+
+2
+00:00:03,300 --> 00:00:06,350
+on the phone, in their own language.
+
+3
+00:00:06,750 --> 00:00:09,861
+Safety rules in Polish, confirmed
+
+4
+00:00:09,861 --> 00:00:12,350
+before the truck enters.
+
+5
+00:00:12,750 --> 00:00:15,306
+The operator assigns dock three
+
+6
+00:00:15,306 --> 00:00:17,350
+and opens the gate.
+
+7
+00:00:17,750 --> 00:00:21,350
+Right dock. First time.
+
+8
+00:00:21,750 --> 00:00:24,850
+LUPNUMBER. Book a demo.

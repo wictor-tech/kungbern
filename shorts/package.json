@@ -8,7 +8,11 @@
     "klipp:nytt": "node scripts/new.mjs",
     "test": "node scripts/test.mjs",
     "postinstall": "playwright install chromium",
-    "film": "node scripts/film.mjs"
+    "film": "node scripts/film.mjs",
+    "hero": "node scripts/hero.mjs",
+    "material": "node scripts/material.mjs",
+    "index": "node scripts/index.mjs",
+    "verify": "node scripts/verify.mjs"
   },
   "devDependencies": {
     "playwright": "1.56.1"

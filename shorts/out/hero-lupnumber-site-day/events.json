@@ -1,0 +1,127 @@
+[
+  {
+    "t": 0.2,
+    "sfx": "truck_pass",
+    "gain": -4
+  },
+  {
+    "t": 4.6,
+    "sfx": "air_brake",
+    "gain": -6
+  },
+  {
+    "t": 5.2,
+    "sfx": "truck_idle",
+    "gain": -10
+  },
+  {
+    "t": 10.1,
+    "sfx": "whoosh",
+    "gain": -4
+  },
+  {
+    "t": 10.3,
+    "sfx": "lift",
+    "gain": -6
+  },
+  {
+    "t": 14.3,
+    "sfx": "air_brake",
+    "gain": -8
+  },
+  {
+    "t": 14.96,
+    "sfx": "tick",
+    "gain": -6
+  },
+  {
+    "t": 18.4,
+    "sfx": "tick",
+    "gain": -6
+  },
+  {
+    "t": 18.96,
+    "sfx": "confirm",
+    "gain": -8
+  },
+  {
+    "t": 23.76,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 24.56,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 25.36,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 26.16,
+    "sfx": "tick",
+    "gain": -8
+  },
+  {
+    "t": 27.76,
+    "sfx": "confirm",
+    "gain": -6
+  },
+  {
+    "t": 33.15,
+    "sfx": "tick",
+    "gain": -6
+  },
+  {
+    "t": 33.85,
+    "sfx": "confirm",
+    "gain": -8
+  },
+  {
+    "t": 34.34,
+    "sfx": "gate_open",
+    "gain": -4
+  },
+  {
+    "t": 35.6,
+    "sfx": "truck_pass",
+    "gain": -6
+  },
+  {
+    "t": 37.2,
+    "sfx": "cam_move",
+    "gain": -10
+  },
+  {
+    "t": 44.2,
+    "sfx": "air_brake",
+    "gain": -10
+  },
+  {
+    "t": 44.68,
+    "sfx": "confirm",
+    "gain": -8
+  },
+  {
+    "t": 45.1,
+    "sfx": "cam_move",
+    "gain": -8
+  },
+  {
+    "t": 52.2,
+    "sfx": "beep",
+    "gain": -10
+  },
+  {
+    "t": 53,
+    "sfx": "truck_pass",
+    "gain": -8
+  },
+  {
+    "t": 55.2,
+    "sfx": "whoosh",
+    "gain": -8
+  }
+]

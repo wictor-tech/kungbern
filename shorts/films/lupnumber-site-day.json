@@ -1,0 +1,20 @@
+{
+  "slug": "lupnumber-site-day",
+  "composition": "LupnumberSiteDay",
+  "title": "LUPNUMBER – En dag på siten (hero, 60 s)",
+  "plate": "ABC 123",
+  "music": { "sections": "0:intro,4:tension,10:lift,55:close" },
+  "cta": { "question": "Se hur det fungerar på *er* site.", "label": "Boka en demo", "url": "lupnumber.com", "icon": "arrow" },
+  "beats": [
+    { "id": "arrival",  "duration": 4.0, "title": "06:58. En lastbil på väg till grinden.", "caption": "Sju minuter i åtta. En lastbil på väg till grinden.", "en": "Seven minutes to eight. A truck on its way to the gate." },
+    { "id": "today",    "duration": 6.0, "title": "Idag: kö, papper och ett språk som inte går fram.", "caption": "Idag möts den av kö, papper och instruktioner på ett språk chauffören inte förstår.", "en": "Today it meets a queue, paperwork and instructions in a language the driver does not understand." },
+    { "id": "reset",    "duration": 4.0, "title": "Samma grind. Med LUPNUMBER.", "caption": "Samma grind. Med LUPNUMBER.", "en": "Same gate. With LUPNUMBER." },
+    { "id": "checkin",  "duration": 8.0, "title": "Chauffören checkar in i mobilen. På sitt språk.", "caption": "Chauffören checkar in i mobilen, på sitt eget språk.", "en": "The driver checks in on the phone, in their own language." },
+    { "id": "safety",   "duration": 8.0, "title": "Säkerhetsreglerna på polska. Kvitterade före infart.", "caption": "Säkerhetsreglerna visas på polska och kvitteras innan bilen kör in.", "en": "The safety rules are shown in Polish and confirmed before the truck enters." },
+    { "id": "gate",     "duration": 7.0, "title": "Operatören ser ankomsten och anvisar port 3.", "caption": "Operatören ser ankomsten, anvisar port tre och öppnar grinden.", "en": "The operator sees the arrival, assigns dock three and opens the gate." },
+    { "id": "route",    "duration": 8.0, "title": "Rätt port. Första gången.", "caption": "Vägen till rätt port finns i mobilen. Rätt första gången.", "en": "The way to the right dock is on the phone. Right the first time." },
+    { "id": "overview", "duration": 6.0, "title": "Hela siten i realtid.", "caption": "Alla fordon på siten syns i realtid.", "en": "Every vehicle on site is visible in real time." },
+    { "id": "checkout", "duration": 4.0, "title": "Utcheckad. Allt loggat.", "caption": "Vid utfart loggas allt. Spårbart, utan papper.", "en": "At departure everything is logged. Traceable, without paper." },
+    { "id": "close",    "duration": 5.0, "title": "", "caption": "LUPNUMBER. Boka en demo och se hur det fungerar på er site.", "en": "LUPNUMBER. Book a demo and see how it works on your site." }
+  ]
+}

@@ -1,0 +1,87 @@
+1
+00:00:00,250 --> 00:00:01,450
+Seven minutes to eight.
+
+2
+00:00:01,450 --> 00:00:02,650
+A truck on its
+
+3
+00:00:02,650 --> 00:00:03,850
+way to the gate.
+
+4
+00:00:04,250 --> 00:00:06,350
+Today it meets a queue, paperwork
+
+5
+00:00:06,350 --> 00:00:08,450
+and instructions in a language the
+
+6
+00:00:08,450 --> 00:00:09,850
+driver does not understand.
+
+7
+00:00:10,250 --> 00:00:13,850
+Same gate. With LUPNUMBER.
+
+8
+00:00:14,250 --> 00:00:18,395
+The driver checks in on the
+
+9
+00:00:18,395 --> 00:00:21,850
+phone, in their own language.
+
+10
+00:00:22,250 --> 00:00:26,342
+The safety rules are shown in Polish
+
+11
+00:00:26,342 --> 00:00:29,850
+and confirmed before the truck enters.
+
+12
+00:00:30,250 --> 00:00:33,550
+The operator sees the arrival, assigns
+
+13
+00:00:33,550 --> 00:00:36,850
+dock three and opens the gate.
+
+14
+00:00:37,250 --> 00:00:39,964
+The way to the right
+
+15
+00:00:39,964 --> 00:00:42,679
+dock is on the phone.
+
+16
+00:00:42,679 --> 00:00:44,850
+Right the first time.
+
+17
+00:00:45,250 --> 00:00:48,361
+Every vehicle on site is
+
+18
+00:00:48,361 --> 00:00:50,850
+visible in real time.
+
+19
+00:00:51,250 --> 00:00:53,500
+At departure everything is logged.
+
+20
+00:00:53,500 --> 00:00:54,850
+Traceable, without paper.
+
+21
+00:00:55,250 --> 00:00:57,933
+LUPNUMBER. Book a demo and see how
+
+22
+00:00:57,933 --> 00:00:59,850
+it works on your site.
