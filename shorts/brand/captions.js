@@ -45,10 +45,19 @@
     }
     return all;
   }
+  // beats: [{ key, start, end, text, cues?: [[relStart, relEnd, text], ...] }] → explicita cues där de finns, annars cuesFromBeats
+  function cuesFromScript(beats, cfgIn) {
+    const all = [];
+    for (const b of beats) {
+      if (b.cues && b.cues.length) for (const c of b.cues) all.push({ beat: b.key, start: +(b.start + c[0]).toFixed(3), end: +(b.start + c[1]).toFixed(3), text: c[2] });
+      else if (b.text) all.push(...cuesFromBeats([b], cfgIn));
+    }
+    return all;
+  }
   function cues(brand, clip) {
     const { byKey } = phases(brand);
     const beats = ['hook', 'problem', 'solution', 'outro'].filter((k) => byKey[k] && clip.voiceover && clip.voiceover[k]).map((k) => ({ key: k, start: byKey[k].start, end: byKey[k].end, text: clip.voiceover[k] }));
     return cuesFromBeats(beats, brand.captions);
   }
-  return { phases, splitCue, cues, cuesFromBeats, words };
+  return { phases, splitCue, cues, cuesFromBeats, cuesFromScript, words };
 });

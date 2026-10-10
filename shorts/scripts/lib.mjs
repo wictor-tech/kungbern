@@ -54,7 +54,8 @@ export function applyVariant(clip, key) {
 export function bundleHtml(brand, clip, opts = {}) {
   const read = (p) => readFileSync(p, 'utf8');
   const css = read(join(BRAND_DIR, 'brand.css')).replaceAll('__FONTS__', pathToFileURL(join(BRAND_DIR, 'fonts')).href);
-  const js = ['engine.js', 'icons.js', 'captions.js', 'yard.js', 'shell.js', ...(opts.film ? ['film.js'] : []), ...(opts.hero ? ['hero.js'] : [])].map((f) => read(join(BRAND_DIR, f))).join('\n');
+  const extra = opts.templates ? opts.templates.map((t) => t + '.js') : opts.film ? ['film.js'] : opts.hero ? ['hero.js'] : [];
+  const js = ['engine.js', 'icons.js', 'captions.js', 'yard.js', 'shell.js', ...extra].map((f) => read(join(BRAND_DIR, f))).join('\n');
   const sceneNames = opts.scenes || (clip.scene ? [clip.scene] : []);
   const scene = sceneNames.map((n) => read(join(SCENES_DIR, n + '.js'))).join('\n');
   const { width, height } = brand.format;
@@ -77,7 +78,7 @@ export function bundleHtml(brand, clip, opts = {}) {
 (function(){
   const brand = ${JSON.stringify(brand)};
   const clip = ${JSON.stringify(clip)};
-  const tl = LUP.${opts.hero ? 'initHero' : opts.film ? 'initFilm' : 'init'}(brand, clip, ${JSON.stringify({ captions: opts.captions !== false })});
+  const tl = LUP.${opts.init || (opts.hero ? 'initHero' : opts.film ? 'initFilm' : 'init')}(brand, clip, ${JSON.stringify({ captions: opts.captions !== false })});
   // Preview-kontroller (döljs i render-läge)
   const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
   scrub.max = tl.frames - 1;

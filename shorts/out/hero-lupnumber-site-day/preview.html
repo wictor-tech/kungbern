@@ -844,23 +844,24 @@ body.render .viewport { transform: none !important; }
     </g>`;
   }
 
-  function buildWorld(far, near) {
+  function buildWorld(far, near, opts = {}) {
+    const docks = opts.docks || DOCKS, signText = opts.sign || 'PORT 1–4 →', W_ = opts.width || WORLD.w;
     // Bakre lager (parallax 0.5): byggnader, silos, ljusmaster
     let f = '';
     for (const [x, w, h] of [[-300, 620, 230], [420, 380, 160], [900, 760, 210], [1750, 980, 260], [2800, 640, 190], [3500, 560, 220]])
       f += `<rect x="${x}" y="${WORLD.ground - h}" width="${w}" height="${h}" rx="6" fill="${C.tint2}" stroke="${C.border}" stroke-width="3"/>`;
     for (const x of [1500, 1540, 1580]) f += `<rect x="${x}" y="${WORLD.ground - 320}" width="30" height="320" rx="15" fill="${C.tint}" stroke="${C.border}" stroke-width="3"/>`;
-    for (let x = -100; x < 3600; x += 450) f += `<rect x="${x}" y="${WORLD.ground - 300}" width="6" height="300" fill="${C.border}"/><rect x="${x - 22}" y="${WORLD.ground - 306}" width="50" height="10" rx="5" fill="${C.border}"/>`;
-    far.innerHTML = `<svg width="${WORLD.w + 800}" height="${WORLD.h}" viewBox="-400 0 ${WORLD.w + 800} ${WORLD.h}" style="overflow:visible">${f}</svg>`;
+    for (let x = -100; x < W_ + 400; x += 450) f += `<rect x="${x}" y="${WORLD.ground - 300}" width="6" height="300" fill="${C.border}"/><rect x="${x - 22}" y="${WORLD.ground - 306}" width="50" height="10" rx="5" fill="${C.border}"/>`;
+    far.innerHTML = `<svg width="${W_ + 800}" height="${WORLD.h}" viewBox="-400 0 ${W_ + 800} ${WORLD.h}" style="overflow:visible">${f}</svg>`;
 
     // Främre lager: mark, väg, staket, grind, bod, skylt, portar
     let n = '';
-    n += `<rect x="-600" y="${WORLD.ground}" width="${WORLD.w + 1400}" height="140" fill="${C.tint2}"/>`;
-    n += `<rect x="-600" y="${WORLD.ground - 2}" width="${WORLD.w + 1400}" height="26" fill="${C.border}"/>`;
-    n += `<line x1="-600" y1="${WORLD.ground + 11}" x2="${WORLD.w + 800}" y2="${WORLD.ground + 11}" stroke="#fff" stroke-width="5" stroke-dasharray="40 34"/>`;
+    n += `<rect x="-600" y="${WORLD.ground}" width="${W_ + 1400}" height="140" fill="${C.tint2}"/>`;
+    n += `<rect x="-600" y="${WORLD.ground - 2}" width="${W_ + 1400}" height="26" fill="${C.border}"/>`;
+    n += `<line x1="-600" y1="${WORLD.ground + 11}" x2="${W_ + 800}" y2="${WORLD.ground + 11}" stroke="#fff" stroke-width="5" stroke-dasharray="40 34"/>`;
     // staket på insidan
-    for (let x = GATE_X + 60; x < WORLD.w; x += 120) n += `<rect class="w" x="${x}" y="${WORLD.ground - 80}" width="6" height="80" fill="currentColor" opacity=".35"/>`;
-    n += `<rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 76}" width="${WORLD.w - GATE_X}" height="5" fill="currentColor" opacity=".3"/><rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 40}" width="${WORLD.w - GATE_X}" height="5" fill="currentColor" opacity=".3"/>`;
+    for (let x = GATE_X + 60; x < W_; x += 120) n += `<rect class="w" x="${x}" y="${WORLD.ground - 80}" width="6" height="80" fill="currentColor" opacity=".35"/>`;
+    n += `<rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 76}" width="${W_ - GATE_X}" height="5" fill="currentColor" opacity=".3"/><rect class="w" x="${GATE_X + 60}" y="${WORLD.ground - 40}" width="${W_ - GATE_X}" height="5" fill="currentColor" opacity=".3"/>`;
     // vaktbod
     n += `<g class="w"><rect x="${GATE_X + 40}" y="${WORLD.ground - 200}" width="150" height="200" rx="10" fill="#fff" stroke="currentColor" stroke-width="5"/><rect x="${GATE_X + 60}" y="${WORLD.ground - 176}" width="110" height="70" rx="6" fill="${C.tint}" stroke="currentColor" stroke-width="4"/><rect x="${GATE_X + 20}" y="${WORLD.ground - 214}" width="190" height="16" rx="6" fill="currentColor"/></g>`;
     // grindstolpe + bom (pivot vid stolpens topp)
@@ -871,17 +872,18 @@ body.render .viewport { transform: none !important; }
     // stopplinje
     n += `<rect class="w" x="${GATE_X - 262}" y="${WORLD.ground - 2}" width="14" height="26" fill="currentColor" opacity=".6"/>`;
     // skylt i yarden
-    n += `<g class="w"><rect x="${SIGN_X}" y="${WORLD.ground - 250}" width="8" height="250" fill="currentColor" opacity=".6"/><rect x="${SIGN_X - 10}" y="${WORLD.ground - 300}" width="240" height="60" rx="10" fill="#fff" stroke="currentColor" stroke-width="4"/><text x="${SIGN_X + 108}" y="${WORLD.ground - 258}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">PORT 1–4 →</text></g>`;
+    n += `<g class="w"><rect x="${SIGN_X}" y="${WORLD.ground - 250}" width="8" height="250" fill="currentColor" opacity=".6"/><rect x="${SIGN_X - 10}" y="${WORLD.ground - 300}" width="240" height="60" rx="10" fill="#fff" stroke="currentColor" stroke-width="4"/><text x="${SIGN_X + 108}" y="${WORLD.ground - 258}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">${signText}</text></g>`;
     // portar: lastkaj med numrerade dörrar
-    n += `<rect class="w" x="${DOCKS[0] - 120}" y="${WORLD.ground - 290}" width="${DOCKS[3] - DOCKS[0] + 360}" height="290" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>`;
-    n += `<rect class="w" x="${DOCKS[0] - 120}" y="${WORLD.ground - 290}" width="${DOCKS[3] - DOCKS[0] + 360}" height="18" fill="currentColor" opacity=".18"/>`;
-    DOCKS.forEach((x, i) => {
+    const lastDock = docks[docks.length - 1];
+    n += `<rect class="w" x="${docks[0] - 120}" y="${WORLD.ground - 290}" width="${lastDock - docks[0] + 360}" height="290" rx="8" fill="#fff" stroke="currentColor" stroke-width="5"/>`;
+    n += `<rect class="w" x="${docks[0] - 120}" y="${WORLD.ground - 290}" width="${lastDock - docks[0] + 360}" height="18" fill="currentColor" opacity=".18"/>`;
+    docks.forEach((x, i) => {
       n += `<g class="dock dock${i + 1} w"><rect x="${x}" y="${WORLD.ground - 200}" width="${DOCK_W}" height="200" rx="6" fill="${C.tint2}" stroke="currentColor" stroke-width="4"/>
         <rect class="door" x="${x}" y="${WORLD.ground - 200}" width="${DOCK_W}" height="200" rx="6" fill="${C.tint}" stroke="currentColor" stroke-width="4" transform-origin="${x + DOCK_W / 2} ${WORLD.ground - 200}"/>
         <rect x="${x + 60}" y="${WORLD.ground - 254}" width="${DOCK_W - 120}" height="42" rx="21" fill="#fff" stroke="currentColor" stroke-width="4"/>
         <text x="${x + DOCK_W / 2}" y="${WORLD.ground - 222}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="30" fill="currentColor">PORT ${i + 1}</text></g>`;
     });
-    near.innerHTML = `<svg width="${WORLD.w + 1200}" height="${WORLD.h + 200}" viewBox="-600 0 ${WORLD.w + 1200} ${WORLD.h + 200}" style="overflow:visible"><g class="statics">${n}</g><g class="trucks"></g><g class="fx"></g></svg>`;
+    near.innerHTML = `<svg width="${W_ + 1200}" height="${WORLD.h + 200}" viewBox="-600 0 ${W_ + 1200} ${WORLD.h + 200}" style="overflow:visible"><g class="statics">${n}</g><g class="trucks"></g><g class="fx"></g></svg>`;
     return near.querySelector('svg');
   }
 
@@ -927,6 +929,8 @@ body.render .viewport { transform: none !important; }
       <div class="op-stats"></div>`;
     return { el: root, title: root.querySelector('.op-title'), rows: root.querySelector('.op-rows'), stats: root.querySelector('.op-stats') };
   }
+
+  LUP.heroParts = { WORLD, GATE_X, SIGN_X, DOCKS, DOCK_W, TRUCK_LEN, C, FONT, esc, add, tr, truckSvg, buildWorld, buildPhone, buildPanel, PL, SV };
 
   LUP.initHero = function (brand, film, opts = {}) {
     const fps = brand.format.fps, W = brand.format.width, H = brand.format.height;

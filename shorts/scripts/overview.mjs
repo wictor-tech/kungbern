@@ -8,7 +8,7 @@ const clips = listClips().map(loadClip);
 const films = readdirSync(join(ROOT, 'films')).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(ROOT, 'films', f), 'utf8')));
 const nl = (s) => s.replace(/\n/g, ' / ');
 const total = phases(brand).total;
-let md = `# LUPNUMBER – LinkedIn-serien "${brand.seriesName}"\n\n${clips.length} klipp à ${total} s (${brand.format.width}×${brand.format.height}, undertexter inbrända, hook i första bildrutan), en hero-film (60 s), en LinkedIn-version (25 s) och en flödesfilm med delad bild (49,5 s). Kvalitetsrapport: [QUALITY.md](QUALITY.md).\nKlippen numreras inte i bild; ordningen nedan är bara filordning.\n\n`;
+let md = `# LUPNUMBER – LinkedIn-serien "${brand.seriesName}"\n\n${clips.length} klipp à ${total} s (${brand.format.width}×${brand.format.height}, undertexter inbrända, hook i första bildrutan), en hero-film (60 s), komedifilmen "This is Sten." (60 s, engelsk speaker), en LinkedIn-version (25 s) och en flödesfilm med delad bild (49,5 s). Kvalitetsrapport: [QUALITY.md](QUALITY.md).\nKlippen numreras inte i bild; ordningen nedan är bara filordning.\n\n`;
 md += `| Ordning | Utmaning | Hook A | Hook B | CTA-fråga | VO-ord |\n| --- | --- | --- | --- | --- | --- |\n`;
 for (const c of clips) md += `| ${String(c.episode).padStart(2, '0')} | ${c.title} | ${nl(c.hook.text)} | ${c.variants?.b ? nl(c.variants.b.hook.text) : '–'} | ${(c.cta?.question || brand.cta.question || brand.cta.label).replace(/\*/g, '')} | ${voWords(c)} |\n`;
 md += `\n## Voiceover per klipp\n\n`;
@@ -18,9 +18,10 @@ if (heroes.length) {
   md += `## Hero-film och LinkedIn-version\n\n`;
   for (const f of heroes) {
     const total = f.beats.reduce((a, b) => a + b.duration, 0);
-    md += `**${f.title}** (\`shorts/out/hero-${f.slug}/\`): ${total} s, ${f.beats.length} beats, en lastbil (${f.plate || 'ABC 123'}) genom hela resan. Ljud: syntetiserad prototyp, speaker SV/EN i MANUS.md.\n\n`;
-    md += `| Beat | Rubrik i bild | Speaker SV |\n| --- | --- | --- |\n`;
-    for (const b of f.beats) md += `| ${b.id} (${b.duration} s) | ${b.title || '–'} | ${b.caption || '–'} |\n`;
+    const en = f.lang === 'en';
+    md += `**${f.title}** (\`shorts/out/hero-${f.slug}/\`): ${total} s, ${f.beats.length} ${en ? 'scener, manus i manus/this-is-sten.md, engelsk speaker och undertexter ur manusets cues' : `beats, en lastbil (${f.plate || 'ABC 123'}) genom hela resan`}. Ljud: syntetiserad prototyp, ${en ? 'speaker EN' : 'speaker SV/EN'} i MANUS.md.\n\n`;
+    md += en ? `| Scen | I bild | Speaker EN |\n| --- | --- | --- |\n` : `| Beat | Rubrik i bild | Speaker SV |\n| --- | --- | --- |\n`;
+    for (const b of f.beats) md += `| ${b.id} (${b.duration} s) | ${b.title || b.scene || '–'} | ${b.caption || b.en || '–'} |\n`;
     md += '\n';
   }
 }

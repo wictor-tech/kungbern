@@ -198,3 +198,17 @@ body.render .viewport { transform: none !important; }
 .op-action.done { background: var(--tint-1); color: var(--heading); }
 .op-kpi { flex: 1; background: var(--tint-2); border-radius: 16px; padding: 10px 16px; display: flex; align-items: baseline; gap: 10px; }
 .op-kpi b { color: var(--accent); font-size: 40px; font-weight: 800; } .op-kpi span { color: var(--muted); font-weight: 600; font-size: 22px; }
+
+/* ---- "This is Sten." (sten.js): scenlager, titelkort, stämplar, delad bild, frysbild ---- */
+.sc { position: absolute; inset: 0; display: none; }
+.sc.on { display: block; }
+.sc svg text { user-select: none; }
+.sten-title { position: absolute; left: 72px; top: 1030px; font-weight: 800; font-size: 64px; line-height: 1; color: var(--heading); letter-spacing: -0.03em; opacity: 0; z-index: 6; background: rgba(255,255,255,0.94); border: 2px solid var(--border); border-radius: 20px; padding: 16px 28px 18px; box-shadow: var(--shadow); }
+.sten-stamp { position: absolute; right: 72px; top: 72px; background: #fff; border: 2px solid var(--border); border-radius: 16px; padding: 10px 22px; font-weight: 800; font-size: 40px; color: var(--heading); box-shadow: var(--shadow); opacity: 0; letter-spacing: 0.02em; z-index: 6; }
+.sten-rubber { position: absolute; right: 56px; top: 1016px; border: 5px solid var(--accent); border-radius: 14px; padding: 8px 20px; font-weight: 800; font-size: 34px; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); opacity: 0; transform-origin: center; z-index: 6; background: rgba(255,255,255,0.6); }
+.split-left { position: absolute; left: 0; top: 0; width: 540px; height: 1350px; background: var(--tint-2); border-right: 2px solid var(--border); opacity: 0; visibility: hidden; z-index: 3; }
+.split-left .split-label { position: absolute; left: 60px; top: 150px; width: 420px; text-align: center; color: var(--muted); font-weight: 700; font-size: 24px; letter-spacing: 0.1em; text-transform: uppercase; }
+.sten-dawn { position: absolute; inset: 0; opacity: 0; background: linear-gradient(180deg, #C9E1F4 0%, #DFEEF9 38%, rgba(245,250,254,0) 68%); pointer-events: none; }
+.freeze-wrap { position: absolute; inset: 0; transform-origin: 0 0; }
+.freeze-wrap .copy { position: absolute; inset: 0; }
+.captions .cue br { display: block; }

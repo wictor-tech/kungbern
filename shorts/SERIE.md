@@ -1,6 +1,6 @@
 # LUPNUMBER – LinkedIn-serien "Vardag på siten"
 
-10 klipp à 17.5 s (1080×1350, undertexter inbrända, hook i första bildrutan), en hero-film (60 s), en LinkedIn-version (25 s) och en flödesfilm med delad bild (49,5 s). Kvalitetsrapport: [QUALITY.md](QUALITY.md).
+10 klipp à 17.5 s (1080×1350, undertexter inbrända, hook i första bildrutan), en hero-film (60 s), komedifilmen "This is Sten." (60 s, engelsk speaker), en LinkedIn-version (25 s) och en flödesfilm med delad bild (49,5 s). Kvalitetsrapport: [QUALITY.md](QUALITY.md).
 Klippen numreras inte i bild; ordningen nedan är bara filordning.
 
 | Ordning | Utmaning | Hook A | Hook B | CTA-fråga | VO-ord |
@@ -84,6 +84,25 @@ Klippen numreras inte i bild; ordningen nedan är bara filordning.
 | overview (6 s) | Hela siten i realtid. | Alla fordon på siten syns i realtid. |
 | checkout (4 s) | Utcheckad. Allt loggat. | Vid utfart loggas allt. Spårbart, utan papper. |
 | close (5 s) | – | LUPNUMBER. Boka en demo och se hur det fungerar på er site. |
+
+**This is Sten. – The Morning Rush (60 s)** (`shorts/out/hero-this-is-sten/`): 60 s, 14 scener, manus i manus/this-is-sten.md, engelsk speaker och undertexter ur manusets cues. Ljud: syntetiserad prototyp, speaker EN i MANUS.md.
+
+| Scen | I bild | Speaker EN |
+| --- | --- | --- |
+| intro (3 s) | "This is Sten." | This is Sten. |
+| fleet (5 s) | The fleet | Sten works at a very busy logistics site. Every morning, thirty trucks arrive. |
+| loves (3 s) | "Sten loves that." | Usually at the same time. Sten loves that. |
+| languages (5 s) | Thirty languages | Sten also speaks thirty languages. Well. According to management. |
+| dock (4 s) | Dock 3 (silent) | – |
+| numbers (5 s) | The numbers | Management needs the numbers by nine. Sten finds this very relaxing. |
+| safety (6 s) | Safety. In Swedish. To Dariusz. | Safety is also Sten. Here he is, explaining the rules. In Swedish. To Dariusz. |
+| tenmore (4 s) | Ten more. 07:01. | And now: ten more trucks. It is seven-oh-one. |
+| freeze (3 s) | The turning point | There is another way to run a gate. |
+| checkin (6 s) | Check-in on their own phones | Drivers check in on their own phones. In their own language. Twenty-six real ones. |
+| before (4 s) | Dock, instructions, safety. Before the barrier. | Dock, instructions, safety rules. Before the barrier. |
+| live (4 s) | The numbers write themselves | The site sees every vehicle. The numbers write themselves. |
+| realjob (5 s) | Sten does his real job | Sten still works at a very busy site. He just doesn't have to be thirty people. |
+| fine (3 s) | "He's fine now." | This is Sten. He's fine now. |
 
 ## Flödesfilm (delad bild)
 

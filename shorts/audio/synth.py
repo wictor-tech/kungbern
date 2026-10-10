@@ -110,16 +110,33 @@ def music(duration, sections):
         return name
     # Pad-ackord per takt
     t = 0.0; i = 0
-    prog = {'intro': ['Am', 'Am'], 'tension': ['Am', 'Fmaj7', 'Am', 'Csus'], 'lift': ['C', 'G', 'Am', 'F'], 'close': ['F', 'C', 'C', 'C']}
+    prog = {'intro': ['Am', 'Am'], 'tension': ['Am', 'Fmaj7', 'Am', 'Csus'], 'lift': ['C', 'G', 'Am', 'F'], 'close': ['F', 'C', 'C', 'C'], 'silence': ['C'], 'waltz': ['C', 'F', 'G', 'C'], 'pulse': ['C', 'G', 'Am', 'F']}
     while t < duration:
         sec = section_at(t)
+        if sec == 'silence':
+            t += beat; continue
+        if sec == 'waltz':
+            # Artig hotellobby-vals i 3/4: bas på ettan, två lätta ackord på två och tre, enkel melodi. Växer i styrka genom sektionen.
+            sec_start = max([ss for ss, nm in secs if nm == 'waltz' and ss <= t]); sec_end = min([ss for ss, nm in secs if ss > t] + [duration])
+            grow = (t - sec_start) / max(1e-6, sec_end - sec_start)
+            vol = -27 + 11 * grow
+            wb = 60 / 112.0
+            chord = prog['waltz'][i % 4]; notes = CHORDS[chord]
+            place(out, tone(hz(notes[0]), wb * 0.9, harm=(1.0, 0.3), a=0.01, d=0.2, s=0.4, r=0.15), t, vol - 2)
+            for k in (1, 2):
+                for nm in notes[1:4]:
+                    place(out, tone(hz(nm), wb * 0.55, harm=(1.0, 0.25), a=0.01, d=0.15, s=0.3, r=0.1), t + k * wb, vol - 7)
+            mel = ['E5', 'G5', 'C6', 'G5', 'F5', 'A5', 'G5', 'E5', 'D5', 'F5', 'B5', 'G5', 'C5', 'E5', 'G5', 'C6']
+            for k in range(3):
+                place(out, tone(hz(mel[(i * 3 + k) % len(mel)]), wb * 0.8, harm=(1.0, 0.4, 0.1), a=0.01, d=0.25, s=0.35, r=0.15, vib=0.02), t + k * wb, vol - 4)
+            t += 3 * wb; i += 1; continue
         chord = prog[sec][i % len(prog[sec])]
         dur = bar * (2 if sec in ('intro', 'close') else 1)
-        bright = 1.0 if sec in ('lift', 'close') else 0.6
+        bright = 1.0 if sec in ('lift', 'close', 'pulse') else 0.6
         for k, nm in enumerate(CHORDS[chord]):
             g = 0.22 if k == 0 else 0.14
             x = tone(hz(nm), dur + 0.6, harm=(1.0, 0.5 * bright, 0.2 * bright, 0.08 * bright), a=0.9, d=0.4, s=0.85, r=0.6, detune=0.003, vib=0.03 if k else 0)
-            place(out, x, t, -14 + (2 if sec == 'close' else 0))
+            place(out, x, t, -14 + (2 if sec == 'close' else 0) - (17 if sec == 'pulse' else 0))
         t += dur; i += 1
     # Puls (låg) under intro/tension, kick + hihat under lift/close
     tb = 0.0; b = 0
@@ -127,10 +144,11 @@ def music(duration, sections):
         sec = section_at(tb)
         if sec in ('intro', 'tension') and b % 2 == 0:
             place(out, tone(55, 0.35, harm=(1.0, 0.2), a=0.005, d=0.1, s=0.3, r=0.2), tb, -20 if sec == 'intro' else -17)
-        if sec in ('lift', 'close'):
-            if b % 2 == 0: place(out, tone(50, 0.3, harm=(1.0, 0.3), a=0.002, d=0.08, s=0.2, r=0.15), tb, -16)
+        if sec in ('lift', 'close', 'pulse'):
+            patt = -14 if sec == 'pulse' else 0
+            if b % 2 == 0: place(out, tone(50, 0.3, harm=(1.0, 0.3), a=0.002, d=0.08, s=0.2, r=0.15), tb, -16 + patt)
             hh = highpass(noise(int(0.05 * SR), seed=b), 6000) * env(int(0.05 * SR), 0.001, 0.02, 0.2, 0.02, 0)
-            place(out, hh, tb + beat / 2, -34)
+            place(out, hh, tb + beat / 2, -34 + patt)
         if sec == 'tension' and b % 1 == 0:
             place(out, tone(hz('E4'), 0.22, harm=(1.0, 0.6, 0.2), a=0.003, d=0.12, s=0.2, r=0.08), tb + beat / 2, -24)
         tb += beat; b += 1
@@ -138,8 +156,8 @@ def music(duration, sections):
     ta = 0.0; a_i = 0
     arp = ['C5', 'E5', 'G5', 'B5', 'G5', 'E5']
     while ta < duration:
-        if section_at(ta) == 'lift':
-            place(out, tone(hz(arp[a_i % len(arp)]), 0.35, harm=(1.0, 0.4, 0.1), a=0.004, d=0.2, s=0.25, r=0.1), ta, -26)
+        if section_at(ta) in ('lift', 'pulse'):
+            place(out, tone(hz(arp[a_i % len(arp)]), 0.35, harm=(1.0, 0.4, 0.1), a=0.004, d=0.2, s=0.25, r=0.1), ta, -26 - (16 if section_at(ta) == 'pulse' else 0))
         ta += beat / 2; a_i += 1
     # Lyft-sväll vid första 'lift' och slutslag vid 'close'
     for s, nm in secs:
@@ -150,6 +168,14 @@ def music(duration, sections):
             hit = tone(hz('C2'), 2.5, harm=(1.0, 0.4, 0.15), a=0.003, d=0.6, s=0.4, r=1.5)
             place(out, hit, s, -16)
     out = reverb(out, 0.22)
+    # Hård tystnad: allt (även efterklang) nollas i 'silence'-sektioner, med 4 ms nedtoning så det inte knäpper
+    for idx, (s, nm) in enumerate(secs):
+        if nm != 'silence': continue
+        e = secs[idx + 1][0] if idx + 1 < len(secs) else duration
+        a, b_ = int(s * SR), int(min(duration, e) * SR)
+        f = min(int(0.004 * SR), max(0, b_ - a))
+        if f > 0: out[a:a + f] *= np.linspace(1, 0, f)
+        out[a + f:b_] = 0
     # fade in/out
     fi = int(0.8 * SR); fo = int(2.5 * SR)
     out[:fi] *= np.linspace(0, 1, fi); out[-fo:] *= np.linspace(1, 0, fo)
@@ -184,6 +210,48 @@ def sfx_bank(out_dir):
     bank['lift'] = reverb(gl, 0.25) * 0.35
     n = int(0.9 * SR); cm = lowpass(noise(n, 23), 600) * env(n, 0.3, 0.1, 0.6, 0.4, n)
     bank['cam_move'] = cm * 0.35
+    # Brittisk dubbelring (sladdtelefon)
+    r = np.zeros(int(1.2 * SR)); t = np.arange(int(0.4 * SR)) / SR
+    burst = (np.sin(2 * np.pi * 400 * t) + np.sin(2 * np.pi * 450 * t)) * 0.5 * (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 25 * t))) * env(len(t), 0.005, 0.05, 0.9, 0.03, 0)
+    place(r, burst, 0.0); place(r, burst, 0.5)
+    bank['ring'] = r * 0.5
+    # Mobil: tre snabba toner
+    m = np.zeros(int(0.7 * SR))
+    for k, f in enumerate([880, 1108, 1318]): place(m, tone(f, 0.12, harm=(1.0, 0.2), a=0.003, d=0.04, s=0.5, r=0.04), k * 0.14)
+    bank['ring_mobile'] = m * 0.5
+    # Komradio: brus + pip
+    n = int(0.6 * SR); rd = highpass(lowpass(noise(n, 31), 3500), 600) * env(n, 0.02, 0.1, 0.5, 0.2, n) * 0.5
+    place(rd, tone(1200, 0.08, harm=(1.0,), a=0.002, d=0.02, s=0.6, r=0.02), 0.0, -4)
+    bank['radio'] = rd
+    # Tangentbord med ett finger
+    ty = np.zeros(int(1.4 * SR))
+    for k in range(6): place(ty, bank['tick'], k * 0.22 + (0.03 if k % 2 else 0), -2)
+    bank['typing'] = ty
+    # Truck-/lastbilstuta
+    n = int(0.45 * SR); t = np.arange(n) / SR
+    hn = (np.sign(np.sin(2 * np.pi * 420 * t)) * 0.4 + np.sin(2 * np.pi * 420 * t) * 0.6 + 0.3 * np.sin(2 * np.pi * 630 * t)) * env(n, 0.02, 0.05, 0.8, 0.1, n)
+    bank['horn'] = lowpass(hn, 2500) * 0.35
+    # Steg på asfalt
+    st = np.zeros(int(2.0 * SR))
+    for k in range(4): place(st, lowpass(noise(int(0.08 * SR), 40 + k), 500) * env(int(0.08 * SR), 0.003, 0.03, 0.2, 0.04, 0), k * 0.48, -6)
+    bank['steps'] = st * 0.8
+    # Fågel
+    ch = np.zeros(int(0.5 * SR)); t = np.arange(int(0.09 * SR)) / SR
+    tw = np.sin(2 * np.pi * (3200 + 1200 * t / 0.09) * t) * env(len(t), 0.005, 0.03, 0.6, 0.03, 0)
+    place(ch, tw, 0.0); place(ch, tw * 0.8, 0.16)
+    bank['chirp'] = ch * 0.25
+    # Backningspip (tre pip)
+    bp = np.zeros(int(1.3 * SR))
+    for k in range(3): place(bp, tone(1000, 0.16, harm=(1.0, 0.1), a=0.003, d=0.03, s=0.8, r=0.03), k * 0.45)
+    bank['beeper'] = bp * 0.4
+    # Mugg som ställs ned
+    n = int(0.12 * SR); cup = lowpass(noise(n, 51), 1800) * env(n, 0.001, 0.03, 0.2, 0.06, n)
+    place(cup, tone(900, 0.06, harm=(1.0, 0.5), a=0.001, d=0.02, s=0.3, r=0.03), 0.0, -8)
+    bank['cup'] = cup * 0.5
+    # Kort ljudmärke för wordmark
+    lg = np.zeros(int(1.2 * SR))
+    for k, nm in enumerate(['C5', 'G5']): place(lg, tone(hz(nm), 0.6, harm=(1.0, 0.4, 0.1), a=0.01, d=0.2, s=0.5, r=0.3), k * 0.12)
+    bank['logo'] = reverb(lg, 0.2) * 0.4
     n = int(1.2 * SR); t = np.arange(n) / SR
     idle = lowpass(noise(n, 29), 160) * 0.6 + 0.3 * np.sin(2 * np.pi * 30 * t) * (1 + 0.2 * np.sin(2 * np.pi * 7 * t))
     bank['truck_idle'] = idle * env(n, 0.2, 0.1, 0.8, 0.3, n) * 0.4

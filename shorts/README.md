@@ -164,9 +164,16 @@ npm run verify                            # ffprobe på alla mp4 → tabell i QU
 
 Ljudet är en **prototyp**: `audio/synth.py` syntetiserar originalmusik och ljudeffekter (inga licenser), mixar efter filmens händelser och normaliserar till −16 LUFS. Ingen röst finns i miljön; speakertexterna på svenska och engelska ligger tidkodade i `MANUS.md`. Kvalitetsrapporten med granskning, red team och verifierade filer: [`QUALITY.md`](QUALITY.md).
 
-## Manus: "This is Sten." (`manus/this-is-sten.md`)
+## Film: "This is Sten." (`brand/sten.js`, `films/this-is-sten.json`, `manus/this-is-sten.md`)
 
-Komplett produktionsmanus för en 60-sekunders komisk film med deadpan-speaker: kreativ analys, 14 scener med bild, kamera, speaker, text, ljud, humor och övergång, speakertext för inläsning, storyboard, tre alternativa slut och en Creative Director-granskning. Bygger på samma anläggning som hero-filmen och kan produceras i pipelinen när en karaktärsrigg för Sten finns.
+En 60-sekunders komedi med deadpan-speaker på engelska, byggd med samma kedja som hero-filmen: samma anläggning (nu med åtta portar), samma lastbilar, telefon-UI på polska, kamera, ljudsyntes och verifiering. Manuset (`manus/this-is-sten.md`: kreativ analys, 14 scener, speakertext, storyboard, tre slut, CD-granskning) är källan; `films/this-is-sten.json` håller scenernas längder, speakerraderna och de manusstyrda undertextcuerna (max 7 ord per rad), och `brand/sten.js` är mallen med karaktärsriggarna (Sten, Dariusz, chefen, tre chaufförer), interiörerna (boden med kalkylark respektive live-vy) och scenerna.
+
+```bash
+npm run hero -- this-is-sten              # 60 s: mp4 med ljudprototyp + tyst version, MANUS.md (EN), subtitles-en.srt, events.json, audio/
+node shorts/scripts/frames.mjs shorts/out/hero-this-is-sten/preview.html --out /tmp/qa --times 2.9,16.4,33.95,45.9 --sheet /tmp/qa/sheet.jpg   # QA: bildrutor + kontaktark
+```
+
+Vad som skiljer mot hero-mallen: `film.template: "sten"` väljer `LUP.initSten`, `film.lang: "en"` ger engelsk MANUS/SRT, `beats[].cues` sätter undertexternas exakta tider (komisk tajming, tyst scen 5, en sekunds tystnad i frysbilden), `film.poster` väljer posterbild. Musiken har tre nya sektioner i `audio/synth.py`: `silence` (hård tystnad, allt nollas), `waltz` (artig hotellobby-vals i 3/4 som växer) och `pulse` (låg, varm puls), plus effekterna `ring`, `ring_mobile`, `radio`, `typing`, `horn`, `steps`, `chirp`, `beeper`, `cup` och `logo`. Karaktärerna är nya: filmen bryter medvetet klippseriens regel "inga personer", eftersom manuset bygger på en huvudperson. Detaljer, avvikelser och mätningar: [`QUALITY.md`](QUALITY.md), avsnitt 14.
 
 ## Flödesfilm: idag överst, med LUPNUMBER nederst
 

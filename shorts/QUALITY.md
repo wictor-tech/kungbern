@@ -1,4 +1,4 @@
-# LUPNUMBER – kvalitetsrapport (hero-film, LinkedIn-version, klippserie)
+# LUPNUMBER – kvalitetsrapport (hero-film, "This is Sten.", LinkedIn-version, klippserie)
 
 > Allt i den här rapporten är verifierat i den här sessionen genom rendering och bildkontroll, om inget annat sägs. Avsnittet "Verifierade filer" längst ner fylls i av `node shorts/scripts/verify.mjs` direkt ur de renderade filerna.
 
@@ -126,12 +126,69 @@ Bildrutor ur den renderade hero-filmen nedskalade till 390 px bredd (motsvarar L
 4. Filma två sekunder vid er egen grind och lägg `hook-overlay*.mov` ovanpå för en version med riktig miljö.
 5. Granska polska texter med en polsktalande kollega (de är standardfraser, men kontrollera tonen).
 
+## 14. "This is Sten." (60 s, 1080×1350, 30 fps, 1800 frames)
+
+**Uppdrag:** producera komedifilmen ur `shorts/manus/this-is-sten.md` med samma produktionskedja och samma krav som hero-filmen (MASTERPROMPT V4): sammanhängande bildrum, läsbarhet på mobil, korrekt polska, inga påhittade produktfunktioner, ljudprototyp, verkliga visningstester, röd granskning, commit.
+
+**Byggt så här.** `films/this-is-sten.json` kodar manusets 14 scener med exakta längder (3 + 5 + 3 + 5 + 4 + 5 + 6 + 4 + 3 + 6 + 4 + 4 + 5 + 3 = 60 s), speakerraderna (126 ord) och undertextcuer med manusets pauser (`beats[].cues`, max 7 ord per rad, tyst scen 5, en sekunds tystnad i frysbilden). `brand/sten.js` är mallen: den återanvänder hero-filmens värld (`LUP.heroParts`: väg, bom, bod, skylt, lastkaj nu med åtta portar, lastbilsmodell, telefon-UI med samma polska strängar som hero-filmen, kamera och parallax) och lägger till det manuset saknade: karaktärsriggar (Sten med mössa, läsglasögon i pannan, varselväst över marinblå fleece, grå skäggstubb och muggen "WORLD'S OKAYEST GATE"; Dariusz i röd väst; chefen i blå skjorta; två chaufförer till), tre vyer per karaktär (framifrån, profil, bakifrån) med tvåledsarmar, ansiktsuttryck (ögonbryn, blinkning, halvt leende, blickriktning), rekvisita (sladdtelefon, mobil, komradio, laminerad lapp med sju svenska regler, flip-klocka, kalkylarksskärm, live-skärm) och interiörerna. Ljudpipelinen fick tre musiksektioner (`silence`, `waltz`, `pulse`) och tio effekter. Undertexter ur manuset via `captions.cuesFromScript`. Allt är tidsstyrt per bildruta som förut.
+
+**Scen för scen (verifierat i renderade bildrutor, helbild och 390 px):**
+
+| Scen | Tid | I bild | Kontroll |
+| --- | --- | --- | --- |
+| 1 "This is Sten." | 0:00–0:03 | Extrem närbild, mugg på väg mot munnen, väggklocka 06:58 oskarp bakom, titelkort nere till vänster (64 px) | Muggen når läppen vid 2,9 s exakt när första signalen hörs; titelkortet bär texten, ingen dubbel undertext |
+| 2 Flottan | 0:03–0:08 | Gryningsljus, kön med tända strålkastare rullar in som en front, bom, bod med Sten, stämpel 06:58 | Kön försvinner ur bild åt vänster; kameran åker bakåt (0,95→0,75) |
+| 3 "Sten loves that." | 0:08–0:11 | Genom skjutfönstret: Sten, tre telefoner på disken (sladd, mobil, radio), kön speglad i glaset | Blick telefon→mugg→telefon, luren lyfts 10,0 s, muggen ställs ned 10,4 s, ögonbryn vid "loves", push-in sista 20 rutorna |
+| 4 Trettio språk | 0:11–0:16 | Tre chaufförer (röd, orange, limegrön väst), bubblor "Dzień dobry, brama trzy?" · "Unde descarc?" · "Kur man važiuoti?", Sten med lur, mobil och radio under hakan | Stämpeln "according to management" slår i vid 14,2 s; sidoåkning stannar på Sten; han pekar ut vid 15,4 s |
+| 5 Port 3 (tyst) | 0:16–0:20 | Stens rygg i förgrund med raka armar mot PORT 3, bil 1 backar in vid PORT 7, bil 2 följer efter till PORT 6, armarna sänks 18,6 s | Ingen undertext; skyltarna 3, 6 och 7 läsbara (42 px i världen) |
+| 6 Siffrorna | 0:20–0:25 | Över axeln: gammal skärm med `siffror_v3_FINAL(2).xlsx`, kolumner IN/UT/REG/PORT/SPRÅK?, flikar som inte får plats, ett finger skriver, lur på axeln, chefens huvud i dörren med "Sten? The numbers by nine?", tumme upp 22,3 s, lastbil åt fel håll i fönstret, klocka 06:59 | Push-in mot skärmen; chefen försvinner 23,6 s |
+| 7 Säkerheten | 0:25–0:31 | Tvåbild i profil, lappen SÄKERHETSREGLER med sju punkter, Sten pekar punkt för punkt, Dariusz nickar vid varje, truck tutar, besökare utan väst går förbi, radion sprakar; zoom ut sista två sekunderna | Punkt 7 vid 29,3 s med nick; bakgrunden avslöjas av utzoomningen |
+| 8 Tio till. 07:01 | 0:31–0:35 | 8a kön växer i bakänden med tio bilar; 8b boden handhållet, tre ringande telefoner, chefens huvud, "Autosave failed"; 8c klockan slår om 07:00→07:01 (flip 33,95 s), ut/ned till Sten med muggen, Dariusz med telefon i fönstret | Tre bilder på fyra sekunder; "It is 7:01." 33,45–34,7 s |
+| 9 Vändpunkten | 0:35–0:38 | Frysbild, färgen dras ur allt utom telefonen i Dariusz hand (glöd i sky), långsam push-in mot den, färgen rinner tillbaka 37,6–38,0 s | Tvärtyst i ljudet 35,0–37,6 s (nollat), pulsen startar 37,6 s |
+| 10 Incheckning | 0:38–0:44 | Dagsljus, bilar med jämna mellanrum, Dariusz telefon ur hytten: Check-in · WGM 4521 → språkväljare (Polski, Română, Lietuvių, English, Svenska, Deutsch, Українська, Latviešu, +18) → Polski → Zameldowanie kierowcy, tumme upp; kameran glider till två hytter till (Română ✓, Lietuvių ✓); Sten i fönstret med muggen | Tre bekräftelsetoner; polskan är hero-filmens strängar |
+| 11 Före bommen | 0:44–0:48 | Delad bild: vänster Dariusz telefon "Rampa 3 →" + Zasady bezpieczeństwa med fyra bockar → Potwierdzono; höger bommen upp, bilen rullar in och backar vid PORT 3, Sten i fönstret med armarna i kors | Inget backningspip i ljudet |
+| 12 Siffrorna skriver sig själva | 0:48–0:52 | Samma vinkel som scen 6, platt skärm "Site · live": karta med åtta portar, fordon med regnummer, in/ut-logg som tickar in, "Report · today · ready ✓" vid 50,2 s med ett klick, chefens huvud nickar och försvinner, muggen och telefonerna stilla på bordet, klocka 07:03 | Spegling av scen 6 |
+| 13 Stens riktiga jobb | 0:52–0:57 | Sten går över gården med muggen, kameran följer, stannar i tvåbild vid PORT 3 med Dariusz, pekar på en säkring på trailern, Dariusz rättar till, båda nickar; en bil passerar bakom | Steg, passerande bil, ett pip; pulsen tystnar 57 s |
+| 14 "He's fine now." | 0:57–1:00 | Samma inramning som scen 1, muggen når fram, han dricker (ögonen slutna), kort rynkning (kallt), halvt leende, klocka 07:04; ton till slutkort: wordmark, "Every site has a Sten. Give yours LUPNUMBER.", Book a demo, lupnumber.com | Slutkortet är komplett från 59,1 s |
+
+**Manustrohet, medvetna avvikelser:**
+
+1. Skylten i bild är `PORT 1–8 →` och portarna heter `PORT n`, som i manusets scen 5, 11 och storyboard (och i hero-filmen). Miljöbeskrivningens "DOCKS 1–8 →" användes inte: siten är svensk (lappen heter SÄKERHETSREGLER) och en engelsk skylt bredvid svenska portnummer hade blivit inkonsekvent.
+2. Scen 1: titelkortet bär orden "This is Sten."; undertextrutan visas inte parallellt (manuset: "Undertext samma rad"). Cuen finns i SRT-filen.
+3. Scen 8a visar att kön växer vid dess bakände (samma sidovy, kameran längre ner längs vägen), eftersom köns slut ligger utanför bild från scen 2:s position.
+4. Scen 10: den läsbara telefonen är Dariusz genom alla steg; hytt två och tre visar små bekräftelser när kameran glider förbi. Manusets "varje telefon fyller halva bilden" hade krävt tre fulla UI-sekvenser på sex sekunder.
+5. Scen 14: slutkortet står helt i ≈0,9 s plus spelarens slutruta, eftersom manusets tre sekunder också rymmer närbilden och repliken. Vill ni ha två sekunders slutkort: sätt `fine` till 5 s i filmens JSON (filmen blir 62 s).
+6. Karaktärerna använder färger utanför den låsta paletten (varselgult, röd och orange väst, blå skjorta, hudtoner). Manuset kräver dem (röd väst, varselväst). All grafik, UI och text håller paletten.
+7. Repliker i ljudet (chaufförernas tre språk, "Hallo? Hallo?", "Tak… tak.", "Sten? Sten?", "Sten, ten more at the gate.") går inte att syntetisera här; de står i manuset för inspelningen. Ringsignaler, radiosprak, trucktuta, steg och backningspip finns i mixen.
+8. Personernas skala mot lastbilarna är stiliserad (som bodens och bommens i hero-filmen), inte verklig.
+
+**Ljud (prototyp).** Musik: tystnad 0–11 s, vals som växer från −27 till −16 dB 11–35 s och klipps mitt i takten vid 35,0 s, hård tystnad till 37,6 s (allt nollat, även efterklang), låg puls 37,6–57 s, tystnad till slut med ett ensamt backningspip och ett kort ljudmärke på wordmarken. Mätt på `audio/mix.m4a` efter loudnorm: integrerad ljudstyrka −15,7 LUFS, toppnivå −1,1 dBFS, LRA 5,0 LU. Nivåer per akt (RMS dBFS, medel per sekund): akt 1 −30, akt 2 (vals + telefoner) −22, frysbilden 35,0–37,6 s digital tystnad (−180 dBFS), akt 4 (puls + bekräftelsetoner) −21, slutet −34. Inga effekter sticker ut över frysningen; sista ringsignalerna slutar 34,95 s. Ingen röst: speakerraderna ligger tidkodade i `MANUS.md` och mixen har plats för dem (ingen musik under de första elva sekunderna, valsen under speakerns nivå).
+
+**Undertexter.** 27 cuer, engelska, max 7 ord per rad, 31 px fet i vit ruta över LinkedIns kontroller; raderna följer speakerns pauser (0,4–1,0 s mellan replikerna).
+
+**Visningstest.** Alla scener granskade som bildrutor i helbild och nedskalade till 390 px (mobilflöde): ansiktet, titelkortet, stämplarna, bubblorna, lappens rubrik, klockan, telefonens rubriker (Check-in, Polski, Zameldowanie kierowcy, Rampa 3) och slutkortet läses; kalkylarkets celler, live-skärmens logg och lappens sju punkter är textur på mobil och bär inget primärbudskap (rubrikerna gör det). Inga element klipps vid 72 px-marginalen.
+
+**Röd granskning, de största riskerna:**
+
+1. Speakern avgör allt. Utan den brittiskt lugna rösten är filmen bilder med undertexter; tajmingen i JSON är lagd för 2,4 ord/s.
+2. Chaufförernas repliker (polska, rumänska, litauiska) och lappens svenska måste korrekturläsas av modersmålstalare innan publicering; polskan i telefonen är densamma som i hero-filmen (standardfraser, inte granskade).
+3. "Twenty-six real ones" måste stämma vid publicering, annars byt raden.
+4. Slutkortets korta hålltid (punkt 5 ovan).
+5. Karaktärerna är nya för varumärket: besluta om Sten ska bli återkommande (serien i manusets del F) innan filmen publiceras.
+6. Musiken är syntetisk temp; valsen måste bli riktig musik för att skämtet (artig musik mot kaos) ska landa.
+7. Flip-klockans "07:01" läses på mobil, men den oskarpa klockan i scen 1 och 14 är stämning, inte information.
+8. Scen 5 är filmens bästa poäng och helt tyst: om plattformen autoplayar utan ljud fungerar den, men den kräver att tittaren stannat i 16 s.
+
+**Blockerare och manuellt arbete:** spela in speaker (EN) efter `MANUS.md` och mixa med `--vo-sv` (flaggan tar vilken röstfil som helst); licensiera musik; modersmålskontroll; beslut om 60 eller 62 s.
+
 ## Verifierade filer
 
-Mätt med ffprobe (count_frames) 2026-10-10 14:39. ✓ = 1080×1350, 30 fps och frames = längd × 30.
+Mätt med ffprobe (count_frames) 2026-10-10 17:06. ✓ = 1080×1350, 30 fps och frames = längd × 30.
 
 | Fil | Upplösning | fps | Frames | Längd (s) | Ljud | Storlek | OK |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| hero-this-is-sten/this-is-sten.mp4 | 1080×1350 | 30 | 1800 | 60.0 | aac 48000 Hz | 10.9 MB | ✓ |
+| hero-this-is-sten/this-is-sten-tyst.mp4 | 1080×1350 | 30 | 1800 | 60.0 | – | 9.8 MB | ✓ |
 | hero-lupnumber-site-day/lupnumber-site-day.mp4 | 1080×1350 | 30 | 1800 | 60.0 | aac 48000 Hz | 8.8 MB | ✓ |
 | hero-lupnumber-site-day/lupnumber-site-day-tyst.mp4 | 1080×1350 | 30 | 1800 | 60.0 | – | 7.6 MB | ✓ |
 | hero-lupnumber-linkedin-25/lupnumber-linkedin-25.mp4 | 1080×1350 | 30 | 750 | 25.0 | aac 48000 Hz | 3.5 MB | ✓ |

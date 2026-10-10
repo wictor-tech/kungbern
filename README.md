@@ -1,6 +1,6 @@
 # lupnumber short
 
-> **Hero-filmen `LupnumberSiteDay` (60 s), LinkedIn-versionen (25 s) och serien "Vardag på siten" ligger i [`shorts/`](shorts/README.md)**. Kvalitetsrapport: [`shorts/QUALITY.md`](shorts/QUALITY.md). – nio klipp (17,5 s, 4:5, hook A/B, karusell) och en flödesfilm (idag överst, med LUPNUMBER nederst). Ett klipp = en JSON + en scenfil, `npm run klipp -- <slug> --all-variants` ger mp4 + manus + undertexter + karusell. Alla manus: [`shorts/SERIE.md`](shorts/SERIE.md). Säg "gör nästa klipp om …" (se `.claude/skills/nytt-klipp`).
+> **Hero-filmen `LupnumberSiteDay` (60 s), komedifilmen `ThisIsSten` (60 s, engelsk speaker), LinkedIn-versionen (25 s) och serien "Vardag på siten" ligger i [`shorts/`](shorts/README.md)**. Kvalitetsrapport: [`shorts/QUALITY.md`](shorts/QUALITY.md). – nio klipp (17,5 s, 4:5, hook A/B, karusell) och en flödesfilm (idag överst, med LUPNUMBER nederst). Ett klipp = en JSON + en scenfil, `npm run klipp -- <slug> --all-variants` ger mp4 + manus + undertexter + karusell. Alla manus: [`shorts/SERIE.md`](shorts/SERIE.md). Säg "gör nästa klipp om …" (se `.claude/skills/nytt-klipp`).
 
 18-sekunders vertikalt (9:16, 1080×1920) reklamklipp för lupnumber.com, byggt med [Remotion](https://www.remotion.dev).
 
